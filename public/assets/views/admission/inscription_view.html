@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/admission/inscription.css">
+    <title>Document</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="assets/img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
+            <ul class="navbar-nav gap-3">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Admisiones</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Estudiantes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Docentes</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Administracion
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">SEDP Login</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <section class="section">
+        <section class="title">
+            <h1>Inscripción de admisión</h1>
+            <h6>A continuación solicitaremos tus datos personales, para inscribirte en el examen de admisión. Por favor, asegurate que todos tus datos sean correctos.</h6>
+        </section>
+        <section class="form">
+            <h4>Datos Generales</h4>
+            <div class="line"></div>
+            <section class="input-container">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Primer nombre">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Segundo Nombre">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Primer apellido">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Segundo apellido">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Numero de indentidad">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Fecha de nacimiento">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Correo electronico">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Telefono">
+            </section>
+        </section>
+        <section class="form">
+            <h4>Datos de carrera</h4>
+            <div class="line"></div>
+            <section class="input-container">
+                <div class="select-control">
+                    <label for="exampleFormControlInput1" class="form-label">Carrera principal</label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Administracion de empresas</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <div class="select-control">
+                    <label for="exampleFormControlInput1" class="form-label">Carrera secundaria</label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Administracion de empresas</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <div class="select-control">
+                    <label for="exampleFormControlInput1" class="form-label">Campus</label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Ciudad universitaria</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+            </section>
+        </section>
+        <section class="form">
+            <h4>Estudios previos</h4>
+            <div class="line"></div>
+            <section class="input-container">
+                <div class="select-control">
+                    <label for="formFile" class="form-label">Subir certificacion de secundaria</label>
+                    <input class="form-control" type="file" id="formFile">
+                </div>
+            </section>
+        </section>
+    </section>
+</body>
+</html>
