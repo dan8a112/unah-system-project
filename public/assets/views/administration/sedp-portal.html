@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <title>Portal SEDP</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="ms-4 mt-3">
+            <h1 class="mb-0">Portal SEDP</h1>
+            <p>Administración del personal docente de la UNAH</p>
+          </div>
+          <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
+            <ul class="navbar-nav gap-3">
+              <li class="nav-item">
+                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;">
+                    <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
+                    Cerrar Sesión
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
+
+      <div class="mt-5 d-flex-col" style="margin: 0 auto; width: 90vw; border: #A1A1A1 solid 1px; border-radius: 20px; padding: 20px;">
+        <div class="d-flex justify-content-between">
+            <div class="ms-2">
+                <span class="fs-4 me-2 fw-bold">Docentes</span>
+                <span class="fs-5">20</span>
+            </div>
+            <div class="d-flex align-items-center" style="width: 30%;">
+                <img class="me-2" src="../../img/icons/search.svg" alt="">
+                <input class="form-control me-3" placeholder="Buscar docente" type="search" >
+            </div>
+            <div class="d-flex me-2">
+                <button class="btn d-flex align-items-center" style="background-color: #FFAA34; color: #F4F7FB;" id="createBtn">
+                    <img src="../../img/icons/add-circle.svg" alt="" class="me-2">
+                    Crear
+                </button>
+            </div>    
+        </div>
+        <hr>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Roles</th>
+                <th scope="col">Fecha de contratacion</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="vertical-align:middle;">
+                <th scope="row">1</th>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
+                        <div>
+                            <p class="mb-0 fw-bold">Daniel Alexander Ochoa</p>
+                            <p class="mb-0">dochoao@unah.hn</p>
+                        </div>
+                    </div>
+                </td>
+                <td >
+                    <div class="d-flex gap-3">
+                        <div class="px-1" style="color: #FFAA34; border-radius: 5px; border: #FFAA34 1px solid;">
+                            Docente
+                        </div>
+                        <div class="px-1" style="color: #3472F8; border-radius: 5px; border: #3472F8 1px solid;">
+                            Jefe
+                        </div>
+                        <div class="px-1" style="color: #00C500; border-radius: 5px; border: #00C500 1px solid;">
+                            Coordinador
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    23/10/2024
+                </td>
+                <td>
+                    <img class="me-3" src="../../img/icons/delete.svg" alt="">
+                    <img src="../../img/icons/edit.svg" alt="">
+                </td>
+              </tr>
+              <tr style="vertical-align:middle;">
+                <th scope="row">1</th>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
+                        <div>
+                            <p class="mb-0 fw-bold">Daniel Alexander Ochoa</p>
+                            <p class="mb-0">dochoao@unah.hn</p>
+                        </div>
+                    </div>
+                </td>
+                <td >
+                    <div class="d-flex gap-3">
+                        <div class="px-1" style="color: #FFAA34; border-radius: 5px; border: #FFAA34 1px solid;">
+                            Docente
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    23/10/2024
+                </td>
+                <td>
+                    <img class="me-3" src="../../img/icons/delete.svg" alt="">
+                    <img src="../../img/icons/edit.svg" alt="">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+      
+      <div class="modal" tabindex="-1" id="formModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Crear un nuevo docente</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="row g-3">
+                <div class="row my-2">
+                  <div class="col">
+                  <label for="formFile" class="form-label">Primer Nombre</label>
+                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre">
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Segundo Nombre</label>
+                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre">
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col">
+                  <label class="form-label">Primer Apellido</label>
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido">
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Segundo Apellido</label>
+                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido">
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col">
+                  <label class="form-label">Correo Institucional</label>
+                  <input type="email" class="form-control" placeholder="e.g. empleado@unah.hn" aria-label="Correo Institucional">
+                  </div>
+                </div>
+                <div>
+                  <label for="formFile" class="form-label">Foto de perfil del docente</label>
+                  <input class="form-control" type="file" id="formFile">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Centro regional</label>
+                  <select class="form-select" aria-label="Default select example">
+                    <option selected>CU</option>
+                    <option value="1">CURLA</option>
+                    <option value="2">VS</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-success">Agregar</button>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  <script src="../../js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="../../js/administration/main.js"></script>
+</body>
+</html>
