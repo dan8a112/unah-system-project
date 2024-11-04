@@ -1,22 +1,22 @@
 <?php
-    class RegionalCenterDAO{
+    class DegreeProgramDAO{
 
         public function __construct(string $server, string $user, string $pass, string $dbName) {
             $this->mysqli = new mysqli($server, $user, $pass, $dbName);
         }
 
-        public function getCenters() : array {
+        public function getDegrees() : array {
 
-            $centers = [];
-            $query = 'SELECT description, location FROM RegionalCenter';
+            $degrees = [];
+            $query = 'SELECT * FROM DegreeProgram';
 
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
-                $centers[] = $row["description"];
+                $degrees[] = $row["description"];
             }
 
-            return $centers;
+            return $degrees;
             
         }
     }
