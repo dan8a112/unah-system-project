@@ -10,7 +10,7 @@
 
     $json = [
         "status"=> true,
-        "message"=> "Carreras obtenidos",
+        "message"=> "Carreras obtenidas",
         "result"=> $degrees,
     ];
     
