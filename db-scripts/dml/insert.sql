@@ -1,4 +1,3 @@
-USE ProyectoIS;
 
 INSERT INTO RegionalCenter(description, location) VALUES
     ('Ciudad Universitaria (CU)','Tegucigalpa, Francisco Morazán'),
@@ -61,4 +60,10 @@ INSERT INTO DegreeProgram(description) VALUES
     ('Licenciatura en Publicidad y Relaciones Públicas'),
     ('Licenciatura en Filosofía'),
     ('Licenciatura en Literatura')
+;
+
+INSERT INTO ProfessorType(description) VALUES
+    ('Docente'),
+    ('Coordinador'),
+    ('Jefe de departamento')
 ;
