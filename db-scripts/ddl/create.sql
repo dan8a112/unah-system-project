@@ -247,3 +247,80 @@ INSERT INTO AdmissionDegree (description, degree, admissionTest, passingGrade) V
     ('PCCNS para Enfermería', 29, 2, 400),
     ('PCCNS para Microbiología', 30, 2, 400)
 ;
+
+DELIMITER //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 5/11/24
+
+    Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante
+**/
+CREATE PROCEDURE insertApplicant(
+    IN p_id VARCHAR(15),
+    IN p_firstName VARCHAR(15),
+    IN p_secondName VARCHAR(15),
+    IN p_firstLastName VARCHAR(15),
+    IN p_secondLastName VARCHAR(15),
+    IN p_pathSchoolCertificate VARCHAR(30),
+    IN p_telephoneNumber VARCHAR(12),
+    IN p_personalEmail VARCHAR(30),
+    IN p_firstDegreeProgramChoice SMALLINT,
+    IN p_secondDegreeProgramChoice SMALLINT,
+    IN p_regionalCenterChoice TINYINT
+)
+BEGIN
+    -- Verificar si el ID ya existe
+    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
+        -- Si existe, solo se crea la aplicacion
+        INSERT INTO Application (
+            idApplicant,
+            firstDegreeProgramChoice,
+            secondDegreeProgramChoice,
+            regionalCenterChoice
+        ) VALUES (
+            p_id,
+            p_firstDegreeProgramChoice,
+            p_secondDegreeProgramChoice,
+            p_regionalCenterChoice
+        );
+    ELSE
+        -- Si no existe, hacer la inserción
+        INSERT INTO Applicant (
+            id,
+            firstName,
+            secondName,
+            firstLastName,
+            secondLastName,
+            pathSchoolCertificate,
+            telephoneNumber,
+            personalEmail
+        ) VALUES (
+            p_id,
+            p_firstName,
+            p_secondName,
+            p_firstLastName,
+            p_secondLastName,
+            p_pathSchoolCertificate,
+            p_telephoneNumber,
+            p_personalEmail
+        );
+
+        -- Insertar en la tabla Application
+        INSERT INTO Application (
+            idApplicant,
+            firstDegreeProgramChoice,
+            secondDegreeProgramChoice,
+            regionalCenterChoice
+        ) VALUES (
+            p_id,
+            p_firstDegreeProgramChoice,
+            p_secondDegreeProgramChoice,
+            p_regionalCenterChoice
+        );
+    END IF;
+END //
+
+DELIMITER ;
+
