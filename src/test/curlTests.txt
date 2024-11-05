@@ -1,0 +1,7 @@
+
+----Curl para probar la api/post/applicant--------
+curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "pathSchoolCertificate=/hdxhd/hdvdh" -d "telephoneNumber=3347-6290" -d "personalEmail=samvel200355@gmail.com" -d "idFirstDegreeProgramChoice=1" -d "idSecondDegreeProgramChoice=3" -d "idRegionalCenterChoice=4" http://localhost:3000/api/post/application | jq
+
+curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "idFirstDegreeProgramChoice=1" -d "idSecondDegreeProgramChoice=3" -d "idRegionalCenterChoice=4" http://localhost:3000/api/post/application | jq
+
+

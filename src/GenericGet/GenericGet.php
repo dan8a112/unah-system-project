@@ -5,6 +5,11 @@
             $this->mysqli = new mysqli($server, $user, $pass, $dbName);
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 4/11/24
+         */
         public function getDegrees() : array {
 
             $degrees = [];
@@ -20,6 +25,11 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 4/11/24
+         */
         public function getProfessorTypes() : array {
 
             $professorTypes = [];
@@ -35,6 +45,11 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 4/11/24
+         */
         public function getCenters() : array {
 
             $centers = [];
