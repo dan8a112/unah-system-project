@@ -7,8 +7,8 @@
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 4/11/24
+         * version: 0.2.0
+         * date: 5/11/24
          */
         public function getDegrees() : array {
 
@@ -18,7 +18,10 @@
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
-                $degrees[] = $row["description"];
+                $degrees[] = [
+                    "idCareer" => $row["id"],
+                    "description"=>$row["description"]
+                ] ;
             }
 
             return $degrees;
@@ -53,12 +56,15 @@
         public function getCenters() : array {
 
             $centers = [];
-            $query = 'SELECT description, location FROM RegionalCenter';
+            $query = 'SELECT * FROM RegionalCenter';
 
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
-                $centers[] = $row["description"];
+                $centers[] = [
+                    "idRegionalCenter" => $row["id"],
+                    "description"=>$row["description"]
+                ];
             }
 
             return $centers;
