@@ -99,24 +99,14 @@ class Action{
         const professorTypesSelect = document.querySelector("select#professorTypeSelect");
         const departmentSelect = document.querySelector("select#departmentSelect");
 
+        //destructuracion de la data
         const {professorTypes, departments} = data;
 
-        professorTypes.forEach(type=>{
-            const option = document.createElement("option");
-            option.setAttribute("value",type.professorTypeId);
-            option.innerText = type.name;
-            professorTypesSelect.appendChild(option);
-        })
-
-        Selects.renderSelect
-
-        departments.forEach(department => {
-            const option = document.createElement("option");
-            option.setAttribute("value",department.departmentId);
-            option.innerText = department.name;
-            departmentSelect.appendChild(option);
-        })
-
+        //Se renderizan las opciones del select de tipos de maestros
+        Selects.renderSelect(professorTypesSelect,professorTypes,"professorTypeId","name");
+        
+        //Se renderizan las opciones del select de departamentos de maestros
+        Selects.renderSelect(departmentSelect,departments,"departmentId","name");
 
     }
 
