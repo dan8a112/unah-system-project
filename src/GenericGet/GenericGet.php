@@ -43,7 +43,10 @@
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
-                $professorTypes[] = $row["description"];
+                $professorTypes[] = [
+                    "professorTypeId"=>$row["id"],
+                    "name"=>$row["description"]
+                ];
             }
 
             return $professorTypes;
@@ -96,6 +99,29 @@
             
 
             return $centers;
+            
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 6/11/24
+         */
+        public function getDepartments() : array {
+
+            $professorTypes = [];
+            $query = 'SELECT * FROM Department';
+
+            $result = $this->mysqli->execute_query($query);
+
+            foreach($result as $row){
+                $professorTypes[] = [
+                    "departmentId"=>$row["id"],
+                    "name"=>$row["description"]
+                ];
+            }
+
+            return $professorTypes;
             
         }
 
