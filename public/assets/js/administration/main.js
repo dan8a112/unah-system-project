@@ -1,23 +1,13 @@
-import {Modal} from "../modules/Modal.js"
-import {Selects} from "../modules/Selects.js"
-import { Action } from "./Action.js";
+import {Action} from "./Action.js";
 
-const formModal = document.querySelector("#formModal");
+//Se hace la peticion de los maestros
+Action.fetchProfessors();
+
 const createButton = document.querySelector("#createBtn");
 
-createButton.addEventListener('click', Modal.openModal.bind(this,formModal));
+//Se agrega accion de boton de crear maestro
+createButton.addEventListener('click', Action.fetchFormProfessors);
 
-const professorTypesSelect = document.querySelector("select#professorTypeSelect");
+const createProfessorForm = document.querySelector("#createProfessorForm")
 
-const prueba = [
-    {
-        "id":1,
-        "name":"Opcion1"
-    },
-    {
-        "id":2,
-        "name": "Opcion2"
-    }
-]
-
-Selects.renderSelect(professorTypesSelect,prueba,"id","name");
+createProfessorForm.addEventListener('submit', Action.submitFormProfessor.bind(createProfessorForm));

@@ -1,8 +1,16 @@
 import {Selects} from "../modules/Selects.js"
+import {Modal} from "../modules/Modal.js"
+import {fetchData} from "../modules/Fetch.js"
 
 class Action{
 
-    static generateProfessors(professors){
+    static generateProfessors(data){
+
+        const {professors, professorsAmount } = data;
+
+        //nodo donde se insertara la cantidad de maestros registrados 
+        const amountProfessors = document.querySelector("span#amountProfessors");
+        amountProfessors.innerText = professorsAmount;
 
         const tableBody = document.querySelector("#table-body");
 
@@ -16,7 +24,7 @@ class Action{
             idCol.setAttribute("scope","row");
 
             //Se agrega el id del maestro
-            idCol.innerHTML = professor.id;
+            idCol.innerHTML = professor.professorId;
 
             //Se agrega id a fila
             row.appendChild(idCol);
@@ -59,7 +67,7 @@ class Action{
                 //El maestro es un coordinador
             }else if(professor.professorType.match(/[Cc]oordinador(\s+)?(\w+)?/g)){
                 //Se cambia el color de la card a verde
-                colorTypeCard = "#3472F8";
+                colorTypeCard = "#00C500";
             }
 
             professorTypeCard.innerText = professor.professorType;
@@ -108,19 +116,50 @@ class Action{
         //Se renderizan las opciones del select de departamentos de maestros
         Selects.renderSelect(departmentSelect,departments,"departmentId","name");
 
+        const formModal = document.querySelector("#formModal");
+        Modal.openModal(formModal);
     }
 
+    static submitFormProfessor(event){
+
+        const form = this;
+
+        event.preventDefault();
+        
+        const formData = new FormData(form);
+
+
+        
+    }
+
+
+    static fetchFormProfessors  = async ()=>{
+        
+        let data = {}
+
+        //Se hace la peticion de los tipos de profesores
+        const responseTypes = await fetchData("http://localhost:3000/api/get/professorTypes");
+        
+        //Se agregan a data
+        data.professorTypes = responseTypes.professorTypes;
+
+        const responseDeparments = await fetchData("http://localhost:3000/api/get/departments");
+
+        data.departments = responseDeparments.departments;
+
+        this.generateSelectForm(data);  
+        
+    }
 
     static fetchProfessors(){
-        fetch('http://localhost:3000/api/get/infoAdmission')
+        fetch('http://localhost:3000/api/get/infoHomeSEDP')
         .then(response => response.json())
-        .then(data => console.log(data));
-    }
-
-    static fetchFormProfessors(){
-        fetch('http://localhost:3000/api/get/infoAdmission')
-        .then(response => response.json())
-        .then(data => console.log(data));
+        .then(data => {
+            if (data.status) {
+                console.log(data.data)
+                this.generateProfessors(data.data);    
+            }
+        });
     }
 
 }
