@@ -71,5 +71,31 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.2.0
+         * date: 5/11/24
+         */
+        public function getDegreesInCenter() : array {
+
+            $centers = $this->getCenters(); 
+            $query = "CALL GetDegreeProgramsByRegionalCenter(?);";
+
+            foreach($centers as &$center){
+                $careers = [];
+                $result = $this->mysqli->execute_query($query, [$center["idRegionalCenter"]]);
+                foreach($result as $row){
+                    $careers[] = $row["degreeProgramId"];
+                }
+                
+                $center["careers"] = $careers;
+    
+            }
+            
+
+            return $centers;
+            
+        }
+
     }
 ?>

@@ -14,5 +14,5 @@ CALL insertApplicant(
     2
 );
 
-SELECT * FROM Applicant;
-SELECT * FROM Application;
+/*Procedimiento para obtener el id de las carreras de un centro regional*/
+CALL GetDegreeProgramsByRegionalCenter(3);
