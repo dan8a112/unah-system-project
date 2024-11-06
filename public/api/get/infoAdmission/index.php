@@ -7,7 +7,7 @@
     //Data Access Object
     $dao = new GenericGetDAO("localhost", "is", "is", "ProyectoIS");
     $degrees = $dao->getDegrees();
-    $centers = $dao->getCenters();
+    $centers = $dao->getDegreesInCenter();
 
     $json = [
         "message"=> "Peticion realizada con exito",
