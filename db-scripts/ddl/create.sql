@@ -10,7 +10,6 @@ CREATE TABLE RegionalCenter(
     location VARCHAR(100) NOT NULL
 );
 
-
 CREATE TABLE AdmissionTest(
 	id TINYINT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR(62) NOT NULL
@@ -20,6 +19,14 @@ CREATE TABLE AdmissionTest(
 CREATE TABLE DegreeProgram(
 	id SMALLINT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR (60) NOT NULL
+);
+
+CREATE TABLE RegionalCenterDegree(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    degree SMALLINT,
+    regionalCenter TINYINT,
+    CONSTRAINT fk_degreerc FOREIGN KEY (degree) REFERENCES DegreeProgram(id),
+    CONSTRAINT fk_regionalCenter FOREIGN KEY (regionalCenter) REFERENCES RegionalCenter(id)
 );
 
 CREATE TABLE AdmissionDegree(
@@ -68,7 +75,7 @@ CREATE TABLE Employee(
     secondLastName VARCHAR(15) NOT NULL,
     telephoneNumber VARCHAR(12) NOT NULL,
     personalEmail VARCHAR(30) NOT NULL,
-    password VARCHAR (30) NOT NULL,
+    password VARCHAR (60) NOT NULL,
     address VARCHAR(30) NOT NULL,
     dateOfBirth DATE
 );
@@ -107,14 +114,25 @@ CREATE TABLE Administrative(
 
 
 INSERT INTO RegionalCenter(description, location) VALUES
-    ('Ciudad Universitaria (CU)','Tegucigalpa, Francisco Morazán'),
-    ('Centro Universitario Regional del Norte (CURN)','San Pedro Sula, Cortés'),
-    ('Centro Universitario Regional del Litoral Atlántico (CURLA)','La Ceiba, Atlántida'),
-    ('Centro Universitario Regional del Litoral Pacífico (CURLP)','Choluteca, Choluteca'),
-    ('Centro Universitario Regional del Centro (CURC)','Comayagua, Comayagua'),
-    ('Centro Universitario Regional de Occidente (CUROC)','Santa Rosa de Copán, Copán'),
-    ('Centro Tecnológico Universitario de Danlí (CTU)','Danlí, El Paraíso'),
-    ('Centro Universitario Regional de Olancho (CURO)','Juticalpa, Olancho')
+    ('Centro Universitario Regional del Centro', 'Comayagua'),
+    ('Centro Universitario Regional del Litoral Atlántico', 'La Ceiba, Atlántida'),
+    ('Centro Universitario Regional del Litoral Pacífico', 'Choluteca'),
+    ('Centro Universitario Regional Nor-Oriental', 'Juticalpa, Olancho'),
+    ('Centro Universitario Regional del Occidente', 'Santa Rosa de Copán'),
+    ('CRAED Choluteca', 'Choluteca'),
+    ('CRAED Juticalpa', 'Juticalpa, Olancho'),
+    ('CRAED La Entrada', 'La Entrada, Copán'),
+    ('CRAED Paraíso', 'El Paraíso'),
+    ('CRAED Progreso', 'El Progreso, Yoro'),
+    ('CRAED Siguatepeque', 'Siguatepeque, Comayagua'),
+    ('CRAED Tegucigalpa', 'Tegucigalpa'),
+    ('CRAED Tocoa', 'Tocoa, Colón'),
+    ('Instituto Tecnológico Superior de Tela - UNAH', 'Tegucigalpa'),
+    ('UNAH Tecnológico Danlí', 'Danlí, El Paraíso'),
+    ('UNAH Telecentro Marcala', 'Marcala, La Paz'),
+    ('UNAH Valle de Sula', 'San Pedro Sula, Cortés'),
+    ('UNAH Tecnológico Aguan', 'Olanchito, Yoro'),
+    ('Ciudad Universitaria', 'Tegucigalpa')
 ;
 INSERT INTO AdministrativeType(description) VALUES
     ('SEDP'),
@@ -247,3 +265,214 @@ INSERT INTO AdmissionDegree (description, degree, admissionTest, passingGrade) V
     ('PCCNS para Enfermería', 29, 2, 400),
     ('PCCNS para Microbiología', 30, 2, 400)
 ;
+
+INSERT INTO `RegionalCenterDegree` (degree, regionalCenter) VALUES
+    (1,17),
+    (1,19),
+    (2,19),
+    (2,6),
+    (2,7),
+    (2,8),
+    (2,9),
+    (2,10),
+    (2,11),
+    (2,12),
+    (2,13),
+    (3,17),
+    (3,19),
+    (4,17),
+    (4,19),
+    (5,17),
+    (5,19),
+    (6,19),
+    (7,19),
+    (8,17),
+    (8,19),
+    (9,19),
+    (10,17),
+    (10,19),
+    (11,19),
+    (12,19),
+    (13,19),
+    (14,19),
+    (14,5),
+    (14,15),
+    (14,1),
+    (15,17),
+    (15,19),
+    (16,17),
+    (16,19),
+    (17,17),
+    (17,19),
+    (18,17),
+    (18,19),
+    (19,17),
+    (19,19),
+    (19,5),
+    (19,3),
+    (19,1),
+    (20,19),
+    (21,19),
+    (21,17),
+    (22,19),
+    (23,19),
+    (24,19),
+    (25,19),
+    (25,17),
+    (26,19),
+    (26,17),
+    (27,19),
+    (28,19),
+    (29,19),
+    (29,17),
+    (29,2),
+    (29,4),
+    (29,15),
+    (30,19),
+    (31,19),
+    (32,19),
+    (32,17),
+    (32,5),
+    (32,1),
+    (32,2),
+    (32,3),
+    (32,15),
+    (32,4),
+    (33,19),
+    (34,19),
+    (35,19),
+    (35,17),
+    (36,19),
+    (37,19),
+    (38,19),
+    (38,4),
+    (39,19),
+    (39,17),
+    (39,15),
+    (39,4),
+    (39,18),
+    (39,14),
+    (40,19),
+    (41,2),
+    (42,2),
+    (43,5),
+    (43,15),
+    (43,1),
+    (43,3),
+    (43,4),
+    (43,18),
+    (44,3),
+    (45,2),
+    (46,5),
+    (46,1),
+    (46,3),
+    (46,4),
+    (47,6),
+    (47,7),
+    (47,8),
+    (47,9),
+    (47,10),
+    (47,11),
+    (47,12),
+    (47,13),
+    (47,6),
+    (48,2),
+    (49,19),
+    (50,17),
+    (51,19)
+;
+
+DELIMITER //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 5/11/24
+
+    Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante
+**/
+CREATE PROCEDURE insertApplicant(
+    IN p_id VARCHAR(15),
+    IN p_firstName VARCHAR(15),
+    IN p_secondName VARCHAR(15),
+    IN p_firstLastName VARCHAR(15),
+    IN p_secondLastName VARCHAR(15),
+    IN p_pathSchoolCertificate VARCHAR(30),
+    IN p_telephoneNumber VARCHAR(12),
+    IN p_personalEmail VARCHAR(30),
+    IN p_firstDegreeProgramChoice SMALLINT,
+    IN p_secondDegreeProgramChoice SMALLINT,
+    IN p_regionalCenterChoice TINYINT
+)
+BEGIN
+    -- Verificar si el ID ya existe
+    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
+        -- Si existe, solo se crea la aplicacion
+        INSERT INTO Application (
+            idApplicant,
+            firstDegreeProgramChoice,
+            secondDegreeProgramChoice,
+            regionalCenterChoice
+        ) VALUES (
+            p_id,
+            p_firstDegreeProgramChoice,
+            p_secondDegreeProgramChoice,
+            p_regionalCenterChoice
+        );
+    ELSE
+        -- Si no existe, hacer la inserción
+        INSERT INTO Applicant (
+            id,
+            firstName,
+            secondName,
+            firstLastName,
+            secondLastName,
+            pathSchoolCertificate,
+            telephoneNumber,
+            personalEmail
+        ) VALUES (
+            p_id,
+            p_firstName,
+            p_secondName,
+            p_firstLastName,
+            p_secondLastName,
+            p_pathSchoolCertificate,
+            p_telephoneNumber,
+            p_personalEmail
+        );
+
+        -- Insertar en la tabla Application
+        INSERT INTO Application (
+            idApplicant,
+            firstDegreeProgramChoice,
+            secondDegreeProgramChoice,
+            regionalCenterChoice
+        ) VALUES (
+            p_id,
+            p_firstDegreeProgramChoice,
+            p_secondDegreeProgramChoice,
+            p_regionalCenterChoice
+        );
+    END IF;
+END //
+
+/**
+    author: wilmer.morales@unah.hn
+    version: 0.1.0
+    date: 5/11/24
+
+    Procedimiento almacenado para obtener las carreras que pertenecen a un centro regional
+**/
+CREATE PROCEDURE GetDegreeProgramsByRegionalCenter (IN regionalCenterId INT)
+BEGIN
+    SELECT `DegreeProgram`.id AS degreeProgramId
+    FROM `RegionalCenterDegree`
+    INNER JOIN `DegreeProgram`
+    ON `RegionalCenterDegree`.degree = `DegreeProgram`.id
+    INNER JOIN `RegionalCenter`
+    ON `RegionalCenterDegree`.regionalCenter = `RegionalCenter`.id
+    WHERE `RegionalCenter`.id = regionalCenterId;
+END //
+
+DELIMITER ;
+

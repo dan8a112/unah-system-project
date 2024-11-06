@@ -5,6 +5,11 @@
             $this->mysqli = new mysqli($server, $user, $pass, $dbName);
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.2.0
+         * date: 5/11/24
+         */
         public function getDegrees() : array {
 
             $degrees = [];
@@ -13,13 +18,21 @@
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
-                $degrees[] = $row["description"];
+                $degrees[] = [
+                    "idCareer" => $row["id"],
+                    "description"=>$row["description"]
+                ] ;
             }
 
             return $degrees;
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 4/11/24
+         */
         public function getProfessorTypes() : array {
 
             $professorTypes = [];
@@ -35,16 +48,50 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 4/11/24
+         */
         public function getCenters() : array {
 
             $centers = [];
-            $query = 'SELECT description, location FROM RegionalCenter';
+            $query = 'SELECT * FROM RegionalCenter';
 
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
-                $centers[] = $row["description"];
+                $centers[] = [
+                    "idRegionalCenter" => $row["id"],
+                    "description"=>$row["description"]
+                ];
             }
+
+            return $centers;
+            
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.2.0
+         * date: 5/11/24
+         */
+        public function getDegreesInCenter() : array {
+
+            $centers = $this->getCenters(); 
+            $query = "CALL GetDegreeProgramsByRegionalCenter(?);";
+
+            foreach($centers as &$center){
+                $careers = [];
+                $result = $this->mysqli->execute_query($query, [$center["idRegionalCenter"]]);
+                foreach($result as $row){
+                    $careers[] = $row["degreeProgramId"];
+                }
+                
+                $center["careers"] = $careers;
+    
+            }
+            
 
             return $centers;
             
