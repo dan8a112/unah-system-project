@@ -1,37 +1,78 @@
-export const fetchData = async (url) => {
+/**
+ * 
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 6/11/24
+ * 
+ **/
+import { fetchData } from '../modules/Fetch.js'; 
+import { Selects } from '../modules/Selects.js'; 
+
+const url = 'http://localhost:3000/api/get/infoAdmission'; 
+let regionalCentersData = [];
+let careersData = [];
+
+export const loadSelectOptions = async (selectFirstCareer, selectSecondCareer, selectRegionalCenters) => {
   try {
-    const response = await fetch(url);
+    const data = await fetchData(url);
+    careersData = data.data.careers;
+    regionalCentersData = data.data.regionalCenters;
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
+    if (careersData && regionalCentersData) {
+      Selects.renderSelect(selectRegionalCenters, regionalCentersData, 'idRegionalCenter', 'description');
+      Selects.renderSelect(selectFirstCareer, careersData, 'idCareer', 'description');
+      Selects.renderSelect(selectSecondCareer, careersData, 'idCareer', 'description');
+
+      // Desactiva los selects de carrera hasta que se seleccione un centro regional
+      selectFirstCareer.disabled = true;
+      selectSecondCareer.disabled = true;
+    } else {
+      console.error('No se pudieron cargar las opciones.');
     }
-
-    const data = await response.json();
-
-    if (data && data.data && data.data.careers) {
-      return data.data.careers; 
-    }
-
-    throw new Error('Datos no encontrados');
   } catch (error) {
-    console.error('Error fetching data:', error);
-    return null;
+    console.error('Error al cargar las opciones:', error);
   }
 };
 
-export const populateSelect = (selectElement, careers) => {
-  selectElement.innerHTML = '';
+export const enableCareerSelects = (selectFirstCareer, selectSecondCareer, selectRegionalCenters) => {
+  const selectedRegionalCenterId = parseInt(selectRegionalCenters.value);
 
-  const defaultOption = document.createElement('option');
-  defaultOption.textContent = 'Seleccione una carrera';
-  defaultOption.disabled = true;
-  defaultOption.selected = true;
-  selectElement.appendChild(defaultOption);
+  const isRegionalCenterSelected = !isNaN(selectedRegionalCenterId);
+  selectFirstCareer.disabled = !isRegionalCenterSelected;
+  selectSecondCareer.disabled = !isRegionalCenterSelected;
 
-  careers.forEach(career => {
-    const option = document.createElement('option');
-    option.value = career.idCareer; 
-    option.textContent = career.description;
-    selectElement.appendChild(option);
-  });
+  if (isRegionalCenterSelected) {
+    const selectedCenter = regionalCentersData.find(
+      center => center.idRegionalCenter === selectedRegionalCenterId
+    );
+
+    if (selectedCenter) {
+      // Filtra las carreras usando `classifyCareers` y actualiza las opciones
+      const filteredCareers = classifyCareers(selectedCenter, careersData);
+      
+      // Limpia las opciones actuales de los selects de carrera
+      selectFirstCareer.innerHTML = '';
+      selectSecondCareer.innerHTML = '';
+
+      // Agrega la opción por defecto al inicio de los selects de carrera
+      const defaultOption = document.createElement('option');
+      defaultOption.text = 'Seleccione la carrera';
+      defaultOption.value = '';
+      selectFirstCareer.appendChild(defaultOption.cloneNode(true));
+      selectSecondCareer.appendChild(defaultOption.cloneNode(true));
+
+      // Rellena los selects de carrera con las carreras filtradas
+      Selects.renderSelect(selectFirstCareer, filteredCareers, 'idCareer', 'description');
+      Selects.renderSelect(selectSecondCareer, filteredCareers, 'idCareer', 'description');
+    }
+  }
 };
+
+
+
+ /*
+ * Esta función filtra las carreras que están disponibles en un centro regional específico
+ */
+ function classifyCareers(centerData, careersList) {
+    return careersList.filter(career => centerData.careers.includes(career.idCareer));
+}

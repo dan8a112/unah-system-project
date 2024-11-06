@@ -1,26 +1,20 @@
-import { fetchData, populateSelect } from './action.js';
+/**
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 6/11/24
+ */
+import { loadSelectOptions, enableCareerSelects } from './action.js';
 
-const url = 'http://localhost:3000/api/get/infoAdmission'; 
-
-// Seleccionamos los elementos select donde se llenarán las opciones
 const selectFirstCareer = document.getElementById('firstCareer');
 const selectSecondCareer = document.getElementById('secondCareer');
-const selectCampus = document.getElementById('campus');
+const selectRegionalCenters = document.getElementById('regionalCenters');
 
-const loadSelectOptions = async () => {
-  try {
-    const careers = await fetchData(url);
+// Llamamos a la función para cargar las opciones cuando la página esté lista
+document.addEventListener('DOMContentLoaded', () => {
+  loadSelectOptions(selectFirstCareer, selectSecondCareer, selectRegionalCenters);
+});
 
-    if (careers) {
-      populateSelect(selectFirstCareer, careers);
-      populateSelect(selectSecondCareer, careers);  
-      populateSelect(selectCampus, careers);
-    } else {
-      console.error('No se pudieron cargar las opciones.');
-    }
-  } catch (error) {
-    console.error('Error al cargar las opciones:', error);
-  }
-};
-
-document.addEventListener('DOMContentLoaded', loadSelectOptions);
+// Evento para habilitar los selectores de carrera cuando se elige un centro regional
+selectRegionalCenters.addEventListener('change', () => {
+  enableCareerSelects(selectFirstCareer, selectSecondCareer, selectRegionalCenters);
+});
