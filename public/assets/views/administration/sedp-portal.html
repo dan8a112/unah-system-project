@@ -57,11 +57,11 @@
                 <th scope="col">#</th>
                 <th scope="col">Usuario</th>
                 <th scope="col">Roles</th>
-                <th scope="col">Fecha de contratacion</th>
+                <th scope="col">DNI</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="">
               <tr style="vertical-align:middle;">
                 <th scope="row">1</th>
                 <td>
@@ -74,46 +74,14 @@
                     </div>
                 </td>
                 <td >
-                    <div class="d-flex gap-3">
+
                         <div class="px-1" style="color: #FFAA34; border-radius: 5px; border: #FFAA34 1px solid;">
                             Docente
                         </div>
-                        <div class="px-1" style="color: #3472F8; border-radius: 5px; border: #3472F8 1px solid;">
-                            Jefe
-                        </div>
-                        <div class="px-1" style="color: #00C500; border-radius: 5px; border: #00C500 1px solid;">
-                            Coordinador
-                        </div>
-                    </div>
+
                 </td>
                 <td>
-                    23/10/2024
-                </td>
-                <td>
-                    <img class="me-3" src="../../img/icons/delete.svg" alt="">
-                    <img src="../../img/icons/edit.svg" alt="">
-                </td>
-              </tr>
-              <tr style="vertical-align:middle;">
-                <th scope="row">1</th>
-                <td>
-                    <div class="d-flex align-items-center">
-                        <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
-                        <div>
-                            <p class="mb-0 fw-bold">Daniel Alexander Ochoa</p>
-                            <p class="mb-0">dochoao@unah.hn</p>
-                        </div>
-                    </div>
-                </td>
-                <td >
-                    <div class="d-flex gap-3">
-                        <div class="px-1" style="color: #FFAA34; border-radius: 5px; border: #FFAA34 1px solid;">
-                            Docente
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    23/10/2024
+                    0601-2003-20145
                 </td>
                 <td>
                     <img class="me-3" src="../../img/icons/delete.svg" alt="">
@@ -136,37 +104,52 @@
               <form class="row g-3">
                 <div class="row my-2">
                   <div class="col">
-                  <label for="formFile" class="form-label">Primer Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre">
+                  <label class="form-label">Primer Nombre</label>
+                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName">
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre">
+                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName">
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido">
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName">
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido">
+                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName">
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
-                  <label class="form-label">Correo Institucional</label>
-                  <input type="email" class="form-control" placeholder="e.g. empleado@unah.hn" aria-label="Correo Institucional">
+                    <label class="form-label">Numero de telefono</label>
+                    <input type="number" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber">
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Fecha de nacimiento</label>
+                    <input type="date" class="form-control" aria-label="Numero de telefono" name="birthDate">
                   </div>
                 </div>
+                <div class="row my-2">
+                  <div class="col">
+                    <label class="form-label">Direccion</label>
+                      <input type="text" class="form-control" placeholder="e.g. Tegucigalpa, Francisco Mora..." aria-label="Direccion" name="address">
+                    </div>
+                </div>
                 <div>
-                  <label for="formFile" class="form-label">Foto de perfil del docente</label>
-                  <input class="form-control" type="file" id="formFile">
+                  <label class="form-label">Tipo de profesor</label>
+                  <select class="form-select" aria-label="Default select example" name="professorTypeId" id="professorTypeSelect">
+                    <option selected>CU</option>
+                    <option value="1">CURLA</option>
+                    <option value="2">VS</option>
+                    <option value="3">Three</option>
+                  </select>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Centro regional</label>
-                  <select class="form-select" aria-label="Default select example">
+                  <label class="form-label">Departamento</label>
+                  <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelect">
                     <option selected>CU</option>
                     <option value="1">CURLA</option>
                     <option value="2">VS</option>
