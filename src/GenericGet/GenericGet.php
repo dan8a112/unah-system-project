@@ -42,8 +42,8 @@
 
             foreach($result as $row){
                 $professorTypes[] = [
-                    "professorTypeId"=>$row["id"],
-                    "name"=>$row["description"]
+                    "professorTypeId" => $row["id"],
+                    "name" => $row["description"]
                 ];
             }
 
