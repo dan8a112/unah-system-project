@@ -2,11 +2,9 @@
 
     header("Content-Type: application/json");
 
+    include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Helper/Validator.php";
     include_once "../../../../src/Application/Application.php";
-
-    //Data Access Object
-    $dao = new ApplicationDAO("localhost", "is", "is", "ProyectoIS");
 
     if(
         isset($_POST["identityNumber"]) &&
@@ -28,7 +26,7 @@
         $regionalCenterChoice= $_POST["idRegionalCenterChoice"];
 
         //Data Access Object
-        $dao = new ApplicationDAO("localhost", "is", "is", "ProyectoIS");
+        $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
         $status = $dao->setApplication($identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber, $personalEmail, 
             $firstDegreeProgramChoice, $secondDegreeProgramChoice, $regionalCenterChoice);
 
@@ -45,6 +43,7 @@
         ];
     }
    
+    $dao->closeConnection();
     
     echo json_encode($json);
 
