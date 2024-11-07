@@ -2,11 +2,9 @@
 
     header("Content-Type: application/json");
 
+    include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Helper/Validator.php";
     include_once "../../../../src/Login/Login.php";
-
-    //Data Access Object
-    $dao = new LoginDAO("localhost", "is", "is", "ProyectoIS");
 
     if(
         isset($_POST["mail"]) &&
@@ -17,7 +15,7 @@
         $password= $_POST['password'] ?? '';
 
         //Data Access Object
-        $dao = new LoginDAO("localhost", "is", "is", "ProyectoIS");
+        $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
         $status = $dao->loginSEDP($mail, $password);
 
         $json = [
@@ -33,6 +31,7 @@
         ];
     }
    
+    $dao->closeConnection();
     
     echo json_encode($json);
 

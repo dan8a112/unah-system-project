@@ -56,6 +56,10 @@
             
         }
 
+        // Método para cerrar la conexión
+        public function closeConnection() {
+            $this->mysqli->close();
+        }
         
     }
 ?>

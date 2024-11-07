@@ -2,10 +2,11 @@
 
     header("Content-Type: application/json");
 
+    include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Professor/Professor.php";
 
     //Data Access Object
-    $dao = new ProfessorDAO("localhost", "is", "is", "ProyectoIS");
+    $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
     $professors = $dao->getProfessors();
     $amount = $dao->getAmountProfessors();
 
@@ -18,6 +19,8 @@
         ]
             
     ];
+
+    $dao->closeConnection();
     
     echo json_encode($json);
 

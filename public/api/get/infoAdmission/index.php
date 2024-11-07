@@ -2,10 +2,11 @@
 
     header("Content-Type: application/json");
 
+    include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/GenericGet/GenericGet.php";
 
     //Data Access Object
-    $dao = new GenericGetDAO("localhost", "is", "is", "ProyectoIS");
+    $dao = new GenericGetDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
     $degrees = $dao->getDegrees();
     $centers = $dao->getDegreesInCenter();
 
@@ -18,6 +19,8 @@
         ]
             
     ];
+
+    $dao->closeConnection();
     
     echo json_encode($json);
 
