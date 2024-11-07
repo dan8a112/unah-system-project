@@ -47,8 +47,7 @@ CREATE TABLE Applicant(
     secondLastName VARCHAR(15) NOT NULL,
     pathSchoolCertificate VARCHAR(30),
     telephoneNumber VARCHAR(12),
-    personalEmail VARCHAR(30)
-    
+    personalEmail VARCHAR(30) 
 );
 
 CREATE TABLE Application(
@@ -412,6 +411,8 @@ DELIMITER //
 
     Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante
 **/
+DELIMITER //
+
 CREATE PROCEDURE insertApplicant(
     IN p_id VARCHAR(15),
     IN p_firstName VARCHAR(15),
@@ -426,9 +427,20 @@ CREATE PROCEDURE insertApplicant(
     IN p_regionalCenterChoice TINYINT
 )
 BEGIN
-    -- Verificar si el ID ya existe
+    -- Verificar si el ID ya existe en la tabla Applicant
     IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
-        -- Si existe, solo se crea la aplicacion
+        -- Si existe, actualizar los datos del solicitante y hacer insert de la aplicacion
+        UPDATE Applicant
+        SET 
+            firstName = p_firstName,
+            secondName = p_secondName,
+            firstLastName = p_firstLastName,
+            secondLastName = p_secondLastName,
+            pathSchoolCertificate = p_pathSchoolCertificate,
+            telephoneNumber = p_telephoneNumber,
+            personalEmail = p_personalEmail
+        WHERE id = p_id;
+
         INSERT INTO Application (
             idApplicant,
             firstDegreeProgramChoice,
@@ -440,8 +452,10 @@ BEGIN
             p_secondDegreeProgramChoice,
             p_regionalCenterChoice
         );
+
+
     ELSE
-        -- Si no existe, hacer la inserción
+        -- Si no existe el ID, insertar un nuevo solicitante en Applicant
         INSERT INTO Applicant (
             id,
             firstName,

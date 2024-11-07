@@ -3,7 +3,6 @@
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Helper/Validator.php";
     include_once "../../../../src/Application/Application.php";
 
     if(
@@ -27,12 +26,12 @@
 
         //Data Access Object
         $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-        $status = $dao->setApplication($identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber, $personalEmail, 
+        $result = $dao->setApplication($identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber, $personalEmail, 
             $firstDegreeProgramChoice, $secondDegreeProgramChoice, $regionalCenterChoice);
 
         $json = [
-            "message"=> $status ? "Se proceso la inscripción de admisión satisfactoriamente" : "Error al hacer la inscripción de admisión",
-            "status"=> $status,                
+            "message"=> $result["message"],
+            "status"=> $result["status"],                
         ];
 
     }else{

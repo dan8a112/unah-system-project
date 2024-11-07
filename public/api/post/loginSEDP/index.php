@@ -3,7 +3,6 @@
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Helper/Validator.php";
     include_once "../../../../src/Login/Login.php";
 
     if(
