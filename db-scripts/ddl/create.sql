@@ -429,7 +429,7 @@ CREATE PROCEDURE insertApplicant(
 BEGIN
     -- Verificar si el ID ya existe en la tabla Applicant
     IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
-        -- Si existe, actualizar los datos del solicitante y hacer insert de la aplicacion
+        -- Si existe, actualizar los datos del solicitante y hacer la nueva aplicacion
         UPDATE Applicant
         SET 
             firstName = p_firstName,
@@ -440,7 +440,7 @@ BEGIN
             telephoneNumber = p_telephoneNumber,
             personalEmail = p_personalEmail
         WHERE id = p_id;
-
+        
         INSERT INTO Application (
             idApplicant,
             firstDegreeProgramChoice,
@@ -452,7 +452,6 @@ BEGIN
             p_secondDegreeProgramChoice,
             p_regionalCenterChoice
         );
-
 
     ELSE
         -- Si no existe el ID, insertar un nuevo solicitante en Applicant
