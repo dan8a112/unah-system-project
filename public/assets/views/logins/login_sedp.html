@@ -50,21 +50,23 @@
             
             <div class="col-lg-6 d-flex align-items-center justify-content-center">
                 <div class="card login-card p-4">
-                    <h4 class="card-title mb-1">Iniciar Sesión - SEDP</h4>
+                    <h4 class="card-title mb-2">Iniciar Sesión - SEDP</h4>
                     <p class="card-subtitle mb-3 text-muted">Servicios de administracion de docentes</p>
-                    <form>
-                        <div class="mb-3">
-                            <input type="email" class="form-control" id="email" placeholder="Cuenta" required>
+                    <form id="loginForm">
+                        <div class="mb-4">
+                            <input type="email" class="form-control" id="email" placeholder="Correo" name="mail" required>
                         </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control" id="password" placeholder="Clave" required>
+                        <div class="mb-4">
+                            <input type="password" class="form-control" id="password" placeholder="Contraseña" name="password" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100 mb-2">Iniciar Sesión</button>
                         <a href="#" class="text-decoration-none text-primary d-block text-end">¿Olvidaste tu contraseña?</a>
+                        <section id="errorSection"></section>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="../../js/loginSEDP/main.js" type="module"></script>
 </body>
 </html>
