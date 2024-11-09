@@ -1,6 +1,6 @@
 import {Selects} from "../modules/Selects.js"
 import {Modal} from "../modules/Modal.js"
-import {fetchData} from "../modules/Fetch.js"
+import {fetchData} from "../modules/HttpRequest.js"
 
 class Action{
 
@@ -128,8 +128,6 @@ class Action{
         
         const formData = new FormData(form);
 
-
-        
     }
 
 

@@ -5,7 +5,7 @@
  * date: 6/11/24
  * 
  **/
-import { fetchData } from '../modules/Fetch.js'; 
+import { HttpRequest } from '../modules/HttpRequest.js'; 
 import { Selects } from '../modules/Selects.js'; 
 
 const url = 'http://localhost:3000/api/get/infoAdmission'; 
@@ -14,7 +14,7 @@ let careersData = [];
 
 export const loadSelectOptions = async (selectFirstCareer, selectSecondCareer, selectRegionalCenters) => {
   try {
-    const data = await fetchData(url);
+    const data = await HttpRequest.get(url);
     careersData = data.data.careers;
     regionalCentersData = data.data.regionalCenters;
 
@@ -68,11 +68,15 @@ export const enableCareerSelects = (selectFirstCareer, selectSecondCareer, selec
   }
 };
 
-
-
  /*
  * Esta función filtra las carreras que están disponibles en un centro regional específico
  */
  function classifyCareers(centerData, careersList) {
     return careersList.filter(career => centerData.careers.includes(career.idCareer));
 }
+
+
+/**
+ * Esta funcion manda el formulario
+ */
+

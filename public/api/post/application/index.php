@@ -5,6 +5,8 @@
     include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Application/Application.php";
 
+    $dao = null;
+
     if(
         isset($_POST["identityNumber"]) &&
         isset($_POST["idFirstDegreeProgramChoice"]) &&
@@ -42,7 +44,9 @@
         ];
     }
    
-    $dao->closeConnection();
+    if ($dao) {
+        $dao->closeConnection();
+    }
     
     echo json_encode($json);
 
