@@ -38,7 +38,7 @@ h1{
     width: 400px;
     background: #fff;
     border-radius: 6px;
-    border: solid 1px greenyellow;
+    border: solid 1px #00C500;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -66,7 +66,7 @@ h1{
     width: 90%;
     margin-top: 10%px;
     padding: 10px 0;
-    background: #6fd649;
+    background: #00C500;
     color: #fff;
     border: 0;
     outline: none;

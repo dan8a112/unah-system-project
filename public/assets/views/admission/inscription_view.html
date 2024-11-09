@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="afcastillof@unah.hn">
-    <meta name="date" content="01/11/2024">
-    <meta name="version" content="0.1.1">
+    <meta name="date" content="09/11/2024">
+    <meta name="version" content="0.1.2">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/admission/inscription.css">
     <title>Document</title>
@@ -106,7 +106,13 @@
       <img src="../../img/icons/check.svg" alt="">
       <h2>Felicidades!</h2>
       <p>Tu inscripcion fue realizada exitosamente, quedate pendiente para saber que dia podras realizar el examen</p>
-      <button type="button">OK</button>
+      <button type="button" id="buttonOk1">OK</button>
+    </div>
+    <div class="popup" id="popupError" style="border: solid 1px #EC0000;">
+      <img src="../../img/icons/error.svg" alt="">
+      <h2>Error!</h2>
+      <p id="message"></p>
+      <button type="button" id="buttonOk2">OK</button>
     </div>
     
 
