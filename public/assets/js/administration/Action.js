@@ -1,6 +1,6 @@
 import {Selects} from "../modules/Selects.js"
 import {Modal} from "../modules/Modal.js"
-import {fetchData} from "../modules/HttpRequest.js"
+import {HttpRequest} from "../modules/HttpRequest.js"
 
 class Action{
 
@@ -136,12 +136,12 @@ class Action{
         let data = {}
 
         //Se hace la peticion de los tipos de profesores
-        const responseTypes = await fetchData("http://localhost:3000/api/get/professorTypes");
+        const responseTypes = await HttpRequest.get("http://localhost:3000/api/get/professorTypes");
         
         //Se agregan a data
         data.professorTypes = responseTypes.professorTypes;
 
-        const responseDeparments = await fetchData("http://localhost:3000/api/get/departments");
+        const responseDeparments = await HttpRequest.get("http://localhost:3000/api/get/departments");
 
         data.departments = responseDeparments.departments;
 
