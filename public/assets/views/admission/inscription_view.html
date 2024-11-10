@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="afcastillof@unah.hn">
+    <meta name="date" content="09/11/2024">
+    <meta name="version" content="0.1.2">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/admission/inscription.css">
     <title>Document</title>
@@ -44,63 +47,77 @@
             <h1>Inscripción de admisión</h1>
             <h6>A continuación solicitaremos tus datos personales, para inscribirte en el examen de admisión. Por favor, asegurate que todos tus datos sean correctos.</h6>
         </section>
-        <section class="form">
-            <h4>Datos Generales</h4>
-            <div class="line"></div>
-            <section class="input-container">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Primer nombre">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Segundo Nombre">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Primer apellido">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Segundo apellido">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Numero de indentidad">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Fecha de nacimiento">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Correo electronico">
-                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Telefono">
-            </section>
-        </section>
-        <section class="form">
-            <h4>Datos de carrera</h4>
-            <div class="line"></div>
-            <section class="input-container">
-                <div class="select-control">
-                    <label for="exampleFormControlInput1" class="form-label">Carrera principal</label>
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Administracion de empresas</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-                <div class="select-control">
-                    <label for="exampleFormControlInput1" class="form-label">Carrera secundaria</label>
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Administracion de empresas</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-                <div class="select-control">
-                    <label for="exampleFormControlInput1" class="form-label">Campus</label>
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Ciudad universitaria</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-            </section>
-        </section>
-        <section class="form">
-            <h4>Estudios previos</h4>
-            <div class="line"></div>
-            <section class="input-container">
-                <div class="select-control">
-                    <label for="formFile" class="form-label">Subir certificacion de secundaria</label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-            </section>
-        </section>
+        <form id="form-inscription">
+          <section class="form">
+              <h4>Datos Generales</h4>
+              <div class="line"></div>
+              <section class="input-container">
+                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primer nombre">
+                  <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo Nombre">
+                  <input type="text" class="form-control" id="firstLastName" name="firstLastName" placeholder="Primer apellido">
+                  <input type="text" class="form-control" id="SecondLastName" name="SecondLastName" placeholder="Segundo apellido">
+                  <input type="text" class="form-control" id="identity" name="identityNumber" placeholder="Numero de indentidad">
+                  <input type="email" class="form-control" id="mail" name="personalEmail" placeholder="Correo electronico">
+                  <input type="text" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Telefono">
+              </section>
+          </section>
+          <section class="form">
+              <h4>Datos de carrera</h4>
+              <div class="line" style="margin-bottom: 25px;"></div>
+              <div class="select-control" style="width: 40%;">
+                <label for="exampleFormControlInput1" class="form-label">Campus</label>
+                <select class="form-select" aria-label="Default select example" id="regionalCenters" name="idRegionalCenterChoice">
+                  <option selected>Seleccione una opcion</option>
+                </select>
+              </div>
+              <section class="input-container">
+                  <div class="select-control">
+                      <label for="exampleFormControlInput1" class="form-label">Carrera principal</label>
+                      <select class="form-select" aria-label="Default select example" id="firstCareer" name="idFirstDegreeProgramChoice">
+                          <option selected>Seleccione una opcion</option>
+                      </select>
+                  </div>
+                  <div class="select-control">
+                      <label for="exampleFormControlInput1" class="form-label">Carrera secundaria</label>
+                      <select class="form-select" aria-label="Default select example" id="secondCareer" name="idSecondDegreeProgramChoice">
+                        <option selected>Seleccione una opcion</option>
+                      </select>
+                  </div>
+              </section>
+          </section>
+          <section class="form">
+              <h4>Estudios previos</h4>
+              <div class="line"></div>
+              <section class="input-container">
+                  <div class="select-control">
+                      <label for="formFile" class="form-label">Subir certificacion de secundaria</label>
+                      <input class="form-control" type="text" id="formFile" name="pathSchoolCertificate">
+                  </div>
+              </section>
+          </section>
+          <div class="d-flex justify-content-center">
+            <div class="d-grid gap-2" style="width: 40%;">
+              <button class="btn btn-primary mt-5" type="submit">Inscribirse</button>
+            </div>
+          </div>          
+        </form>
     </section>
+    <div class="popup" id="popup">
+      <img src="../../img/icons/check.svg" alt="">
+      <h2>Felicidades!</h2>
+      <p>Tu inscripcion fue realizada exitosamente, quedate pendiente para saber que dia podras realizar el examen</p>
+      <button type="button" id="buttonOk1">OK</button>
+    </div>
+    <div class="popup" id="popupError" style="border: solid 1px #EC0000;">
+      <img src="../../img/icons/error.svg" alt="">
+      <h2>Error!</h2>
+      <p id="message"></p>
+      <button type="button" id="buttonOk2">OK</button>
+    </div>
+    
+
+    <script src="../../js/admission/main.js" type="module"></script>
+    
+
 </body>
 </html>

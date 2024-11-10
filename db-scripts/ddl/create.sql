@@ -47,8 +47,7 @@ CREATE TABLE Applicant(
     secondLastName VARCHAR(15) NOT NULL,
     pathSchoolCertificate VARCHAR(30),
     telephoneNumber VARCHAR(12),
-    personalEmail VARCHAR(30)
-    
+    personalEmail VARCHAR(30) 
 );
 
 CREATE TABLE Application(
