@@ -7,29 +7,49 @@
     include_once "../../../../src/Session/Session.php";
 
     //crear sesion
-    $userSession = new UserSession();
+    $userSession = new SessionDAO();
 
-    //set valores
-    $mail= $_POST["mail"];
-    $password= $_POST['password'] ?? '';
-
-    
     if(isset($_SESSION['user'])){
         //There is an open session 
+        $json = [
+            "status"=> 0,
+            "message"=> "Usuario autenticado puede ir al HomePage"
+        ];
+
     }else if(
         isset($_POST["mail"]) &&
         isset($_POST["password"])){
-            //Data Access Object
+              
+        //set valores
+        $mail= $_POST["mail"];
+        $password= $_POST['password'] ?? '';
+
+        //Data Access Object
         $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
         $status = $dao->loginSEDP($mail, $password);
 
-        $json = [
-            "message"=> $status ? "Usuario con permisos par hacer login" : "No existe el usuario",
-            "status"=> $status,                
-        ];
+        if($status){
+            $userSession->setCurrentUser($mail);
+            $json = [
+                "message"=> "Usuario autenticado",
+                "status"=> 1,                
+            ];
+
+        }else{
+            $json = [
+                "message"=> "No existe el usuario",
+                "status"=> 2,                
+            ];
+        }
+
+        
 
     }else{
-        header("Location: ../assets/views/logins/login_sedp.html");
+        //There's no user autenticated go to login or an error occur
+        $json = [
+            "status"=> 3,
+            "message"=> "Error o no hay ningun usuario autenticado"
+        ];
     }
 
     $dao->closeConnection();

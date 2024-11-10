@@ -10,7 +10,7 @@ class Action {
         const data = await HttpRequest.submitForm(event,"http://localhost:3000/api/post/loginSEDP");
 
         //Se evalua la respuesta
-        if (data.status) {
+        if (data.status==1 | data.status==0) {
             //redirecciona a pagina principal
             window.location.href = "../administration/sedp-portal.html"
         
