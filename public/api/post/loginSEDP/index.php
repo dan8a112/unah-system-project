@@ -3,18 +3,23 @@
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Helper/Validator.php";
     include_once "../../../../src/Login/Login.php";
+    include_once "../../../../src/Session/Session.php";
 
-    if(
+    //crear sesion
+    $userSession = new UserSession();
+
+    //set valores
+    $mail= $_POST["mail"];
+    $password= $_POST['password'] ?? '';
+
+    
+    if(isset($_SESSION['user'])){
+        //There is an open session 
+    }else if(
         isset($_POST["mail"]) &&
-        isset($_POST["password"]) 
-    ){
-        //set valores
-        $mail= $_POST["mail"];
-        $password= $_POST['password'] ?? '';
-
-        //Data Access Object
+        isset($_POST["password"])){
+            //Data Access Object
         $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
         $status = $dao->loginSEDP($mail, $password);
 
@@ -24,13 +29,9 @@
         ];
 
     }else{
-
-        $json = [
-            "status"=> false,
-            "message"=> "No se recibió el parámetro correcto"
-        ];
+        header("Location: ../assets/views/logins/login_sedp.html");
     }
-   
+
     $dao->closeConnection();
     
     echo json_encode($json);
