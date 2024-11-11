@@ -44,8 +44,8 @@
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 5/11/24
+         * version: 0.3.0
+         * date: 11/11/24
          */
         public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, string $pathSchoolCertificate, string $telephoneNumber,
             string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
