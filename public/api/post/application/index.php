@@ -33,7 +33,8 @@
 
         $json = [
             "message"=> $result["message"],
-            "status"=> $result["status"]        
+            "status"=> $result["status"] ,
+            "exams"=> $result["exams"]       
         ];
 
     }else{
