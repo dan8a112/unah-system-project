@@ -78,6 +78,9 @@
 
                             if ($resultArray !== null) {
                                 return $resultArray;
+
+                                //INSERTAR EXAMENES
+                                
                             } else {
                                 return [
                                     "status" => false,

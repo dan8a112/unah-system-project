@@ -2,8 +2,6 @@
 
     header("Content-Type: application/json");
 
-    session_start();
-
     include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Login/Login.php";
 

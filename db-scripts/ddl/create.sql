@@ -442,6 +442,8 @@ INSERT INTO AcademicProcess(description) VALUES
 ;
 
 INSERT INTO AcademicEvent(process, startDate, finalDate) VALUES
+    (1,'2022-11-11 00:00:00', '2022-11-12 00:00:00'),
+    (1,'2023-11-11 00:00:00', '2023-11-12 00:00:00'),
     (1, '2024-11-11 00:00:00', '2024-11-12 00:00:00')
 ;
 
@@ -449,11 +451,90 @@ INSERT INTO Configuration(data) VALUES
     ('{"maxAttemtps":3}')
 ;
 
+INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName, pathSchoolCertificate, telephoneNumber, personalEmail) VALUES
+    ('0801-1990-01234', 'Juan', 'Carlos', 'Martínez', 'López', 'path1.pdf', '12345678', 'juan.carlos@gmail.com'),
+    ('0802-1995-05678', 'María', 'Alejandra', 'Gómez', 'Cruz', 'path2.pdf', '87654321', 'maria.gomez@gmail.com'),
+    ('0803-1993-04567', 'Carlos', 'Eduardo', 'Pérez', 'Mejía', 'path3.pdf', '12349876', 'carlos.perez@gmail.com'),
+    ('0804-1992-02345', 'Ana', 'Lucía', 'Rodríguez', 'Hernández', 'path4.pdf', '56781234', 'ana.rodriguez@gmail.com'),
+    ('0805-1994-08765', 'Luis', 'Fernando', 'Ramos', 'García', 'path5.pdf', '23456789', 'luis.ramos@gmail.com'),
+    ('0806-1991-03456', 'Sofía', 'María', 'Flores', 'Martínez', 'path6.pdf', '34567891', 'sofia.flores@gmail.com'),
+    ('0807-1997-09876', 'Miguel', 'Ángel', 'López', 'Ortega', 'path7.pdf', '45678912', 'miguel.lopez@gmail.com'),
+    ('0808-1996-05674', 'Sara', 'Isabel', 'Castro', 'Padilla', 'path8.pdf', '56789123', 'sara.castro@gmail.com'),
+    ('0809-1992-01234', 'Jorge', 'Manuel', 'Mendoza', 'Gutiérrez', 'path9.pdf', '67891234', 'jorge.mendoza@gmail.com'),
+    ('0810-1995-02345', 'Lucía', 'Andrea', 'Reyes', 'Castillo', 'path10.pdf', '78912345', 'lucia.reyes@gmail.com'),
+    ('0811-1991-04567', 'Daniel', 'Alberto', 'González', 'Díaz', 'path11.pdf', '89123456', 'daniel.gonzalez@gmail.com'),
+    ('0812-1998-03456', 'Paola', 'Montserrat', 'Sánchez', 'Morales', 'path12.pdf', '91234567', 'paola.sanchez@gmail.com'),
+    ('0813-1993-05678', 'Fernando', 'José', 'Ramírez', 'Velásquez', 'path13.pdf', '23451234', 'fernando.ramirez@gmail.com'),
+    ('0814-1997-01234', 'Alejandro', 'Luis', 'Navarro', 'Acosta', 'path14.pdf', '34562345', 'alejandro.navarro@gmail.com'),
+    ('0815-1995-08765', 'Mónica', 'Patricia', 'Campos', 'Ruiz', 'path15.pdf', '45673456', 'monica.campos@gmail.com'),
+    ('0816-1992-03456', 'Andrea', 'Carolina', 'Álvarez', 'Montes', 'path16.pdf', '56784567', 'andrea.alvarez@gmail.com'),
+    ('0817-1993-09876', 'Julio', 'César', 'Hernández', 'Espinoza', 'path17.pdf', '67895678', 'julio.hernandez@gmail.com'),
+    ('0818-1996-05678', 'Francisco', 'José', 'Lara', 'González', 'path18.pdf', '78906789', 'francisco.lara@gmail.com'),
+    ('0819-1995-02345', 'Sandra', 'Marcela', 'Velasco', 'Zelaya', 'path19.pdf', '89017890', 'sandra.velasco@gmail.com'),
+    ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
+;
+
+INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate) VALUES
+    ('0801-1990-01234', 12, 1, 19, '2022-11-11 01:00:00'),
+    ('0802-1995-05678', 4, 5, 17, '2022-11-11 01:00:00'),
+    ('0803-1993-04567', 9, 8, 19, '2022-11-11 01:00:00'),
+    ('0804-1992-02345', 38, 32, 4, '2022-11-11 01:00:00'),
+    ('0805-1994-08765', 39, 32, 15, '2022-11-11 01:00:00'),
+    ('0806-1991-03456', 34, 35, 19, '2022-11-11 01:00:00'),
+    ('0807-1997-09876', 41, 42, 2, '2022-11-11 01:00:00'),
+    ('0808-1996-05674', 14, 29, 15, '2022-11-11 01:00:00'),
+    ('0809-1992-01234', 12, 1, 19, '2022-11-11 01:00:00'),
+    ('0810-1995-02345', 25, 24, 19, '2022-11-11 01:00:00'),
+    ('0811-1991-04567', 38, 32, 4, '2022-11-11 01:00:00'),
+    ('0812-1998-03456', 14, 19, 1, '2022-11-11 01:00:00'),
+    ('0813-1993-05678', 21, 20, 19, '2022-11-11 01:00:00'),
+    ('0814-1997-01234', 14, 19, 1, '2022-11-11 01:00:00'),
+    ('0815-1995-08765', 43, 19, 3, '2022-11-11 01:00:00'),
+    ('0816-1992-03456', 45, 42, 2, '2023-11-11 01:00:00'),
+    ('0817-1993-09876', 36, 35, 19, '2023-11-11 01:00:00'),
+    ('0818-1996-05678', 38, 32, 4, '2023-11-11 01:00:00'),
+    ('0819-1995-02345', 21, 20, 19, '2023-11-11 01:00:00'),
+    ('0820-1991-06789', 14, 19, 1, '2023-11-11 01:00:00'),
+    ('0805-1994-08765', 39, 32, 15, '2023-11-11 01:00:00'),
+    ('0806-1991-03456', 34, 35, 19, '2023-11-11 01:00:00'),
+    ('0807-1997-09876', 41, 42, 2, '2023-11-11 01:00:00'),
+    ('0808-1996-05674', 14, 29, 15, '2023-11-11 01:00:00'),
+    ('0809-1992-01234', 12, 1, 19, '2023-11-11 01:00:00')
+;
+
+INSERT INTO Results(application, admissionTest, grade) VALUES
+    (1,1,750),
+    (2,1,1520),
+    (3,1,985),
+    (4,1,1547),
+    (5,1,365),
+    (6,1,658),
+    (7,1,968),
+    (8,1,1024),
+    (9,1,1369),
+    (10,1,785),
+    (11,1,369),
+    (12,1,852),
+    (13,1,148),
+    (14,1,985),
+    (15,1,658),
+    (16,1,789),
+    (17,1,852),
+    (18,1,1236),
+    (19,1,1458),
+    (20,1,1369),
+    (21,1,1245),
+    (22,1,569),
+    (23,1,785),
+    (24,1,1259),
+    (25,1,1026)
+;
+
 DELIMITER //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
+    version: 0.2.0
     date: 11/11/24
 
     Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante y el limite de aplicaciones que puede hacer

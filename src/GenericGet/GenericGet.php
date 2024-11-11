@@ -125,6 +125,69 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/11/24
+         */
+
+        public function getAllProcess(int $typeProcess) : array {
+
+            $process = [];
+            $query = 'SELECT id, startDate, finalDate FROM AcademicEvent WHERE process=?';
+
+            $result = $this->mysqli->execute_query($query, [$typeProcess]);
+
+            foreach($result as $row){
+                $process[] = [
+                    "id"=>$row["id"],
+                    "start"=>$row["startDate"],
+                    "end"=>$row["finalDate"]
+                ];
+            }
+
+            return $process;  
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/11/24
+         */
+
+        public function getProcess(int $id) {
+
+            $process = [];
+            $query = 'SELECT id, startDate, finalDate FROM AcademicEvent WHERE id=?';
+
+            $result = $this->mysqli->execute_query($query, [$id]);
+
+            foreach($result as $row){
+                $process = [
+                    "id"=>$row["id"],
+                    "start"=>$row["startDate"],
+                    "end"=>$row["finalDate"]
+                ];
+            }
+
+            return $process;  
+        }
+
+        public function getAmountApplicationsInProcess(int $id){
+
+            $amount=0;
+            $process = $this->getProcess($id);
+            $query = "SELECT COUNT(*) as amount FROM Application WHERE applicationDate BETWEEN STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s')";
+
+            $result = $this->mysqli->execute_query($query, [$process['start'], $process['end'] ]);
+
+            foreach($result as $row){
+                $amount = $row['amount'];
+            }
+
+            return $amount;  
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

@@ -1,4 +1,7 @@
 <?php
+
+    session_start();
+
     class LoginDAO{
 
         public function __construct(string $server, string $user, string $pass, string $dbName) {
