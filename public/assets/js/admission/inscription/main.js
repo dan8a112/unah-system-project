@@ -3,9 +3,9 @@
  * version: 0.1.2
  * date: 9/11/24
  */
-import { loadSelectOptions, enableCareerSelects } from './action.js';
-import { HttpRequest } from '../modules/HttpRequest.js';
-import { Popup } from '../modules/Popup.js';
+import { loadSelectOptions, enableCareerSelects } from './Action.js';
+import { HttpRequest } from '../../modules/HttpRequest.js';
+import { Popup } from '../../modules/Popup.js';
 
 const selectFirstCareer = document.getElementById('firstCareer');
 const selectSecondCareer = document.getElementById('secondCareer');
@@ -40,5 +40,5 @@ document.getElementById('form-inscription').addEventListener('submit', (event) =
 })
 });
 buttonOk1.addEventListener('click', () => Popup.close1(popup));
-buttonOk2.addEventListener('click', () => Popup.close(popup));
+buttonOk2.addEventListener('click', () => Popup.close(popupError));
 

@@ -5,8 +5,8 @@
  * date: 6/11/24
  * 
  **/
-import { HttpRequest } from '../modules/HttpRequest.js'; 
-import { Selects } from '../modules/Selects.js'; 
+import { HttpRequest } from '../../modules/HttpRequest.js'; 
+import { Selects } from '../../modules/Selects.js'; 
 
 const url = 'http://localhost:3000/api/get/infoAdmission'; 
 let regionalCentersData = [];
@@ -75,8 +75,4 @@ export const enableCareerSelects = (selectFirstCareer, selectSecondCareer, selec
     return careersList.filter(career => centerData.careers.includes(career.idCareer));
 }
 
-
-/**
- * Esta funcion manda el formulario
- */
 

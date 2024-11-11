@@ -1,0 +1,84 @@
+
+
+.timeline {
+    position: relative;
+    width: 100%;
+    padding-left: 25px; 
+  }
+  
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 60px; 
+    width: 1px;
+    background-color: #ffaa34;
+  }
+  
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+    padding-left: 80px; 
+  }
+  
+  .circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ffaa34; 
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    position: absolute;
+    left: 10px; 
+    outline: 10px solid #fbf9f4;
+  }
+  
+
+  .content-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 30px; 
+    width: 100%;
+  }
+  
+
+  .content {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    position: relative; 
+  }
+  
+  .content h3 {
+    margin: 0;
+    font-size: 1.1em;
+    color: #333;
+  }
+  
+  .content p {
+    margin: 5px 0 0;
+    font-size: 0.9em;
+    color: #a1a1a1;
+  }
+
+  .more-link {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 0.9em;
+    color: #C4C4C4; 
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
