@@ -51,6 +51,20 @@ CREATE TABLE Applicant(
     personalEmail VARCHAR(30) 
 );
 
+CREATE TABLE AcademicProcess(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(50)
+);
+
+CREATE TABLE AcademicEvent(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    process INT NOT NULL,
+    startDate DATETIME,
+    finalDate DATETIME,
+    active BOOLEAN,
+    CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
+);
+
 CREATE TABLE Application(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     idApplicant VARCHAR(15),
@@ -66,8 +80,6 @@ CREATE TABLE Application(
     CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id)
     
 );
-
-
 
 CREATE TABLE Employee(
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -112,21 +124,6 @@ CREATE TABLE Administrative(
     administrativeType TINYINT,
     CONSTRAINT fk_id_adm FOREIGN KEY (id) REFERENCES Employee(id),
     CONSTRAINT fk_administrativeType FOREIGN KEY (administrativeType) REFERENCES AdministrativeType(id)
-);
-
-CREATE TABLE AcademicProcess(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    description VARCHAR(50)
-);
-
-
-CREATE TABLE AcademicEvent(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    process INT NOT NULL,
-    startDate DATETIME,
-    finalDate DATETIME,
-    active BOOLEAN,
-    CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
 );
 
 CREATE TABLE Results(
@@ -445,10 +442,10 @@ INSERT INTO AcademicProcess(description) VALUES
     ('Ingreso de notas')
 ;
 
-INSERT INTO AcademicEvent(process, startDate, finalDate) VALUES
-    (1,'2022-11-11 00:00:00', '2022-11-12 00:00:00'),
-    (1,'2023-11-11 00:00:00', '2023-11-12 00:00:00'),
-    (1, '2024-11-11 00:00:00', '2024-11-12 00:00:00')
+INSERT INTO AcademicEvent(process, startDate, finalDate, active) VALUES
+    (1,'2022-11-11 00:00:00', '2022-11-12 00:00:00', false),
+    (1,'2023-11-11 00:00:00', '2023-11-12 00:00:00', false),
+    (1, '2024-11-12 00:00:00', '2024-11-14 00:00:00', true)
 ;
 
 INSERT INTO Configuration(data) VALUES
@@ -478,32 +475,32 @@ INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName,
     ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
-INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate) VALUES
-    ('0801-1990-01234', 12, 1, 19, '2022-11-11 01:00:00'),
-    ('0802-1995-05678', 4, 5, 17, '2022-11-11 01:00:00'),
-    ('0803-1993-04567', 9, 8, 19, '2022-11-11 01:00:00'),
-    ('0804-1992-02345', 38, 32, 4, '2022-11-11 01:00:00'),
-    ('0805-1994-08765', 39, 32, 15, '2022-11-11 01:00:00'),
-    ('0806-1991-03456', 34, 35, 19, '2022-11-11 01:00:00'),
-    ('0807-1997-09876', 41, 42, 2, '2022-11-11 01:00:00'),
-    ('0808-1996-05674', 14, 29, 15, '2022-11-11 01:00:00'),
-    ('0809-1992-01234', 12, 1, 19, '2022-11-11 01:00:00'),
-    ('0810-1995-02345', 25, 24, 19, '2022-11-11 01:00:00'),
-    ('0811-1991-04567', 38, 32, 4, '2022-11-11 01:00:00'),
-    ('0812-1998-03456', 14, 19, 1, '2022-11-11 01:00:00'),
-    ('0813-1993-05678', 21, 20, 19, '2022-11-11 01:00:00'),
-    ('0814-1997-01234', 14, 19, 1, '2022-11-11 01:00:00'),
-    ('0815-1995-08765', 43, 19, 3, '2022-11-11 01:00:00'),
-    ('0816-1992-03456', 45, 42, 2, '2023-11-11 01:00:00'),
-    ('0817-1993-09876', 36, 35, 19, '2023-11-11 01:00:00'),
-    ('0818-1996-05678', 38, 32, 4, '2023-11-11 01:00:00'),
-    ('0819-1995-02345', 21, 20, 19, '2023-11-11 01:00:00'),
-    ('0820-1991-06789', 14, 19, 1, '2023-11-11 01:00:00'),
-    ('0805-1994-08765', 39, 32, 15, '2023-11-11 01:00:00'),
-    ('0806-1991-03456', 34, 35, 19, '2023-11-11 01:00:00'),
-    ('0807-1997-09876', 41, 42, 2, '2023-11-11 01:00:00'),
-    ('0808-1996-05674', 14, 29, 15, '2023-11-11 01:00:00'),
-    ('0809-1992-01234', 12, 1, 19, '2023-11-11 01:00:00')
+INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent) VALUES
+    ('0801-1990-01234', 12, 1, 19, '2022-11-11 01:00:00', 1),
+    ('0802-1995-05678', 4, 5, 17, '2022-11-11 01:00:00', 1),
+    ('0803-1993-04567', 9, 8, 19, '2022-11-11 01:00:00', 1),
+    ('0804-1992-02345', 38, 32, 4, '2022-11-11 01:00:00', 1),
+    ('0805-1994-08765', 39, 32, 15, '2022-11-11 01:00:00', 1),
+    ('0806-1991-03456', 34, 35, 19, '2022-11-11 01:00:00', 1),
+    ('0807-1997-09876', 41, 42, 2, '2022-11-11 01:00:00', 1),
+    ('0808-1996-05674', 14, 29, 15, '2022-11-11 01:00:00', 1),
+    ('0809-1992-01234', 12, 1, 19, '2022-11-11 01:00:00', 1),
+    ('0810-1995-02345', 25, 24, 19, '2022-11-11 01:00:00', 1),
+    ('0811-1991-04567', 38, 32, 4, '2022-11-11 01:00:00', 1),
+    ('0812-1998-03456', 14, 19, 1, '2022-11-11 01:00:00', 1),
+    ('0813-1993-05678', 21, 20, 19, '2022-11-11 01:00:00', 1),
+    ('0814-1997-01234', 14, 19, 1, '2022-11-11 01:00:00', 1),
+    ('0815-1995-08765', 43, 19, 3, '2022-11-11 01:00:00', 1),
+    ('0816-1992-03456', 45, 42, 2, '2023-11-11 01:00:00', 2),
+    ('0817-1993-09876', 36, 35, 19, '2023-11-11 01:00:00', 2),
+    ('0818-1996-05678', 38, 32, 4, '2023-11-11 01:00:00', 2),
+    ('0819-1995-02345', 21, 20, 19, '2023-11-11 01:00:00', 2),
+    ('0820-1991-06789', 14, 19, 1, '2023-11-11 01:00:00', 2),
+    ('0805-1994-08765', 39, 32, 15, '2023-11-11 01:00:00', 2),
+    ('0806-1991-03456', 34, 35, 19, '2023-11-11 01:00:00', 2),
+    ('0807-1997-09876', 41, 42, 2, '2023-11-11 01:00:00', 2),
+    ('0808-1996-05674', 14, 29, 15, '2023-11-11 01:00:00', 2),
+    ('0809-1992-01234', 12, 1, 19, '2023-11-11 01:00:00', 2)
 ;
 
 INSERT INTO Results(application, admissionTest, grade) VALUES
@@ -563,6 +560,7 @@ BEGIN
     DECLARE attempts INT;
     DECLARE startDate VARCHAR(10);
     DECLARE finalDate VARCHAR(10);
+    DECLARE idCurrentProcess INT;
 
     -- Verificar si el ID y el nombre completo ya existen en la tabla Applicant
     IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id AND firstName = p_firstName AND secondName = p_secondName AND  firstLastName = p_firstLastName AND secondLastName=p_secondLastName) THEN
@@ -607,6 +605,7 @@ BEGIN
     -- Extraer el valor de "members" del campo JSON en la tabla Configuration
     SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttempst") FROM Configuration LIMIT 1);
     SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id);
+    SET idCurrentProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
     IF (attempts >= 3) THEN
         SELECT JSON_OBJECT(
@@ -618,12 +617,16 @@ BEGIN
             idApplicant,
             firstDegreeProgramChoice,
             secondDegreeProgramChoice,
-            regionalCenterChoice
+            regionalCenterChoice,
+            academicEvent
+
         ) VALUES (
             p_id,
             p_firstDegreeProgramChoice,
             p_secondDegreeProgramChoice,
-            p_regionalCenterChoice
+            p_regionalCenterChoice,
+            idCurrentProcess
+
         );
 
         SELECT JSON_OBJECT(
@@ -644,14 +647,10 @@ END //
 CREATE PROCEDURE ApplicationInCurrentEvent (IN p_identityNumber VARCHAR(15))
 BEGIN
     DECLARE idCurrentEvent int;
-    DECLARE startDate DATETIME;
-    DECLARE finalDate DATETIME;
 
-    SET idCurrentEvent = (SELECT MAX(id) FROM AcademicEvent WHERE process = 1 LIMIT 1);
-    SET startDate = (SELECT startDate FROM AcademicEvent WHERE id=idCurrentEvent LIMIT 1);
-    SET finalDate = (SELECT finalDate FROM AcademicEvent WHERE id=idCurrentEvent LIMIT 1);
+    SET idCurrentEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
-    IF EXISTS (SELECT * FROM Application WHERE applicationDate BETWEEN startDate AND finalDate AND idApplicant = p_identityNumber) THEN 
+    IF EXISTS (SELECT * FROM Application WHERE idApplicant = p_identityNumber AND academicEvent=idCurrentEvent) THEN 
         SELECT JSON_OBJECT(
             'status', true,
             'message', 'Ya hay una inscripcion para este proceso'
