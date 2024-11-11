@@ -48,7 +48,7 @@
          * date: 5/11/24
          */
         public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, string $pathSchoolCertificate, string $telephoneNumber,
-            string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice) : array{
+            string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
 
             $currentProcess = $this->applicationInCurrentProcess($identityNumber);
 
@@ -65,6 +65,16 @@
                     Validator::isEmail($personalEmail)
                 ){
                     $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
+                    $query1= "SELECT b.admissionTest AS admissionTest
+                                FROM Application a
+                                INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
+                                WHERE a.id = ?
+                                UNION
+                                SELECT c.admissionTest
+                                FROM Application a
+                                INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
+                                WHERE a.id = ?";
+                    $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
 
                     try{
                         $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
@@ -77,7 +87,18 @@
                             $resultArray = json_decode($resultJson, true);
 
                             if ($resultArray !== null) {
-                                return $resultArray;
+
+                                //INSERTAR EXAMENES
+                                $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
+                                foreach($result1 as $row){
+                                    $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
+                                };
+
+                                return [
+                                    "status" => true,
+                                    "message" => "Inscription hecha correctamente"
+                                ];
+
                             } else {
                                 return [
                                     "status" => false,
