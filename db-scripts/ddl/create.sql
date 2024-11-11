@@ -7,7 +7,8 @@ USE ProyectoIS;
 CREATE TABLE RegionalCenter(
 	id TINYINT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR(70) NOT NULL,
-    location VARCHAR(100) NOT NULL
+    location VARCHAR(100) NOT NULL,
+    acronym VARCHAR(10)
 );
 
 CREATE TABLE AdmissionTest(
@@ -57,10 +58,12 @@ CREATE TABLE Application(
     secondDegreeProgramChoice SMALLINT,
     regionalCenterChoice TINYINT,
     applicationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    academicEvent INT,
     CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
-    CONSTRAINT fk_regionalCenterChoice FOREIGN KEY (regionalCenterChoice) REFERENCES RegionalCenter(id)
+    CONSTRAINT fk_regionalCenterChoice FOREIGN KEY (regionalCenterChoice) REFERENCES RegionalCenter(id),
+    CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id)
     
 );
 
@@ -122,6 +125,7 @@ CREATE TABLE AcademicEvent(
     process INT NOT NULL,
     startDate DATETIME,
     finalDate DATETIME,
+    active BOOLEAN,
     CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
 );
 
@@ -129,7 +133,7 @@ CREATE TABLE Results(
     id INT PRIMARY KEY AUTO_INCREMENT,
     application INT NOT NULL,
     admissionTest TINYINT NOT NULL,
-    grade SMALLINT,
+    grade SMALLINT DEFAULT 0,
     CONSTRAINT fk_application FOREIGN KEY(application) REFERENCES Application(id),
     CONSTRAINT fk_admissionTest_Results FOREIGN KEY(admissionTest) REFERENCES AdmissionTest(id)
 );
