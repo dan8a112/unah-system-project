@@ -2,14 +2,15 @@
 
     header("Content-Type: application/json");
 
+    session_start();
+
     include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Login/Login.php";
-    include_once "../../../../src/Session/Session.php";
 
-    //crear sesion
-    $userSession = new SessionDAO();
+    //Data Access Object
+    $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    if(isset($_SESSION['user'])){
+    if(isset($_SESSION['userSEDP'])){
         //There is an open session 
         $json = [
             "status"=> 0,
@@ -24,14 +25,12 @@
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
 
-        //Data Access Object
-        $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
         $status = $dao->loginSEDP($mail, $password);
 
         if($status){
-            $userSession->setCurrentUser($mail);
+            $_SESSION['userSEDP'] = $mail;
             $json = [
-                "message"=> "Usuario autenticado",
+                "message"=> "Credenciales correctas",
                 "status"=> 1,                
             ];
 
@@ -48,7 +47,7 @@
         //There's no user autenticated go to login or an error occur
         $json = [
             "status"=> 3,
-            "message"=> "Error o no hay ningun usuario autenticado"
+            "message"=> "No hay ningun usuario autenticado"
         ];
     }
 

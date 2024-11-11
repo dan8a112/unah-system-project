@@ -381,13 +381,13 @@ INSERT INTO `RegionalCenterDegree` (degree, regionalCenter) VALUES
 ;
 
 INSERT INTO Employee (dni, firstName, secondName, firstLastName, secondLastName, telephoneNumber, personalEmail, password, address, dateOfBirth) VALUES 
-    ('0801199901234', 'Juan', 'Carlos', 'Perez', 'Lopez', '9876543210', 'juan.perez@unah.edu.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
-    ('0801199805678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '9123456789', 'maria.ramirez@unah.edu.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
-    ('0801200101111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '9876543211', 'pedro.castillo@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
-    ('0801200202222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '9123456788', 'ana.lopez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
-    ('0801200303333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '9876543212', 'luis.hernandez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
-    ('0801200404444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '9123456787', 'sofia.gomez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
-    ('0801200505555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
+    ('0801199901234', 'Juan', 'Carlos', 'Perez', 'Lopez', '9876543210', 'juan.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
+    ('0801199805678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '9123456789', 'maria.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
+    ('0801200101111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '9876543211', 'pedro.castillo@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
+    ('0801200202222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '9123456788', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
+    ('0801200303333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '9876543212', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
+    ('0801200404444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '9123456787', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
+    ('0801200505555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
 ;
 
 INSERT INTO Administrative (id, administrativeType) VALUES
