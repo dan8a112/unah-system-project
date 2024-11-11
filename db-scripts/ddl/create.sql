@@ -51,6 +51,20 @@ CREATE TABLE Applicant(
     personalEmail VARCHAR(30) 
 );
 
+CREATE TABLE AcademicProcess(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(50)
+);
+
+CREATE TABLE AcademicEvent(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    process INT NOT NULL,
+    startDate DATETIME,
+    finalDate DATETIME,
+    active BOOLEAN,
+    CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
+);
+
 CREATE TABLE Application(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     idApplicant VARCHAR(15),
@@ -66,8 +80,6 @@ CREATE TABLE Application(
     CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id)
     
 );
-
-
 
 CREATE TABLE Employee(
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -112,21 +124,6 @@ CREATE TABLE Administrative(
     administrativeType TINYINT,
     CONSTRAINT fk_id_adm FOREIGN KEY (id) REFERENCES Employee(id),
     CONSTRAINT fk_administrativeType FOREIGN KEY (administrativeType) REFERENCES AdministrativeType(id)
-);
-
-CREATE TABLE AcademicProcess(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    description VARCHAR(50)
-);
-
-
-CREATE TABLE AcademicEvent(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    process INT NOT NULL,
-    startDate DATETIME,
-    finalDate DATETIME,
-    active BOOLEAN,
-    CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
 );
 
 CREATE TABLE Results(
