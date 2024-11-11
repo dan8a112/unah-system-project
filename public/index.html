@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/animations/slides.css">
+    <link rel="stylesheet" href="assets/css/landingPage/style.css">
+
+
     <title>UNAH Inicio</title>
 </head>
 <body>
@@ -32,6 +36,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="assets/views/logins/login_sedp.html">SEDP Login</a></li>
+                  <li><a class="dropdown-item" href="assets/views/logins/login_sedp.html">APA Login</a></li>
                 </ul>
               </li>
             </ul>
@@ -40,9 +45,9 @@
       </nav>
 
         <div class="d-flex p-3 align-items-center justify-content-center mt-3" style="gap: 100px;">
-            <div style="width: 40%;">
+            <div class="slide-up" style="width: 40%;">
                 <h1 class="display-4 mb-4">Emprende tu carrera universitaria aqui</h1>
-                <p class="fs-5">UNAH es una institución autónoma, laica y estatal de la República de Honduras. Considerada por muchos la mejor universidad de esa nación, destaca por sus aportes tecnológicos y de investigación a la sociedad hondureña y extranjera.</p>
+                <p class="fs-5">UNAH es una institución autónoma, laica y estatal de la República de Honduras. Considerada por muchos la mejor universidad del pais, destaca por sus aportes tecnológicos y de investigación a la sociedad hondureña y extranjera.</p>
                 <button class="btn" style="background-color: #FFAA34;">Ingresa ahora</button>
             </div>
             <img src="assets/img/landing/student-image.png" alt="Student Image" width="500px">
@@ -78,11 +83,24 @@
         </div>
 
         <footer class="bg-dark text-white text-center text-lg-start" style="margin-top: 100px;">
-            <div class="container p-4">
+            <div class="container p-4" style="display: flex; gap:100px;">
               <h1>UNAH</h1>
+              <div class="contact-info">
+                <h6 style="margin-bottom: 20px;">Contactenos</h6>
+                <div class="info">
+                  <img src="assets/img/icons/Phone.svg" alt="">
+                  <p>+504 94854756</p>
+                </div>
+                <div class="info">
+                  <img src="assets/img/icons/mail.svg" alt="">
+                  <p>unahoficial@unah.hn</p>
+                </div>
+              </div>
+              
+            </div>
             </div>
             
-          </footer>
+        </footer>
 
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -1,0 +1,16 @@
+.contact-info{
+    display: flex; 
+    flex-direction: column;
+}
+
+.info{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.info img{
+    width: 20px;
+    height: auto;
+}
