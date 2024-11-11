@@ -16,3 +16,6 @@ CALL insertApplicant(
 
 /*Procedimiento para obtener el id de las carreras de un centro regional*/
 CALL GetDegreeProgramsByRegionalCenter(3);
+
+/*Procedimiento para saber si existe una inscrpcion de un aplicante en el proceso actual*/
+CALL ApplicationInCurrentEvent('0801-2004-03085');

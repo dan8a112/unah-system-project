@@ -2,34 +2,55 @@
 
     header("Content-Type: application/json");
 
+    session_start();
+
     include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Login/Login.php";
 
-    if(
+    //Data Access Object
+    $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
+
+    if(isset($_SESSION['userSEDP'])){
+        //There is an open session 
+        $json = [
+            "status"=> 0,
+            "message"=> "Usuario autenticado puede ir al HomePage"
+        ];
+
+    }else if(
         isset($_POST["mail"]) &&
-        isset($_POST["password"]) 
-    ){
+        isset($_POST["password"])){
+              
         //set valores
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
 
-        //Data Access Object
-        $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
         $status = $dao->loginSEDP($mail, $password);
 
-        $json = [
-            "message"=> $status ? "Usuario con permisos par hacer login" : "No existe el usuario",
-            "status"=> $status,                
-        ];
+        if($status){
+            $_SESSION['userSEDP'] = $mail;
+            $json = [
+                "message"=> "Credenciales correctas",
+                "status"=> 1,                
+            ];
+
+        }else{
+            $json = [
+                "message"=> "No existe el usuario",
+                "status"=> 2,                
+            ];
+        }
+
+        
 
     }else{
-
+        //There's no user autenticated go to login or an error occur
         $json = [
-            "status"=> false,
-            "message"=> "No se recibió el parámetro correcto"
+            "status"=> 3,
+            "message"=> "No hay ningun usuario autenticado"
         ];
     }
-   
+
     $dao->closeConnection();
     
     echo json_encode($json);

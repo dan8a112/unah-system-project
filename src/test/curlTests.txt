@@ -10,7 +10,7 @@ curl http://localhost:3000/api/get/infoAdmission | jq
 
 
 --------------Curl para probar api/post/loginSEDP-----------------------
-curl -d "mail=juan.perez@unah.edu.com" -d "password=1234" http://localhost:3000/api/post/loginSEDP | jq
+curl -d "mail=juan.perez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/loginSEDP | jq
 
 
 --------------Curl para probar api/get/infoHomeSEDP------------------------

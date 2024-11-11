@@ -56,6 +56,7 @@ CREATE TABLE Application(
     firstDegreeProgramChoice SMALLINT,
     secondDegreeProgramChoice SMALLINT,
     regionalCenterChoice TINYINT,
+    applicationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
@@ -110,7 +111,35 @@ CREATE TABLE Administrative(
     CONSTRAINT fk_administrativeType FOREIGN KEY (administrativeType) REFERENCES AdministrativeType(id)
 );
 
+CREATE TABLE AcademicProcess(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(50)
+);
 
+
+CREATE TABLE AcademicEvent(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    process INT NOT NULL,
+    startDate DATETIME,
+    finalDate DATETIME,
+    CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
+);
+
+CREATE TABLE Results(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    application INT NOT NULL,
+    admissionTest TINYINT NOT NULL,
+    grade SMALLINT,
+    CONSTRAINT fk_application FOREIGN KEY(application) REFERENCES Application(id),
+    CONSTRAINT fk_admissionTest_Results FOREIGN KEY(admissionTest) REFERENCES AdmissionTest(id)
+);
+
+
+
+CREATE TABLE Configuration(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    data json
+);
 
 INSERT INTO RegionalCenter(description, location) VALUES
     ('Centro Universitario Regional del Centro', 'Comayagua'),
@@ -381,13 +410,13 @@ INSERT INTO `RegionalCenterDegree` (degree, regionalCenter) VALUES
 ;
 
 INSERT INTO Employee (dni, firstName, secondName, firstLastName, secondLastName, telephoneNumber, personalEmail, password, address, dateOfBirth) VALUES 
-    ('0801199901234', 'Juan', 'Carlos', 'Perez', 'Lopez', '9876543210', 'juan.perez@unah.edu.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
-    ('0801199805678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '9123456789', 'maria.ramirez@unah.edu.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
-    ('0801200101111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '9876543211', 'pedro.castillo@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
-    ('0801200202222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '9123456788', 'ana.lopez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
-    ('0801200303333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '9876543212', 'luis.hernandez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
-    ('0801200404444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '9123456787', 'sofia.gomez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
-    ('0801200505555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@example.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
+    ('0801199901234', 'Juan', 'Carlos', 'Perez', 'Lopez', '9876543210', 'juan.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
+    ('0801199805678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '9123456789', 'maria.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
+    ('0801200101111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '9876543211', 'pedro.castillo@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
+    ('0801200202222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '9123456788', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
+    ('0801200303333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '9876543212', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
+    ('0801200404444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '9123456787', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
+    ('0801200505555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
 ;
 
 INSERT INTO Administrative (id, administrativeType) VALUES
@@ -402,16 +431,33 @@ INSERT INTO Professor(id, professorType, department) VALUES
     (4, 4, 1)
 ;
 
+INSERT INTO AcademicProcess(description) VALUES 
+    ('Inscripciones'),
+    ('Revisión de examenes'),
+    ('Envio de resultados'),
+    ('Creación de expediente'),
+    ('Planificación académica'),
+    ('Matricula'),
+    ('Ingreso de notas')
+;
+
+INSERT INTO AcademicEvent(process, startDate, finalDate) VALUES
+    (1, '2024-11-11 00:00:00', '2024-11-12 00:00:00')
+;
+
+INSERT INTO Configuration(data) VALUES
+    ('{"maxAttemtps":3}')
+;
+
 DELIMITER //
 
 /**
     author: dorian.contreras@unah.hn
     version: 0.1.0
-    date: 5/11/24
+    date: 11/11/24
 
-    Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante
+    Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante y el limite de aplicaciones que puede hacer
 **/
-DELIMITER //
 
 CREATE PROCEDURE insertApplicant(
     IN p_id VARCHAR(15),
@@ -427,34 +473,31 @@ CREATE PROCEDURE insertApplicant(
     IN p_regionalCenterChoice TINYINT
 )
 BEGIN
-    -- Verificar si el ID ya existe en la tabla Applicant
-    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
-        -- Si existe, actualizar los datos del solicitante y hacer la nueva aplicacion
+
+    DECLARE maxAttempts INT;
+    DECLARE attempts INT;
+    DECLARE startDate VARCHAR(10);
+    DECLARE finalDate VARCHAR(10);
+
+    -- Verificar si el ID y el nombre completo ya existen en la tabla Applicant
+    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id AND firstName = p_firstName AND secondName = p_secondName AND  firstLastName = p_firstLastName AND secondLastName=p_secondLastName) THEN
+        -- Si existen, actualizar los datos del solicitante y hacer la nueva aplicacion
         UPDATE Applicant
         SET 
-            firstName = p_firstName,
-            secondName = p_secondName,
-            firstLastName = p_firstLastName,
-            secondLastName = p_secondLastName,
             pathSchoolCertificate = p_pathSchoolCertificate,
             telephoneNumber = p_telephoneNumber,
             personalEmail = p_personalEmail
         WHERE id = p_id;
-        
-        INSERT INTO Application (
-            idApplicant,
-            firstDegreeProgramChoice,
-            secondDegreeProgramChoice,
-            regionalCenterChoice
-        ) VALUES (
-            p_id,
-            p_firstDegreeProgramChoice,
-            p_secondDegreeProgramChoice,
-            p_regionalCenterChoice
-        );
+
+    ELSEIF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
+        -- Si el ID ya existe pero los datos no coinciden, lanzamos un error
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El ID ya existe con datos diferentes; no se puede insertar el nuevo solicitante.'
+        ) AS resultJson;
 
     ELSE
-        -- Si no existe el ID, insertar un nuevo solicitante en Applicant
+        -- Si el solicitante no existe, insertamos un nuevo registro en Applicant y en Application
         INSERT INTO Applicant (
             id,
             firstName,
@@ -474,8 +517,18 @@ BEGIN
             p_telephoneNumber,
             p_personalEmail
         );
+    END IF;
 
-        -- Insertar en la tabla Application
+    -- Extraer el valor de "members" del campo JSON en la tabla Configuration
+    SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttempst") FROM Configuration LIMIT 1);
+    SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id);
+
+    IF (attempts >= 3) THEN
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Excede el limite de intentos'
+        ) AS resultJson;  
+    ELSE
         INSERT INTO Application (
             idApplicant,
             firstDegreeProgramChoice,
@@ -487,7 +540,43 @@ BEGIN
             p_secondDegreeProgramChoice,
             p_regionalCenterChoice
         );
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Inscripcion hecha correctamente'
+        ) AS resultJson;
     END IF;
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 11/11/24
+
+    Procedimiento almacenado para saber si un aplicante ya tiene una aplicacion en el proceso deadmision actual
+**/
+CREATE PROCEDURE ApplicationInCurrentEvent (IN p_identityNumber VARCHAR(15))
+BEGIN
+    DECLARE idCurrentEvent int;
+    DECLARE startDate DATETIME;
+    DECLARE finalDate DATETIME;
+
+    SET idCurrentEvent = (SELECT MAX(id) FROM AcademicEvent WHERE process = 1 LIMIT 1);
+    SET startDate = (SELECT startDate FROM AcademicEvent WHERE id=idCurrentEvent LIMIT 1);
+    SET finalDate = (SELECT finalDate FROM AcademicEvent WHERE id=idCurrentEvent LIMIT 1);
+
+    IF EXISTS (SELECT * FROM Application WHERE applicationDate BETWEEN startDate AND finalDate AND idApplicant = p_identityNumber) THEN 
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Ya hay una inscripcion para este proceso'
+        ) AS resultJson; 
+    ELSE
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'No hay una inscripcion para este proceso'
+        ) AS resultJson; 
+    END IF;
+    
 END //
 
 /**
