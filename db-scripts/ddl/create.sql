@@ -624,7 +624,8 @@ BEGIN
 
         SELECT JSON_OBJECT(
             'status', true,
-            'message', 'Inscripcion hecha correctamente'
+            'idApplication', LAST_INSERT_ID(),
+            'message', 'Inscripción hecha correctamente'
         ) AS resultJson;
     END IF;
 END //
