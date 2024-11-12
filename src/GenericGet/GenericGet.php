@@ -193,5 +193,29 @@
             $this->mysqli->close();
         }
 
+        /**
+         * author: afcastillof@unah.hn
+         * version: 0.1.0
+         * date: 11/11/24
+         */
+        public function getCurrentProcess() {
+            $process = [];
+            $query = "SELECT id, COUNT(process) AS process_count, YEAR(startDate) AS year 
+                      FROM AcademicEvent 
+                      WHERE active = 1 
+                      GROUP BY year, id";
+        
+            $result = $this->mysqli->execute_query($query);
+        
+            foreach ($result as $row) {
+                $process[] = [
+                    "id" => $row["id"],
+                    "name" => sprintf("%s proceso, %s", $row["process_count"], $row["year"])
+                ];
+            }
+        
+            return $process;
+        }
+        
     }
 ?>
