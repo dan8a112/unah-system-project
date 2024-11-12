@@ -135,6 +135,19 @@ CREATE TABLE Results(
     CONSTRAINT fk_admissionTest_Results FOREIGN KEY(admissionTest) REFERENCES AdmissionTest(id)
 );
 
+CREATE TABLE AcademicSubprocess (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    academicEventId INT NOT NULL,
+    academicProcessId INT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    startDate DATETIME,
+    endDate DATETIME,
+    active TINYINT(1) DEFAULT 1,
+    FOREIGN KEY (academicEventId) REFERENCES AcademicEvent(id),
+    FOREIGN KEY (academicProcessId) REFERENCES AcademicProcess(id)
+);
+
 
 
 CREATE TABLE Configuration(
@@ -142,27 +155,28 @@ CREATE TABLE Configuration(
     data json
 );
 
-INSERT INTO RegionalCenter(description, location) VALUES
-    ('Centro Universitario Regional del Centro', 'Comayagua'),
-    ('Centro Universitario Regional del Litoral Atlántico', 'La Ceiba, Atlántida'),
-    ('Centro Universitario Regional del Litoral Pacífico', 'Choluteca'),
-    ('Centro Universitario Regional Nor-Oriental', 'Juticalpa, Olancho'),
-    ('Centro Universitario Regional del Occidente', 'Santa Rosa de Copán'),
-    ('CRAED Choluteca', 'Choluteca'),
-    ('CRAED Juticalpa', 'Juticalpa, Olancho'),
-    ('CRAED La Entrada', 'La Entrada, Copán'),
-    ('CRAED Paraíso', 'El Paraíso'),
-    ('CRAED Progreso', 'El Progreso, Yoro'),
-    ('CRAED Siguatepeque', 'Siguatepeque, Comayagua'),
-    ('CRAED Tegucigalpa', 'Tegucigalpa'),
-    ('CRAED Tocoa', 'Tocoa, Colón'),
-    ('Instituto Tecnológico Superior de Tela - UNAH', 'Tegucigalpa'),
-    ('UNAH Tecnológico Danlí', 'Danlí, El Paraíso'),
-    ('UNAH Telecentro Marcala', 'Marcala, La Paz'),
-    ('UNAH Valle de Sula', 'San Pedro Sula, Cortés'),
-    ('UNAH Tecnológico Aguan', 'Olanchito, Yoro'),
-    ('Ciudad Universitaria', 'Tegucigalpa')
+INSERT INTO RegionalCenter(description, location, acronym) VALUES
+    ('Centro Universitario Regional del Centro', 'Comayagua', 'CURNO'),
+    ('Centro Universitario Regional del Litoral Atlántico', 'La Ceiba, Atlántida', 'CURLA'),
+    ('Centro Universitario Regional del Litoral Pacífico', 'Choluteca', 'CURLP'),
+    ('Centro Universitario Regional Nor-Oriental', 'Juticalpa, Olancho', 'CURNO'),
+    ('Centro Universitario Regional del Occidente', 'Santa Rosa de Copán', 'CURO'),
+    ('CRAED Choluteca', 'Choluteca', 'CRAED-C'),
+    ('CRAED Juticalpa', 'Juticalpa, Olancho', 'CRAED-J'),
+    ('CRAED La Entrada', 'La Entrada, Copán', 'CRAED-LE'),
+    ('CRAED Paraíso', 'El Paraíso', 'CRAED P'),
+    ('CRAED Progreso', 'El Progreso, Yoro', 'CRAED PR'),
+    ('CRAED Siguatepeque', 'Siguatepeque, Comayagua', 'CRAED-SGT'),
+    ('CRAED Tegucigalpa', 'Tegucigalpa', 'CRAED-TGU'),
+    ('CRAED Tocoa', 'Tocoa, Colón','CRAED-TCA'),
+    ('Instituto Tecnológico Superior de Tela - UNAH', 'Tegucigalpa', 'ITST'),
+    ('UNAH Tecnológico Danlí', 'Danlí, El Paraíso','TEC-DANLI'),
+    ('UNAH Telecentro Marcala', 'Marcala, La Paz', 'TEL-MARC'),
+    ('UNAH Valle de Sula', 'San Pedro Sula, Cortés', 'VS'),
+    ('UNAH Tecnológico Aguan', 'Olanchito, Yoro','TEC-AGUAN'),
+    ('Ciudad Universitaria', 'Tegucigalpa', 'CU')
 ;
+
 INSERT INTO AdministrativeType(description) VALUES
     ('SEDP'),
     ('Admisiones')
