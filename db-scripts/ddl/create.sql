@@ -150,6 +150,7 @@ CREATE TABLE AcademicSubprocess (
 
 
 
+
 CREATE TABLE Configuration(
     id INT PRIMARY KEY AUTO_INCREMENT,
     data json
