@@ -74,3 +74,17 @@ export const makeTimeLine = (processes) => {
 
   document.body.appendChild(timeline);
 }
+
+export const separateData = (arr) => {
+  const result = {
+      applicantsAmount: [],
+      processes: []
+  };
+
+  arr.forEach(item => {
+      result.applicantsAmount.push(item.applications);
+      result.processes.push(item.name);
+  });
+
+  return result;
+}

@@ -28,7 +28,7 @@ selectRegionalCenters.addEventListener('change', () => {
 });
 
 document.getElementById('form-inscription').addEventListener('submit', (event) => {
-  HttpRequest.submitForm(event, 'http://localhost:3000/api/post/application')
+  HttpRequest.submitForm(event, '../../../api/post/application')
   .then(result => {
     if (result.status) {
         Popup.open(popup);

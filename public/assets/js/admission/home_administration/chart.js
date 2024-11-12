@@ -28,7 +28,7 @@ class BarChart {
 
     // Calcular dimensiones del canvas y del gráfico
     this.chartHeight = 250;
-    this.chartWidth = (this.barWidth + this.barSpacing) * this.data.length;
+    this.chartWidth = 400;
     this.canvas.width = (this.chartWidth + this.offsetX + this.barMargin + this.padding * 2) * this.dpr;
     this.canvas.height = (this.chartHeight + this.padding * 2) * this.dpr;
     this.canvas.style.width = `${this.chartWidth + this.offsetX + this.barMargin + this.padding * 2}px`;
@@ -72,7 +72,7 @@ class BarChart {
       // Agregar etiquetas en el eje X
       this.ctx.fillStyle = "#C4C4C4";
       this.ctx.font = "14px Arial";
-      this.ctx.fillText(this.labels[index], x + this.barWidth / 4, this.chartHeight - 5);
+      this.ctx.fillText(this.labels[index], x + this.barWidth / 4 + 5, this.chartHeight - 5);
     });
 
     // Dibujar el eje Y

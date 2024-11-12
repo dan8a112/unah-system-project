@@ -1,5 +1,6 @@
 import {BarChart} from './chart.js';
-import { makeCurrentProcesCard, makeTimeLine } from './Action.js';
+import { makeCurrentProcesCard, makeTimeLine, separateData } from './Action.js';
+import { HttpRequest } from '../../modules/HttpRequest.js';
 
 const data = {
     currentProces: {
@@ -49,13 +50,51 @@ const data = {
     ]
 }
 
-if (data.currentProces!= "") {
-    makeCurrentProcesCard(data.currentProces.id, data.currentProces.name)
+
+const url = '../../../api/get/homeAPA';
+
+async function loadData() {
+  // Realizar la solicitud GET usando HttpRequest
+  const respose = await HttpRequest.get(url);
+  const data = respose.data;
+  const previousProcessesSummary = separateData(data.processSummary)
+  console.log(data)
+
+  if (data) {
+    // Verificar y utilizar el dato `currentProces`
+    if (data.currentProces && data.currentProces.name) {
+      makeCurrentProcesCard(data.currentProces.id, data.currentProces.name);
+    }
+
+    // Crear y dibujar el BarChart
+    if (previousProcessesSummary) {
+      const barChart = new BarChart("admissionChart", previousProcessesSummary.applicantsAmount, previousProcessesSummary.processes);
+      barChart.draw();
+    }
+
+    // Generar la línea de tiempo
+    if (data.previousProcesses) {
+      makeTimeLine(data.previousProcesses);
+    }
+  } else {
+    console.error("No se pudo cargar la información desde la API.");
+  }
 }
 
-const barChart = new BarChart("admissionChart", data.previousProcessesSummary.applicantsAmount, data.previousProcessesSummary.processes);
-barChart.draw();
+// Llamar a la función para cargar los datos al iniciar el módulo
+loadData();
 
-makeTimeLine(data.previousProcesses);
 
+
+const gg = {"message":"Pet",
+    "status":true,
+    "data":{
+        "currentProces":{
+            "id":5,
+            "name":"3 proceso, 2024"
+        },
+        "processSummary":[
+            {"id":2,"name":"1 proceso, 2023","applications":10},
+            {"id":1,"name":"1 proceso, 2022","applications":15}]},
+    "previousProcesses":[{"year":2023,"processes":[{"id":2,"title":"1 Proceso 2023"}]},{"year":2022,"processes":[{"id":1,"title":"1 Proceso 2022"}]}]}
 
