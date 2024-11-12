@@ -3,18 +3,25 @@
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/GenericGet/GenericGet.php";
+    include_once "../../../../src/Application/Application.php";
 
     //Data Access Object
-    $dao = new GenericGetDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $test = $dao->getAmountApplicationsInProcess(1);
+    $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    $json = [
-        "message"=> "Peticion realizada con exito",
-        "status"=> true,
-        "test" => $test
-            
-    ];
+    if(isset($_GET["id"])){
+        $result = $dao->getInfoHistoricAdmission($_GET["id"]);
+        $json = [
+            "message"=> "Peticion realizada con exito",
+            "status"=> true,
+            "data" => $result
+                
+        ];
+    }else{
+        $json = [
+            "message"=> "No se recibió el parámetro correcto",
+            "status"=> false,                
+        ];
+    }
 
     $dao->closeConnection();
     

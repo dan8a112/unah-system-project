@@ -453,8 +453,8 @@ INSERT INTO AcademicProcess(description) VALUES
 ;
 
 INSERT INTO AcademicEvent(process, startDate, finalDate, active) VALUES
-    (1,'2022-11-11 00:00:00', '2022-11-12 00:00:00', false),
-    (1,'2023-11-11 00:00:00', '2023-11-12 00:00:00', false),
+    (1,'2022-01-13 00:00:00', '2022-01-12 00:00:00', false),
+    (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false),
     (1, '2024-11-13 00:00:00', '2024-11-20 00:00:00', true)
 ;
 
@@ -710,7 +710,7 @@ CREATE PROCEDURE InfoCurrentProcessAdmission ()
 BEGIN
     SET lc_time_names = 'es_ES';
 
-    SELECT b.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final, c.academicProcessId as idProcessState, d.description as processState
+    SELECT a.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final, c.academicProcessId as idProcessState, d.description as processState
     FROM AcademicEvent a
     INNER JOIN AcademicProcess b ON (a.process = b.id)
     INNER JOIN AcademicSubprocess c ON (a.id = c.academicEventId)
@@ -725,14 +725,11 @@ END //
 
     Procedimiento almacenado para saber la cantidad de inscripciones
 **/
-CREATE PROCEDURE AmountInscription ()
+CREATE PROCEDURE AmountInscription (IN p_id INT)
 BEGIN
-    DECLARE idCurrent INT;
-    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 AND active=true);
-
     SELECT COUNT(*) as amountInscriptions 
     FROM Application 
-    WHERE academicEvent=idCurrent;
+    WHERE academicEvent=p_id;
 END //
 
 /**
@@ -742,18 +739,15 @@ END //
 
     Procedimiento almacenado para saber la cantidad de inscripciones
 **/
-CREATE PROCEDURE LastestInscription ()
+CREATE PROCEDURE LastestInscription (IN p_id INT)
 BEGIN
-    DECLARE idCurrent INT;
-    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=1);
-
     SELECT * 
     FROM Application a
     INNER JOIN Applicant b
     ON (a.idApplicant = b.id)
     INNER JOIN DegreeProgram c 
     ON (a.firstDegreeProgramChoice = c.id)
-    WHERE a.academicEvent = idCurrent ORDER BY a.id DESC LIMIT 5;
+    WHERE a.academicEvent = p_id ORDER BY a.id DESC LIMIT 5;
 END //
 
 DELIMITER ;

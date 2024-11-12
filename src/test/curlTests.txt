@@ -25,3 +25,6 @@ curl http://localhost:3000/api/get/departments | jq
 
 -------------Curl para obtener el proceso de admision actual----------------
 curl http://localhost:3000/api/get/infoCurrentAdmission | jq
+
+-----------Curl para obtener una admision historica------------------
+curl http://localhost:3000/api/get/admissionDetail/?id=1 | jq
