@@ -7,22 +7,19 @@
 
     //Data Access Object
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
+    $result = $dao->isActiveAdmissionProcess();
 
-    if(isset($_GET["id"])){
-        $result = $dao->getInfoHistoricAdmission($_GET["id"]);
+    if($result){
         $json = [
-            "message"=> "Peticion realizada con exito",
-            "status"=> true,
-            "data" => $result
-                
+            "message"=> "Hay un proceso de inscripción actualmente",
+            "status"=> $result,            
         ];
     }else{
         $json = [
-            "message"=> "No se recibió el parámetro correcto",
-            "status"=> false,                
+            "message"=> "No hay un proceso de inscripción actualmente",
+            "status"=> $result,            
         ];
     }
-
     $dao->closeConnection();
     
     echo json_encode($json);

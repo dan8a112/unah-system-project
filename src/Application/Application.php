@@ -9,6 +9,11 @@
             $this->mysqli = new mysqli($server, $user, $pass, $dbName);
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.2.0
+         * date: 12/11/24
+         */
         public function applicationInCurrentProcess(string $identityNumber){
             $query= "CALL ApplicationInCurrentEvent(?);";
 
@@ -139,27 +144,29 @@
         public function getInfoCurrentAdmission(){
 
             $query = 'CALL InfoCurrentProcessAdmission();';
-            $query1 = 'CALL AmountInscription();';
-            $query2 = 'CALL LastestInscription();';
+            $query1 = 'CALL AmountInscription(?);';
+            $query2 = 'CALL LastestInscription(?);';
 
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
+                $idProcess = $row["idAcademicEvent"];
                 $infoProcess = [
-                    "id" => $row["id"],
-                    "name"=>$row["description"],
+                    "name"=>$row["processName"],
                     "start"=>$row["start"],
                     "end"=>$row["final"],
+                    "idProcessState"=> $row["idProcessState"],
+                    "processState"=> $row["processState"],
                 ] ;
             }
             
-            $result1 = $this->mysqli->execute_query($query1);
+            $result1 = $this->mysqli->execute_query($query1, [$idProcess]);
 
             foreach($result1 as $row){
                 $amountInscription = $row['amountInscriptions'];
             }
 
-            $result2 = $this->mysqli->execute_query($query2);
+            $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
 
             foreach($result2 as $row){
                 $lastestInscrptions[] = [
@@ -176,6 +183,104 @@
                 "lastestInscriptions"=> $lastestInscrptions
             ];
         }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         */
+        public function getInfoHistoricAdmission(int $id){
+
+            $query="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicProcess b ON (a.process = b.id)
+                    WHERE a.id = ?;";
+
+            $query1 = 'CALL AmountInscription(?);';
+
+            $query2= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
+                    FROM Application a
+                    INNER JOIN Applicant b
+                    ON (a.idApplicant = b.id)
+                    INNER JOIN DegreeProgram c 
+                    ON (a.firstDegreeProgramChoice = c.id)
+                    INNER JOIN Results d
+                    ON(a.id = d.application)
+                    WHERE a.academicEvent = ? AND admissionTest=1 ORDER BY d.grade DESC LIMIT 5;";
+
+            $query3= "SELECT b.acronym, COUNT(*) as amount
+                    FROM Application a
+                    INNER JOIN RegionalCenter b
+                    ON (a.regionalCenterChoice=b.id)
+                    WHERE academicEvent =?
+                    GROUP BY b.id;";
+
+            $result = $this->mysqli->execute_query($query, [$id]);
+
+            foreach($result as $row){
+                $infoProcess = [
+                    "name"=>$row["processName"],
+                    "start"=>$row["start"],
+                    "end"=>$row["final"]
+                ] ;
+            }
+
+            $result1 = $this->mysqli->execute_query($query1, [$id]);
+
+            foreach($result1 as $row){
+                $amountInscription = $row['amountInscriptions'];
+            }
+
+            $result2 = $this->mysqli->execute_query($query2, [$id]);
+
+            foreach($result2 as $row){
+                $higherScores[] = [
+                    "id" => $row["id"],
+                    "name"=>$row["name"],
+                    "career"=>$row["career"],
+                    "score"=>$row["grade"],
+                ] ;
+            }
+
+            $result3 = $this->mysqli->execute_query($query3, [$id]);
+
+            foreach($result3 as $row){
+                $amountCentersInscripctions[]= [
+                    "name"=>$row["acronym"],
+                    "amount"=>$row["amount"],
+                ] ;
+            }
+
+            return [
+                "infoProcess"=> $infoProcess,
+                "amountApproved"=> 0,
+                "amountInscriptions"=> $amountInscription,
+                "higherScores"=> $higherScores,
+                "amountCentersInscripctions"=>$amountCentersInscripctions
+            ];
+
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         */
+        public function isActiveAdmissionProcess() {
+
+            $query = "SELECT a.id 
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicSubprocess b ON (a.id = b.academicEventId)
+                    WHERE a.process=1 AND a.active=true AND b.active=true AND b.academicProcessId=3;";
+            $result = $this->mysqli->execute_query($query);
+        
+            if ($result->num_rows > 0) {
+                return true; 
+            } else {
+                return false;
+            }
+        }
+        
 
         // Método para cerrar la conexión
         public function closeConnection() {
