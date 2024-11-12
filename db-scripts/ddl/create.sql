@@ -46,7 +46,7 @@ CREATE TABLE Applicant(
     secondName VARCHAR(15) NOT NULL,
     firstLastName VARCHAR(15) NOT NULL,
     secondLastName VARCHAR(15) NOT NULL,
-    pathSchoolCertificate LONGBLOB,
+    pathSchoolCertificate LONGBLOB NOT NULL,
     telephoneNumber VARCHAR(12),
     personalEmail VARCHAR(30) 
 );
@@ -567,7 +567,7 @@ CREATE PROCEDURE insertApplicant(
     IN p_secondName VARCHAR(15),
     IN p_firstLastName VARCHAR(15),
     IN p_secondLastName VARCHAR(15),
-    IN p_pathSchoolCertificate VARCHAR(30),
+    IN p_pathSchoolCertificate LONGBLOB,
     IN p_telephoneNumber VARCHAR(12),
     IN p_personalEmail VARCHAR(30),
     IN p_firstDegreeProgramChoice SMALLINT,

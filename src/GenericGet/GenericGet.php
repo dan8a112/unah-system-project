@@ -193,5 +193,142 @@
             $this->mysqli->close();
         }
 
+        /**
+         * author: afcastillof@unah.hn
+         * version: 0.1.1
+         * date: 12/11/24
+         */
+        public function getCurrentProcess() {
+            $query = "SELECT 
+                            main.id,
+                            main.year,
+                            main.process_order
+                        FROM (
+                            SELECT 
+                                id,
+                                process,
+                                YEAR(startDate) AS year,
+                                ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
+                                active
+                            FROM 
+                                academicevent
+                        ) AS main
+                        WHERE 
+                            main.active = 1
+                        ORDER BY 
+                            main.year;
+                        ";
+            
+            $result = $this->mysqli->execute_query($query);
+        
+            if ($row = $result->fetch_assoc()) {
+                return [
+                    "id" => $row["id"],
+                    "name" => sprintf("%s proceso, %s", $row["process_order"], $row["year"])
+                ];
+            }
+            
+            return null;
+        }
+        
+        
+
+        /**
+         * author: afcastillof@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         */
+        public function getSummaryProcess() {
+            $processSummary = [];
+            $query = "SELECT 
+                        main.id,
+                        main.year,
+                        main.process_order,
+                        COUNT(a.academicEvent) AS applications
+                    FROM (
+                        SELECT 
+                            id,
+                            process,
+                            YEAR(startDate) AS year,
+                            ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
+                            active
+                        FROM 
+                            academicevent
+                    ) AS main
+                    INNER JOIN application AS a
+                    ON main.id = a.academicEvent
+                    WHERE 
+                        main.active != 1
+                    GROUP BY 
+                        main.id, main.year, main.process_order
+                    ORDER BY 
+                        main.year DESC
+                    LIMIT 7;
+                    ";
+        
+            $result = $this->mysqli->execute_query($query);
+        
+            foreach ($result as $row) {
+                $processSummary[] = [
+                    "id" => $row["id"],
+                    "name" => sprintf("%s %s", $row["process_order"], $row["year"]),
+                    "applications" => $row["applications"]
+                ];
+            }
+        
+            return $processSummary;
+        }
+
+        public function getAllProcessInYears() {
+            $allProcess = [];
+            $query = "SELECT 
+                        main.id,
+                        YEAR(main.year) AS year,
+                        main.process_order
+                      FROM (
+                          SELECT 
+                              id,
+                              process,
+                              startDate AS year,
+                              ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
+                              active
+                          FROM 
+                              academicevent
+                      ) AS main
+                      INNER JOIN application AS a
+                      ON main.id = a.academicEvent
+                      WHERE 
+                          main.active != 1
+                      GROUP BY 
+                          main.id, year, main.process_order
+                      ORDER BY 
+                          year DESC";
+        
+            $result = $this->mysqli->execute_query($query);
+            $organizedData = [];
+        
+            foreach ($result as $row) {
+                $year = $row["year"];
+                $processOrder = $row["process_order"];
+                $processId = $row["id"];
+                
+                if (!isset($organizedData[$year])) {
+                    $organizedData[$year] = [
+                        "year" => $year,
+                        "processes" => []
+                    ];
+                }
+                
+                $organizedData[$year]["processes"][] = [
+                    "id" => $processId,
+                    "title" => sprintf("%s Proceso %s", $processOrder, $year)
+                ];
+            }
+        
+            $allProcess = array_values($organizedData);
+            
+            return $allProcess;
+        }
+        
     }
 ?>

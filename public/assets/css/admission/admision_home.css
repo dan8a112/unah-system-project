@@ -1,0 +1,72 @@
+body {
+    background-color: #FBF9F4;
+}
+
+.section {
+    margin: 3% 5%;
+}
+
+h1{
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+h2{
+    font-size: 1.5rem;
+}
+
+h5{
+    font-size: 1.0rem;
+    color: #A1A1A1;
+}
+
+.currentProcesCard img{
+    margin-bottom: 5%;
+}
+
+#myCanvas {
+    border-radius: 15px;
+    background-color: #fff;
+  }
+
+.container {
+    margin-top: 3%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem; 
+    justify-items: center;
+}
+
+.responsive-container {
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem; 
+}
+  
+  @media (min-width: 600px) {
+    .responsive-container {
+      flex-direction: row;
+    }
+  }
+  
+  @media (max-width: 599px) {
+    .responsive-container {
+      flex-direction: column;
+    }
+  }
+
+  .currentProcesCard{
+    border-radius: 15px;
+    background-color: #fff !important;
+    padding: 2% 5% 5% 5%;
+    height: 210px;
+    border: 2px solid #00C500;
+}
+
+.title{
+    margin-top: 5%;
+}
+
