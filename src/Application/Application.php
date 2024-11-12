@@ -261,6 +261,27 @@
 
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         */
+        public function isActiveAdmissionProcess() {
+
+            $query = "SELECT a.id 
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicSubprocess b ON (a.id = b.academicEventId)
+                    WHERE a.process=1 AND a.active=true AND b.active=true AND b.academicProcessId=3;";
+            $result = $this->mysqli->execute_query($query);
+        
+            if ($result->num_rows > 0) {
+                return true; 
+            } else {
+                return false;
+            }
+        }
+        
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();
