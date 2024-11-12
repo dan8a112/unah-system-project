@@ -1,0 +1,54 @@
+body{
+    background-color: #FBF9F4;
+}
+
+p{
+    margin: 0;
+}
+
+.status-card{
+    background-color: #878787;
+    border-radius: 10px;
+    padding: 0px 10px 0 10px;
+    color: white;
+    font-weight: 500;
+}
+
+
+.card-container{
+    background-color: white;
+    border: #878787 1px solid;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.dates-container{
+    margin-left: 6%;
+}
+
+.font-mini{
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.font-medium{
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.button-upload{
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    color: #393939;
+    background-color: #FFAA34;
+    margin: 8px 0;
+    font-weight: 500;
+}
+
+.regional-center-item{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10%;
+    font-size: 1.2rem;
+}
