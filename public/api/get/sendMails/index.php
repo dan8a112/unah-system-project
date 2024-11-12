@@ -3,11 +3,11 @@
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Application/Application.php";
+    include_once "../../../../src/MailSender/MailSender.php";
 
     //Data Access Object
-    $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $result = $dao->isActiveAdmissionProcess();
+    $dao = new MailSenderDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
+    $result = $dao->sendAllMails();
 
     if($result){
         $json = [
@@ -20,7 +20,7 @@
             "status"=> $result,            
         ];
     }
-    
+
     $dao->closeConnection();
     
     echo json_encode($json);
