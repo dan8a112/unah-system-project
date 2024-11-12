@@ -148,6 +148,20 @@ CREATE TABLE Results(
     CONSTRAINT fk_admissionTest_Results FOREIGN KEY(admissionTest) REFERENCES AdmissionTest(id)
 );
 
+CREATE TABLE AcademicSubprocess (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    academicEventId INT NOT NULL,
+    academicProcessId INT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    startDate DATETIME,
+    endDate DATETIME,
+    active TINYINT(1) DEFAULT 1,
+    FOREIGN KEY (academicEventId) REFERENCES AcademicEvent(id),
+    FOREIGN KEY (academicProcessId) REFERENCES AcademicProcess(id)
+);
+
+
 
 
 CREATE TABLE Configuration(
@@ -176,6 +190,7 @@ INSERT INTO RegionalCenter(description, location, acronym) VALUES
     ('UNAH Tecnológico Aguan', 'Olanchito, Yoro','TEC-AGUAN'),
     ('Ciudad Universitaria', 'Tegucigalpa', 'CU')
 ;
+
 INSERT INTO AdministrativeType(description) VALUES
     ('SEDP'),
     ('Admisiones')
