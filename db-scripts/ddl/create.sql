@@ -48,7 +48,7 @@ CREATE TABLE Applicant(
     secondLastName VARCHAR(15) NOT NULL,
     pathSchoolCertificate LONGBLOB NOT NULL,
     telephoneNumber VARCHAR(12),
-    personalEmail VARCHAR(30) 
+    personalEmail VARCHAR(50) 
 );
 
 CREATE TABLE AcademicProcess(
@@ -569,7 +569,7 @@ CREATE PROCEDURE insertApplicant(
     IN p_secondLastName VARCHAR(15),
     IN p_pathSchoolCertificate LONGBLOB,
     IN p_telephoneNumber VARCHAR(12),
-    IN p_personalEmail VARCHAR(30),
+    IN p_personalEmail VARCHAR(50),
     IN p_firstDegreeProgramChoice SMALLINT,
     IN p_secondDegreeProgramChoice SMALLINT,
     IN p_regionalCenterChoice TINYINT
