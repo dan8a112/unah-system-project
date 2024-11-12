@@ -709,10 +709,13 @@ END //
 CREATE PROCEDURE InfoCurrentProcessAdmission ()
 BEGIN
     SET lc_time_names = 'es_ES';
-    SELECT b.id, b.description, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
+
+    SELECT b.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final, c.academicProcessId as idProcessState, d.description as processState
     FROM AcademicEvent a
     INNER JOIN AcademicProcess b ON (a.process = b.id)
-    WHERE a.active = true AND b.id IN (1,2,3,4);   
+    INNER JOIN AcademicSubprocess c ON (a.id = c.academicEventId)
+    INNER JOIN AcademicProcess d ON (c.academicProcessId = d.id)
+    WHERE a.active = true AND b.id=1 and c.active=true;      
 END //
 
 /**
@@ -725,7 +728,7 @@ END //
 CREATE PROCEDURE AmountInscription ()
 BEGIN
     DECLARE idCurrent INT;
-    SET idCurrent = (SELECT MAX(id) FROM AcademicEvent WHERE process=1);
+    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 AND active=true);
 
     SELECT COUNT(*) as amountInscriptions 
     FROM Application 
@@ -742,7 +745,7 @@ END //
 CREATE PROCEDURE LastestInscription ()
 BEGIN
     DECLARE idCurrent INT;
-    SET idCurrent = (SELECT MAX(id) FROM AcademicEvent WHERE process=1);
+    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=1);
 
     SELECT * 
     FROM Application a

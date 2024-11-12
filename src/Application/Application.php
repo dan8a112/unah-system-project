@@ -9,6 +9,11 @@
             $this->mysqli = new mysqli($server, $user, $pass, $dbName);
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.2.0
+         * date: 12/11/24
+         */
         public function applicationInCurrentProcess(string $identityNumber){
             $query= "CALL ApplicationInCurrentEvent(?);";
 
@@ -146,10 +151,11 @@
 
             foreach($result as $row){
                 $infoProcess = [
-                    "id" => $row["id"],
-                    "name"=>$row["description"],
+                    "name"=>$row["processName"],
                     "start"=>$row["start"],
                     "end"=>$row["final"],
+                    "idProcessState"=> $row["idProcessState"],
+                    "processState"=> $row["processState"],
                 ] ;
             }
             
