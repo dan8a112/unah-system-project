@@ -256,7 +256,7 @@
                 "amountApproved"=> 0,
                 "amountInscriptions"=> $amountInscription,
                 "higherScores"=> $higherScores,
-                "amountCentersInscripctions"=>$amountCentersInscripctions
+                "amountCentersInscriptions"=>$amountCentersInscripctions
             ];
 
         }

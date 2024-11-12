@@ -1,20 +1,26 @@
+import {HttpRequest} from '../../modules/HttpRequest.js'
+
 class Action{
 
     /**
      * Este metodo se encarga de renderizar en la pagina, la data recibida del servidor.
      * @param {*} data un objeto que contiene estadisticas sobre el proceso de admision actual
      */
-    static renderActiveProcess(data){
+    static renderHistoricProcess(data){
         
         //Se destructura la data
-        const {dates, amountApproved, amountInscriptions, higherScore, amountCentersInscriptions} = data;
+        const {infoProcess, amountApproved, amountInscriptions, higherScores, amountCentersInscriptions} = data;
+
+        //Se renderiza el nombre del proceso
+        const processName = document.querySelector("h1#processName");
+        processName.innerText = infoProcess.name;
 
         //Se renderizan las fechas
         const startDate = document.querySelector("p#startDate");
         const finishDate = document.querySelector("p#finishDate");
         
-        startDate.innerText = dates.start;
-        finishDate.innerText = dates.end;
+        startDate.innerText = infoProcess.start;
+        finishDate.innerText = infoProcess.end;
 
         //Se renderiza cantidad de aprobados
 
@@ -23,8 +29,7 @@ class Action{
 
         //Se renderiza cantidad actual de inscripciones
         
-        const amountProcessInscription = document.querySelector("span#amountInscriptions");
-
+        const amountProcessInscription = document.querySelector("h1#amountInscriptions");
         amountProcessInscription.innerText = amountInscriptions;
 
         //Se renderizan las cinco notas mas altas del proceso de admision
@@ -32,7 +37,7 @@ class Action{
         const higherScoreBody = document.querySelector("tbody#higherScoreTbl");
         
         //Se crean las filas y columnas de la tabla
-        higherScore.forEach(inscription=>{
+        higherScores.forEach(inscription=>{
             
             const row = document.createElement("tr");
             
@@ -69,11 +74,12 @@ class Action{
         amountCentersInscriptions.forEach(center=>{
 
             //Se crea un item de centro regional
-            const centerItem = document.createElement("div")
-            .classList.add("regional-center-item");
+            const centerItem = document.createElement("div");
+            centerItem.classList.add("regional-center-item");
 
             //Se crea texto de nombre de centro
-            const centerName = document.createElement("span").classList.add("font-medium");
+            const centerName = document.createElement("span");
+            centerName.classList.add("font-medium");
             centerName.innerText = center.name;
 
             //Se crea texto de cantidad de inscripciones
@@ -87,7 +93,19 @@ class Action{
         })
     }
 
-
+    /**
+     * Este metodo manda a llamar a la api para obtener la informacion de un proceso de admision historico
+     * @param {*} id el id del proceso de admision solicitado
+     */
+    static fetchHistoricData = async (id)=>{
+        const response = await HttpRequest.get(`../../../api/get/admissionDetail/?id=${id}`);
+        if (response.status) {
+            console.log(response.data)
+            this.renderHistoricProcess(response.data);
+        }else{
+            console.error(response.message);
+        }
+    }
     
 }
 
