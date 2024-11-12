@@ -84,6 +84,8 @@ CREATE TABLE Application(
     regionalCenterChoice TINYINT,
     applicationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     academicEvent INT,
+    approvedFirstChoice BOOLEAN,
+    approvedSecondChoice BOOLEAN,
     CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
