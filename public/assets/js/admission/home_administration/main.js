@@ -61,12 +61,10 @@ async function loadData() {
   console.log(data)
 
   if (data) {
-    // Verificar y utilizar el dato `currentProces`
     if (data.currentProces && data.currentProces.name) {
       makeCurrentProcesCard(data.currentProces.id, data.currentProces.name);
     }
 
-    // Crear y dibujar el BarChart
     if (previousProcessesSummary) {
       const barChart = new BarChart("admissionChart", previousProcessesSummary.applicantsAmount, previousProcessesSummary.processes);
       barChart.draw();
@@ -86,15 +84,4 @@ loadData();
 
 
 
-const gg = {"message":"Pet",
-    "status":true,
-    "data":{
-        "currentProces":{
-            "id":5,
-            "name":"3 proceso, 2024"
-        },
-        "processSummary":[
-            {"id":2,"name":"1 proceso, 2023","applications":10},
-            {"id":1,"name":"1 proceso, 2022","applications":15}]},
-    "previousProcesses":[{"year":2023,"processes":[{"id":2,"title":"1 Proceso 2023"}]},{"year":2022,"processes":[{"id":1,"title":"1 Proceso 2022"}]}]}
 

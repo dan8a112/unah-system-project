@@ -564,7 +564,7 @@ CREATE PROCEDURE insertApplicant(
     IN p_secondName VARCHAR(15),
     IN p_firstLastName VARCHAR(15),
     IN p_secondLastName VARCHAR(15),
-    IN p_pathSchoolCertificate VARCHAR(30),
+    IN p_pathSchoolCertificate LONGBLOB,
     IN p_telephoneNumber VARCHAR(12),
     IN p_personalEmail VARCHAR(30),
     IN p_firstDegreeProgramChoice SMALLINT,

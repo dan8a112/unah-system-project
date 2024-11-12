@@ -75,6 +75,12 @@ export const makeTimeLine = (processes) => {
   document.body.appendChild(timeline);
 }
 
+/**
+ * Esta funcion se encarga de recibir un objeto y crear otro con dos arreglos para dibujar el grafico
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 12/11/24
+ **/
 export const separateData = (arr) => {
   const result = {
       applicantsAmount: [],

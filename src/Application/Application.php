@@ -52,7 +52,7 @@
          * version: 0.3.0
          * date: 11/11/24
          */
-        public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, string $pathSchoolCertificate, string $telephoneNumber,
+        public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, $pathSchoolCertificate, string $telephoneNumber,
             string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
 
             $currentProcess = $this->applicationInCurrentProcess($identityNumber);
