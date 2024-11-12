@@ -11,12 +11,12 @@
 
     if($result){
         $json = [
-            "message"=> "Hay un proceso de inscripción actualmente",
+            "message"=> "Se enviaron los correos",
             "status"=> $result,            
         ];
     }else{
         $json = [
-            "message"=> "No hay un proceso de inscripción actualmente",
+            "message"=> "Lastimosamente no se enviaron los correos, hay un error.",
             "status"=> $result,            
         ];
     }

@@ -34,3 +34,6 @@ curl http://localhost:3000/api/get/admissionDetail/?id=1 | jq
 
 --------------Curl para saber si hay un proceso de admision actualmente---------------
 curl http://localhost:3000/api/get/activeAdmissionProcess | jq
+
+--------------Curl para saber si hay un proceso de admision actualmente---------------
+curl http://localhost:3000/api/get/sendMails | jq

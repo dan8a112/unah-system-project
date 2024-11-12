@@ -1,6 +1,13 @@
 <?php
 
     Class MailSenderDAO{
+
+        private $mysqli;
+
+        public function __construct(string $server, string $user, string $pass, string $dbName) {
+            $this->mysqli = new mysqli($server, $user, $pass, $dbName);
+        }
+
         public function sendMail($name, $result, $testsResults, $mail){
 
             // Configuración del correo
@@ -113,6 +120,11 @@
             }
 
             return true;
+        }
+
+        // Método para cerrar la conexión
+        public function closeConnection() {
+            $this->mysqli->close();
         }
 
     }
