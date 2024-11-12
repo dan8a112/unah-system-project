@@ -73,7 +73,7 @@
 
             $result = $this->mysqli->execute_query($query);
             $bodyGrades= '';
-            $testsResults= "";
+            $testsResults='';
 
             foreach($result as $row){
                 $students[] = [
@@ -88,6 +88,7 @@
             }
 
             foreach($students as $student){
+                $exams = [];
                 $result1 = $this->mysqli->execute_query($query1, [$student["idApplication"]]);
                 foreach($result1 as $row){
                     $exams[] = [
@@ -116,6 +117,7 @@
                     if(!$sent){
                         return false;
                     }
+                    $testsResults=" ";
                 }
             }
 

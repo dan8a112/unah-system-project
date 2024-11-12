@@ -760,7 +760,7 @@ END //
 
     Procedimiento almacenado para obtener los resultados de las inscripciones
 **/
-CREATE PROCEDURE ResultsActualProcess ()
+CREATE PROCEDURE ResultsActualProcess()
 BEGIN
     DECLARE idCurrent INT;
     SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=true);
