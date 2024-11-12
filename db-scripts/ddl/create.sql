@@ -69,8 +69,6 @@ CREATE TABLE AcademicSubprocess (
     id INT AUTO_INCREMENT PRIMARY KEY,
     academicEventId INT NOT NULL,
     academicProcessId INT NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    description VARCHAR(255),
     startDate DATETIME,
     endDate DATETIME,
     active TINYINT(1) DEFAULT 1,
@@ -147,22 +145,6 @@ CREATE TABLE Results(
     CONSTRAINT fk_application FOREIGN KEY(application) REFERENCES Application(id),
     CONSTRAINT fk_admissionTest_Results FOREIGN KEY(admissionTest) REFERENCES AdmissionTest(id)
 );
-
-CREATE TABLE AcademicSubprocess (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    academicEventId INT NOT NULL,
-    academicProcessId INT NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    description VARCHAR(255),
-    startDate DATETIME,
-    endDate DATETIME,
-    active TINYINT(1) DEFAULT 1,
-    FOREIGN KEY (academicEventId) REFERENCES AcademicEvent(id),
-    FOREIGN KEY (academicProcessId) REFERENCES AcademicProcess(id)
-);
-
-
-
 
 CREATE TABLE Configuration(
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -461,19 +443,26 @@ INSERT INTO Professor(id, professorType, department) VALUES
 ;
 
 INSERT INTO AcademicProcess(description) VALUES 
+    ('Proceso de Admisiones'),
+    ('Proceso de Matricula'),
     ('Inscripciones'),
     ('Revisión de examenes'),
     ('Envio de resultados'),
     ('Creación de expediente'),
-    ('Planificación académica'),
-    ('Matricula'),
-    ('Ingreso de notas')
+    ('Planificación académica')
 ;
 
 INSERT INTO AcademicEvent(process, startDate, finalDate, active) VALUES
     (1,'2022-11-11 00:00:00', '2022-11-12 00:00:00', false),
     (1,'2023-11-11 00:00:00', '2023-11-12 00:00:00', false),
-    (1, '2024-11-12 00:00:00', '2024-11-14 00:00:00', true)
+    (1, '2024-11-13 00:00:00', '2024-11-20 00:00:00', true)
+;
+
+INSERT INTO  AcademicSubprocess(academicEventId, academicProcessId, startDate, endDate, active) VALUES
+    (3,3, '2024-11-13 00:00:00', '2024-11-14 00:00:00', true),
+    (3,4, '2024-11-14 00:00:00', '2024-11-15 00:00:00', true),
+    (1,5, '2024-11-15 00:00:00', '2024-11-16 00:00:00', true),
+    (1,6, '2024-11-16 00:00:00', '2024-11-17 00:00:00', true)
 ;
 
 INSERT INTO Configuration(data) VALUES
