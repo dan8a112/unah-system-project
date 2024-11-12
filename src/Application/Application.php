@@ -65,15 +65,17 @@
                     Validator::isEmail($personalEmail)
                 ){
                     $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
-                    $query1= "SELECT b.admissionTest AS admissionTest
-                                FROM Application a
-                                INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
-                                WHERE a.id = ?
-                                UNION
-                                SELECT c.admissionTest
-                                FROM Application a
-                                INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
-                                WHERE a.id = ?";
+                    $query1= "SELECT b.admissionTest, d.description
+                            FROM Application a
+                            INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
+                            INNER JOIN AdmissionTest d ON b.admissionTest = d.id
+                            WHERE a.id = ?
+                            UNION
+                            SELECT c.admissionTest, e.description
+                            FROM Application a
+                            INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
+                            INNER JOIN AdmissionTest e ON c.admissionTest = e.id
+                            WHERE a.id = ?";
                     $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
 
                     try{
@@ -92,11 +94,13 @@
                                 $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
                                 foreach($result1 as $row){
                                     $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
+                                    $exams[] = $row['description'];
                                 };
 
                                 return [
                                     "status" => true,
-                                    "message" => "Inscription hecha correctamente"
+                                    "message" => "Inscription hecha correctamente",
+                                    "exams"=> $exams
                                 ];
 
                             } else {
@@ -125,6 +129,52 @@
 
             }
             
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/11/24
+         */
+        public function getInfoCurrentAdmission(){
+
+            $query = 'CALL InfoCurrentProcessAdmission();';
+            $query1 = 'CALL AmountInscription();';
+            $query2 = 'CALL LastestInscription();';
+
+            $result = $this->mysqli->execute_query($query);
+
+            foreach($result as $row){
+                $infoProcess = [
+                    "id" => $row["id"],
+                    "name"=>$row["description"],
+                    "start"=>$row["start"],
+                    "end"=>$row["final"],
+                ] ;
+            }
+            
+            $result1 = $this->mysqli->execute_query($query1);
+
+            foreach($result1 as $row){
+                $amountInscription = $row['amountInscriptions'];
+            }
+
+            $result2 = $this->mysqli->execute_query($query2);
+
+            foreach($result2 as $row){
+                $lastestInscrptions[] = [
+                    "id" => $row["id"],
+                    "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
+                    "career"=>$row["description"],
+                    "inscriptionDate"=>$row["applicationDate"],
+                ] ;
+            }
+
+            return [
+                "infoProcess"=> $infoProcess,
+                "amountInscription"=> $amountInscription,
+                "lastestInscriptions"=> $lastestInscrptions
+            ];
         }
 
         // Método para cerrar la conexión

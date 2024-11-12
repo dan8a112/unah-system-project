@@ -22,3 +22,6 @@ curl http://localhost:3000/api/get/professorTypes | jq
 
 -------------Curl para probar api/get/departments-----------------------
 curl http://localhost:3000/api/get/departments | jq
+
+-------------Curl para obtener el proceso de admision actual----------------
+curl http://localhost:3000/api/get/infoCurrentAdmission | jq
