@@ -682,6 +682,60 @@ BEGIN
     WHERE `RegionalCenter`.id = regionalCenterId;
 END //
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 11/11/24
+
+    Procedimiento almacenado para obtener la informacion del proceso actual
+**/
+CREATE PROCEDURE InfoCurrentProcessAdmission ()
+BEGIN
+    SET lc_time_names = 'es_ES';
+    SELECT b.id, b.description, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
+    FROM AcademicEvent a
+    INNER JOIN AcademicProcess b ON (a.process = b.id)
+    WHERE a.active = true AND b.id IN (1,2,3,4);   
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 11/11/24
+
+    Procedimiento almacenado para saber la cantidad de inscripciones
+**/
+CREATE PROCEDURE AmountInscription ()
+BEGIN
+    DECLARE idCurrent INT;
+    SET idCurrent = (SELECT MAX(id) FROM AcademicEvent WHERE process=1);
+
+    SELECT COUNT(*) as amountInscriptions 
+    FROM Application 
+    WHERE academicEvent=idCurrent;
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 11/11/24
+
+    Procedimiento almacenado para saber la cantidad de inscripciones
+**/
+CREATE PROCEDURE LastestInscription ()
+BEGIN
+    DECLARE idCurrent INT;
+    SET idCurrent = (SELECT MAX(id) FROM AcademicEvent WHERE process=1);
+
+    SELECT * 
+    FROM Application a
+    INNER JOIN Applicant b
+    ON (a.idApplicant = b.id)
+    INNER JOIN DegreeProgram c 
+    ON (a.firstDegreeProgramChoice = c.id)
+    WHERE a.academicEvent = idCurrent ORDER BY a.id DESC LIMIT 5;
+END //
+
 DELIMITER ;
 
 

@@ -131,6 +131,52 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/11/24
+         */
+        public function getInfoCurrentAdmission(){
+
+            $query = 'CALL InfoCurrentProcessAdmission();';
+            $query1 = 'CALL AmountInscription();';
+            $query2 = 'CALL LastestInscription();';
+
+            $result = $this->mysqli->execute_query($query);
+
+            foreach($result as $row){
+                $infoProcess = [
+                    "id" => $row["id"],
+                    "name"=>$row["description"],
+                    "start"=>$row["start"],
+                    "end"=>$row["final"],
+                ] ;
+            }
+            
+            $result1 = $this->mysqli->execute_query($query1);
+
+            foreach($result1 as $row){
+                $amountInscription = $row['amountInscriptions'];
+            }
+
+            $result2 = $this->mysqli->execute_query($query2);
+
+            foreach($result2 as $row){
+                $lastestInscrptions[] = [
+                    "id" => $row["id"],
+                    "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
+                    "career"=>$row["description"],
+                    "inscriptionDate"=>$row["applicationDate"],
+                ] ;
+            }
+
+            return [
+                "infoProcess"=> $infoProcess,
+                "amountInscription"=> $amountInscription,
+                "lastestInscriptions"=> $lastestInscrptions
+            ];
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();
