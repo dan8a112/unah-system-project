@@ -460,9 +460,9 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active) VALUES
 
 INSERT INTO  AcademicSubprocess(academicEventId, academicProcessId, startDate, endDate, active) VALUES
     (3,3, '2024-11-13 00:00:00', '2024-11-14 00:00:00', true),
-    (3,4, '2024-11-14 00:00:00', '2024-11-15 00:00:00', true),
-    (1,5, '2024-11-15 00:00:00', '2024-11-16 00:00:00', true),
-    (1,6, '2024-11-16 00:00:00', '2024-11-17 00:00:00', true)
+    (3,4, '2024-11-14 00:00:00', '2024-11-15 00:00:00', false),
+    (1,5, '2024-11-15 00:00:00', '2024-11-16 00:00:00', false),
+    (1,6, '2024-11-16 00:00:00', '2024-11-17 00:00:00', false)
 ;
 
 INSERT INTO Configuration(data) VALUES
