@@ -8,7 +8,7 @@
     //Data Access Object
     $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    if(isset($_SESSION['userSEDP'])){
+    if(isset($_SESSION['userAdmission'])){
         //There is an open session 
         $json = [
             "status"=> 0,
@@ -23,10 +23,10 @@
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
 
-        $status = $dao->loginSEDP($mail, $password);
+        $status = $dao->loginAdmission($mail, $password);
 
         if($status){
-            $_SESSION['userSEDP'] = $mail;
+            $_SESSION['userAdmission'] = $mail;
             $json = [
                 "message"=> "Credenciales correctas",
                 "status"=> 1,                
@@ -38,9 +38,6 @@
                 "status"=> 2,                
             ];
         }
-
-        
-
     }else{
         //There's no user autenticated go to login or an error occur
         $json = [

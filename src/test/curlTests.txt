@@ -13,6 +13,9 @@ curl http://localhost:3000/api/get/infoAdmission | jq
 curl -d "mail=juan.perez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/loginSEDP | jq
 
 
+--------------Curl para probar api/post/loginAdmission-----------------------
+curl -d "mail=maria.ramirez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/loginAdmission | jq
+
 --------------Curl para probar api/get/infoHomeSEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 
@@ -22,3 +25,12 @@ curl http://localhost:3000/api/get/professorTypes | jq
 
 -------------Curl para probar api/get/departments-----------------------
 curl http://localhost:3000/api/get/departments | jq
+
+-------------Curl para obtener el proceso de admision actual----------------
+curl http://localhost:3000/api/get/infoCurrentAdmission | jq
+
+-----------Curl para obtener una admision historica------------------
+curl http://localhost:3000/api/get/admissionDetail/?id=1 | jq
+
+--------------Curl para saber si hay un proceso de admision actualmente---------------
+curl http://localhost:3000/api/get/activeAdmissionProcess | jq
