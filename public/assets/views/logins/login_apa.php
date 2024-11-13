@@ -4,7 +4,7 @@
   session_start();
 
   if (SessionValidation::isValid($_SESSION, "apa")){
-    header("Location: /assets/views/admission/administrative_home.html");
+    header("Location: /assets/views/admission/administrative_home.php");
   }
   
 ?>
@@ -42,7 +42,8 @@
                   Administracion
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">SEDP Login</a></li>
+                  <li><a class="dropdown-item" href="assets/views/logins/login_sedp.php">SEDP Login</a></li>
+                  <li><a class="dropdown-item" href="assets/views/logins/login_apa.php">APA Login</a></li>
                 </ul>
               </li>
             </ul>

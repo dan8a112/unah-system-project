@@ -160,6 +160,13 @@ class Action{
         });
     }
 
+    static async logout(){
+        const response = await HttpRequest.get("../../../api/get/logout");
+        if (response.status) {
+            window.location.href = "/"
+        }
+    }
+
 }
 
 export {Action}

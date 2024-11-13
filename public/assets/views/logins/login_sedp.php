@@ -1,3 +1,13 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (SessionValidation::isValid($_SESSION, "sedp")){
+    header("Location: /assets/views/administration/sedp-portal.php");
+  }
+  
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

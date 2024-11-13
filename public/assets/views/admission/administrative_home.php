@@ -1,3 +1,12 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (!SessionValidation::isValid($_SESSION, "apa")){
+    header("Location: /assets/views/logins/login_apa.php");
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

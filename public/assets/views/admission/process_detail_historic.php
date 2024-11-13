@@ -1,12 +1,20 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (!SessionValidation::isValid($_SESSION, "apa")){
+    header("Location: /assets/views/logins/login_apa.php");
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proceso de admision actual</title>
+    <title>X Proceso de admisión</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/admission/process_detail.css">
-    <link rel="stylesheet" href="../../css/temas/popup.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
@@ -32,15 +40,15 @@
             </ul>
           </div>
         </div>
-    </nav>
-    <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
+      </nav>
+      <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
 
-    <div class="container mb-5">
+    <div class="container mb-5" id="processContent">
 
         <section class="my-4">
             <div class="d-flex align-items-center">
                 <h1 class="display3 me-3" id="processName"></h1>
-                <div class="status-card" style="background-color: #00C500;">Activo</div>
+                <div class="status-card">Finalizado</div>
             </div>
             <p>A continuación encontrará informacion y estadísticas sobre este proceso de admisión.</p>
         </section>
@@ -65,10 +73,10 @@
             <div class="card-container col">
                 <div class="d-flex align-items-center">
                     <img src="../../img/icons/state-icon.svg" alt="" class="me-2">
-                    <span >Estado de proceso</span>
+                    <span>Cantidad de aprobados</span>
                 </div>
                 <div class="d-flex justify-content-center align-items-center" style="height: 80%;">
-                    <h1 class="display-6" style="font-weight: 400;" id="admissionState">Inscripciones</h1>
+                    <h1 class="display-6" style="font-weight: 400;" id="amountApprobed">400</h1>
                 </div>
             </div>
             <div class="card-container col">
@@ -82,47 +90,48 @@
             </div>
         </section>
 
-        
-        <section id="upload_csv" class="mb-4 row">
-            <div class="card-container d-flex justify-content-between">
-                <div>
-                    <p class="font-medium">Subida de calificaciones</p>
-                    <p>El proceso de admisión está en publicacion de resultados puedes subir el archivo de calificaciones aqui.</p>
-                </div>
-                <button class="button-upload btn" id="uploadCsvBtn">
-                    <img src="../../img/icons/upload.svg" alt="" class="me-2">
-                    <span>Subir CSV</span>
-                </button>
-            </div>
-        </section>
+        <div class="row gap-5">
 
-
-        <section class="row">
-            <div class="card-container">
-                <p class="fs-2">Ultimas inscripciones</p>
-                <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Carrera principal</th>
-                        <th scope="col">Fecha de inscripcion</th>
-                      </tr>
-                    </thead>
-                    <tbody id="lastInscriptionsTbl">    
-                    </tbody>
+          <div class="card-container col-8">
+                  <p class="fs-2">Calificaciones mas altas</p>
+                  <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Carrera principal</th>
+                          <th scope="col">Puntaje</th>
+                        </tr>
+                      </thead>
+                      <tbody id="higherScoreTbl"></tbody>
                   </table>
-            </div>
-        </section>
+          </div>
+
+          <div class="card-container col" id="amountCentersContainer">
+                  <div class="d-flex align-items-center">
+                      <img src="../../img/icons/graduation-icon.svg" alt="" class="me-2">
+                      <span>Inscripciones por centro</span>
+                  </div>
+          </div>
+      </div>
     </div>
 
-    <div class="popup" id="popupError" style="border: solid 1px #EC0000;">
-        <img src="../../img/icons/error.svg" alt="">
-        <h2>Error!</h2>
-        <p id="message"></p>
-        <button type="button" id="buttonClose">OK</button>
+    <div class="modal" tabindex="-1" id="modalDom">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Procesos de admision</h5>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            <a type="button" class="btn btn-primary" href="../admission/administrative_home.html">Regresar a Inicio</a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script type="module" src="../../js/admission/process_detail_active/main.js"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../../js/admission/process_detail_historic/main.js"></script>
 </body>
 </html>
