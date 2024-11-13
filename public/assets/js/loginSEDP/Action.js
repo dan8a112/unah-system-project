@@ -2,17 +2,17 @@ import { HttpRequest } from "../modules/HttpRequest.js";
 
 class Action {
 
-    static async submitLoginForm(event){
+    static async submitLoginForm(event, url, redirect){
 
         event.preventDefault();
 
         //Se envia el formulario con correo y contraseña
-        const data = await HttpRequest.submitForm(event,"http://localhost:3000/api/post/loginSEDP");
+        const data = await HttpRequest.submitForm(event,url);
 
         //Se evalua la respuesta
         if (data.status==1 || data.status==0) {
             //redirecciona a pagina principal
-            window.location.href = "../administration/sedp-portal.html"
+            window.location.href = redirect
         
         }else{
             const errorSection = document.querySelector("#errorSection");
