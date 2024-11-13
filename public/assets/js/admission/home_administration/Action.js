@@ -12,7 +12,7 @@ export const makeCurrentProcesCard = (id, name) => {
   
   // Redirigir a vista de proceso actual
   cardContainer.addEventListener('click', () => {
-      window.location.href = `../../../assets/views/admission/process_detail_active.html`; 
+      window.location.href = `../../../assets/views/admission/process_detail_active.php`; 
   });
 
   const capIcon = document.createElement('img');
@@ -65,7 +65,7 @@ export const makeTimeLine = (processes) => {
       content.classList.add("content");
 
       const link = document.createElement("a");
-      link.href = `../../../assets/views/admission/process_detail_historic.html/${process.id}`;
+      link.href = `../../../assets/views/admission/process_detail_historic.php?id=${process.id}`;
       link.classList.add("more-link");
       link.textContent = "Ver más";
 

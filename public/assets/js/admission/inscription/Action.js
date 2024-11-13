@@ -1,10 +1,3 @@
-/**
- * 
- * author: afcastillof@unah.hn
- * version: 0.1.0
- * date: 6/11/24
- * 
- **/
 import { HttpRequest } from '../../modules/HttpRequest.js'; 
 import { Selects } from '../../modules/Selects.js'; 
 
@@ -12,6 +5,13 @@ const url = '../../../api/get/infoAdmission';
 let regionalCentersData = [];
 let careersData = [];
 
+/**
+ * Esta funcion se encarga de dar la lista de carreras para las opciones de los select
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 6/11/24
+ * 
+ **/
 export const loadSelectOptions = async (selectFirstCareer, selectSecondCareer, selectRegionalCenters) => {
   try {
     const data = await HttpRequest.get(url);
@@ -33,7 +33,13 @@ export const loadSelectOptions = async (selectFirstCareer, selectSecondCareer, s
     console.error('Error al cargar las opciones:', error);
   }
 };
-
+/**
+ * Esta funcion se encarga de habilitar los select una vez se halla elegido el centro regional
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 6/11/24
+ * 
+ **/
 export const enableCareerSelects = (selectFirstCareer, selectSecondCareer, selectRegionalCenters) => {
   const selectedRegionalCenterId = parseInt(selectRegionalCenters.value);
 
@@ -70,7 +76,12 @@ export const enableCareerSelects = (selectFirstCareer, selectSecondCareer, selec
 
  /*
  * Esta función filtra las carreras que están disponibles en un centro regional específico
- */
+ *
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 6/11/24
+ * 
+ **/
  function classifyCareers(centerData, careersList) {
     return careersList.filter(career => centerData.careers.includes(career.idCareer));
 }

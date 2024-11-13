@@ -15,6 +15,7 @@ const popupError = document.getElementById('popupError');
 const message = document.getElementById('message');
 const buttonOk1 = document.getElementById('buttonOk1');
 const buttonOk2 = document.getElementById('buttonOk2');
+const exitMessage = document.getElementById('exitMessage');
 
 
 // Llamamos a la función para cargar las opciones cuando la página esté lista
@@ -32,6 +33,7 @@ document.getElementById('form-inscription').addEventListener('submit', (event) =
   .then(result => {
     if (result.status) {
         Popup.open(popup);
+        exitMessage.innerHTML = `Tu inscripcion fue realizada exitosamente, tendras que realizar los examenes: ${result.exams}`
     } else {
       Popup.open(popupError);
       message.innerHTML = result.message;

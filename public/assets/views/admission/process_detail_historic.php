@@ -128,7 +128,7 @@
           <div class="modal-body">
           </div>
           <div class="modal-footer">
-            <a type="button" class="btn btn-primary" href="../admission/administrative_home.html">Regresar a Inicio</a>
+            <a type="button" class="btn btn-primary" href="../admission/administrative_home.html">Ok</a>
           </div>
         </div>
       </div>

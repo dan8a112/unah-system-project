@@ -1,10 +1,10 @@
 class Modal {
+    static modalInstance = null; 
 
-    static openModal(dom, content, backdropOption, event){
-
+    static openModal(dom, content, backdropOption) {
         const options = {
             keyboard: false
-        }
+        };
 
         if (backdropOption) {
             options["backdrop"] = backdropOption;
@@ -15,10 +15,18 @@ class Modal {
             modalBody.innerHTML = content;
         }
 
-        const modal = new bootstrap.Modal(dom,options);
-        modal.show();
+        Modal.modalInstance = new bootstrap.Modal(dom, options);
+        Modal.modalInstance.show();
     }
 
+    static closeModal() {
+        if (Modal.modalInstance) {
+            Modal.modalInstance.hide();
+            Modal.modalInstance = null;
+        } else {
+            console.warn("No se encontró una instancia activa del modal para cerrar.");
+        }
+    }
 }
 
-export {Modal}
+export { Modal };
