@@ -1,4 +1,11 @@
 <?php
+
+    //author: afcastillof@unah.hn
+    //version: 0.1.0
+    //date: 12/11/24
+
+    //servicio para crear csv con estudiantes aprobados
+
 header("Content-Type: application/json");
 
 include_once "../../../../src/DbConnection/DbConnection.php";
@@ -9,7 +16,33 @@ $response = [];
 try {
     $exporter = new CSVExporter(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    $sql = "SELECT * FROM applicant"; 
+    $sql = "SELECT 
+                a.id AS idApplication,
+                CONCAT(b.firstName, ' ', b.secondName, ' ', b.firstLastName, ' ', b.secondLastName) AS name,
+                b.personalEmail,
+                CASE 
+                    WHEN a.approvedFirstChoice = 1 THEN c.description
+                    WHEN a.approvedSecondChoice = 1 THEN d.description
+                END AS approvedCareer,
+                CASE 
+                    WHEN a.approvedFirstChoice = 1 THEN c.id
+                    WHEN a.approvedSecondChoice = 1 THEN d.id
+                END AS approvedCareerId
+            FROM 
+                Application a
+            INNER JOIN 
+                Applicant b ON a.idApplicant = b.id
+            INNER JOIN 
+                DegreeProgram c ON a.firstDegreeProgramChoice = c.id
+            INNER JOIN 
+                DegreeProgram d ON a.secondDegreeProgramChoice = d.id
+            INNER JOIN 
+                academicevent e ON a.academicEvent = e.id
+            WHERE 
+                e.active = 1
+                AND (a.approvedFirstChoice = 1 OR a.approvedSecondChoice = 1);
+
+            "; 
 
     $filename = 'estudiantes_aprobados_' . time() . '.csv';
 
