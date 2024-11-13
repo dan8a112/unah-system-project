@@ -11,5 +11,6 @@ createButton.addEventListener('click', Action.fetchFormProfessors);
 const createProfessorForm = document.querySelector("#createProfessorForm")
 createProfessorForm.addEventListener('submit', Action.submitFormProfessor.bind(createProfessorForm));
 
+//Se agrega accion de boton para cerrar sesion
 const logoutButton = document.querySelector("button#logoutBtn")
 logoutButton.addEventListener("click", Action.logout)

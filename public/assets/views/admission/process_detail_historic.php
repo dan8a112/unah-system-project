@@ -12,6 +12,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="dochoao@unah.hn">
+    <meta name="date" content="04/11/2024">
+    <meta name="version" content="0.1.0">
     <title>X Proceso de admisión</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/admission/process_detail.css">
