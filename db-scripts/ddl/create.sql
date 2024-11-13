@@ -773,6 +773,23 @@ BEGIN
     WHERE a.academicEvent=idCurrent;
 END //
 
+CREATE EVENT statusVerification
+ON SCHEDULE EVERY 1 DAY
+STARTS '2024-11-13 00:00:00'
+DO
+    BEGIN
+     
+        -- Actualizar el estado de los eventos académicos
+    UPDATE `AcademicEvent` 
+    SET active = 1
+    WHERE startDate <= CURDATE() AND CURDATE() <= finalDate;
+
+    -- Actualizar el estado de los subprocesos académicos
+    UPDATE `AcademicSubProcess`
+    SET active = 1
+    WHERE startDate <= CURDATE() AND CURDATE() <= endDate;
+END;
+
 DELIMITER ;
 
 
