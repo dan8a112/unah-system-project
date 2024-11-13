@@ -771,26 +771,38 @@ BEGIN
     INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
     INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
     WHERE a.academicEvent=idCurrent;
-END //
-DELIMITER $$
+END;
 
+
+-- Set the event scheduler ON
+SET GLOBAL event_scheduler = ON;
+
+-- Create the scheduled event
 CREATE EVENT statusVerification
 ON SCHEDULE EVERY 1 DAY
 STARTS '2024-11-13 00:00:00'
 DO
 BEGIN
-    -- Actualizar el estado de los eventos académicos
+    -- Activate events within date range
     UPDATE AcademicEvent
     SET active = 1
     WHERE startDate <= CURDATE() AND CURDATE() <= finalDate;
 
-    -- Actualizar el estado de los subprocesos académicos
+    -- Deactivate events outside date range
+    UPDATE AcademicEvent
+    SET active = 0
+    WHERE CURDATE() < startDate OR CURDATE() > finalDate;
+
+    -- Activate sub-processes within date range
     UPDATE AcademicSubProcess
     SET active = 1
     WHERE startDate <= CURDATE() AND CURDATE() <= endDate;
-END$$
 
-DELIMITER ;
+    -- Deactivate sub-processes outside date range
+    UPDATE AcademicSubProcess
+    SET active = 0
+    WHERE CURDATE() < startDate OR CURDATE() > endDate;
+END;
 
 
 
