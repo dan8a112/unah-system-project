@@ -83,7 +83,7 @@
                             WHERE a.id = ?";
                     $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
 
-                    try{
+                    //try{
                         $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
                             $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
                         
@@ -119,12 +119,12 @@
                             echo "Error al ejecutar el procedimiento: " . $conexion->error;
                         }
                         
-                    }catch (Exception $e){
+                    /*}catch (Exception $e){
                         return [
                             "status" => false,
                             "message" => "Error al hacer la consulta"
                         ];
-                    }
+                    }*/
                 }else{
                     return [
                             "status" => false,

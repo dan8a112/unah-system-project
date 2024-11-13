@@ -3,24 +3,24 @@
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Application/Application.php";
+    include_once "../../../../src/MailSender/MailSender.php";
 
     //Data Access Object
-    $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $result = $dao->isActiveAdmissionProcess();
+    $dao = new MailSenderDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
+    $result = $dao->sendAllMails();
 
     if($result){
         $json = [
-            "message"=> "Hay un proceso de inscripción actualmente",
+            "message"=> "Se enviaron los correos",
             "status"=> $result,            
         ];
     }else{
         $json = [
-            "message"=> "No hay un proceso de inscripción actualmente",
+            "message"=> "Lastimosamente no se enviaron los correos, hay un error.",
             "status"=> $result,            
         ];
     }
-    
+
     $dao->closeConnection();
     
     echo json_encode($json);

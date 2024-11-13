@@ -48,7 +48,7 @@ CREATE TABLE Applicant(
     secondLastName VARCHAR(15) NOT NULL,
     pathSchoolCertificate LONGBLOB NOT NULL,
     telephoneNumber VARCHAR(12),
-    personalEmail VARCHAR(30) 
+    personalEmail VARCHAR(50) 
 );
 
 CREATE TABLE AcademicProcess(
@@ -569,7 +569,7 @@ CREATE PROCEDURE insertApplicant(
     IN p_secondLastName VARCHAR(15),
     IN p_pathSchoolCertificate LONGBLOB,
     IN p_telephoneNumber VARCHAR(12),
-    IN p_personalEmail VARCHAR(30),
+    IN p_personalEmail VARCHAR(50),
     IN p_firstDegreeProgramChoice SMALLINT,
     IN p_secondDegreeProgramChoice SMALLINT,
     IN p_regionalCenterChoice TINYINT
@@ -751,6 +751,26 @@ BEGIN
     INNER JOIN DegreeProgram c 
     ON (a.firstDegreeProgramChoice = c.id)
     WHERE a.academicEvent = p_id ORDER BY a.id DESC LIMIT 5;
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 12/11/24
+
+    Procedimiento almacenado para obtener los resultados de las inscripciones
+**/
+CREATE PROCEDURE ResultsActualProcess()
+BEGIN
+    DECLARE idCurrent INT;
+    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=true);
+
+    SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, b.personalEmail, c.description as firstCareer, d.description as secondCareer, a.approvedFirstChoice, a.approvedSecondChoice
+    FROM Application a
+    INNER JOIN Applicant b ON(a.idApplicant=b.id)
+    INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+    INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
+    WHERE a.academicEvent=idCurrent;
 END //
 
 DELIMITER ;
