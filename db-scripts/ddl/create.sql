@@ -46,9 +46,9 @@ CREATE TABLE Applicant(
     secondName VARCHAR(15) NOT NULL,
     firstLastName VARCHAR(15) NOT NULL,
     secondLastName VARCHAR(15) NOT NULL,
-    pathSchoolCertificate VARCHAR(30),
+    pathSchoolCertificate LONGBLOB NOT NULL,
     telephoneNumber VARCHAR(12),
-    personalEmail VARCHAR(30) 
+    personalEmail VARCHAR(50) 
 );
 
 CREATE TABLE AcademicProcess(
@@ -84,6 +84,8 @@ CREATE TABLE Application(
     regionalCenterChoice TINYINT,
     applicationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     academicEvent INT,
+    approvedFirstChoice BOOLEAN,
+    approvedSecondChoice BOOLEAN,
     CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
@@ -492,32 +494,32 @@ INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName,
     ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
-INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent) VALUES
-    ('0801-1990-01234', 12, 1, 19, '2022-11-11 01:00:00', 1),
-    ('0802-1995-05678', 4, 5, 17, '2022-11-11 01:00:00', 1),
-    ('0803-1993-04567', 9, 8, 19, '2022-11-11 01:00:00', 1),
-    ('0804-1992-02345', 38, 32, 4, '2022-11-11 01:00:00', 1),
-    ('0805-1994-08765', 39, 32, 15, '2022-11-11 01:00:00', 1),
-    ('0806-1991-03456', 34, 35, 19, '2022-11-11 01:00:00', 1),
-    ('0807-1997-09876', 41, 42, 2, '2022-11-11 01:00:00', 1),
-    ('0808-1996-05674', 14, 29, 15, '2022-11-11 01:00:00', 1),
-    ('0809-1992-01234', 12, 1, 19, '2022-11-11 01:00:00', 1),
-    ('0810-1995-02345', 25, 24, 19, '2022-11-11 01:00:00', 1),
-    ('0811-1991-04567', 38, 32, 4, '2022-11-11 01:00:00', 1),
-    ('0812-1998-03456', 14, 19, 1, '2022-11-11 01:00:00', 1),
-    ('0813-1993-05678', 21, 20, 19, '2022-11-11 01:00:00', 1),
-    ('0814-1997-01234', 14, 19, 1, '2022-11-11 01:00:00', 1),
-    ('0815-1995-08765', 43, 19, 3, '2022-11-11 01:00:00', 1),
-    ('0816-1992-03456', 45, 42, 2, '2023-11-11 01:00:00', 2),
-    ('0817-1993-09876', 36, 35, 19, '2023-11-11 01:00:00', 2),
-    ('0818-1996-05678', 38, 32, 4, '2023-11-11 01:00:00', 2),
-    ('0819-1995-02345', 21, 20, 19, '2023-11-11 01:00:00', 2),
-    ('0820-1991-06789', 14, 19, 1, '2023-11-11 01:00:00', 2),
-    ('0805-1994-08765', 39, 32, 15, '2023-11-11 01:00:00', 2),
-    ('0806-1991-03456', 34, 35, 19, '2023-11-11 01:00:00', 2),
-    ('0807-1997-09876', 41, 42, 2, '2023-11-11 01:00:00', 2),
-    ('0808-1996-05674', 14, 29, 15, '2023-11-11 01:00:00', 2),
-    ('0809-1992-01234', 12, 1, 19, '2023-11-11 01:00:00', 2)
+INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice) VALUES
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true),
+    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true),
+    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false),
+    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false),
+    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true),
+    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true)
 ;
 
 INSERT INTO Results(application, admissionTest, grade) VALUES
@@ -531,6 +533,7 @@ INSERT INTO Results(application, admissionTest, grade) VALUES
     (8,1,1024),
     (9,1,1369),
     (10,1,785),
+    (10,2,459),
     (11,1,369),
     (12,1,852),
     (13,1,148),
@@ -566,7 +569,7 @@ CREATE PROCEDURE insertApplicant(
     IN p_secondLastName VARCHAR(15),
     IN p_pathSchoolCertificate LONGBLOB,
     IN p_telephoneNumber VARCHAR(12),
-    IN p_personalEmail VARCHAR(30),
+    IN p_personalEmail VARCHAR(50),
     IN p_firstDegreeProgramChoice SMALLINT,
     IN p_secondDegreeProgramChoice SMALLINT,
     IN p_regionalCenterChoice TINYINT
@@ -748,6 +751,26 @@ BEGIN
     INNER JOIN DegreeProgram c 
     ON (a.firstDegreeProgramChoice = c.id)
     WHERE a.academicEvent = p_id ORDER BY a.id DESC LIMIT 5;
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 12/11/24
+
+    Procedimiento almacenado para obtener los resultados de las inscripciones
+**/
+CREATE PROCEDURE ResultsActualProcess()
+BEGIN
+    DECLARE idCurrent INT;
+    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=true);
+
+    SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, b.personalEmail, c.description as firstCareer, d.description as secondCareer, a.approvedFirstChoice, a.approvedSecondChoice
+    FROM Application a
+    INNER JOIN Applicant b ON(a.idApplicant=b.id)
+    INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+    INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
+    WHERE a.academicEvent=idCurrent;
 END //
 
 DELIMITER ;

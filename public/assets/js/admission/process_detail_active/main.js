@@ -1,6 +1,7 @@
 import { Action } from "./Action.js"
 import { HttpRequest } from '../../modules/HttpRequest.js';
 
+//Se obtiene la información que carga la pagina del detalle de proceso de admision actual
 Action.fetchActiveData();
 
 document.getElementById("downloadCsvBtn").addEventListener("click", function() {

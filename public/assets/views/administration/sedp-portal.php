@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="dochoao@unah.hn">
+    <meta name="date" content="04/11/2024">
+    <meta name="version" content="0.1.0">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <title>Portal SEDP</title>
 </head>
@@ -22,7 +25,7 @@
           <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
             <ul class="navbar-nav gap-3">
               <li class="nav-item">
-                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;">
+                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;" id="logoutBtn">
                     <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
                     Cerrar Sesión
                 </button>
