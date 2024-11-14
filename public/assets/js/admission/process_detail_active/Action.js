@@ -1,4 +1,5 @@
 import { HttpRequest } from "../../modules/HttpRequest.js";
+import { Modal } from "../../modules/Modal.js"
 import {Popup} from "../../modules/Popup.js"
 
 class Action{
@@ -78,19 +79,57 @@ class Action{
         }
 
         //Si el proceso no es subida de notas
-        if (infoProcess.idProcessState!==2) {
-            //Se oculta la seccion de subir csv
-            const uploadCsvSection = document.querySelector("section#upload_csv");
-            uploadCsvSection.setAttribute("hidden", "true");
-        }else{
-            //Se verifica si se subio el csv
-            if (csvStatus!=null & csvStatus===true) {
-                const uploadCsvBtn = document.querySelector("button#uploadCsvBtn");
-                //Se desactiva el boton de subir csv
-                uploadCsvBtn.setAttribute("disabled", "true");
-            }
+        if (infoProcess.idProcessState===3) {
+            //Se renderiza la seccion de subida de csv
+            this.renderUploadCSVSection();
         }
 
+    }
+
+    /**
+     * Renderiza la tarjeta que permite subir el csv de calificaciones al portal
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 11/11/24
+     * @param {*} id el id del proceso de admision solicitado
+     */
+    static renderUploadCSVSection(){
+
+        //Se selecciona la sección de subida del CSV
+        const uploadCsvSection = document.querySelector("section#upload_csv");
+
+        //Se crea card contenedora
+        const card = document.createElement("div");
+        card.classList.add("card-container", "d-flex", "justify-content-between");
+
+        //Se agrega texto informativo a card
+        card.innerHTML = `
+            <div>
+                <p class="font-medium">Subida de calificaciones</p>
+                <p>El proceso de admisión está en publicacion de resultados puedes subir el archivo de calificaciones aqui.</p>
+            </div>`;
+
+        //Se crea el boton de subida de csv
+        const button = document.createElement("button");
+        button.setAttribute("id", "uploadCSVBtn")
+        button.classList.add("button-upload", "btn");
+
+        //Se agrega accion de abrir modal de subir archivo
+        button.addEventListener("click", ()=>{
+            const uploadCSVModal = document.querySelector("div#uploadCSVModal");
+            Modal.openModal(uploadCSVModal);
+        })
+
+        //Se agrega imagen y texto dentro del boton
+        button.innerHTML = `
+                <img src="../../img/icons/upload.svg" alt="" class="me-2">
+                <span>Subir CSV</span>`;
+
+        //Se agrega el boton a la card
+        card.appendChild(button);
+
+        //Se agrega la card la seccion
+        uploadCsvSection.appendChild(card);
     }
 
     /**
@@ -120,6 +159,40 @@ class Action{
             Popup.open(popupError);
 
         }
+    }
+
+    
+    /**
+     * Accion para el boton de descargar CSV que obteniene un archivo y lo descarga automaticamente.
+     * @author afcastillof@unah.hn
+     * @version 0.1.0
+     * @date 12/11/24
+     */
+    static downloadCSV(){
+        const url = '../../../api/get/generateCSV';
+    
+        // Hacer la solicitud para obtener el CSV
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo generar el CSV');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = 'estudiantes_admitidos.csv';
+                document.body.appendChild(link);
+                link.click();
+    
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+            })
+            .catch(error => {
+                console.error('Error al descargar el archivo CSV:', error);
+            });
     }
 
 }
