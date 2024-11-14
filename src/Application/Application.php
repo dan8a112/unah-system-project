@@ -215,6 +215,10 @@
                     WHERE academicEvent =?
                     GROUP BY b.id;";
 
+            $query4= "SELECT COUNT(*) as approved
+                    FROM Application
+                    WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);";
+
             $result = $this->mysqli->execute_query($query, [$id]);
 
             foreach($result as $row){
@@ -251,9 +255,15 @@
                 ] ;
             }
 
+            $result4 = $this->mysqli->execute_query($query4, [$id]);
+
+            foreach($result4 as $row){
+                $amount= $row['approved'];
+            }
+
             return [
                 "infoProcess"=> $infoProcess,
-                "amountApproved"=> 0,
+                "amountApproved"=> $amount,
                 "amountInscriptions"=> $amountInscription,
                 "higherScores"=> $higherScores,
                 "amountCentersInscriptions"=>$amountCentersInscripctions
