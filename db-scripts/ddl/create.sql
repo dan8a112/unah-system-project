@@ -685,7 +685,7 @@ BEGIN
 END //
 
 /**
-    author: wilmer.morales@unah.hn
+    author: wamorales@unah.hn
     version: 0.1.0
     date: 5/11/24
 

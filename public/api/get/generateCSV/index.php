@@ -37,7 +37,7 @@ try {
             INNER JOIN 
                 DegreeProgram d ON a.secondDegreeProgramChoice = d.id
             INNER JOIN 
-                academicevent e ON a.academicEvent = e.id
+                AcademicEvent e ON a.academicEvent = e.id
             WHERE 
                 e.active = 1
                 AND (a.approvedFirstChoice = 1 OR a.approvedSecondChoice = 1);
