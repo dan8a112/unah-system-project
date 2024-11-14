@@ -8,6 +8,11 @@
             $this->mysqli = new mysqli($server, $user, $pass, $dbName);
         }
 
+        /**
+         * author: wamorales@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         */
         public function sendMail($name, $result, $testsResults, $mail){
 
             // Configuración del correo
@@ -63,6 +68,12 @@
 
         }
 
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         */
         public function sendAllMails(){
             $query = 'CALL ResultsActualProcess();';
             $query1 = 'SELECT a.id as idApplication,c.description, b.grade 

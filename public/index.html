@@ -6,8 +6,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/animations/slides.css">
     <link rel="stylesheet" href="assets/css/landingPage/style.css">
-
-
     <title>UNAH Inicio</title>
 </head>
 <body>
@@ -22,7 +20,7 @@
           <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
             <ul class="navbar-nav gap-3">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="assets/views/admission/inscription_view.html">Admisiones</a>
+                <a class="nav-link active" aria-current="page" href="#" id="admissions">Admisiones</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Estudiantes</a>
@@ -35,8 +33,8 @@
                   Administracion
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="assets/views/logins/login_sedp.html">SEDP Login</a></li>
-                  <li><a class="dropdown-item" href="assets/views/logins/login_sedp.html">APA Login</a></li>
+                  <li><a class="dropdown-item" href="assets/views/logins/login_sedp.php">SEDP Login</a></li>
+                  <li><a class="dropdown-item" href="assets/views/logins/login_apa.php">APA Login</a></li>
                 </ul>
               </li>
             </ul>
@@ -44,13 +42,13 @@
         </div>
       </nav>
 
-        <div class="d-flex p-3 align-items-center justify-content-center mt-3" style="gap: 100px;">
-            <div class="slide-up" style="width: 40%;">
+        <div class="row align-items-center justify-content-center mt-5 gap-4 mx-5">
+            <div class="slide-up col">
                 <h1 class="display-4 mb-4">Emprende tu carrera universitaria aqui</h1>
                 <p class="fs-5">UNAH es una institución autónoma, laica y estatal de la República de Honduras. Considerada por muchos la mejor universidad del pais, destaca por sus aportes tecnológicos y de investigación a la sociedad hondureña y extranjera.</p>
-                <button class="btn" style="background-color: #FFAA34;">Ingresa ahora</button>
+                <button class="btn" style="background-color: #FFAA34;" id="admissionButton">Ingresa ahora</button>
             </div>
-            <img src="assets/img/landing/student-image.png" alt="Student Image" width="500px">
+            <img class="col primary-img" src="assets/img/landing/student-image.png" alt="Student Image">
           </div>
           
         <div class="d-flex-col mt-3" style="gap: 100px;">
@@ -102,6 +100,22 @@
             
         </footer>
 
+        <div class="modal" tabindex="-1" id="modalDom">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Procesos de admision</h5>
+              </div>
+              <div class="modal-body">
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" href="#" id="closeModal">Ok.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/landingPage/main.js" type="module"></script>
 </body>
 </html>

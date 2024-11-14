@@ -1,8 +1,20 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (!SessionValidation::isValid($_SESSION, "apa")){
+    header("Location: /assets/views/logins/login_apa.php");
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="dochoao@unah.hn">
+    <meta name="date" content="11/11/2024">
+    <meta name="version" content="0.1.0">
     <title>Proceso de admision actual</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/admission/process_detail.css">
@@ -92,6 +104,20 @@
                 <button class="button-upload btn" id="uploadCsvBtn">
                     <img src="../../img/icons/upload.svg" alt="" class="me-2">
                     <span>Subir CSV</span>
+                </button>
+            </div>
+        </section>
+
+
+        <section id="unload_csv" class="mb-4 row">
+            <div class="card-container d-flex justify-content-between">
+                <div>
+                    <p class="font-medium">Generar CSV</p>
+                    <p>Genera un archivo csv con todos los estudiante aprobados de este proceso de admision.</p>
+                </div>
+                <button class="button-upload btn" id="downloadCsvBtn">
+                    <img src="../../img/icons/download.svg" alt="" class="me-2">
+                    <span>Descargar CSV</span>
                 </button>
             </div>
         </section>

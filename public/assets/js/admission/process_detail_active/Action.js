@@ -5,6 +5,9 @@ class Action{
 
     /**
      * Este metodo se encarga de renderizar en la pagina, la data recibida del servidor.
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 11/11/24
      * @param {*} data un objeto que contiene estadisticas sobre el proceso de admision actual
      */
     static renderActiveProcess(data){
@@ -90,8 +93,11 @@ class Action{
 
     }
 
-        /**
+    /**
      * Este metodo manda a llamar a la api para obtener la informacion de un proceso de admision activo
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 11/11/24
      * @param {*} id el id del proceso de admision solicitado
      */
     static fetchActiveData = async ()=>{

@@ -210,8 +210,8 @@
                                 YEAR(startDate) AS year,
                                 ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
                                 active
-                            FROM 
-                                academicevent
+                            FROM
+                                AcademicEvent
                         ) AS main
                         WHERE 
                             main.active = 1
@@ -244,7 +244,7 @@
                         main.id,
                         main.year,
                         main.process_order,
-                        COUNT(a.academicEvent) AS applications
+                        COUNT(a.AcademicEvent) AS applications
                     FROM (
                         SELECT 
                             id,
@@ -253,10 +253,10 @@
                             ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
                             active
                         FROM 
-                            academicevent
+                            AcademicEvent
                     ) AS main
-                    INNER JOIN application AS a
-                    ON main.id = a.academicEvent
+                    INNER JOIN Application AS a
+                    ON main.id = a.AcademicEvent
                     WHERE 
                         main.active != 1
                     GROUP BY 
@@ -293,10 +293,10 @@
                               ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
                               active
                           FROM 
-                              academicevent
+                              AcademicEvent
                       ) AS main
-                      INNER JOIN application AS a
-                      ON main.id = a.academicEvent
+                      INNER JOIN Application AS a
+                      ON main.id = a.AcademicEvent
                       WHERE 
                           main.active != 1
                       GROUP BY 

@@ -1,3 +1,7 @@
+.primary-img{
+    max-width: 500px;
+}
+
 .contact-info{
     display: flex; 
     flex-direction: column;

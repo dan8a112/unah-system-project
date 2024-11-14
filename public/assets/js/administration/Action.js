@@ -4,6 +4,13 @@ import {HttpRequest} from "../modules/HttpRequest.js"
 
 class Action{
 
+    /**
+     * Este metodo genera la tabla con los profesores registrados en el sistema, su rol, y sus acciones correspondientes
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 05/11/24
+     * @param {object} data Informacion que contiene una lista de profesores y cantidad de profesores registrados 
+     */
     static generateProfessors(data){
 
         const {professors, professorsAmount } = data;
@@ -102,6 +109,13 @@ class Action{
 
     }
 
+    /**
+     * Genera los las opciones de los selects del formulario para crear maestros (tipos de maestros y departamentos).
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 05/11/24
+     * @param {*} data informacion que contiene las opciones de los selects a renderizar
+     */
     static generateSelectForm(data){
 
         const professorTypesSelect = document.querySelector("select#professorTypeSelect");
@@ -120,6 +134,13 @@ class Action{
         Modal.openModal(formModal);
     }
 
+    /**
+     * Envia el formulario de creacion de nuevo maestro
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 05/11/24
+     * @param {*} event evento submit de envio de formulario
+     */
     static submitFormProfessor(event){
 
         const form = this;
@@ -131,6 +152,13 @@ class Action{
     }
 
 
+    /**
+     * Realiza peticiones asincronas para obtener la data que se utiliza para renderizar los selects
+     * del formulario de crear maestro
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 05/11/24
+     */
     static fetchFormProfessors  = async ()=>{
         
         let data = {}
@@ -149,6 +177,12 @@ class Action{
         
     }
 
+    /**
+     * Realiza una peticion get para obtener la data de los maestros que estan registrados en la base de datos.
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 05/11/24
+     */
     static fetchProfessors(){
         fetch('http://localhost:3000/api/get/infoHomeSEDP')
         .then(response => response.json())
@@ -158,6 +192,16 @@ class Action{
                 this.generateProfessors(data.data);    
             }
         });
+    }
+
+    /**
+     * Cierra la sesion y redirecciona al home
+     */
+    static async logout(){
+        const response = await HttpRequest.get("../../../api/get/logout");
+        if (response.status) {
+            window.location.href = "/"
+        }
     }
 
 }
