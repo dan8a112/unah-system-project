@@ -123,6 +123,7 @@ CREATE TABLE Professor(
     professorType TINYINT,
     department SMALLINT,
     CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES Employee(id),
+    active BOOLEAN,
     CONSTRAINT fk_professorType FOREIGN KEY (professorType) REFERENCES ProfessorType(id),
     CONSTRAINT fk_department FOREIGN KEY (department) REFERENCES Department (id)
 );
@@ -423,25 +424,68 @@ INSERT INTO `RegionalCenterDegree` (degree, regionalCenter) VALUES
 ;
 
 INSERT INTO Employee (dni, firstName, secondName, firstLastName, secondLastName, telephoneNumber, personalEmail, password, address, dateOfBirth) VALUES 
-    ('0801199901234', 'Juan', 'Carlos', 'Perez', 'Lopez', '9876543210', 'juan.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
-    ('0801199805678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '9123456789', 'maria.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
-    ('0801200101111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '9876543211', 'pedro.castillo@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
-    ('0801200202222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '9123456788', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
-    ('0801200303333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '9876543212', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
-    ('0801200404444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '9123456787', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
-    ('0801200505555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
+    ('0801-1999-01234', 'Juan', 'Carlos', 'Perez', 'Lopez', '9876543210', 'juan.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
+    ('0801-1998-05678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '9123456789', 'maria.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
+    ('0801-2001-01111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '9876543211', 'pedro.castillo@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
+    ('0801-2002-02222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '9123456788', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
+    ('0801-2003-03333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '9876543212', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
+    ('0801-2004-04444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '9123456787', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
+    ('0801-2005-05555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
 ;
+
 
 INSERT INTO Administrative (id, administrativeType) VALUES
     (1,1),
     (2,2)
 ;
 
-INSERT INTO Department (description) VALUES ('Ingenieria en Sistemas');
+INSERT INTO Department (description) VALUES 
+    ('Ingeniería en Sistemas'),
+    ('Ingeniería Civil'),
+    ('Ingeniería Industrial'),
+    ('Ingeniería Eléctrica'),
+    ('Ingeniería Mecánica'),
+    ('Ingeniería Química'),
+    ('Medicina'),
+    ('Odontología'),
+    ('Farmacia'),
+    ('Biología'),
+    ('Química y Farmacia'),
+    ('Arquitectura'),
+    ('Derecho'),
+    ('Economía'),
+    ('Administración de Empresas'),
+    ('Contaduría Pública y Finanzas'),
+    ('Psicología'),
+    ('Trabajo Social'),
+    ('Pedagogía'),
+    ('Ciencias de la Comunicación'),
+    ('Turismo'),
+    ('Arte'),
+    ('Música'),
+    ('Matemática'),
+    ('Física'),
+    ('Estadística'),
+    ('Ciencias Computacionales'),
+    ('Filosofía'),
+    ('Sociología'),
+    ('Antropología'),
+    ('Historia'),
+    ('Relaciones Internacionales'),
+    ('Enfermería'),
+    ('Tecnología Médica'),
+    ('Agronomía'),
+    ('Zootecnia'),
+    ('Veterinaria'),
+    ('Microbiología')
+;
 
-INSERT INTO Professor(id, professorType, department) VALUES
-    (3, 3, 1),
-    (4, 4, 1)
+
+INSERT INTO Professor(id, professorType, department, active) VALUES
+    (3, 3, 1, true),
+    (4, 4, 1, true),
+    (5, 1, 1, true),
+    (6, 2, 1, false)
 ;
 
 INSERT INTO AcademicProcess(description) VALUES 
