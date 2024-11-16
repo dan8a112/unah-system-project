@@ -13,7 +13,7 @@
          * version: 0.1.0
          * date: 12/11/24
          */
-        public function sendMail($name, $result, $testsResults, $mail){
+        public function sendMail($name, $result, $testsResults, $mail, $firstChoice, $secondChoice){
 
             // Configuración del correo
             $subject = "Resultado de proceso de admision.";
@@ -37,7 +37,7 @@
             <body style="font-family: Arial, sans-serif; color: #333;">
                 <h1 style="color: #007BFF;">¡Hola, $name!</h1>
                 <p>Por este medio la Direccion de Admisiones de la UNAH le informa sus resultados para el
-                proceso de admision realizado recientemente: </p>
+                proceso de admision realizado recientemente, en el cual usted aplicó para la carrera de <strong>$firstChoice</strong> como su primera opción y la carrera de <strong>$secondChoice</strong> como su segunda opción.</p>
                 <p>$result</p>
                 $testsResults
                 <p>Este correo fue enviado el <strong>$date</strong> y contiene un enlace a <a href="$link">nuestro sitio web</a>.</p>
@@ -109,7 +109,7 @@
                     ];
 
                     if ($student["approvedFirstChoice"] && $student["approvedSecondChoice"]) {
-                        $bodyGrades = '<strong>Nos complace anunciarle que has aprobado para <strong>AMBAS</strong> de sus opciones.<strong>';
+                        $bodyGrades = '<strong>Nos complace anunciarle que has aprobado para <strong>AMBAS</strong>de sus opciones.<strong>';
                     } elseif ($student["approvedFirstChoice"] && !$student["approvedSecondChoice"]) {
                         $bodyGrades = 'Nos complace anunciarle que has aprobado para tu <strong>PRIMERA</strong> opción, pero no has aprobado para tu segunda opción.';
                     } elseif (!$student["approvedFirstChoice"] && $student["approvedSecondChoice"]) {
@@ -124,7 +124,7 @@
                         $testsResults.= "<p>Obteniendo un puntaje de <strong>$grade<strong/> en la <strong>$description</strong>.</p>";
                     };
 
-                    $sent = $this->sendMail($student['name'], $bodyGrades, $testsResults, $student['personalEmail']);
+                    $sent = $this->sendMail($student['name'], $bodyGrades, $testsResults, $student['personalEmail'], $student['firstCareer'], $student['secondCareer']);
                     if(!$sent){
                         return false;
                     }
