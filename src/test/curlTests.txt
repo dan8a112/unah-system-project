@@ -37,3 +37,12 @@ curl http://localhost:3000/api/get/activeAdmissionProcess | jq
 
 --------------Curl para enviar correos---------------
 curl http://localhost:3000/api/get/sendMails | jq
+
+------------Curl insert professor----------------------
+curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeSelect=1" -d "departmentSelect=3" -d "birthDate=2003-12-08" http://localhost:3000/api/post/professor | jq
+
+---------Curl para probar api/get/professor-------------------
+curl http://localhost:3000/api/get/professor/?id=3 | jq
+
+-------------------Curl para actualizar docente----------------
+curl -d "id=3" -d "identityNumber=0801-2004-03099" -d "firstName=Actualizado" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeSelect=1" -d "departmentSelect=3" -d "birthDate=2003-12-08" -d "active=false" http://localhost:3000/api/update/professor | jq

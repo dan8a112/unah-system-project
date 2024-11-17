@@ -307,7 +307,7 @@ INSERT INTO AdmissionDegree (description, degree, admissionTest, passingGrade) V
     ('PCCNS para Microbiología', 30, 2, 400)
 ;
 
-INSERT INTO `RegionalCenterDegree` (degree, regionalCenter) VALUES
+INSERT INTO RegionalCenterDegree (degree, regionalCenter) VALUES
     (1,17),
     (1,19),
     (2,19),
@@ -815,8 +815,91 @@ BEGIN
     INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
     INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
     WHERE a.academicEvent=idCurrent;
-END;
+END //
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 16/11/24
+
+    Procedimiento almacenado para insertar docentes
+**/
+CREATE PROCEDURE insertProfessor(
+    IN p_dni VARCHAR(15),
+    IN p_firstName VARCHAR(15),
+    IN p_secondName VARCHAR(15),
+    IN p_firstLastName VARCHAR(15),
+    IN p_secondLastName VARCHAR(15),
+    IN p_telephoneNumber VARCHAR(12),
+    IN p_personalEmail VARCHAR(50),
+    IN p_password VARCHAR(60),
+    IN p_address VARCHAR(30),
+    IN p_dateOfBirth DATE,
+    IN p_professorType INT,
+    IN p_department INT
+)
+BEGIN
+
+    DECLARE newEmail VARCHAR(50) DEFAULT p_personalEmail;
+    DECLARE counter INT DEFAULT 1;
+
+    -- Verificar si el ID existe
+    IF EXISTS (SELECT 1 FROM Employee WHERE dni = p_dni) THEN
+         -- Si el ID ya existe no se puede insertar
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El ID ya existe no se puede insertar docente.'
+        ) AS resultJson;
+    ELSE
+        WHILE EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) DO
+            SET newEmail=CONCAT(LOWER(p_firstName),'.',LOWER(p_firstLastName),counter,'@unah.edu.hn');
+            SET counter = counter + 1;
+        END WHILE;
+
+        INSERT INTO Employee (
+            dni, 
+            firstName, 
+            secondName, 
+            firstLastName, 
+            secondLastName, 
+            telephoneNumber, 
+            personalEmail, 
+            password, 
+            address, 
+            dateOfBirth
+        ) VALUES (
+            p_dni, 
+            p_firstName, 
+            p_secondName, 
+            p_firstLastName, 
+            p_secondLastName, 
+            p_telephoneNumber, 
+            newEmail, 
+            p_password, 
+            p_address, 
+            p_dateOfBirth
+        );
+
+        INSERT INTO Professor (
+            id, 
+            professorType, 
+            department, 
+            active
+        ) VALUES (
+            LAST_INSERT_ID(), 
+            p_professorType, 
+            p_department, 
+            true
+        );
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'personalEmail', newEmail,
+            'idProfessor', LAST_INSERT_ID(),
+            'message', 'Usuario del docente creado correctamente'
+        ) AS resultJson;
+    END IF;
+END //
 
 -- Set the event scheduler ON
 SET GLOBAL event_scheduler = ON;

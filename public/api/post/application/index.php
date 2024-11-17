@@ -12,7 +12,12 @@
         isset($_POST["idFirstDegreeProgramChoice"]) &&
         isset($_POST["idSecondDegreeProgramChoice"]) &&
         isset($_POST["idRegionalCenterChoice"]) &&
-        isset($_FILES["pathSchoolCertificate"])
+        isset($_FILES["pathSchoolCertificate"])&&
+        isset($_POST['firstName'])&&
+        isset($_POST['secondName'])&&
+        isset($_POST['firstLastName'])&&
+        isset($_POST['secondLastName'])&&
+        isset($_POST['telephoneNumber'])
     ){
         $identityNumber = $_POST["identityNumber"];
         $firstName = $_POST['firstName'] ?? '';
