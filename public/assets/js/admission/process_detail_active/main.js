@@ -21,12 +21,12 @@ sendEmailsButton.addEventListener("click", async () => {
 });
 
 // Si `uploadCsv` es un formulario, se previene el comportamiento por defecto y se maneja el envío
-document.getElementById('formCSV').addEventListener('submit', async (event) => {
+document.getElementById('formCsv').addEventListener('submit', async (event) => {
     event.preventDefault();  // Prevenir recarga de la página en el submit del formulario
 
     try {
         const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv');
-        console.log(result.message);  // Asegúrate de que `result.message` es válido
+        console.log(result.message); 
     } catch (error) {
         console.error("Error al cargar el CSV:", error);
     }
