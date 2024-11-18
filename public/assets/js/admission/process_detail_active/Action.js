@@ -89,7 +89,7 @@ class Action{
     /**
      * Renderiza la tarjeta que permite subir el csv de calificaciones al portal
      * @author dochoao@unah.hn, afcastillof@unah.hn
-     * @version 0.1.1
+     * @version 0.1.2
      * @date 17/11/24
      * @param {*} id el id del proceso de admision solicitado
      */
