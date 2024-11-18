@@ -8,6 +8,7 @@
     $dao = null;
 
     if(
+        isset($_GET["id"]) &&
         isset($_POST["identityNumber"]) &&
         isset($_POST['firstName'])&&
         isset($_POST['secondName'])&&
@@ -20,6 +21,7 @@
         isset($_POST['departmentSelect'])&&
         isset($_POST['active'])
     ){
+        $id=$_GET['id'];
         $dni = $_POST["identityNumber"];
         $firstName = $_POST['firstName'] ?? '';
         $secondName = $_POST['secondName'] ?? '';

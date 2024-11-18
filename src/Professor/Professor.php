@@ -119,13 +119,15 @@
                     }
 
                 }else {
-                    echo "Error al ejecutar el procedimiento: " . $conexion->error;
+                    return ['status'=>false,
+                        'message'=> "Error al ejecutar el procedimiento: " . $conexion->error
+                    ];
                 }
                 
             }catch (Exception $e){
                 return [
                     "status" => false,
-                    "message" => "Error al hacer la consulta"
+                    "message" => "Error al hacer la consulta".$e
                 ];
             }
 
@@ -172,65 +174,37 @@
          * date: 16/11/24
          */
         public function updateProfessor($id, $dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $active){
-            $query="UPDATE Employee
-                    SET 
-                        dni =?,
-                        firstName =?,
-                        secondName =?,
-                        firstLastName =?,
-                        secondLastName =?,
-                        telephoneNumber =?,
-                        address =?,
-                        dateOfBirth =?
-                    WHERE id =?;";
-
-            $query1= "UPDATE Professor
-                    SET 
-                        professorType = ?, 
-                        department = ?,    
-                        active = ?     
-                    WHERE id = ?;";
-
-            $result = $this->mysqli->execute_query($query,[$dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $id]);
-            // Verificar si la consulta se ejecutó correctamente
-            if ($result) {
-                if ($this->mysqli->affected_rows > 0) {
-                    //Update en professor
-                    $result1 = $this->mysqli->execute_query($query1,[$professorType, $department, $active, $id]);
-                    // Verificar si la consulta se ejecutó correctamente
-                    if ($result1) {
-                        // Verificar si se afectaron filas
-                        if ($this->mysqli->affected_rows > 0) {
-                            return [
-                                "status"=> true,
-                                "message"=> "Usuario actualizado correctamente"
-                            ];
-                        } else {
-                            return [
-                                "status"=> false,
-                                "message"=> "Error al actualizar usuario 1"
-                            ];
-                        }
-                    } else {
-                        return [
-                            "status"=> false,
-                            "message"=> "Error al ejecutar la consulta: " . $this->mysqli->error
-                        ];
-                        
-                    }
-                } else {
-                    return [
-                                "status"=> false,
-                                "message"=> "Error al actualizar usuario 2"
-                            ];
-                }
-            } else {
-                return [
-                    "status"=> false,
-                    "message"=> "Error al ejecutar la consulta: " . $this->mysqli->error
-                ];
-                
+            $query="CALL updateProfessor(?,?,?,?,?,?,?,?,?,?,?,?);";
+            
+            if($active){
+                $bool=1;
+            }else{
+                $bool=0;
             }
+
+            try{
+                $result = $this->mysqli->execute_query($query,[$id, $dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $bool]);
+                if ($row = $result->fetch_assoc()) {
+    
+                    $resultJson = $row['resultJson'];
+    
+                    $resultArray = json_decode($resultJson, true);
+    
+                    return $resultArray;
+    
+                }else {
+                    return ['status'=>false,
+                            'message'=> "Error al ejecutar el procedimiento: " . $conexion->error
+                    ];
+                }
+            }catch (Exception $e){
+                return [
+                    "status" => false,
+                    "message" => "Error al hacer la consulta".$e
+                ];
+            }
+            
+           
         }
 
         // Método para cerrar la conexión

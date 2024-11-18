@@ -901,6 +901,68 @@ BEGIN
     END IF;
 END //
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 17/11/24
+
+    Procedimiento almacenado para actualizar docentes
+**/
+CREATE PROCEDURE updateProfessor(
+    IN p_id INT,
+    IN p_dni VARCHAR(15),
+    IN p_firstName VARCHAR(15),
+    IN p_secondName VARCHAR(15),
+    IN p_firstLastName VARCHAR(15),
+    IN p_secondLastName VARCHAR(15),
+    IN p_telephoneNumber VARCHAR(12),
+    IN p_address VARCHAR(30),
+    IN p_dateOfBirth DATE,
+    IN p_professorType INT,
+    IN p_department INT,
+    IN p_active BOOLEAN
+)
+BEGIN
+
+    DECLARE idVerify INT;
+    SET idVerify = (SELECT id FROM Employee WHERE dni=p_dni);
+
+    -- Verificar si el ID existe hacer el update
+    IF EXISTS (SELECT 1 FROM Professor WHERE id = p_id) AND (idVerify IS NULL OR idVerify=p_id)THEN
+
+
+        UPDATE Employee
+        SET 
+            dni = p_dni,
+            firstName = p_firstName,
+            secondName = p_secondName,
+            firstLastName = p_firstLastName,
+            secondLastName = p_secondLastName,
+            telephoneNumber = p_telephoneNumber,
+            address = p_address,
+            dateOfBirth = p_dateOfBirth
+        WHERE id = p_id;
+
+        UPDATE Professor
+        SET 
+            professorType = p_professorType, 
+            department = p_department,    
+            active = p_active     
+        WHERE id = p_id;
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Datos actualizados correctamente.'
+        ) AS resultJson;
+    ELSE
+
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El id no existe o el dni ya pertenece a otra persona.'
+        ) AS resultJson;
+    END IF;
+END //
+
 -- Set the event scheduler ON
 SET GLOBAL event_scheduler = ON;
 
