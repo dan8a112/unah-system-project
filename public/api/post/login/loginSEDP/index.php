@@ -2,37 +2,34 @@
 
     header("Content-Type: application/json");
 
-    include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Login/Login.php";
+    include_once "../../../../../src/DbConnection/DbConnection.php";
+    include_once "../../../../../src/Login/Login.php";
 
     //Data Access Object
     $dao = new LoginDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    if(
-        isset($_POST["mail"]) &&
+    if(isset($_POST["mail"]) &&
         isset($_POST["password"])){
               
         //set valores
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
 
-        $status = $dao->loginAdmission($mail, $password);
+        $status = $dao->loginSEDP($mail, $password);
 
         if($status){
             $json = [
                 "message"=> "Credenciales correctas",
                 "status"=> 1,                
             ];
-
-            session_start();
-            $_SESSION["auth"] = "apa";
-
+            $_SESSION['auth'] = "sedp";
         }else{
             $json = [
                 "message"=> "No existe el usuario",
                 "status"=> 2,                
             ];
         }
+
     }else{
         //There's no user autenticated go to login or an error occur
         $json = [
