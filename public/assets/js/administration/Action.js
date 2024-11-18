@@ -164,12 +164,12 @@ class Action{
         let data = {}
 
         //Se hace la peticion de los tipos de profesores
-        const responseTypes = await HttpRequest.get("http://localhost:3000/api/get/professorTypes");
+        const responseTypes = await HttpRequest.get("../../../api/get/professorTypes");
         
         //Se agregan a data
         data.professorTypes = responseTypes.professorTypes;
 
-        const responseDeparments = await HttpRequest.get("http://localhost:3000/api/get/departments");
+        const responseDeparments = await HttpRequest.get("../../../api/get/departments");
 
         data.departments = responseDeparments.departments;
 
@@ -184,7 +184,7 @@ class Action{
      * @date 05/11/24
      */
     static fetchProfessors(){
-        fetch('http://localhost:3000/api/get/infoHomeSEDP')
+        fetch('../../../api/get/infoHomeSEDP')
         .then(response => response.json())
         .then(data => {
             if (data.status) {

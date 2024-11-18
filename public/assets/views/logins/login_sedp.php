@@ -29,7 +29,7 @@
           <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
             <ul class="navbar-nav gap-3">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Admisiones</a>
+                <a class="nav-link active" aria-current="page" href="../admission/inscription_view.html">Admisiones</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Estudiantes</a>
@@ -42,7 +42,8 @@
                   Administracion
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">SEDP Login</a></li>
+                  <li><a class="dropdown-item" href="../logins/login_sedp.php">SEDP Login</a></li>
+                  <li><a class="dropdown-item" href="../logins/login_apa.php">APA Login</a></li>
                 </ul>
               </li>
             </ul>
@@ -77,6 +78,8 @@
             </div>
         </div>
     </div>
+
+    <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/loginSEDP/main.js" type="module"></script>
 </body>
 </html>

@@ -96,16 +96,6 @@
 
         
         <section id="upload_csv" class="mb-4 row">
-            <div class="card-container d-flex justify-content-between">
-                <div>
-                    <p class="font-medium">Subida de calificaciones</p>
-                    <p>El proceso de admisión está en publicacion de resultados puedes subir el archivo de calificaciones aqui.</p>
-                </div>
-                <button class="button-upload btn" id="uploadCsvBtn">
-                    <img src="../../img/icons/upload.svg" alt="" class="me-2">
-                    <span>Subir CSV</span>
-                </button>
-            </div>
         </section>
 
 
@@ -149,6 +139,36 @@
         <button type="button" id="buttonClose">OK</button>
     </div>
 
+    <div class="modal fade" id="uploadCSVModal" tabindex="-1" aria-labelledby="formModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="formModal">Subir calificaciones</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="mb-3">
+                        <p class="fs-5">Subir archivo CSV</p>
+                        <p>A continuacion se deben subir las calificaciones de los examenes de admision</p>
+                    </div>
+                    <form id="formCSV">
+                        <input class="form-control mb-3" type="file" name="califications" >
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
+                <button class="button-upload btn me-3" id="downloadCsvBtn" style="height: 40px;">
+                        <img src="../../img/icons/upload.svg" alt="" class="me-2">
+                        <span>Subir</span>
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/bootstrap.bundle.min.js"></script>
     <script type="module" src="../../js/admission/process_detail_active/main.js"></script>
 </body>
 </html>
