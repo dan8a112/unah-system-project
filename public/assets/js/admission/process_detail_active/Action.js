@@ -224,6 +224,22 @@ class Action{
             });
     }
 
+    static makeTableIncorrectData(){
+        const headers = ["#", "DNI", "Id del examen", "Fecha de inscripción"];
+        const rows = [
+            [1, "Juan Pérez", "Ingeniería de Software", "2024-11-18"],
+            [2, "Ana Gómez", "Medicina", "2024-11-17"],
+            [3, "Carlos López", "Derecho", "2024-11-16"]
+        ];
+
+        const section = createStyledTable("Ultimas inscripciones", headers, rows, "lastInscriptionsTbl");
+
+        document.body.appendChild(section);
+    }
+
 }
+
+
+
 
 export {Action}

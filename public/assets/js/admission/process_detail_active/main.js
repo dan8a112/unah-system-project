@@ -27,6 +27,8 @@ document.getElementById('formCsv').addEventListener('submit', async (event) => {
     try {
         const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv');
         console.log(result.message); 
+        console.log(result.incorrectDat); 
+        
     } catch (error) {
         console.error("Error al cargar el CSV:", error);
     }
