@@ -2,8 +2,8 @@
 
     header("Content-Type: application/json");
 
-    include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Application/Application.php";
+    include_once "../../../../../src/DbConnection/DbConnection.php";
+    include_once "../../../../../src/Application/Application.php";
 
     //Data Access Object
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
