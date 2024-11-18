@@ -1,8 +1,8 @@
 <?php
 header("Content-Type: application/json");
 
-include_once "../../../../../src/DbConnection/DbConnection.php";
-include_once "../../../../../src/Application/Application.php";
+include_once "../../../../src/DbConnection/DbConnection.php";
+include_once "../../../../src/Application/Application.php";
 
 
 // Abrir el archivo en modo lectura

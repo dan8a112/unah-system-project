@@ -76,8 +76,8 @@ CREATE TABLE Application(
     regionalCenterChoice TINYINT,
     applicationDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     academicEvent INT,
-    approvedFirstChoice BOOLEAN,
-    approvedSecondChoice BOOLEAN,
+    approvedFirstChoice BOOLEAN DEFAULT false,
+    approvedSecondChoice BOOLEAN DEFAULT false,
     CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
@@ -136,7 +136,7 @@ CREATE TABLE Results(
     id INT PRIMARY KEY AUTO_INCREMENT,
     application INT NOT NULL,
     admissionTest TINYINT NOT NULL,
-    grade SMALLINT DEFAULT 0,
+    grade SMALLINT DEFAULT NULL,
     CONSTRAINT fk_application FOREIGN KEY(application) REFERENCES Application(id),
     CONSTRAINT fk_admissionTest_Results FOREIGN KEY(admissionTest) REFERENCES AdmissionTest(id)
 );
@@ -1021,8 +1021,8 @@ END //
  * version: 0.1.0
  * date: 17/11/24
  */
-CREATE TRIGGER after_insert_result
-AFTER INSERT ON Results
+CREATE TRIGGER after_update_result
+AFTER UPDATE ON Results
 FOR EACH ROW
 BEGIN
     DECLARE num_required_exams_first INT;

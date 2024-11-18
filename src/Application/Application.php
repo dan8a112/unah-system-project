@@ -334,14 +334,7 @@
 
                                 $resultArray = json_decode($resultJson, true);
 
-                                if ($resultArray !== null && !$resultArray['status']) {
-                                    $incorrectData []= [
-                                        'dni'=> $dni,
-                                        'idTest'=> $data[1],
-                                        'grade'=> $data[2],
-                                        'message'=> $resultArray['message']
-                                    ];
-                                }else{
+                                if (!$resultArray['status']) {
                                     $incorrectData []= [
                                         'dni'=> $dni,
                                         'idTest'=> $data[1],
@@ -349,7 +342,6 @@
                                         'message'=> $resultArray['message']
                                     ];
                                 }
-
                             }else {
                                 $incorrectData []= [
                                     'dni'=> $dni,
@@ -364,7 +356,7 @@
                                 'dni'=> $dni,
                                 'idTest'=> $data[1],
                                 'grade'=> $data[2],
-                                'message'=> "Error al hacer la consulta"
+                                'message'=> "Error al hacer la consulta: $e"
                             ];
                         }
 
