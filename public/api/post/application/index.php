@@ -8,22 +8,16 @@
     $dao = null;
 
     if(
-        isset($_POST["identityNumber"]) &&
         isset($_POST["idFirstDegreeProgramChoice"]) &&
         isset($_POST["idSecondDegreeProgramChoice"]) &&
         isset($_POST["idRegionalCenterChoice"]) &&
-        isset($_FILES["pathSchoolCertificate"])&&
-        isset($_POST['firstName'])&&
-        isset($_POST['secondName'])&&
-        isset($_POST['firstLastName'])&&
-        isset($_POST['secondLastName'])&&
-        isset($_POST['telephoneNumber'])
+        isset($_FILES["pathSchoolCertificate"])
     ){
         $identityNumber = $_POST["identityNumber"];
         $firstName = $_POST['firstName'] ?? '';
         $secondName = $_POST['secondName'] ?? '';
         $firstLastName = $_POST['firstLastName'] ?? '';
-        $secondLastName = $_POST['secondLastName'] ?? '';
+        $secondLastName = $_POST['SecondLastName'] ?? '';
         $pathSchoolCertificate = $_FILES['pathSchoolCertificate']['tmp_name'] ?? '';  // Obtener ruta temporal del archivo
         $telephoneNumber = $_POST['telephoneNumber'] ?? '';
         $personalEmail = $_POST['personalEmail'] ?? '';

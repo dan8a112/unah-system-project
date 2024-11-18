@@ -13,7 +13,8 @@ CREATE TABLE RegionalCenter(
 
 CREATE TABLE AdmissionTest(
 	id TINYINT PRIMARY KEY AUTO_INCREMENT,
-    description VARCHAR(62) NOT NULL
+    description VARCHAR(62) NOT NULL,
+    points INT
     
 );
 
@@ -233,9 +234,9 @@ INSERT INTO ProfessorType(description) VALUES
     ('Jefe de departamento')
 ;
 
-INSERT INTO AdmissionTest (description) VALUES 
-    ('Prueba de Aptitud Académica'),
-    ('Prueba de Conocimientos para Ciencias Naturales y de la Salud')
+INSERT INTO AdmissionTest (description, points) VALUES 
+    ('Prueba de Aptitud Académica', 1600),
+    ('Prueba de Conocimientos para Ciencias Naturales y de la Salud', 800)
 ;
 
 INSERT INTO AdmissionDegree (description, degree, admissionTest, passingGrade) VALUES 
@@ -946,6 +947,123 @@ BEGIN
             'status', false,
             'message', 'El id no existe o el dni ya pertenece a otra persona.'
         ) AS resultJson;
+    END IF;
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 17/11/24
+
+    Procedimiento almacenado para actualizar results 
+**/
+CREATE PROCEDURE updateResults(
+    IN p_dni VARCHAR(15),
+    IN p_test INT,
+    IN p_grade FLOAT
+)
+BEGIN
+
+    DECLARE idApplication INT;
+    DECLARE points1 INT;
+
+    SET idApplication = (SELECT a.id
+                            FROM Application a
+                            INNER JOIN AcademicEvent c ON (a.academicEvent = c.id)
+                            WHERE c.active=true AND a.idApplicant=p_dni);
+
+    SET points1 = (SELECT points
+                    FROM AdmissionTest WHERE id=p_test);
+
+    IF(idApplication IS NOT NULL) THEN
+
+        IF (points1 IS NOT NULL) THEN
+            IF (points1>=p_grade) THEN
+                UPDATE Results
+                    SET grade = p_grade
+                WHERE application = idApplication AND admissionTest = p_test;
+
+                IF ROW_COUNT() > 0 THEN
+                    SELECT JSON_OBJECT(
+                        'status', true,
+                        'message', 'Resultado ingresado correctamente'
+                    ) AS resultJson;
+                ELSE
+                    SELECT JSON_OBJECT(
+                        'status', false,
+                        'message', 'El DNI del aplicante y el id del examen no coinciden.'
+                    ) AS resultJson;
+                END IF;
+            ELSE
+                SELECT JSON_OBJECT(
+                        'status', false,
+                        'message', 'Puntuación inválida.'
+                    ) AS resultJson;
+            END IF;
+        ELSE
+            SELECT JSON_OBJECT(
+                    'status', false,
+                    'message', 'Id del examen incorrecto.',
+                    'points', points
+                ) AS resultJson;
+        END IF;
+    ELSE
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No existe aplicante con ese DNI en el proceso de admisión actual'
+            ) AS resultJson;
+    END IF;
+END //
+
+
+/**
+ * author: afcastillof@unah.hn
+ * version: 0.1.0
+ * date: 17/11/24
+ */
+CREATE TRIGGER after_insert_result
+AFTER INSERT ON Results
+FOR EACH ROW
+BEGIN
+    DECLARE num_required_exams_first INT;
+    DECLARE num_passed_exams_first INT;
+    DECLARE num_required_exams_second INT;
+    DECLARE num_passed_exams_second INT;
+
+    SELECT COUNT(*) INTO num_required_exams_first
+    FROM AdmissionDegree
+    WHERE degree = (SELECT firstDegreeProgramChoice FROM Application WHERE id = NEW.application);
+
+    SELECT COUNT(*)
+    INTO num_passed_exams_first
+    FROM Results R
+    JOIN AdmissionDegree AD ON R.admissionTest = AD.admissionTest
+    WHERE R.application = NEW.application
+    AND AD.degree = (SELECT firstDegreeProgramChoice FROM Application WHERE id = NEW.application)
+    AND R.grade >= AD.passingGrade;
+
+    SELECT COUNT(*) INTO num_required_exams_second
+    FROM AdmissionDegree
+    WHERE degree = (SELECT secondDegreeProgramChoice FROM Application WHERE id = NEW.application);
+
+    SELECT COUNT(*)
+    INTO num_passed_exams_second
+    FROM Results R
+    JOIN AdmissionDegree AD ON R.admissionTest = AD.admissionTest
+    WHERE R.application = NEW.application
+    AND AD.degree = (SELECT secondDegreeProgramChoice FROM Application WHERE id = NEW.application)
+    AND R.grade >= AD.passingGrade;
+
+    IF num_required_exams_first = num_passed_exams_first THEN
+        UPDATE Application
+        SET approvedFirstChoice = TRUE
+        WHERE id = NEW.application;
+    END IF;
+
+    IF num_required_exams_second = num_passed_exams_second THEN
+        UPDATE Application
+        SET approvedSecondChoice = TRUE
+        WHERE id = NEW.application;
     END IF;
 END //
 
