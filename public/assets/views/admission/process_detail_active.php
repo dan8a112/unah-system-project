@@ -99,19 +99,6 @@
         </section>
 
 
-        <section id="unload_csv" class="mb-4 row">
-            <div class="card-container d-flex justify-content-between">
-                <div>
-                    <p class="font-medium">Generar CSV</p>
-                    <p>Genera un archivo csv con todos los estudiante aprobados de este proceso de admision.</p>
-                </div>
-                <button class="button-upload btn" id="downloadCsvBtn">
-                    <img src="../../img/icons/download.svg" alt="" class="me-2">
-                    <span>Descargar CSV</span>
-                </button>
-            </div>
-        </section>
-
 
         <section class="row">
             <div class="card-container">

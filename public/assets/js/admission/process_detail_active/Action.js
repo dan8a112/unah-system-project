@@ -79,21 +79,21 @@ class Action{
         }
 
         //Si el proceso no es subida de notas
-        if (infoProcess.idProcessState===3) {
+        if (infoProcess.idProcessState!=3) {
             //Se renderiza la seccion de subida de csv
-            this.renderUploadCSVSection();
+            this.renderUploadCSVSection(infoProcess.idProcessState);
         }
 
     }
 
     /**
      * Renderiza la tarjeta que permite subir el csv de calificaciones al portal
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 11/11/24
+     * @author dochoao@unah.hn, afcastillof@unah.hn
+     * @version 0.1.1
+     * @date 17/11/24
      * @param {*} id el id del proceso de admision solicitado
      */
-    static renderUploadCSVSection(){
+    static renderUploadCSVSection(processState){
 
         //Se selecciona la sección de subida del CSV
         const uploadCsvSection = document.querySelector("section#upload_csv");
@@ -103,17 +103,33 @@ class Action{
         card.classList.add("card-container", "d-flex", "justify-content-between");
 
         //Se agrega texto informativo a card
-        card.innerHTML = `
-            <div>
+        card.innerHTML = processState===4 ?
+            `<div>
                 <p class="font-medium">Subida de calificaciones</p>
                 <p>El proceso de admisión está en publicacion de resultados puedes subir el archivo de calificaciones aqui.</p>
+            </div>` : processState === 6 ? 
+            `<div>
+                <p class="font-medium">Generar CSV</p>
+                <p>Genera un archivo csv con todos los estudiante aprobados de este proceso de admision.</p>
+            </div>`:
+            `<div>
+                <p class="font-medium">Enviar resultados</p>
+                <p>Manda un correo e informa a todos los participantes del proceso de admision sobre su dictamen en las pruebas.</p>
             </div>`;
 
         //Se crea el boton de subida de csv
         const button = document.createElement("button");
-        button.setAttribute("id", "uploadCSVBtn")
         button.classList.add("button-upload", "btn");
+        if (processState===4){
+            button.setAttribute("id", "uploadCSVBtn");
+        } else if(processState===5){
+            button.setAttribute("id", "sendMail");
+            button.style.backgroundColor = "#3472F8";
+        } else {
+            button.setAttribute("id", "downloadCsvBtn");
+        }
 
+        
         //Se agrega accion de abrir modal de subir archivo
         button.addEventListener("click", ()=>{
             const uploadCSVModal = document.querySelector("div#uploadCSVModal");
@@ -121,9 +137,13 @@ class Action{
         })
 
         //Se agrega imagen y texto dentro del boton
-        button.innerHTML = `
-                <img src="../../img/icons/upload.svg" alt="" class="me-2">
-                <span>Subir CSV</span>`;
+        button.innerHTML = processState===4 ?
+            `<img src="../../img/icons/upload.svg" alt="" class="me-2">
+             <span>Subir CSV</span>` : processState===6 ?
+             `<img src="../../img/icons/download.svg" alt="" class="me-2">
+             <span>Descargar CSV</span>`: 
+             `<img src="../../img/icons/mail.svg" alt="" class="me-2" style="width:24px">
+             <span style="color: white;">Enviar resultados CSV</span>`;
 
         //Se agrega el boton a la card
         card.appendChild(button);
