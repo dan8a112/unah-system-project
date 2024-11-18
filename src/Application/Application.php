@@ -315,11 +315,11 @@
 
                         if (filter_var($data[1], FILTER_VALIDATE_INT) === false || filter_var($data[2], FILTER_VALIDATE_FLOAT) === false) {
                             $incorrectData []= [
-                                "row"=>$counter,
-                                'dni'=> $dni,
-                                'idTest'=> $data[1],
-                                'grade'=> $data[2],
-                                'message'=> 'Tipo de dato incorrecto en alguna columna.'
+                                $counter,
+                                $dni,
+                                $data[1],
+                                $data[2],
+                                'Tipo de dato incorrecto en alguna columna.'
                             ];
                             continue;
                         }
@@ -338,30 +338,30 @@
 
                                 if (!$resultArray['status']) {
                                     $incorrectData []= [
-                                        "row"=>$counter,
-                                        'dni'=> $dni,
-                                        'idTest'=> $data[1],
-                                        'grade'=> $data[2],
-                                        'message'=> $resultArray['message']
+                                        $counter,
+                                        $dni,
+                                        $data[1],
+                                        $data[2],
+                                        $resultArray['message']
                                     ];
                                 }
                             }else {
                                 $incorrectData []= [
-                                    "row"=>$counter,
-                                    'dni'=> $dni,
-                                    'idTest'=> $data[1],
-                                    'grade'=> $data[2],
-                                    'message'=> "Error al ejecutar el procedimiento: " . $conexion->error
+                                    $counter,
+                                    $dni,
+                                    $data[1],
+                                    $data[2],
+                                    "Error al ejecutar el procedimiento: " . $conexion->error
                                 ];
                             }
                             
                         }catch (Exception $e){
                             $incorrectData []= [
-                                "row"=>$counter,
-                                'dni'=> $dni,
-                                'idTest'=> $data[1],
-                                'grade'=> $data[2],
-                                'message'=> "Error al hacer la consulta: $e"
+                                $counter,
+                                $dni,
+                                $data[1],
+                                $data[2],
+                                "No existe el IdTest."
                             ];
                         }
 
@@ -383,10 +383,10 @@
 
                     foreach($result1 as $row){
                         $missingData[] = [
-                            "row"=>$counter2,
-                            "dni"=>$row["dni"],
-                            "idTest"=>$row["admissionTest"],
-                            "grade"=>$row["grade"]
+                            $counter2,
+                            $row["dni"],
+                            $row["admissionTest"],
+                            $row["grade"]
                         ];
 
                         $counter2++;
