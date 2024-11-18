@@ -299,6 +299,7 @@
         public function insertResults($path){
             $expectedHeaders = ['dni', 'idTest', 'grade'];
             $incorrectData = [];
+            $counter = 1;
 
             if (($handle = fopen($path, 'r')) !== false) {
                 // Leer la primera línea (encabezados)
@@ -314,10 +315,11 @@
 
                         if (filter_var($data[1], FILTER_VALIDATE_INT) === false || filter_var($data[2], FILTER_VALIDATE_FLOAT) === false) {
                             $incorrectData []= [
-                                'dni'=> $dni,
-                                'idTest'=> $data[1],
-                                'grade'=> $data[2],
-                                'message'=> 'Tipo de dato incorrecto en alguna columna.'
+                                $counter,
+                                $dni,
+                                $data[1],
+                                $data[2],
+                                'Tipo de dato incorrecto en alguna columna.'
                             ];
                             continue;
                         }
@@ -336,38 +338,65 @@
 
                                 if (!$resultArray['status']) {
                                     $incorrectData []= [
-                                        'dni'=> $dni,
-                                        'idTest'=> $data[1],
-                                        'grade'=> $data[2],
-                                        'message'=> $resultArray['message']
+                                        $counter,
+                                        $dni,
+                                        $data[1],
+                                        $data[2],
+                                        $resultArray['message']
                                     ];
                                 }
                             }else {
                                 $incorrectData []= [
-                                    'dni'=> $dni,
-                                    'idTest'=> $data[1],
-                                    'grade'=> $data[2],
-                                    'message'=> "Error al ejecutar el procedimiento: " . $conexion->error
+                                    $counter,
+                                    $dni,
+                                    $data[1],
+                                    $data[2],
+                                    "Error al ejecutar el procedimiento: " . $conexion->error
                                 ];
                             }
                             
                         }catch (Exception $e){
                             $incorrectData []= [
-                                'dni'=> $dni,
-                                'idTest'=> $data[1],
-                                'grade'=> $data[2],
-                                'message'=> "Error al hacer la consulta: $e"
+                                $counter,
+                                $dni,
+                                $data[1],
+                                $data[2],
+                                "No existe el IdTest."
                             ];
                         }
 
-                       
+                       $counter++;
                     }
                 
                     fclose($handle);
+
+                    $missingData = [];
+                    $query1 = 'SELECT  d.id as dni, a.admissionTest, a.grade
+                                FROM Results a 
+                                INNER JOIN Application b ON(a.application=b.id)
+                                INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                                INNER JOIN Applicant d ON(b.idApplicant=d.id)
+                                WHERE c.active = true AND a.grade IS NULL;';
+        
+                    $result1 = $this->mysqli->execute_query($query1);
+                    $counter2= 1;
+
+                    foreach($result1 as $row){
+                        $missingData[] = [
+                            $counter2,
+                            $row["dni"],
+                            $row["admissionTest"],
+                            $row["grade"]
+                        ];
+
+                        $counter2++;
+                    };
+
                     return [
                         "status" => true,
                         "message" => "CSV leido",
-                        "incorrectDat"=> $incorrectData
+                        "incorrectData"=> $incorrectData,
+                        "missingData"=> $missingData
                     ];
                 } else {
                     fclose($handle);
