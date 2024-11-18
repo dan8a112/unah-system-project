@@ -6,7 +6,7 @@ curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "idFirstDegree
 
 
 ---------Curl para probar api/get/infoAdmission-------------------
-curl http://localhost:3000/api/get/infoAdmission | jq
+curl http://localhost:3000/api/get/admission/infoAdmission | jq
 
 
 --------------Curl para probar api/post/loginSEDP-----------------------
@@ -27,16 +27,16 @@ curl http://localhost:3000/api/get/professorTypes | jq
 curl http://localhost:3000/api/get/departments | jq
 
 -------------Curl para obtener el proceso de admision actual----------------
-curl http://localhost:3000/api/get/infoCurrentAdmission | jq
+curl http://localhost:3000/api/get/admission/infoCurrentAdmission | jq
 
 -----------Curl para obtener una admision historica------------------
-curl http://localhost:3000/api/get/admissionDetail/?id=1 | jq
+curl http://localhost:3000/api/get/admission/admissionDetail/?id=1 | jq
 
 --------------Curl para saber si hay un proceso de inscripcion actualmente---------------
-curl http://localhost:3000/api/get/activeAdmissionProcess | jq
+curl http://localhost:3000/api/get/admission/activeAdmissionProcess | jq
 
 --------------Curl para enviar correos---------------
-curl http://localhost:3000/api/get/sendMails | jq
+curl http://localhost:3000/api/get/admission/sendMails | jq
 
 ------------Curl insert professor----------------------
 curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeSelect=1" -d "departmentSelect=3" -d "birthDate=2003-12-08" http://localhost:3000/api/post/professor | jq

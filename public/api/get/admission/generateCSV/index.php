@@ -8,8 +8,8 @@
 
 header("Content-Type: application/json");
 
-include_once "../../../../src/DbConnection/DbConnection.php";
-include_once "../../../../src/Files/CSVExporter.php"; 
+include_once "../../../../../src/DbConnection/DbConnection.php";
+include_once "../../../../../src/Files/CSVExporter.php"; 
 
 $response = [];
 
