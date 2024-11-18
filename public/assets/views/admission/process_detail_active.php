@@ -171,12 +171,13 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
-                <button class="button-upload btn me-3" id="sendEmailsCsv" style="height: 40px; background-color:#3472F8">
-                        <img src="../../img/icons/mail.svg" alt="" class="me-2" style="width: 24px;">
-                        <span style="color:#fff">Enviar correos</span>
+                <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal" id="closeModal">Close</button>
+                <button class="button-upload btn me-3" id="sendEmailsButton" style="height: 40px; background-color:#3472F8">
+                    <img src="../../img/icons/mail.svg" alt="" class="me-2" style="width: 24px;">
+                    <span style="color:#fff">Enviar correos</span>
                 </button>
             </div>
+
             </div>
         </div>
     </div>
