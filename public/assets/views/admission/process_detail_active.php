@@ -140,13 +140,13 @@
                         <p>A continuacion se deben subir las calificaciones de los examenes de admision</p>
                     </div>
                     <form id="formCSV">
-                        <input class="form-control mb-3" type="file" name="califications" >
+                        <input class="form-control mb-3" type="file" name="pathCsvGrades" >
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
-                <button class="button-upload btn me-3" id="uploadCsv" style="height: 40px;">
+                <button class="button-upload btn me-3" id="uploadCsv" style="height: 40px;" type="submit">
                         <img src="../../img/icons/upload.svg" alt="" class="me-2">
                         <span>Subir</span>
                 </button>

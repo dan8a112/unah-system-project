@@ -81,7 +81,7 @@ class Action{
         //Si el proceso no es subida de notas
         if (infoProcess.idProcessState!=3) {
             //Se renderiza la seccion de subida de csv
-            this.renderUploadCSVSection(infoProcess.idProcessState);
+            this.renderUploadCSVSection(4);
         }
 
     }
