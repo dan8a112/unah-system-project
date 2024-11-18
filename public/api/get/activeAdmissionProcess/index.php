@@ -7,7 +7,7 @@
 
     //Data Access Object
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $result = $dao->isActiveAdmissionProcess();
+    $result = $dao->isActiveInscriptionProcess();
 
     if($result){
         $json = [

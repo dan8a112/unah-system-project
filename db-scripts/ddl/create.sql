@@ -62,18 +62,9 @@ CREATE TABLE AcademicEvent(
     startDate DATETIME,
     finalDate DATETIME,
     active BOOLEAN,
+    parentId INT DEFAULT NULL,
+    CONSTRAINT fk_parent_id FOREIGN KEY (parentID) REFERENCES AcademicEvent(id) ON DELETE SET NULL,
     CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
-);
-
-CREATE TABLE AcademicSubprocess (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    academicEventId INT NOT NULL,
-    academicProcessId INT NOT NULL,
-    startDate DATETIME,
-    endDate DATETIME,
-    active TINYINT(1) DEFAULT 1,
-    FOREIGN KEY (academicEventId) REFERENCES AcademicEvent(id),
-    FOREIGN KEY (academicProcessId) REFERENCES AcademicProcess(id)
 );
 
 CREATE TABLE Application(
@@ -498,17 +489,14 @@ INSERT INTO AcademicProcess(description) VALUES
     ('Planificación académica')
 ;
 
-INSERT INTO AcademicEvent(process, startDate, finalDate, active) VALUES
-    (1,'2022-01-13 00:00:00', '2022-01-12 00:00:00', false),
-    (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false),
-    (1, '2024-11-13 00:00:00', '2024-11-20 00:00:00', true)
-;
-
-INSERT INTO  AcademicSubprocess(academicEventId, academicProcessId, startDate, endDate, active) VALUES
-    (3,3, '2024-11-13 00:00:00', '2024-11-14 00:00:00', true),
-    (3,4, '2024-11-14 00:00:00', '2024-11-15 00:00:00', false),
-    (1,5, '2024-11-15 00:00:00', '2024-11-16 00:00:00', false),
-    (1,6, '2024-11-16 00:00:00', '2024-11-17 00:00:00', false)
+INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUES
+    (1,'2022-01-13 00:00:00', '2022-01-12 00:00:00', false, NULL),
+    (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false, NULL),
+    (1, '2024-11-13 00:00:00', '2024-11-25 00:00:00', true, NULL),
+    (3, '2024-11-17 00:00:00', '2024-11-18 00:00:00', true, 3),
+    (4, '2024-11-18 00:00:00', '2024-11-19 00:00:00', false, 3),
+    (5, '2024-11-19 00:00:00', '2024-11-20 00:00:00', false, 3),
+    (6, '2024-11-20 00:00:00', '2024-11-21 00:00:00', false, 3)
 ;
 
 INSERT INTO Configuration(data) VALUES
@@ -622,8 +610,6 @@ BEGIN
 
     DECLARE maxAttempts INT;
     DECLARE attempts INT;
-    DECLARE startDate VARCHAR(10);
-    DECLARE finalDate VARCHAR(10);
     DECLARE idCurrentProcess INT;
 
     -- Verificar si el ID y el nombre completo ya existen en la tabla Applicant
@@ -666,7 +652,7 @@ BEGIN
         );
     END IF;
 
-    -- Extraer el valor de "members" del campo JSON en la tabla Configuration
+    -- Extraer el valor de "attempts" del campo JSON en la tabla Configuration
     SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttempst") FROM Configuration LIMIT 1);
     SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id);
     SET idCurrentProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
@@ -706,7 +692,7 @@ END //
     version: 0.1.0
     date: 11/11/24
 
-    Procedimiento almacenado para saber si un aplicante ya tiene una aplicacion en el proceso deadmision actual
+    Procedimiento almacenado para saber si un aplicante ya tiene una aplicacion en el proceso de admision actual
 **/
 CREATE PROCEDURE ApplicationInCurrentEvent (IN p_identityNumber VARCHAR(15))
 BEGIN
@@ -737,13 +723,13 @@ END //
 **/
 CREATE PROCEDURE GetDegreeProgramsByRegionalCenter (IN regionalCenterId INT)
 BEGIN
-    SELECT `DegreeProgram`.id AS degreeProgramId
-    FROM `RegionalCenterDegree`
-    INNER JOIN `DegreeProgram`
-    ON `RegionalCenterDegree`.degree = `DegreeProgram`.id
-    INNER JOIN `RegionalCenter`
-    ON `RegionalCenterDegree`.regionalCenter = `RegionalCenter`.id
-    WHERE `RegionalCenter`.id = regionalCenterId;
+    SELECT DegreeProgram.id AS degreeProgramId
+    FROM RegionalCenterDegree
+    INNER JOIN DegreeProgram
+    ON RegionalCenterDegree.degree = DegreeProgram.id
+    INNER JOIN RegionalCenter
+    ON RegionalCenterDegree.regionalCenter = RegionalCenter.id
+    WHERE RegionalCenter.id = regionalCenterId;
 END //
 
 /**
@@ -757,11 +743,11 @@ CREATE PROCEDURE InfoCurrentProcessAdmission ()
 BEGIN
     SET lc_time_names = 'es_ES';
 
-    SELECT a.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final, c.academicProcessId as idProcessState, d.description as processState
+    SELECT a.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final, d.id as idProcessState, d.description as processState
     FROM AcademicEvent a
     INNER JOIN AcademicProcess b ON (a.process = b.id)
-    INNER JOIN AcademicSubprocess c ON (a.id = c.academicEventId)
-    INNER JOIN AcademicProcess d ON (c.academicProcessId = d.id)
+    INNER JOIN AcademicEvent c ON (a.id = c.parentId)
+    INNER JOIN AcademicProcess d ON (c.process = d.id)
     WHERE a.active = true AND b.id=1 and c.active=true;      
 END //
 
