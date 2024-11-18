@@ -291,6 +291,110 @@
             }
         }
         
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+        */
+        public function insertResults($path){
+            $expectedHeaders = ['dni', 'idTest', 'grade'];
+            $incorrectData = [];
+
+            if (($handle = fopen($path, 'r')) !== false) {
+                // Leer la primera línea (encabezados)
+                $headers = fgetcsv($handle, 1000, ',');
+                
+                if ($headers === $expectedHeaders) {
+                    // Leer cada línea del archivo
+                    while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                        // Mapear los datos a variables
+                        $dni = $data[0];
+                        $id_test = $data[1];
+                        $grade = $data[2];
+
+                        if (filter_var($data[1], FILTER_VALIDATE_INT) === false || filter_var($data[2], FILTER_VALIDATE_FLOAT) === false) {
+                            $incorrectData []= [
+                                'dni'=> $dni,
+                                'idTest'=> $data[1],
+                                'grade'=> $data[2],
+                                'message'=> 'Tipo de dato incorrecto en alguna columna.'
+                            ];
+                            continue;
+                        }
+                
+                        // update los datos en la base de datos
+                        $query= "CALL updateResults(?, ?, ?)";
+
+                        try{
+                            $result = $this->mysqli->execute_query($query, [$dni, (int) $id_test, (float) $grade]);
+                            
+                            if ($row = $result->fetch_assoc()) {
+
+                                $resultJson = $row['resultJson'];
+
+                                $resultArray = json_decode($resultJson, true);
+
+                                if ($resultArray !== null && !$resultArray['status']) {
+                                    $incorrectData []= [
+                                        'dni'=> $dni,
+                                        'idTest'=> $data[1],
+                                        'grade'=> $data[2],
+                                        'message'=> $resultArray['message']
+                                    ];
+                                }else{
+                                    $incorrectData []= [
+                                        'dni'=> $dni,
+                                        'idTest'=> $data[1],
+                                        'grade'=> $data[2],
+                                        'message'=> $resultArray['message']
+                                    ];
+                                }
+
+                            }else {
+                                $incorrectData []= [
+                                    'dni'=> $dni,
+                                    'idTest'=> $data[1],
+                                    'grade'=> $data[2],
+                                    'message'=> "Error al ejecutar el procedimiento: " . $conexion->error
+                                ];
+                            }
+                            
+                        }catch (Exception $e){
+                            $incorrectData []= [
+                                'dni'=> $dni,
+                                'idTest'=> $data[1],
+                                'grade'=> $data[2],
+                                'message'=> "Error al hacer la consulta"
+                            ];
+                        }
+
+                       
+                    }
+                
+                    fclose($handle);
+                    return [
+                        "status" => true,
+                        "message" => "CSV leido",
+                        "incorrectDat"=> $incorrectData
+                    ];
+                } else {
+                    fclose($handle);
+                    return [
+                        'status' => false,
+                        'message' => 'El formato del archivo CSV no es válido. Encabezados esperados: ' 
+                                     . implode(', ', $expectedHeaders) 
+                                     . '. Encabezados recibidos: ' 
+                                     . implode(', ', $headers)
+                    ];
+                }
+            } else {
+                return [
+                    "status" => false,
+                    "message" => "Error al abrir CSV.",
+                ];
+            }
+            
+        }
 
         // Método para cerrar la conexión
         public function closeConnection() {
