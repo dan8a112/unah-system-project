@@ -299,6 +299,7 @@
         public function insertResults($path){
             $expectedHeaders = ['dni', 'idTest', 'grade'];
             $incorrectData = [];
+            $counter = 1;
 
             if (($handle = fopen($path, 'r')) !== false) {
                 // Leer la primera línea (encabezados)
@@ -314,6 +315,7 @@
 
                         if (filter_var($data[1], FILTER_VALIDATE_INT) === false || filter_var($data[2], FILTER_VALIDATE_FLOAT) === false) {
                             $incorrectData []= [
+                                "row"=>$counter,
                                 'dni'=> $dni,
                                 'idTest'=> $data[1],
                                 'grade'=> $data[2],
@@ -336,6 +338,7 @@
 
                                 if (!$resultArray['status']) {
                                     $incorrectData []= [
+                                        "row"=>$counter,
                                         'dni'=> $dni,
                                         'idTest'=> $data[1],
                                         'grade'=> $data[2],
@@ -344,6 +347,7 @@
                                 }
                             }else {
                                 $incorrectData []= [
+                                    "row"=>$counter,
                                     'dni'=> $dni,
                                     'idTest'=> $data[1],
                                     'grade'=> $data[2],
@@ -353,6 +357,7 @@
                             
                         }catch (Exception $e){
                             $incorrectData []= [
+                                "row"=>$counter,
                                 'dni'=> $dni,
                                 'idTest'=> $data[1],
                                 'grade'=> $data[2],
@@ -360,14 +365,38 @@
                             ];
                         }
 
-                       
+                       $counter++;
                     }
                 
                     fclose($handle);
+
+                    $missingData = [];
+                    $query1 = 'SELECT  d.id as dni, a.admissionTest, a.grade
+                                FROM Results a 
+                                INNER JOIN Application b ON(a.application=b.id)
+                                INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                                INNER JOIN Applicant d ON(b.idApplicant=d.id)
+                                WHERE c.active = true AND a.grade IS NULL;';
+        
+                    $result1 = $this->mysqli->execute_query($query1);
+                    $counter2= 1;
+
+                    foreach($result1 as $row){
+                        $missingData[] = [
+                            "row"=>$counter2,
+                            "dni"=>$row["dni"],
+                            "idTest"=>$row["admissionTest"],
+                            "grade"=>$row["grade"]
+                        ];
+
+                        $counter2++;
+                    };
+
                     return [
                         "status" => true,
                         "message" => "CSV leido",
-                        "incorrectDat"=> $incorrectData
+                        "incorrectData"=> $incorrectData,
+                        "missingData"=> $missingData
                     ];
                 } else {
                     fclose($handle);
