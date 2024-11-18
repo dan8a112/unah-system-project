@@ -81,7 +81,7 @@ class Action{
         //Si el proceso no es subida de notas
         if (infoProcess.idProcessState!=3) {
             //Se renderiza la seccion de subida de csv
-            this.renderUploadCSVSection(infoProcess.idProcessState);
+            this.renderUploadCSVSection(5);
         }
 
     }
@@ -122,19 +122,28 @@ class Action{
         button.classList.add("button-upload", "btn");
         if (processState===4){
             button.setAttribute("id", "uploadCSVBtn");
+            //Se agrega accion de abrir modal de subir archivo
+            button.addEventListener("click", ()=>{
+            const uploadCSVModal = document.querySelector("div#uploadCSVModal");
+            Modal.openModal(uploadCSVModal);
+            });
         } else if(processState===5){
             button.setAttribute("id", "sendMail");
             button.style.backgroundColor = "#3472F8";
-        } else {
+            //Se agrega accion de abrir modal de mandar correos
+            button.addEventListener("click", ()=>{
+                const uploadCSVModal = document.querySelector("div#sendEmails");
+                Modal.openModal(uploadCSVModal);
+            });
+        } else if(processState===6){
             button.setAttribute("id", "downloadCsvBtn");
+            //Se agrega accion para descargar el csv
+            button.addEventListener("click", ()=>{
+                this.downloadCSV()
+            })
         }
 
         
-        //Se agrega accion de abrir modal de subir archivo
-        button.addEventListener("click", ()=>{
-            const uploadCSVModal = document.querySelector("div#uploadCSVModal");
-            Modal.openModal(uploadCSVModal);
-        })
 
         //Se agrega imagen y texto dentro del boton
         button.innerHTML = processState===4 ?
@@ -160,7 +169,7 @@ class Action{
      * @param {*} id el id del proceso de admision solicitado
      */
     static fetchActiveData = async ()=>{
-        const response = await HttpRequest.get(`../../../api/get/infoCurrentAdmission`);
+        const response = await HttpRequest.get(`../../../api/get/admission/infoCurrentAdmission`);
         if (response.status) {
             this.renderActiveProcess(response.data)
         }else{
@@ -189,7 +198,7 @@ class Action{
      * @date 12/11/24
      */
     static downloadCSV(){
-        const url = '../../../api/get/generateCSV';
+        const url = '../../../api/get/admission/generateCSV';
     
         // Hacer la solicitud para obtener el CSV
         fetch(url)

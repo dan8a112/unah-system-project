@@ -105,7 +105,7 @@ class Action{
      * @param {*} id el id del proceso de admision solicitado
      */
     static fetchHistoricData = async (id)=>{
-        const response = await HttpRequest.get(`../../../api/get/admissionDetail/?id=${id}`);
+        const response = await HttpRequest.get(`../../../api/get/admission/admissionDetail/?id=${id}`);
         if (response.status) {
             console.log(response.data)
             this.renderHistoricProcess(response.data);

@@ -155,6 +155,32 @@
         </div>
     </div>
 
+    <div class="modal fade" id="sendEmails" tabindex="-1" aria-labelledby="formModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="formModal">Enviar resultados</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="mb-3">
+                        <p class="fs-5">Mandar correos</p>
+                        <p>Si presionas enviar se enviara un correo a todos los estudiantes con los resultados de sus pruebas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
+                <button class="button-upload btn me-3" id="sendEmailsCsv" style="height: 40px; background-color:#3472F8">
+                        <img src="../../img/icons/mail.svg" alt="" class="me-2" style="width: 24px;">
+                        <span style="color:#fff">Enviar correos</span>
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script type="module" src="../../js/admission/process_detail_active/main.js"></script>
 </body>
