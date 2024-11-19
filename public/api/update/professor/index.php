@@ -17,8 +17,8 @@
         isset($_POST['phoneNumber'])&&
         isset($_POST['birthDate'])&&
         isset($_POST['address'])&&
-        isset($_POST['professorTypeSelect'])&&
-        isset($_POST['departmentSelect'])&&
+        isset($_POST['professorTypeId'])&&
+        isset($_POST['departmentId'])&&
         isset($_POST['active'])
     ){
         $id=$_GET['id'];
@@ -30,8 +30,8 @@
         $telephoneNumber = $_POST['phoneNumber'] ?? '';
         $address = $_POST['address'] ?? '';
         $dateOfBirth = $_POST['birthDate'] ?? '';
-        $professorType = $_POST['professorTypeSelect'];
-        $department = $_POST['departmentSelect'];
+        $professorType = $_POST['professorTypeId'];
+        $department = $_POST['departmentId'];
         $active = $_POST['active'];
 
         $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);

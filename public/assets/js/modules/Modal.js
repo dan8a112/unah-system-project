@@ -1,7 +1,7 @@
 class Modal {
     static modalInstance = null; 
 
-    static openModal(dom, content, backdropOption) {
+    static openModal(dom, content, title, backdropOption) {
         const options = {
             keyboard: false
         };
@@ -13,6 +13,11 @@ class Modal {
         if (content) {
             const modalBody = dom.querySelector("div.modal-body");
             modalBody.innerHTML = content;
+        }
+
+        if (title) {
+            const modalText = dom.querySelector("h5.modal-title");
+            modalText.innerHTML = title;
         }
 
         Modal.modalInstance = new bootstrap.Modal(dom, options);

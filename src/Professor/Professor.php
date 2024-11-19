@@ -139,7 +139,7 @@
          * date: 16/11/24
          */
         public function getProfessor($id){
-            $query = 'SELECT a.id, a.dni, a.firstName, a.secondName, a.firstLastName, a.secondLastName, a.telephoneNumber, a.address, a.dateOfBirth, a.personalEmail, b.professorType, b.department
+            $query = 'SELECT a.id, a.dni, a.firstName, a.secondName, a.firstLastName, a.secondLastName, a.telephoneNumber, a.address, a.dateOfBirth, a.personalEmail, b.professorType, b.department, b.active
                 FROM Employee a
                 INNER JOIN Professor b 
                 ON (a.id = b.id)
@@ -148,20 +148,20 @@
             $result = $this->mysqli->execute_query($query,[$id]);
 
             foreach($result as $row){
-                $professor[] = [
+                $professor = [
                     "id" => $row["id"],
-                    "dni"=>$row["dni"],
+                    "identityNumber"=>$row["dni"],
                     "firstName"=>$row["firstName"],
                     "secondName"=>$row["secondName"],
                     "firstLastName"=>$row["firstLastName"],
                     "secondLastName"=>$row["secondLastName"],
-                    "telephoneNumber"=>$row["telephoneNumber"],
+                    "phoneNumber"=>$row["telephoneNumber"],
                     "address"=>$row["address"],
-                    "dateOfBirth"=>$row["dateOfBirth"],
+                    "birthDate"=>$row["dateOfBirth"],
                     "personalEmail"=>$row["personalEmail"],
-                    "department"=>$row["department"],
-                    "professorType"=>$row["professorType"],
-
+                    "departmentId"=>$row["department"],
+                    "professorTypeId"=>$row["professorType"],
+                    "active"=>$row["active"],
                 ];
             }
 
