@@ -291,6 +291,131 @@
             }
         }
         
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+        */
+        public function insertResults($path){
+            $expectedHeaders = ['dni', 'idTest', 'grade'];
+            $incorrectData = [];
+            $counter = 1;
+
+            if (($handle = fopen($path, 'r')) !== false) {
+                // Leer la primera línea (encabezados)
+                $headers = fgetcsv($handle, 1000, ',');
+                
+                if ($headers === $expectedHeaders) {
+                    // Leer cada línea del archivo
+                    while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                        // Mapear los datos a variables
+                        $dni = $data[0];
+                        $id_test = $data[1];
+                        $grade = $data[2];
+
+                        if (filter_var($data[1], FILTER_VALIDATE_INT) === false || filter_var($data[2], FILTER_VALIDATE_FLOAT) === false) {
+                            $incorrectData []= [
+                                $counter,
+                                $dni,
+                                $data[1],
+                                $data[2],
+                                'Tipo de dato incorrecto en alguna columna.'
+                            ];
+                            continue;
+                        }
+                
+                        // update los datos en la base de datos
+                        $query= "CALL updateResults(?, ?, ?)";
+
+                        try{
+                            $result = $this->mysqli->execute_query($query, [$dni, (int) $id_test, (float) $grade]);
+                            
+                            if ($row = $result->fetch_assoc()) {
+
+                                $resultJson = $row['resultJson'];
+
+                                $resultArray = json_decode($resultJson, true);
+
+                                if (!$resultArray['status']) {
+                                    $incorrectData []= [
+                                        $counter,
+                                        $dni,
+                                        $data[1],
+                                        $data[2],
+                                        $resultArray['message']
+                                    ];
+                                }
+                            }else {
+                                $incorrectData []= [
+                                    $counter,
+                                    $dni,
+                                    $data[1],
+                                    $data[2],
+                                    "Error al ejecutar el procedimiento: " . $conexion->error
+                                ];
+                            }
+                            
+                        }catch (Exception $e){
+                            $incorrectData []= [
+                                $counter,
+                                $dni,
+                                $data[1],
+                                $data[2],
+                                "No existe el IdTest."
+                            ];
+                        }
+
+                       $counter++;
+                    }
+                
+                    fclose($handle);
+
+                    $missingData = [];
+                    $query1 = 'SELECT  d.id as dni, a.admissionTest, a.grade
+                                FROM Results a 
+                                INNER JOIN Application b ON(a.application=b.id)
+                                INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                                INNER JOIN Applicant d ON(b.idApplicant=d.id)
+                                WHERE c.active = true AND a.grade IS NULL;';
+        
+                    $result1 = $this->mysqli->execute_query($query1);
+                    $counter2= 1;
+
+                    foreach($result1 as $row){
+                        $missingData[] = [
+                            $counter2,
+                            $row["dni"],
+                            $row["admissionTest"],
+                            $row["grade"]
+                        ];
+
+                        $counter2++;
+                    };
+
+                    return [
+                        "status" => true,
+                        "message" => "CSV leido",
+                        "incorrectData"=> $incorrectData,
+                        "missingData"=> $missingData
+                    ];
+                } else {
+                    fclose($handle);
+                    return [
+                        'status' => false,
+                        'message' => 'El formato del archivo CSV no es válido. Encabezados esperados: ' 
+                                     . implode(', ', $expectedHeaders) 
+                                     . '. Encabezados recibidos: ' 
+                                     . implode(', ', $headers)
+                    ];
+                }
+            } else {
+                return [
+                    "status" => false,
+                    "message" => "Error al abrir CSV.",
+                ];
+            }
+            
+        }
 
         // Método para cerrar la conexión
         public function closeConnection() {
