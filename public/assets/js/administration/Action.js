@@ -6,6 +6,23 @@ import {HttpRequest} from "../modules/HttpRequest.js"
 class Action{
 
     /**
+     * Realiza una peticion get para obtener la data de los maestros que estan registrados en la base de datos.
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 05/11/24
+     */
+    static fetchProfessors(){
+        fetch('../../../api/get/infoHomeSEDP')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                console.log(data.data)
+                this.generateProfessors(data.data);    
+            }
+        });
+    }
+
+    /**
      * Este metodo genera la tabla con los profesores registrados en el sistema, su rol, y sus acciones correspondientes
      * @author dochoao@unah.hn
      * @version 0.1.0
@@ -121,6 +138,29 @@ class Action{
 
     }
 
+    /**
+     * Abre modal para crear docente
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 18/11/24
+     */
+    static async openCreateForm(){
+        //Se obtiene la data de los selects
+        const data = await this.fetchFormProfessors();
+        this.generateSelectForm(data);
+
+        //Se abre una modal
+        const formModal = document.querySelector("#formModal");
+        Modal.openModal(formModal);
+    }
+
+    /**
+     * Abre la modal para editar un docente
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 17/11/24
+     * @param {*} idProfessor id del docente que se necesita editar
+     */
     static async openEditForm(idProfessor){
 
         //Se obtiene la data de los selects y se generan opciones
@@ -132,6 +172,7 @@ class Action{
 
         //Formulario de maestros
         const professorForm = document.querySelector("#editProfessorForm");
+
         //Se guarda el id del maestro en el dataset del formulario
         professorForm.dataset.idProfessor = professorResponse.data.id;
 
@@ -141,42 +182,6 @@ class Action{
         //Se abre la modal
         const formModal = document.querySelector("#editModal");
         Modal.openModal(formModal);
-    }
-
-    static async openCreateForm(){
-
-        const data = await this.fetchFormProfessors();
-        this.generateSelectForm(data);
-
-        const formModal = document.querySelector("#formModal");
-        Modal.openModal(formModal);
-    }
-
-    /**
-     * Genera los las opciones de los selects del formulario para crear maestros (tipos de maestros y departamentos).
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 05/11/24
-     * @param {*} data informacion que contiene las opciones de los selects a renderizar
-     */
-    static generateSelectForm(data, edit=false){
-
-        let departmentSelect = document.querySelector("select#departmentSelect");
-        let professorTypesSelect = document.querySelector("select#professorTypeSelect");
-
-        if (edit) {
-            departmentSelect = document.querySelector("select#departmentSelectEdit");
-            professorTypesSelect = document.querySelector("select#professorTypeSelectEdit");
-        }
-
-        //destructuracion de la data
-        const {professorTypes, departments} = data;
-
-        //Se renderizan las opciones del select de tipos de maestros
-        Selects.renderSelect(professorTypesSelect,professorTypes,"professorTypeId","name");
-        
-        //Se renderizan las opciones del select de departamentos de maestros
-        Selects.renderSelect(departmentSelect,departments,"departmentId","name");
     }
 
     /**
@@ -195,7 +200,26 @@ class Action{
 
         Modal.closeModal();
 
-        this.showResponseModal(response);
+        if (response.status) {
+            //Abre una modal mostrando los datos del maestro creado
+            const modal = document.querySelector("#messageModal");
+            const message = `
+                <p class="mb-3">${response.message}</p>
+                <p class="mb-2"><strong>Nombre: </strong>${response.data.name}</p>
+                <p class="mb-2"><strong>Contraseña: </strong>${response.data.password}</p>
+                <p class="mb-2"><strong>Correo: </strong>${response.data.personalEmail}</p>
+            `;
+            Modal.openModal(modal,message,"Exito!");
+            this.fetchProfessors();
+            Forms.clearFields(document.querySelector("#createProfessorForm"))
+        }else{
+            //Muestra una modal de error
+            const modal = document.querySelector("#messageModal");
+            const modalBtn = modal.querySelector("button#btnClose");
+            modalBtn.classList.remove("btn-success");
+            modalBtn.classList.add("btn-danger");
+            Modal.openModal(modal,response.message,"Error!")
+        }
     }
 
 
@@ -220,18 +244,13 @@ class Action{
 
         Modal.closeModal();
 
-        this.showResponseModal(response);
-
-    }
-
-
-    static showResponseModal(response){
-
         if (response.status) {
+            //Muestra mensaje de exito en modal
             const modal = document.querySelector("#messageModal");
             Modal.openModal(modal,response.message,"Exito!")
             this.fetchProfessors();
         }else{
+            //Muestra mensaje de error en modal
             const modal = document.querySelector("#messageModal");
             const modalBtn = modal.querySelector("button#btnClose");
             modalBtn.classList.remove("btn-success");
@@ -268,20 +287,30 @@ class Action{
     }
 
     /**
-     * Realiza una peticion get para obtener la data de los maestros que estan registrados en la base de datos.
+     * Genera los las opciones de los selects del formulario para crear maestros (tipos de maestros y departamentos).
      * @author dochoao@unah.hn
      * @version 0.1.0
      * @date 05/11/24
+     * @param {*} data informacion que contiene las opciones de los selects a renderizar
      */
-    static fetchProfessors(){
-        fetch('../../../api/get/infoHomeSEDP')
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) {
-                console.log(data.data)
-                this.generateProfessors(data.data);    
-            }
-        });
+    static generateSelectForm(data, edit=false){
+
+        //destructuracion de la data
+        const {professorTypes, departments} = data;
+
+        let departmentSelect = document.querySelector("select#departmentSelect");
+        let professorTypesSelect = document.querySelector("select#professorTypeSelect");
+
+        if (edit) {
+            departmentSelect = document.querySelector("select#departmentSelectEdit");
+            professorTypesSelect = document.querySelector("select#professorTypeSelectEdit");
+        }
+
+        //Se renderizan las opciones del select de tipos de maestros
+        Selects.renderSelect(professorTypesSelect,professorTypes,"professorTypeId","name");
+        
+        //Se renderizan las opciones del select de departamentos de maestros
+        Selects.renderSelect(departmentSelect,departments,"departmentId","name");
     }
 
     /**

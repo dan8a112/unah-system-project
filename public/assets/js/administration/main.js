@@ -1,4 +1,5 @@
 import {Action} from "./Action.js";
+import {Forms} from "../modules/Forms.js"
 
 //Se hace la peticion de los maestros
 Action.fetchProfessors();
@@ -17,4 +18,5 @@ editProfessorForm.addEventListener('submit', Action.submitFormEditProfessor);
 
 //Se agrega accion de boton para cerrar sesion
 const logoutButton = document.querySelector("button#logoutBtn")
+
 logoutButton.addEventListener("click", Action.logout)

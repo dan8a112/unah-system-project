@@ -36,6 +36,16 @@ class Forms{
             }
         }
     }
+
+    static clearFields(form){
+
+        const fields = form.querySelectorAll("input");
+
+        fields.forEach(field => {
+            field.value = "";
+        });
+
+    }
 }
 
 export {Forms}
