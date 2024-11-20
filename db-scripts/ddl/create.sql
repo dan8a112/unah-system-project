@@ -1048,7 +1048,7 @@ BEGIN
                 'message', 'No existe aplicante con ese DNI en el proceso de admisión actual'
             ) AS resultJson;
     END IF;
-END 
+END //
 
 
 /**
