@@ -109,7 +109,7 @@
                     ];
 
                     if ($student["approvedFirstChoice"] && $student["approvedSecondChoice"]) {
-                        $bodyGrades = '<strong>Nos complace anunciarle que has aprobado para <strong>AMBAS</strong>de sus opciones.<strong>';
+                        $bodyGrades = '<strong>Nos complace anunciarle que ha aprobado para <strong>AMBAS</strong> de sus opciones.<strong>';
                     } elseif ($student["approvedFirstChoice"] && !$student["approvedSecondChoice"]) {
                         $bodyGrades = 'Nos complace anunciarle que has aprobado para tu <strong>PRIMERA</strong> opción, pero no has aprobado para tu segunda opción.';
                     } elseif (!$student["approvedFirstChoice"] && $student["approvedSecondChoice"]) {

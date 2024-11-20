@@ -30,7 +30,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="ms-4 mt-3">
-            <h1 class="mb-0">Portal ASA</h1>
+            <h1 class="mb-0">Portal APA</h1>
             <p>Administracion de sistema de admisiones de la UNAH</p>
           </div>
           <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
@@ -47,6 +47,8 @@
     </nav>
     <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
 
+    <a class="btn btn-sm m-3" href="./administrative_home.php"><img src="../../img/icons/back-arrow.svg" alt=""></a>
+
     <div class="container mb-5">
 
         <section class="my-4">
@@ -54,7 +56,7 @@
                 <h1 class="display3 me-3" id="processName"></h1>
                 <div class="status-card" style="background-color: #00C500;">Activo</div>
             </div>
-            <p>A continuación encontrará informacion y estadísticas sobre este proceso de admisión.</p>
+            <p>A continuación encontrará información y estadísticas sobre este proceso de admisión.</p>
         </section>
           
         <section class="row mb-4 gap-5">
@@ -80,7 +82,7 @@
                     <span >Estado de proceso</span>
                 </div>
                 <div class="d-flex justify-content-center align-items-center" style="height: 80%;">
-                    <h1 class="display-6" style="font-weight: 400;" id="admissionState">Inscripciones</h1>
+                    <h1 style="font-size: 1.7rem; font-weight: 400;" id="admissionState">Inscripciones</h1>
                 </div>
             </div>
             <div class="card-container col">
@@ -139,7 +141,7 @@
                     <div class="container">
                         <div class="mb-3">
                             <p class="fs-5">Subir archivo CSV</p>
-                            <p>A continuacion se deben subir las calificaciones de los examenes de admision</p>
+                            <p>A continuacion se deben subir las calificaciones de los examenes de admisión</p>
                         </div>
                         <input class="form-control mb-3" type="file" name="pathCsvGrades" >
                        
