@@ -50,87 +50,126 @@
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.3.0
-         * date: 11/11/24
+         * date: 20/11/24
          */
         public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, $pathSchoolCertificate, string $telephoneNumber,
             string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
 
             $currentProcess = $this->applicationInCurrentProcess($identityNumber);
 
+            //validación de que no exista una aplicacion del aplicante con este dni
             if($currentProcess['status']){
                 return [
                     "status" => false,
                     "message" => $currentProcess['message']
                 ];
             }else{
-                //hacer validaciones en el if
-                if(
-                    Validator::isHondurasIdentityNumber($identityNumber) &&
-                    Validator::isPhoneNumber($telephoneNumber) &&
-                    Validator::isEmail($personalEmail)
-                ){
-                    $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
-                    $query1= "SELECT b.admissionTest, d.description
-                            FROM Application a
-                            INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
-                            INNER JOIN AdmissionTest d ON b.admissionTest = d.id
-                            WHERE a.id = ?
-                            UNION
-                            SELECT c.admissionTest, e.description
-                            FROM Application a
-                            INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
-                            INNER JOIN AdmissionTest e ON c.admissionTest = e.id
-                            WHERE a.id = ?";
-                    $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
-
-                    try{
-                        $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
-                            $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
-                        
-                        if ($row = $result->fetch_assoc()) {
-
-                            $resultJson = $row['resultJson'];
-
-                            $resultArray = json_decode($resultJson, true);
-
-                            if ($resultArray !== null) {
-
-                                //INSERTAR EXAMENES
-                                $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
-                                foreach($result1 as $row){
-                                    $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
-                                    $exams[] = $row['description'];
-                                };
-
-                                return [
-                                    "status" => true,
-                                    "message" => "Inscription hecha correctamente",
-                                    "exams"=> $exams
-                                ];
-
-                            } else {
-                                return [
-                                    "status" => false,
-                                    "message" => "Error al decodificar el JSON."
-                                ];
-                            }
-
-                        }else {
-                            echo "Error al ejecutar el procedimiento: " . $conexion->error;
-                        }
-                        
-                    }catch (Exception $e){
-                        return [
-                            "status" => false,
-                            "message" => "Error al hacer la consulta"
-                        ];
-                    }
-                }else{
+                //hacer validaciones integridad de datos
+                if(!Validator::isHondurasIdentityNumber($identityNumber)){
                     return [
-                            "status" => false,
-                            "message" => "Alguno de los campos no cumple el formato necesario"
-                        ];
-                } 
+                        "status" => false,
+                        "message" => "Número de identidad inválido"
+                    ];
+                }
+
+                if(!Validator::isPhoneNumber($telephoneNumber)){
+                    return [
+                        "status" => false,
+                        "message" => "Número de teléfono inválido"
+                    ];
+                }
+
+                if(!Validator::isEmail($personalEmail)){
+                    return [
+                        "status" => false,
+                        "message" => "Email inválido"
+                    ];
+                }
+
+                if(!Validator::isValidName($firstName) || $firstName==""){
+                    return [
+                        "status" => false,
+                        "message" => "Primer nombre inválido"
+                    ];
+                }
+
+                if(!Validator::isValidName($secondName)){
+                    return [
+                        "status" => false,
+                        "message" => "Segundo nombre inválido"
+                    ];
+                }
+
+                if(!Validator::isValidName($firstLastName) || $firstLastName==""){
+                    return [
+                        "status" => false,
+                        "message" => "Primer apellido inválido"
+                    ];
+                }
+
+                if(!Validator::isValidName($secondLastName)){
+                    return [
+                        "status" => false,
+                        "message" => "Segundo apellido inválido"
+                    ];
+                }
+                
+                $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
+                $query1= "SELECT b.admissionTest, d.description
+                        FROM Application a
+                        INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
+                        INNER JOIN AdmissionTest d ON b.admissionTest = d.id
+                        WHERE a.id = ?
+                        UNION
+                        SELECT c.admissionTest, e.description
+                        FROM Application a
+                        INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
+                        INNER JOIN AdmissionTest e ON c.admissionTest = e.id
+                        WHERE a.id = ?";
+                $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
+
+                try{
+                    $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
+                        $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
+                    
+                    if ($row = $result->fetch_assoc()) {
+
+                        $resultJson = $row['resultJson'];
+
+                        $resultArray = json_decode($resultJson, true);
+
+                        if ($resultArray !== null) {
+
+                            //INSERTAR EXAMENES
+                            $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
+                            foreach($result1 as $row){
+                                $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
+                                $exams[] = $row['description'];
+                            };
+
+                            return [
+                                "status" => true,
+                                "message" => "Inscription hecha correctamente",
+                                "exams"=> $exams
+                            ];
+
+                        } else {
+                            return [
+                                "status" => false,
+                                "message" => "Error al decodificar el JSON."
+                            ];
+                        }
+
+                    }else {
+                        echo "Error al ejecutar el procedimiento: " . $conexion->error;
+                    }
+                    
+                }catch (Exception $e){
+                    return [
+                        "status" => false,
+                        "message" => "Error al hacer la consulta"
+                    ];
+                }
 
             }
             
