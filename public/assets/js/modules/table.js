@@ -1,14 +1,18 @@
 /**
  * Crea una sección con una tabla dinámica que respeta los estilos dados.
+ * @author afcastillof@unah.hn
+ * @version 0.1.1
+ * @date 19/11/24
  * @param {string} sectionTitle - Título de la sección.
  * @param {Array<string>} headers - Lista de encabezados para las columnas de la tabla.
  * @param {Array<Array<any>>} rows - Matriz de datos para las filas de la tabla.
  * @param {string} tableId - ID opcional para el cuerpo de la tabla.
  */
-export function createStyledTable(sectionTitle, headers, rows, tableId = "dynamicTable") {
+export function createTable(sectionTitle, headers, rows, tableId = "dynamicTable") {
     // Crear la sección
     const section = document.createElement("section");
     section.className = "row";
+    section.style.marginTop = "1.5rem"
 
     // Crear el contenedor de la tarjeta
     const cardContainer = document.createElement("div");

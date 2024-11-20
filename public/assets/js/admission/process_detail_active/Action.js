@@ -1,6 +1,7 @@
 import { HttpRequest } from "../../modules/HttpRequest.js";
 import { Modal } from "../../modules/Modal.js"
 import {Popup} from "../../modules/Popup.js"
+import { createTable } from "../../modules/table.js";
 
 class Action{
 
@@ -81,7 +82,7 @@ class Action{
         //Si el proceso no es subida de notas
         if (infoProcess.idProcessState!=3) {
             //Se renderiza la seccion de subida de csv
-            this.renderUploadCSVSection(4);
+            this.renderUploadCSVSection(infoProcess.idProcessState);
         }
 
     }
@@ -224,17 +225,20 @@ class Action{
             });
     }
 
-    static makeTableIncorrectData(){
-        const headers = ["#", "DNI", "Id del examen", "Fecha de inscripción"];
-        const rows = [
-            [1, "Juan Pérez", "Ingeniería de Software", "2024-11-18"],
-            [2, "Ana Gómez", "Medicina", "2024-11-17"],
-            [3, "Carlos López", "Derecho", "2024-11-16"]
-        ];
+    static makeTableIncorrectData(rows, container){
+        const headers = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
 
-        const section = createStyledTable("Ultimas inscripciones", headers, rows, "lastInscriptionsTbl");
+        const section = createTable("Registros no insertados en el csv", headers, rows, "incorrectData");
 
-        document.body.appendChild(section);
+        container.appendChild(section);
+    }
+
+    static makeTableMissingData(rows, container){
+        const headers = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
+
+        const section = createTable("Registros que no estaban en el csv", headers, rows, "missingData");
+
+        container.appendChild(section);
     }
 
 }
