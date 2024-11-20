@@ -96,7 +96,7 @@
         <div class="row gap-5">
 
           <div class="card-container col-8">
-                  <p class="fs-2">Calificaciones mas altas</p>
+                  <p class="fs-2">Calificaciones más altas</p>
                   <table class="table">
                       <thead>
                         <tr>

@@ -324,6 +324,7 @@
                                 $data[2],
                                 'Tipo de dato incorrecto en alguna columna.'
                             ];
+                            $counter++;
                             continue;
                         }
                 

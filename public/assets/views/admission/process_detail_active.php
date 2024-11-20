@@ -54,7 +54,7 @@
                 <h1 class="display3 me-3" id="processName"></h1>
                 <div class="status-card" style="background-color: #00C500;">Activo</div>
             </div>
-            <p>A continuación encontrará informacion y estadísticas sobre este proceso de admisión.</p>
+            <p>A continuación encontrará información y estadísticas sobre este proceso de admisión.</p>
         </section>
           
         <section class="row mb-4 gap-5">
@@ -102,14 +102,14 @@
 
         <section class="row">
             <div class="card-container">
-                <p class="fs-2">Ultimas inscripciones</p>
+                <p class="fs-2">Últimas inscripciones</p>
                 <table class="table">
                     <thead>
                       <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Carrera principal</th>
-                        <th scope="col">Fecha de inscripcion</th>
+                        <th scope="col">Fecha de inscripción</th>
                       </tr>
                     </thead>
                     <tbody id="lastInscriptionsTbl">    
@@ -138,7 +138,7 @@
                     <div class="container">
                         <div class="mb-3">
                             <p class="fs-5">Subir archivo CSV</p>
-                            <p>A continuacion se deben subir las calificaciones de los examenes de admision</p>
+                            <p>A continuacion se deben subir las calificaciones de los examenes de admisión</p>
                         </div>
                         <input class="form-control mb-3" type="file" name="pathCsvGrades" >
                        

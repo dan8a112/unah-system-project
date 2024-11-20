@@ -817,7 +817,7 @@ END //
 **/
 CREATE PROCEDURE LastestInscription (IN p_id INT)
 BEGIN
-    SELECT * 
+    SELECT a.id,  b.firstName, b.secondName, b.firstLastName, b.secondLastName, c.description, a.applicationDate
     FROM Application a
     INNER JOIN Applicant b
     ON (a.idApplicant = b.id)
@@ -1025,17 +1025,10 @@ BEGIN
                     SET grade = p_grade
                 WHERE application = idApplication AND admissionTest = p_test;
 
-                IF ROW_COUNT() > 0 THEN
-                    SELECT JSON_OBJECT(
-                        'status', true,
-                        'message', 'Resultado ingresado correctamente'
-                    ) AS resultJson;
-                ELSE
-                    SELECT JSON_OBJECT(
-                        'status', false,
-                        'message', 'El DNI del aplicante y el id del examen no coinciden.'
-                    ) AS resultJson;
-                END IF;
+                SELECT JSON_OBJECT(
+                    'status', true,
+                    'message', 'Resultado insertado'
+                ) AS resultJson;
             ELSE
                 SELECT JSON_OBJECT(
                         'status', false,
@@ -1055,7 +1048,7 @@ BEGIN
                 'message', 'No existe aplicante con ese DNI en el proceso de admisión actual'
             ) AS resultJson;
     END IF;
-END //
+END 
 
 
 /**
