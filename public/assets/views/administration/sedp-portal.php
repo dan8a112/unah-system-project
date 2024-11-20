@@ -7,6 +7,7 @@
     <meta name="date" content="04/11/2024">
     <meta name="version" content="0.1.0">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/sedp/sedp-portal.css">
     <title>Portal SEDP</title>
 </head>
 <body>
@@ -61,6 +62,7 @@
                 <th scope="col">Usuario</th>
                 <th scope="col">Roles</th>
                 <th scope="col">DNI</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
@@ -71,7 +73,7 @@
       </div>
 
       
-      <div class="modal" tabindex="-1" id="formModal">
+      <div class="modal fade" tabindex="-1" id="formModal">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -80,6 +82,12 @@
             </div>
             <div class="modal-body">
               <form class="row g-3" id="createProfessorForm">
+              <div class="row my-2">
+                  <div class="col">
+                  <label class="form-label">Numero de identidad</label>
+                    <input type="text" class="form-control" placeholder="e.g. 0601200302426" aria-label="Numero de identidad" name="identityNumber" required>
+                  </div>
+                </div>
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Nombre</label>
@@ -126,7 +134,7 @@
                   <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelect" required>
                   </select>
                 </div>
-                <div class="col-12">
+                <div class="col-6">
                   <button type="submit" class="btn btn-success">Agregar</button>
                 </div>
               </form>
@@ -137,6 +145,104 @@
           </div>
         </div>
       </div>
+
+
+      <div class="modal fade" tabindex="-1" id="editModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Informacion del Docente</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="row g-3" id="editProfessorForm" data-id-professor>
+              <div class="row my-2">
+                  <div class="col">
+                  <label class="form-label">Numero de identidad</label>
+                    <input type="text" class="form-control" placeholder="e.g. 0601200302426" aria-label="Numero de identidad" name="identityNumber" required>
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col">
+                  <label class="form-label">Primer Nombre</label>
+                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" required>
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Segundo Nombre</label>
+                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName">
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col">
+                  <label class="form-label">Primer Apellido</label>
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" required>
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Segundo Apellido</label>
+                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName">
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col">
+                    <label class="form-label">Numero de telefono</label>
+                    <input type="number" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" required>
+                  </div>
+                  <div class="col">
+                    <label class="form-label">Fecha de nacimiento</label>
+                    <input type="date" class="form-control" aria-label="Numero de telefono" name="birthDate" required>
+                  </div>
+                </div>
+                <div class="row my-2">
+                  <div class="col">
+                    <label class="form-label">Direccion</label>
+                      <input type="text" class="form-control" placeholder="e.g. Tegucigalpa, Francisco Mora..." aria-label="Direccion" name="address">
+                    </div>
+                </div>
+                <div>
+                  <label class="form-label">Tipo de profesor</label>
+                  <select class="form-select" aria-label="Default select example" name="professorTypeId" id="professorTypeSelectEdit" required>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Departamento</label>
+                  <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelectEdit" required>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Estatus laboral</label>
+                  <select class="form-select" aria-label="Default select example" name="active" required >
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <button type="submit" class="btn btn-success">Editar</button>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" tabindex="-1" id="messageModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="btnClose">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
   <script src="../../js/bootstrap.bundle.min.js"></script>
   <script type="module" src="../../js/administration/main.js"></script>
 </body>

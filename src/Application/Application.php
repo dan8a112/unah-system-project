@@ -191,6 +191,8 @@
          */
         public function getInfoHistoricAdmission(int $id){
 
+            $query0="SET lc_time_names = 'es_ES';";
+
             $query="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
                     FROM AcademicEvent a
                     INNER JOIN AcademicProcess b ON (a.process = b.id)
@@ -218,7 +220,8 @@
             $query4= "SELECT COUNT(*) as approved
                     FROM Application
                     WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);";
-
+            
+            $result = $this->mysqli->execute_query($query0);
             $result = $this->mysqli->execute_query($query, [$id]);
 
             foreach($result as $row){

@@ -7,7 +7,6 @@
 
     include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Professor/Professor.php";
-    include_once "../../../../src/Session/Session.php";
 
    
     $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
