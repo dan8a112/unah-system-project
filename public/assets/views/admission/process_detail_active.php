@@ -47,7 +47,7 @@
     </nav>
     <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
 
-    <div id="container" class="container mb-5">
+    <div class="container mb-5">
 
         <section class="my-4">
             <div class="d-flex align-items-center">
@@ -99,24 +99,25 @@
         </section>
 
 
-
-        <section class="row">
-            <div class="card-container">
-                <p class="fs-2">Ultimas inscripciones</p>
-                <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Carrera principal</th>
-                        <th scope="col">Fecha de inscripcion</th>
-                      </tr>
-                    </thead>
-                    <tbody id="lastInscriptionsTbl">    
-                    </tbody>
-                  </table>
-            </div>
-        </section>
+        <div  id="container">
+            <section class="row">
+                <div class="card-container">
+                    <p class="fs-2">Ultimas inscripciones</p>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Carrera principal</th>
+                            <th scope="col">Fecha de inscripcion</th>
+                        </tr>
+                        </thead>
+                        <tbody id="lastInscriptionsTbl">    
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </div>
 
     <div class="popup" id="popupError" style="border: solid 1px #EC0000;">

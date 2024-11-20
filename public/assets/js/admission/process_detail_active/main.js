@@ -28,6 +28,7 @@ document.getElementById('formCsv').addEventListener('submit', async (event) => {
         const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv');
         console.log(result.message); 
         console.log(result.incorrectData); 
+        container.innerHTML = "";
         Action.makeTableIncorrectData(result.incorrectData, container)
         Action.makeTableMissingData(result.missingData, container)
         Modal.closeModal();
