@@ -1,4 +1,6 @@
 <?php
+    include_once "../../../../src/Helper/Validator.php";
+
     class ProfessorDAO{
 
         public function __construct(string $server, string $user, string $pass, string $dbName) {
@@ -83,6 +85,49 @@
          * date: 16/11/24
          */
         public function setProfessor($dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department){
+            if(!Validator::isHondurasIdentityNumber($dni)){
+                return [
+                    "status" => false,
+                    "message" => "Número de identidad inválido"
+                ];
+            }
+
+            if(!Validator::isPhoneNumber($telephoneNumber)){
+                return [
+                    "status" => false,
+                    "message" => "Número de teléfono inválido"
+                ];
+            }
+
+            if(!Validator::isValidName($firstName) || $firstName==""){
+                return [
+                    "status" => false,
+                    "message" => "Primer nombre inválido"
+                ];
+            }
+
+            if(!Validator::isValidName($secondName)){
+                return [
+                    "status" => false,
+                    "message" => "Segundo nombre inválido"
+                ];
+            }
+
+            if(!Validator::isValidName($firstLastName) || $firstLastName==""){
+                return [
+                    "status" => false,
+                    "message" => "Primer apellido inválido"
+                ];
+            }
+
+            if(!Validator::isValidName($secondLastName)){
+                return [
+                    "status" => false,
+                    "message" => "Segundo apellido inválido"
+                ];
+            }
+            
+            
             $query= "CALL insertProfessor(?,?,?,?,?,?,?,?,?,?,?,?);";
             $email=strtolower($firstName).'.'.strtolower($firstLastName).'@unah.edu.hn';
             $password= $this->generatePassword();

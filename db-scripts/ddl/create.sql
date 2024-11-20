@@ -877,7 +877,21 @@ BEGIN
          -- Si el ID ya existe no se puede insertar
         SELECT JSON_OBJECT(
             'status', false,
-            'message', 'El ID ya existe no se puede insertar docente.'
+            'message', 'El DNI ya existe, no se puede insertar docente.'
+        ) AS resultJson;
+    --Verificar si ya existe Jefe de Departamento
+    ELSE IF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=4) THEN
+         -- Ya existe jefe de departamento 
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Ya existe un jefe de departamento.'
+        ) AS resultJson;
+    --Verificar si ya existe coordinador
+    ELSE IF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=3) THEN
+         -- Ya existe jefe de departamento 
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Ya existe un coordinador de departamento.'
         ) AS resultJson;
     ELSE
         WHILE EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) DO
