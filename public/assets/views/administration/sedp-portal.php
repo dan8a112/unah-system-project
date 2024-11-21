@@ -85,43 +85,43 @@
               <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Numero de identidad</label>
-                    <input type="text" class="form-control" placeholder="e.g. 0601200302426" aria-label="Numero de identidad" name="identityNumber" required>
+                    <input type="text" class="form-control" placeholder="e.g. 0601-2003-02426" aria-label="Numero de identidad" pattern="(1|0)\d{3}-(19|20)\d{2}-\d{5}" name="identityNumber" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" required>
+                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" pattern="^\w+$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName">
+                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName" pattern="^\w+(\s\w+)?$">
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" required>
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" pattern="^\w+$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName">
+                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName" pattern="^\w+$">
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                     <label class="form-label">Numero de telefono</label>
-                    <input type="number" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" required>
+                    <input type="text" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" pattern="^(\(\+504\))?\s*[23789]\d{3}-?\d{4}$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Fecha de nacimiento</label>
-                    <input type="date" class="form-control" aria-label="Numero de telefono" name="birthDate" required>
+                    <input type="date" class="form-control" aria-label="Fecha de naciminento" name="birthDate" id="birthDateInput" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                     <label class="form-label">Direccion</label>
-                      <input type="text" class="form-control" placeholder="e.g. Tegucigalpa, Francisco Mora..." aria-label="Direccion" name="address">
+                    <textarea class="form-control" placeholder="e.g. Tegucigalpa, Francisco Mora..." aria-label="Direccion"  minlength="15" maxlength="60" name="address"></textarea>
                     </div>
                 </div>
                 <div>
@@ -159,43 +159,43 @@
               <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Numero de identidad</label>
-                    <input type="text" class="form-control" placeholder="e.g. 0601200302426" aria-label="Numero de identidad" name="identityNumber" required>
+                    <input type="text" class="form-control" placeholder="e.g. 0601-2003-02426" aria-label="Numero de identidad" name="identityNumber" pattern="(1|0)\d{3}-(19|20)\d{2}-\d{5}" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" required>
+                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" pattern="^\w+$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName">
+                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName" pattern="^\w+(\s\w+)?$">
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" required>
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" pattern="^\w+$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName">
+                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName" pattern="^\w+$">
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                     <label class="form-label">Numero de telefono</label>
-                    <input type="number" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" required>
+                    <input type="text" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" pattern="^(\(\+504\))?\s*[23789]\d{3}-?\d{4}$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Fecha de nacimiento</label>
-                    <input type="date" class="form-control" aria-label="Numero de telefono" name="birthDate" required>
+                    <input type="date" class="form-control" aria-label="Numero de telefono" name="birthDate" id="bdInput" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                     <label class="form-label">Direccion</label>
-                      <input type="text" class="form-control" placeholder="e.g. Tegucigalpa, Francisco Mora..." aria-label="Direccion" name="address">
+                      <textarea class="form-control" placeholder="e.g. Tegucigalpa, Francisco Mora..." aria-label="Direccion" minlength="15" maxlength="60" name="address"></textarea>
                     </div>
                 </div>
                 <div>
