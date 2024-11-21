@@ -17,7 +17,9 @@ class Action {
         }else{
             const errorSection = document.querySelector("#errorSection");
 
+            errorSection.innerHTML = "";
             const errorText = document.createElement("p");
+            
             //Se genera un texto de error
             errorText.innerText =  "El correo o la contraseña es incorrecto, vuelva a intentarlo."
             errorText.style.color = "red";
