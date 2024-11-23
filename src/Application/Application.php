@@ -150,7 +150,7 @@
 
                         $resultArray = json_decode($resultJson, true);
 
-                        if ($resultArray !== null) {
+                        if ($resultArray['status']) {
 
                             //Obtener examenes
                             $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
@@ -171,7 +171,7 @@
 
                             return [
                                 "status" => false,
-                                "message" => "Error al decodificar el JSON."
+                                "message" => $resultArray['message']
                             ];
                         }
 

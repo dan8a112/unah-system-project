@@ -554,7 +554,7 @@ VALUES
 ;
 
 INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice, approved, idReviewer) VALUES
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, false, 4),
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, true, 4),
     ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true, false, 3),
     ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, true, 1),
     ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true, true, 2),
@@ -579,6 +579,7 @@ INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProg
     ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false, true, 3),
     ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true, false, 4),
     ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true, true, 5),
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 2, true, false, true, 4),
     ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false, true, 1),
     ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true, true, 2),
     ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true, true, 3),
@@ -727,7 +728,7 @@ BEGIN
     IF (attempts >= 3) THEN
         SELECT JSON_OBJECT(
             'status', false,
-            'message', 'Excede el limite de intentos'
+            'message', 'Excede el limite de intentos permitidos para el proceso de admisión'
         ) AS resultJson;  
     ELSE
         INSERT INTO Application (
@@ -743,7 +744,6 @@ BEGIN
             p_secondDegreeProgramChoice,
             p_regionalCenterChoice,
             idCurrentProcess
-
         );
 
         SELECT JSON_OBJECT(
