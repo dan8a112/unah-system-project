@@ -13,6 +13,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 12/11/24
+         * 
+         * Función para saber si un aplicante ya tiene una inscripcion en proceso de admisión actual
          */
         public function applicationInCurrentProcess(string $identityNumber){
             $query= "CALL ApplicationInCurrentEvent(?);";
@@ -51,19 +53,22 @@
          * author: dorian.contreras@unah.hn
          * version: 0.3.0
          * date: 20/11/24
+         * 
+         * Función para insertar una inscripción en la tabla 'Application'
          */
         public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, $pathSchoolCertificate, string $telephoneNumber,
             string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
 
+            //validación de que no exista una aplicacion del aplicante con este dni
             $currentProcess = $this->applicationInCurrentProcess($identityNumber);
 
-            //validación de que no exista una aplicacion del aplicante con este dni
             if($currentProcess['status']){
                 return [
                     "status" => false,
                     "message" => $currentProcess['message']
                 ];
             }else{
+
                 //hacer validaciones integridad de datos
                 if(!Validator::isHondurasIdentityNumber($identityNumber)){
                     return [
@@ -93,7 +98,7 @@
                     ];
                 }
 
-                if(!Validator::isValidName($secondName)){
+                if(!Validator::isValidSecondName($secondName)){
                     return [
                         "status" => false,
                         "message" => "Segundo nombre inválido"
@@ -114,21 +119,28 @@
                     ];
                 }
                 
+                //Procedimiento almacenado para insertar la inscripcion
                 $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
-                $query1= "SELECT b.admissionTest, d.description
-                        FROM Application a
-                        INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
-                        INNER JOIN AdmissionTest d ON b.admissionTest = d.id
-                        WHERE a.id = ?
-                        UNION
-                        SELECT c.admissionTest, e.description
-                        FROM Application a
-                        INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
-                        INNER JOIN AdmissionTest e ON c.admissionTest = e.id
-                        WHERE a.id = ?";
+
+                //Obtener los examenes que tiene que hacer el aplicante
+                $query1= 
+                "SELECT b.admissionTest, d.description
+                FROM Application a
+                INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
+                INNER JOIN AdmissionTest d ON b.admissionTest = d.id
+                WHERE a.id = ?
+                UNION
+                SELECT c.admissionTest, e.description
+                FROM Application a
+                INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
+                INNER JOIN AdmissionTest e ON c.admissionTest = e.id
+                WHERE a.id = ?";
+                
+                //Insertar en la tabla de resultados los examenes que tiene que hacer el aplicante
                 $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
 
                 try{
+                    //Insertar inscripcion
                     $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
                         $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
                     
@@ -140,8 +152,10 @@
 
                         if ($resultArray !== null) {
 
-                            //INSERTAR EXAMENES
+                            //Obtener examenes
                             $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
+
+                            //Insertar examenes en Result
                             foreach($result1 as $row){
                                 $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
                                 $exams[] = $row['description'];
@@ -154,6 +168,7 @@
                             ];
 
                         } else {
+
                             return [
                                 "status" => false,
                                 "message" => "Error al decodificar el JSON."
@@ -161,13 +176,17 @@
                         }
 
                     }else {
-                        echo "Error al ejecutar el procedimiento: " . $conexion->error;
+
+                        return [
+                            "status" => false,
+                            "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                        ];
                     }
                     
                 }catch (Exception $e){
                     return [
                         "status" => false,
-                        "message" => "Error al hacer la consulta"
+                        "message" => "Error al hacer la consulta: " . $e
                     ];
                 }
 

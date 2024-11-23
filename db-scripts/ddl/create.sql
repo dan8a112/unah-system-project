@@ -4,6 +4,7 @@ CREATE DATABASE ProyectoIS CHARACTER SET 'utf8';
 
 USE ProyectoIS;
 
+/*-------------------------------------------------------------------CREATE TABLE------------------------------------------------------------------------------*/
 CREATE TABLE RegionalCenter(
 	id TINYINT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR(70) NOT NULL,
@@ -68,6 +69,17 @@ CREATE TABLE AcademicEvent(
     CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
 );
 
+CREATE TABLE Reviewer(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(15) NOT NULL,
+    firstLastName VARCHAR(15) NOT NULL,
+    telephoneNumber VARCHAR(12),
+    personalEmail VARCHAR(50),
+    lowerLImit INT DEFAULT NULL,
+    password VARCHAR (60) NOT NULL, 
+    active BOOLEAN DEFAULT True
+);
+
 CREATE TABLE Application(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     idApplicant VARCHAR(15),
@@ -79,12 +91,13 @@ CREATE TABLE Application(
     approvedFirstChoice BOOLEAN DEFAULT false,
     approvedSecondChoice BOOLEAN DEFAULT false,
     approved BOOLEAN DEFAULT NULL,
-    CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
+    idReviewer INT DEFAULT NULL,
+    CONSTRAINT fk_idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
     CONSTRAINT fk_regionalCenterChoice FOREIGN KEY (regionalCenterChoice) REFERENCES RegionalCenter(id),
-    CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id)
-    
+    CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id),
+    CONSTRAINT fk_idReviewer FOREIGN KEY (idReviewer) REFERENCES Reviewer(id)  
 );
 
 CREATE TABLE Employee(
@@ -147,6 +160,7 @@ CREATE TABLE Configuration(
     data json
 );
 
+/*------------------------------------------------------------------INSERTS-------------------------------------------------------------------------------------*/
 INSERT INTO RegionalCenter(description, location, acronym) VALUES
     ('Centro Universitario Regional del Centro', 'Comayagua', 'CURNO'),
     ('Centro Universitario Regional del Litoral Atlántico', 'La Ceiba, Atlántida', 'CURLA'),
@@ -426,7 +440,6 @@ INSERT INTO Employee (dni, firstName, secondName, firstLastName, secondLastName,
     ('0801-2005-05555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
 ;
 
-
 INSERT INTO Administrative (id, administrativeType) VALUES
     (1,1),
     (2,2)
@@ -473,7 +486,6 @@ INSERT INTO Department (description) VALUES
     ('Microbiología')
 ;
 
-
 INSERT INTO Professor(id, professorType, department, active) VALUES
     (3, 3, 1, true),
     (4, 4, 1, true),
@@ -485,7 +497,8 @@ INSERT INTO AcademicProcess(description) VALUES
     ('Proceso de Admisiones'),
     ('Proceso de Matricula'),
     ('Inscripciones'),
-    ('Subir Calificaciones'),
+    ('Revisión de inscripciones'),
+    ('Subir calificaciones'),
     ('Envio de resultados'),
     ('Creación de expediente'),
     ('Planificación académica')
@@ -496,11 +509,12 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
     (1,'2022-05-20 00:00:00', '2022-06-12 00:00:00', false, NULL),
     (1,'2023-01-20 00:00:00', '2023-02-12 00:00:00', false, NULL),
     (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false, NULL),
-    (1, '2024-11-13 00:00:00', '2024-11-25 00:00:00', true, NULL),
-    (3, '2024-11-13 00:00:00', '2024-11-21 00:00:00', true, 5),
-    (4, '2024-11-21 00:00:00', '2024-11-22 00:00:00', false, 5),
-    (5, '2024-11-22 00:00:00', '2024-11-23 00:00:00', false, 5),
-    (6, '2024-11-23 00:00:00', '2024-11-24 00:00:00', false, 5)
+    (1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', true, NULL),
+    (3, '2024-11-23 00:00:00', '2024-11-28 00:00:00', true, 5),
+    (4, '2024-11-28 00:00:00', '2024-12-04 00:00:00', false, 5),
+    (5, '2024-12-04 00:00:00', '2024-12-09 00:00:00', false, 5),
+    (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', false, 5),
+    (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5)
 ;
 
 INSERT INTO Configuration(data) VALUES
@@ -530,52 +544,61 @@ INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName,
     ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
-INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice, approved) VALUES
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, false),
-    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true, false),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, true),
-    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false, true),
-    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true, true),
-    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true, true),
-    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false, true),
-    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true, true),
-    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false, true),
-    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false, true),
-    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true),
-    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false, true),
-    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true),
-    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true, true),
-    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false, true),
-    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true, true),
-    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true, true),
-    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true, true),
-    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true, true),
-    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false, true),
-    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false, true),
-    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true, true),
-    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true, true),
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false, true),
-    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true, true),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true, true),
-    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 3, true, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 3, false, false, true),
-    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 3, false, true, true),
-    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 3, true, true, true),
-    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 4, true, false, true),
-    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 4, false, true, true),
-    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 4, true, false, true),
-    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 4, false,false, true),
-    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true),
-    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 4, false, false, true),
-    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true),
-    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 4, false, true, true),
-    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 4, true, false, true),
-    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 4, false, true, true),
-    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 4, true, true, true),
-    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 4, true, true, true),
-    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 4, true, true, true)
+INSERT INTO Reviewer (firstName, firstLastName, telephoneNumber, personalEmail, password) 
+VALUES 
+    ('Carlos', 'Hernández', '9988776655', 'carlos.hernandez@gmail.com','$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+    ('María', 'Lopez', '9966554433', 'maria.lopez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+    ('Luis', 'Martínez', '9876543210', 'luis.martinez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+    ('Ana', 'González', '9999888877', 'ana.gonzalez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+    ('Jorge', 'Mejía', '9900112233', 'jorge.mejia@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.')
+;
+
+INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice, approved, idReviewer) VALUES
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, false, 4),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true, false, 3),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, true, 1),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true, true, 2),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false, true, 5),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true, true, 1),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true, false, 2),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false, true, 3),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true, true, 4),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false, true, 5),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false, true, 1),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true, 2),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false, true, 3),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true, 4),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true, false, 5),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false, true, 1),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true, true, 2),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true, false, 3),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true, true, 4),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true, true, 5),
+    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true, true, 2),
+    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false, true, 1),
+    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false, true, 3),
+    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true, false, 4),
+    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true, true, 5),
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false, true, 1),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true, true, 2),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true, true, 3),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 3, true, true, false, 4),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 3, false, false, true, 5),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 3, false, true, true, 1),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 3, true, true, false, 2),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 4, true, false, true, 3),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 4, false, true, true, 4),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 4, true, false, false, 5),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 4, false,false, true, 1),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true, 2),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 4, false, false, true, 3),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true, 4),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 4, false, true, true, 5),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 4, true, false, true, 1),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 4, false, true, true, 2),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 4, true, true, true, 3),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 4, true, true, true, 4),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 4, true, true, false, 5)
 ;
 
 INSERT INTO Results(application, admissionTest, grade) VALUES
@@ -627,6 +650,7 @@ INSERT INTO Results(application, admissionTest, grade) VALUES
     (45,1,1458)
 ;
 
+/*--------------------------------------------------------------------PROCEDURES--------------------------------------------------------------------------------*/
 DELIMITER //
 
 /**
@@ -636,7 +660,6 @@ DELIMITER //
 
     Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante y el limite de aplicaciones que puede hacer
 **/
-
 CREATE PROCEDURE insertApplicant(
     IN p_id VARCHAR(15),
     IN p_firstName VARCHAR(15),
@@ -1115,6 +1138,9 @@ BEGIN
     END IF;
 END //
 
+
+
+/*------------------------------------------------------------------------EVENTS--------------------------------------------------------------------------------*/
 -- Set the event scheduler ON
 SET GLOBAL event_scheduler = ON;
 
@@ -1133,17 +1159,4 @@ BEGIN
     UPDATE AcademicEvent
     SET active = 0
     WHERE CURDATE() < startDate OR CURDATE() > finalDate;
-
-    -- Activate sub-processes within date range
-    UPDATE AcademicSubProcess
-    SET active = 1
-    WHERE startDate <= CURDATE() AND CURDATE() <= endDate;
-
-    -- Deactivate sub-processes outside date range
-    UPDATE AcademicSubProcess
-    SET active = 0
-    WHERE CURDATE() < startDate OR CURDATE() > endDate;
 END;
-
-
-
