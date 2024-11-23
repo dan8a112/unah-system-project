@@ -29,7 +29,7 @@ class Forms{
                 
                 if (input) {
                     // Si el input es un select o input normal, asignar el valor
-                    if (input.tagName === "SELECT" || input.tagName === "INPUT") {
+                    if (input.tagName === "SELECT" || input.tagName === "INPUT" || input.tagName === "TEXTAREA") {
                         input.value = data[key];
                     }
                 }
@@ -45,6 +45,42 @@ class Forms{
         fields.forEach(field => {
             field.value = "";
         });
+
+    }
+
+    /**
+     * Establece un rango minimo y maximo para un input de fecha
+     * @param {*} dateInput elemento input de tipo date
+     * @param {*} min edad minima a validar
+     * @param {*} max edad maxima a validar
+     */
+    static setRangeDate(dateInput, min, max){
+        
+        if (dateInput.getAttribute("type")!="date") {
+            console.error("Error: El parametro dateInput no es un input de tipo Date");
+            return;
+        }
+
+        //Obtiene la fecha de hoy
+        const today =  new Date()
+
+        const minAgeDate = new Date(
+            today.getFullYear() - min,
+            today.getMonth(),
+            today.getDate()
+        ).toLocaleDateString("en-Ca");
+
+        
+        const maxAgeDate = new Date(
+            today.getFullYear() - max,
+            today.getMonth(),
+            today.getDate()
+        ).toLocaleDateString("en-Ca");
+
+
+        //La fecha de la edad maxima es la fecha minima que se puede colocar 
+        dateInput.setAttribute("min", maxAgeDate);
+        dateInput.setAttribute("max", minAgeDate);
 
     }
 }

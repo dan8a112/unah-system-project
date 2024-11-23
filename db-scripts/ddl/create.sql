@@ -97,7 +97,7 @@ CREATE TABLE Employee(
     telephoneNumber VARCHAR(12) NOT NULL,
     personalEmail VARCHAR(30) NOT NULL,
     password VARCHAR (60) NOT NULL,
-    address VARCHAR(30) NOT NULL,
+    address VARCHAR(60) NOT NULL,
     dateOfBirth DATE
 );
 

@@ -20,5 +20,3 @@ editProfessorForm.addEventListener('submit', Action.submitFormEditProfessor);
 const logoutButton = document.querySelector("button#logoutBtn")
 
 logoutButton.addEventListener("click", Action.logout)
-
-Forms.clearFields(editProfessorForm);

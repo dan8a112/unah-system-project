@@ -1,0 +1,14 @@
+.status-card{
+    background-color: #878787;
+    border-radius: 10px;
+    padding: 0px 10px 0 10px;
+    color: white;
+    font-weight: 500;
+}
+
+.card-container{
+    background-color: white;
+    border: #878787 1px solid;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
