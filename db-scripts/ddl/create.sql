@@ -78,6 +78,7 @@ CREATE TABLE Application(
     academicEvent INT,
     approvedFirstChoice BOOLEAN DEFAULT false,
     approvedSecondChoice BOOLEAN DEFAULT false,
+    approved BOOLEAN DEFAULT NULL,
     CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
@@ -529,52 +530,52 @@ INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName,
     ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
-INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice) VALUES
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false),
-    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true),
-    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false),
-    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true),
-    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true),
-    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false),
-    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true),
-    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false),
-    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false),
-    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true),
-    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false),
-    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true),
-    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true),
-    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false),
-    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true),
-    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true),
-    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true),
-    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true),
-    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false),
-    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false),
-    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true),
-    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true),
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false),
-    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true),
-    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 3, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 3, false, false),
-    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 3, false, true),
-    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 3, true, true),
-    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 4, true, false),
-    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 4, false, true),
-    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 4, true, false),
-    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 4, false,false),
-    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true),
-    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 4, false, false),
-    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true),
-    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 4, false, true),
-    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 4, true, false),
-    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 4, false, true),
-    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 4, true, true),
-    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 4, true, true),
-    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 4, true, true)
+INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice, approved) VALUES
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, false),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true, false),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, true),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true, true),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false, true),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true, true),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true, true),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false, true),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true, true),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false, true),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false, true),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false, true),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true, true),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false, true),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true, true),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true, true),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true, true),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true, true),
+    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true, true),
+    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false, true),
+    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false, true),
+    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true, true),
+    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true, true),
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false, true),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true, true),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true, true),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 3, true, true, true),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 3, false, false, true),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 3, false, true, true),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 3, true, true, true),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 4, true, false, true),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 4, false, true, true),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 4, true, false, true),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 4, false,false, true),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 4, false, false, true),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 4, false, true, true),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 4, true, false, true),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 4, false, true, true),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 4, true, true, true),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 4, true, true, true),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 4, true, true, true)
 ;
 
 INSERT INTO Results(application, admissionTest, grade) VALUES
@@ -697,7 +698,7 @@ BEGIN
 
     -- Extraer el valor de "attempts" del campo JSON en la tabla Configuration
     SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttempst") FROM Configuration LIMIT 1);
-    SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id);
+    SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id AND approved=true);
     SET idCurrentProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
     IF (attempts >= 3) THEN
@@ -743,7 +744,7 @@ BEGIN
 
     SET idCurrentEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
-    IF EXISTS (SELECT * FROM Application WHERE idApplicant = p_identityNumber AND academicEvent=idCurrentEvent) THEN 
+    IF EXISTS (SELECT * FROM Application WHERE idApplicant = p_identityNumber AND academicEvent=idCurrentEvent AND (approved=true OR approved IS NULL)) THEN 
         SELECT JSON_OBJECT(
             'status', true,
             'message', 'Ya hay una inscripcion para este proceso'
@@ -805,7 +806,7 @@ CREATE PROCEDURE AmountInscription (IN p_id INT)
 BEGIN
     SELECT COUNT(*) as amountInscriptions 
     FROM Application 
-    WHERE academicEvent=p_id;
+    WHERE academicEvent=p_id AND approved=true;
 END //
 
 /**
@@ -879,15 +880,13 @@ BEGIN
             'status', false,
             'message', 'El DNI ya existe, no se puede insertar docente.'
         ) AS resultJson;
-    --Verificar si ya existe Jefe de Departamento
-    ELSE IF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=4) THEN
+    ELSEIF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=4) THEN
          -- Ya existe jefe de departamento 
         SELECT JSON_OBJECT(
             'status', false,
             'message', 'Ya existe un jefe de departamento.'
         ) AS resultJson;
-    --Verificar si ya existe coordinador
-    ELSE IF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=3) THEN
+    ELSEIF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=3) THEN
          -- Ya existe jefe de departamento 
         SELECT JSON_OBJECT(
             'status', false,
