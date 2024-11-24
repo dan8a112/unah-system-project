@@ -101,7 +101,7 @@
         </section>
 
 
-        <div  id="container">
+        <div id="container">
             <section class="row">
                 <div class="card-container">
                     <p class="fs-2">Ultimas inscripciones</p>

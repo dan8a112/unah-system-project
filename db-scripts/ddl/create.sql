@@ -4,6 +4,7 @@ CREATE DATABASE ProyectoIS CHARACTER SET 'utf8';
 
 USE ProyectoIS;
 
+/*-------------------------------------------------------------------CREATE TABLE------------------------------------------------------------------------------*/
 CREATE TABLE RegionalCenter(
 	id TINYINT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR(70) NOT NULL,
@@ -68,6 +69,18 @@ CREATE TABLE AcademicEvent(
     CONSTRAINT fk_process FOREIGN KEY(process) REFERENCES AcademicProcess(id)
 );
 
+CREATE TABLE Reviewer(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    firstName VARCHAR(15) NOT NULL,
+    firstLastName VARCHAR(15) NOT NULL,
+    telephoneNumber VARCHAR(12),
+    personalEmail VARCHAR(50),
+    lowerLimit INT DEFAULT NULL,
+    password VARCHAR (60) NOT NULL, 
+    active BOOLEAN DEFAULT TRUE,
+    dailyGoal INT DEFAULT 0
+);
+
 CREATE TABLE Application(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     idApplicant VARCHAR(15),
@@ -78,12 +91,14 @@ CREATE TABLE Application(
     academicEvent INT,
     approvedFirstChoice BOOLEAN DEFAULT false,
     approvedSecondChoice BOOLEAN DEFAULT false,
-    CONSTRAINT idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
+    approved BOOLEAN DEFAULT NULL,
+    idReviewer INT DEFAULT NULL,
+    CONSTRAINT fk_idApplicant FOREIGN KEY(idApplicant) REFERENCES Applicant(id),
     CONSTRAINT fk_firstDegreeProgramChoice FOREIGN KEY(firstDegreeProgramChoice) REFERENCES DegreeProgram(id),
 	CONSTRAINT fk_secondDegreeProgramChoice FOREIGN KEY(secondDegreeProgramChoice) REFERENCES DegreeProgram(id),
     CONSTRAINT fk_regionalCenterChoice FOREIGN KEY (regionalCenterChoice) REFERENCES RegionalCenter(id),
-    CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id)
-    
+    CONSTRAINT fk_academicEvent FOREIGN KEY (academicEvent) REFERENCES AcademicEvent(id),
+    CONSTRAINT fk_idReviewer FOREIGN KEY (idReviewer) REFERENCES Reviewer(id)  
 );
 
 CREATE TABLE Employee(
@@ -96,7 +111,7 @@ CREATE TABLE Employee(
     telephoneNumber VARCHAR(12) NOT NULL,
     personalEmail VARCHAR(30) NOT NULL,
     password VARCHAR (60) NOT NULL,
-    address VARCHAR(30) NOT NULL,
+    address VARCHAR(60) NOT NULL,
     dateOfBirth DATE
 );
 
@@ -146,6 +161,7 @@ CREATE TABLE Configuration(
     data json
 );
 
+/*------------------------------------------------------------------INSERTS-------------------------------------------------------------------------------------*/
 INSERT INTO RegionalCenter(description, location, acronym) VALUES
     ('Centro Universitario Regional del Centro', 'Comayagua', 'CURNO'),
     ('Centro Universitario Regional del Litoral Atlántico', 'La Ceiba, Atlántida', 'CURLA'),
@@ -425,7 +441,6 @@ INSERT INTO Employee (dni, firstName, secondName, firstLastName, secondLastName,
     ('0801-2005-05555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '9876543213', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
 ;
 
-
 INSERT INTO Administrative (id, administrativeType) VALUES
     (1,1),
     (2,2)
@@ -472,7 +487,6 @@ INSERT INTO Department (description) VALUES
     ('Microbiología')
 ;
 
-
 INSERT INTO Professor(id, professorType, department, active) VALUES
     (3, 3, 1, true),
     (4, 4, 1, true),
@@ -484,7 +498,8 @@ INSERT INTO AcademicProcess(description) VALUES
     ('Proceso de Admisiones'),
     ('Proceso de Matricula'),
     ('Inscripciones'),
-    ('Subir Calificaciones'),
+    ('Revisión de inscripciones'),
+    ('Subir calificaciones'),
     ('Envio de resultados'),
     ('Creación de expediente'),
     ('Planificación académica')
@@ -495,11 +510,12 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
     (1,'2022-05-20 00:00:00', '2022-06-12 00:00:00', false, NULL),
     (1,'2023-01-20 00:00:00', '2023-02-12 00:00:00', false, NULL),
     (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false, NULL),
-    (1, '2024-11-13 00:00:00', '2024-11-25 00:00:00', true, NULL),
-    (3, '2024-11-13 00:00:00', '2024-11-21 00:00:00', true, 5),
-    (4, '2024-11-21 00:00:00', '2024-11-22 00:00:00', false, 5),
-    (5, '2024-11-22 00:00:00', '2024-11-23 00:00:00', false, 5),
-    (6, '2024-11-23 00:00:00', '2024-11-24 00:00:00', false, 5)
+    (1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', true, NULL),
+    (3, '2024-11-23 00:00:00', '2024-11-24 00:00:00', true, 5),
+    (4, '2024-11-24 00:00:00', '2024-11-26 00:00:00', false, 5),
+    (5, '2024-12-04 00:00:00', '2024-12-09 00:00:00', false, 5),
+    (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', false, 5),
+    (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5)
 ;
 
 INSERT INTO Configuration(data) VALUES
@@ -529,52 +545,62 @@ INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName,
     ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
-INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice) VALUES
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false),
-    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true),
-    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false),
-    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true),
-    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true),
-    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false),
-    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true),
-    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false),
-    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false),
-    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true),
-    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false),
-    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true),
-    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true),
-    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false),
-    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true),
-    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true),
-    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true),
-    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true),
-    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false),
-    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false),
-    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true),
-    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true),
-    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false),
-    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true),
-    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 3, true, true),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 3, false, false),
-    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 3, false, true),
-    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 3, true, true),
-    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 4, true, false),
-    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 4, false, true),
-    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 4, true, false),
-    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 4, false,false),
-    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true),
-    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 4, false, false),
-    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true),
-    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 4, false, true),
-    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 4, true, false),
-    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 4, false, true),
-    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 4, true, true),
-    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 4, true, true),
-    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 4, true, true)
+INSERT INTO Reviewer (firstName, firstLastName, telephoneNumber, personalEmail, password, active) 
+VALUES 
+    ('Carlos', 'Hernández', '9988776655', 'carlos.hernandez@gmail.com','$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('María', 'Lopez', '9966554433', 'maria.lopez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('Luis', 'Martínez', '9876543210', 'luis.martinez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('Ana', 'González', '9999888877', 'ana.gonzalez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('Jorge', 'Mejía', '9900112233', 'jorge.mejia@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', false)
+;
+
+INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice, approved, idReviewer) VALUES
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, true, 4),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true, false, 3),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, NULL, 1),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true, true, 2),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false, false, 5),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true, true, 1),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true, false, 2),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false, true, 3),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, false, true, true, 4),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 1, true, false, true, 5),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 1, false,false, true, 1),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true, 2),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 1, false, false, true, 3),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 1, true, true, true, 4),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 1, false, true, false, 5),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 2, true, false, true, 1),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 2, false, true, true, 2),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 2, true, true, false, 3),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 2, true, true, true, 4),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 2, true, true, true, 5),
+    ('0805-1994-08765', 39, 32, 15, '2023-08-21 01:00:00', 2, true, true, true, 2),
+    ('0806-1991-03456', 34, 35, 19, '2023-08-21 01:00:00', 2, false, false, true, 1),
+    ('0807-1997-09876', 41, 42, 2, '2023-08-21 01:00:00', 2, true, false, true, 3),
+    ('0808-1996-05674', 14, 29, 15, '2023-08-21 01:00:00', 2, true, true, false, 4),
+    ('0809-1992-01234', 12, 1, 19, '2023-08-21 01:00:00', 2, true, true, true, 5),
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 2, true, false, true, 4),
+    ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 3, true, false, true, 1),
+    ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 3, true, true, true, 2),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 3, false, true, true, 3),
+    ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 3, true, true, false, 4),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 3, false, false, true, 5),
+    ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 3, false, true, true, 1),
+    ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 3, true, true, false, 2),
+    ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 4, true, false, true, 3),
+    ('0809-1992-01234', 12, 1, 19, '2022-01-14 01:00:00', 4, false, true, true, 4),
+    ('0810-1995-02345', 25, 24, 19, '2022-01-14 01:00:00', 4, true, false, false, 5),
+    ('0811-1991-04567', 38, 32, 4, '2022-01-14 01:00:00', 4, false,false, true, 1),
+    ('0812-1998-03456', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true, 2),
+    ('0813-1993-05678', 21, 20, 19, '2022-01-14 01:00:00', 4, false, false, true, 3),
+    ('0814-1997-01234', 14, 19, 1, '2022-01-14 01:00:00', 4, true, true, true, 4),
+    ('0815-1995-08765', 43, 19, 3, '2022-01-14 01:00:00', 4, false, true, true, 5),
+    ('0816-1992-03456', 45, 42, 2, '2023-08-21 01:00:00', 4, true, false, true, 1),
+    ('0817-1993-09876', 36, 35, 19, '2023-08-21 01:00:00', 4, false, true, true, 2),
+    ('0818-1996-05678', 38, 32, 4, '2023-08-21 01:00:00', 4, true, true, true, 3),
+    ('0819-1995-02345', 21, 20, 19, '2023-08-21 01:00:00', 4, true, true, true, 4),
+    ('0820-1991-06789', 14, 19, 1, '2023-08-21 01:00:00', 4, true, true, false, 5)
 ;
 
 INSERT INTO Results(application, admissionTest, grade) VALUES
@@ -626,6 +652,7 @@ INSERT INTO Results(application, admissionTest, grade) VALUES
     (45,1,1458)
 ;
 
+/*--------------------------------------------------------------------PROCEDURES--------------------------------------------------------------------------------*/
 DELIMITER //
 
 /**
@@ -635,7 +662,6 @@ DELIMITER //
 
     Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante y el limite de aplicaciones que puede hacer
 **/
-
 CREATE PROCEDURE insertApplicant(
     IN p_id VARCHAR(15),
     IN p_firstName VARCHAR(15),
@@ -696,14 +722,14 @@ BEGIN
     END IF;
 
     -- Extraer el valor de "attempts" del campo JSON en la tabla Configuration
-    SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttempst") FROM Configuration LIMIT 1);
-    SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id);
+    SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttemtps") FROM Configuration WHERE id=1);
+    SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id AND approved=true);
     SET idCurrentProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
     IF (attempts >= 3) THEN
         SELECT JSON_OBJECT(
             'status', false,
-            'message', 'Excede el limite de intentos'
+            'message', 'Excede el limite de intentos permitidos para el proceso de admisión'
         ) AS resultJson;  
     ELSE
         INSERT INTO Application (
@@ -719,7 +745,6 @@ BEGIN
             p_secondDegreeProgramChoice,
             p_regionalCenterChoice,
             idCurrentProcess
-
         );
 
         SELECT JSON_OBJECT(
@@ -743,7 +768,7 @@ BEGIN
 
     SET idCurrentEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
-    IF EXISTS (SELECT * FROM Application WHERE idApplicant = p_identityNumber AND academicEvent=idCurrentEvent) THEN 
+    IF EXISTS (SELECT * FROM Application WHERE idApplicant = p_identityNumber AND academicEvent=idCurrentEvent AND (approved=true OR approved IS NULL)) THEN 
         SELECT JSON_OBJECT(
             'status', true,
             'message', 'Ya hay una inscripcion para este proceso'
@@ -753,8 +778,7 @@ BEGIN
             'status', false,
             'message', 'No hay una inscripcion para este proceso'
         ) AS resultJson; 
-    END IF;
-    
+    END IF;   
 END //
 
 /**
@@ -796,16 +820,26 @@ END //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 11/11/24
+    version: 0.2.0
+    date: 23/11/24
 
-    Procedimiento almacenado para saber la cantidad de inscripciones
+    Procedimiento almacenado para saber la cantidad de inscripciones totales, inscripciones aprobadas, inscripciones que faltan de revisar
 **/
 CREATE PROCEDURE AmountInscription (IN p_id INT)
 BEGIN
-    SELECT COUNT(*) as amountInscriptions 
-    FROM Application 
-    WHERE academicEvent=p_id;
+    DECLARE amountInscriptions INT DEFAULT 0;
+    DECLARE approvedInscriptions INT DEFAULT 0;
+    DECLARE missingReviewInscriptions INT DEFAULT 0;
+
+    SET approvedInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id AND approved=true);
+    SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id);
+    SET missingReviewInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id AND approved IS NULL);
+
+    SELECT JSON_OBJECT(
+        'amountInscriptions', amountInscriptions,
+        'approvedInscriptions', approvedInscriptions,
+        'missingReviewInscriptions', missingReviewInscriptions
+    ) AS resultJson; 
 END //
 
 /**
@@ -877,7 +911,19 @@ BEGIN
          -- Si el ID ya existe no se puede insertar
         SELECT JSON_OBJECT(
             'status', false,
-            'message', 'El ID ya existe no se puede insertar docente.'
+            'message', 'El DNI ya existe, no se puede insertar docente.'
+        ) AS resultJson;
+    ELSEIF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=4) THEN
+         -- Ya existe jefe de departamento 
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Ya existe un jefe de departamento.'
+        ) AS resultJson;
+    ELSEIF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=3) THEN
+         -- Ya existe jefe de departamento 
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Ya existe un coordinador de departamento.'
         ) AS resultJson;
     ELSE
         WHILE EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) DO
@@ -1050,7 +1096,112 @@ BEGIN
     END IF;
 END //
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
 
+    Procedimiento almacenado para poner los limites inferiores y las metas del dia para los revisadores
+**/
+CREATE PROCEDURE reviewersEvent ()
+BEGIN
+    DECLARE amountInscriptions INT DEFAULT 0;
+    DECLARE totalDays INT;
+    DECLARE amountReviewers INT;
+    DECLARE dayGoal INT;
+    DECLARE lim INT DEFAULT 0;
+    DECLARE cont INT DEFAULT 1;
+    DECLARE idReviewer INT;
+    DECLARE reviewerGoal INT;
+
+    IF EXISTS (SELECT 1 FROM AcademicEvent WHERE NOW() BETWEEN startDate AND finalDate AND id = (SELECT b.id FROM AcademicEvent a INNER JOIN AcademicEvent b ON (a.id = b.parentId) WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4)) THEN
+
+        -- Limpiar limites
+        UPDATE Reviewer
+        SET lowerLimit = NULL, dailyGoal=0
+        WHERE active = true;
+
+        SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND approved IS NULL);
+        SET totalDays = (SELECT DATEDIFF(finalDate, NOW()) AS total_dias
+                    FROM AcademicEvent WHERE id=(SELECT b.id 
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicEvent b ON (a.id = b.parentId)
+                    WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4));
+        SET amountReviewers = (SELECT COUNT(*) FROM Reviewer WHERE active=true);
+        SET dayGoal = CEIL(amountInscriptions/totalDays);
+        SET reviewerGoal = CEIL(dayGoal/amountReviewers);
+
+        WHILE cont<=amountReviewers DO
+
+            SET idReviewer = (SELECT id FROM Reviewer WHERE active = true AND lowerLimit IS NULL ORDER BY RAND() LIMIT 1);
+
+            IF(dayGoal>0) THEN
+                UPDATE Reviewer
+                SET lowerLimit = lim, dailyGoal = reviewerGoal
+                WHERE id = idReviewer;
+                SET dayGoal = dayGoal - reviewerGoal;
+            ELSEIF(dayGoal != 0) THEN
+                UPDATE Reviewer
+                SET lowerLimit = lim, dayGoal = dayGoal
+                WHERE id = idReviewer;
+                SET dayGoal = 0;
+                SET cont = amountReviewers + 1;
+            ELSE
+                SET cont = amountReviewers + 1;
+            END IF;
+
+            SET cont = cont + 1;
+            SET lim = lim + reviewerGoal;
+        END WHILE;
+    END IF;
+END//
+
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
+
+    Procedimiento obtener estadisticas por centro regional
+**/
+CREATE PROCEDURE RegionalCentersStadistics(IN academicEventId INT)
+BEGIN
+    SELECT b.acronym, COUNT(*) as amountInscriptions, COUNT(CASE WHEN a.approved = true THEN 1 ELSE NULL END) AS approvedReview, COUNT(CASE WHEN a.approvedFirstChoice = true OR a.approvedSecondChoice = true THEN 1 ELSE NULL END) AS approvedApplicants
+    FROM Application a
+    INNER JOIN RegionalCenter b
+    ON (a.regionalCenterChoice=b.id)
+    WHERE academicEvent = academicEventId
+    GROUP BY b.id;
+END //
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
+
+    Procedimiento obtener las inscripciones que va a revisar cada revisor
+**/
+CREATE PROCEDURE ToReview (IN p_id INT)
+BEGIN 
+    DECLARE lim INT;
+    DECLARE goal INT;
+
+    SET lim = (SELECT lowerLimit FROM Reviewer WHERE id=p_id);
+    SET goal = (SELECT dailyGoal FROM Reviewer WHERE id=p_id);
+
+    IF lim IS NOT NULL THEN
+        SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, c.description as firstCareer, a.applicationDate
+        FROM Application a
+        INNER JOIN Applicant b ON(a.idApplicant=b.id)
+        INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+        INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
+        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND a.approved IS NULL
+        LIMIT goal
+        OFFSET lim;
+    END IF;
+END;
+
+/*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
  * author: afcastillof@unah.hn
  * version: 0.1.0
@@ -1102,13 +1253,14 @@ BEGIN
     END IF;
 END //
 
+/*------------------------------------------------------------------------EVENTS--------------------------------------------------------------------------------*/
 -- Set the event scheduler ON
 SET GLOBAL event_scheduler = ON;
 
 -- Create the scheduled event
 CREATE EVENT statusVerification
 ON SCHEDULE EVERY 1 DAY
-STARTS '2024-11-13 00:00:00'
+STARTS '2024-11-25 00:00:00'
 DO
 BEGIN
     -- Activate events within date range
@@ -1120,17 +1272,20 @@ BEGIN
     UPDATE AcademicEvent
     SET active = 0
     WHERE CURDATE() < startDate OR CURDATE() > finalDate;
-
-    -- Activate sub-processes within date range
-    UPDATE AcademicSubProcess
-    SET active = 1
-    WHERE startDate <= CURDATE() AND CURDATE() <= endDate;
-
-    -- Deactivate sub-processes outside date range
-    UPDATE AcademicSubProcess
-    SET active = 0
-    WHERE CURDATE() < startDate OR CURDATE() > endDate;
 END;
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
 
-
+    Evento para poner los limites inferiores y las metas del dia para los revisadores
+**/
+-- Evento para definir la cantidad de inscripciones a revisar por dia y los rangos de los revisores
+CREATE EVENT reviewersEvent
+ON SCHEDULE EVERY 1 DAY
+STARTS '2024-11-25 00:00:00'
+DO
+BEGIN
+   CALL reviewersEvent; 
+END;

@@ -145,14 +145,21 @@ class Action{
      * @date 18/11/24
      */
     static async openCreateForm(){
+
         //Se obtiene la data de los selects
         const data = await this.fetchFormProfessors();
         this.generateSelectForm(data);
-
-        //Se abre una modal
+        
         const formModal = document.querySelector("#formModal");
+        
+        //Se establece un rango de edad entre 18 y 90 años para validar fecha de nacimiento
+        const dateInput = formModal.querySelector("input#birthDateInput");
+        Forms.setRangeDate(dateInput,18,90);
+        
+        //Se abre una modal
         Modal.openModal(formModal);
     }
+
 
     /**
      * Abre la modal para editar un docente
@@ -175,6 +182,10 @@ class Action{
 
         //Se guarda el id del maestro en el dataset del formulario
         professorForm.dataset.idProfessor = professorResponse.data.id;
+
+        //Se establece un rango de edad entre 18 y 90 años para validar fecha de nacimiento
+        const dateInput = professorForm.querySelector("input#bdInput");
+        Forms.setRangeDate(dateInput,18,90);
 
         //Llena los campos del formulario
         Forms.fillFieldsEdit(professorResponse.data, professorForm);

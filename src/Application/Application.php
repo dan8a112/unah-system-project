@@ -13,6 +13,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 12/11/24
+         * 
+         * Función para saber si un aplicante ya tiene una inscripcion en proceso de admisión actual
          */
         public function applicationInCurrentProcess(string $identityNumber){
             $query= "CALL ApplicationInCurrentEvent(?);";
@@ -36,7 +38,10 @@
                     }
 
                 }else {
-                    echo "Error al ejecutar el procedimiento: " . $conexion->error;
+                    return [
+                        "status" => false,
+                        "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                    ];
                 }
                 
             }catch (Exception $e){
@@ -50,11 +55,14 @@
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.3.0
-         * date: 11/11/24
+         * date: 20/11/24
+         * 
+         * Función para insertar una inscripción en la tabla 'Application'
          */
         public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, $pathSchoolCertificate, string $telephoneNumber,
             string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
 
+            //validación de que no exista una aplicacion del aplicante con este dni
             $currentProcess = $this->applicationInCurrentProcess($identityNumber);
 
             if($currentProcess['status']){
@@ -63,74 +71,127 @@
                     "message" => $currentProcess['message']
                 ];
             }else{
-                //hacer validaciones en el if
-                if(
-                    Validator::isHondurasIdentityNumber($identityNumber) &&
-                    Validator::isPhoneNumber($telephoneNumber) &&
-                    Validator::isEmail($personalEmail)
-                ){
-                    $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
-                    $query1= "SELECT b.admissionTest, d.description
-                            FROM Application a
-                            INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
-                            INNER JOIN AdmissionTest d ON b.admissionTest = d.id
-                            WHERE a.id = ?
-                            UNION
-                            SELECT c.admissionTest, e.description
-                            FROM Application a
-                            INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
-                            INNER JOIN AdmissionTest e ON c.admissionTest = e.id
-                            WHERE a.id = ?";
-                    $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
 
-                    try{
-                        $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
-                            $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
-                        
-                        if ($row = $result->fetch_assoc()) {
+                //hacer validaciones integridad de datos
+                if(!Validator::isHondurasIdentityNumber($identityNumber)){
+                    return [
+                        "status" => false,
+                        "message" => "Número de identidad inválido"
+                    ];
+                }
 
-                            $resultJson = $row['resultJson'];
+                if(!Validator::isPhoneNumber($telephoneNumber)){
+                    return [
+                        "status" => false,
+                        "message" => "Número de teléfono inválido"
+                    ];
+                }
 
-                            $resultArray = json_decode($resultJson, true);
+                if(!Validator::isEmail($personalEmail)){
+                    return [
+                        "status" => false,
+                        "message" => "Email inválido"
+                    ];
+                }
 
-                            if ($resultArray !== null) {
+                if(!Validator::isValidName($firstName) || $firstName==""){
+                    return [
+                        "status" => false,
+                        "message" => "Primer nombre inválido"
+                    ];
+                }
 
-                                //INSERTAR EXAMENES
-                                $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
-                                foreach($result1 as $row){
-                                    $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
-                                    $exams[] = $row['description'];
-                                };
+                if(!Validator::isValidSecondName($secondName)){
+                    return [
+                        "status" => false,
+                        "message" => "Segundo nombre inválido"
+                    ];
+                }
 
-                                return [
-                                    "status" => true,
-                                    "message" => "Inscription hecha correctamente",
-                                    "exams"=> $exams
-                                ];
+                if(!Validator::isValidName($firstLastName) || $firstLastName==""){
+                    return [
+                        "status" => false,
+                        "message" => "Primer apellido inválido"
+                    ];
+                }
 
-                            } else {
-                                return [
-                                    "status" => false,
-                                    "message" => "Error al decodificar el JSON."
-                                ];
-                            }
+                if(!Validator::isValidName($secondLastName)){
+                    return [
+                        "status" => false,
+                        "message" => "Segundo apellido inválido"
+                    ];
+                }
+                
+                //Procedimiento almacenado para insertar la inscripcion
+                $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
 
-                        }else {
-                            echo "Error al ejecutar el procedimiento: " . $conexion->error;
+                //Obtener los examenes que tiene que hacer el aplicante
+                $query1= 
+                "SELECT b.admissionTest, d.description
+                FROM Application a
+                INNER JOIN AdmissionDegree b ON a.firstDegreeProgramChoice = b.degree
+                INNER JOIN AdmissionTest d ON b.admissionTest = d.id
+                WHERE a.id = ?
+                UNION
+                SELECT c.admissionTest, e.description
+                FROM Application a
+                INNER JOIN AdmissionDegree c ON a.secondDegreeProgramChoice = c.degree
+                INNER JOIN AdmissionTest e ON c.admissionTest = e.id
+                WHERE a.id = ?";
+                
+                //Insertar en la tabla de resultados los examenes que tiene que hacer el aplicante
+                $query2= "INSERT INTO Results(application, admissionTest) VALUES (?,?)";
+
+                try{
+                    //Insertar inscripcion
+                    $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
+                        $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
+                    
+                    if ($row = $result->fetch_assoc()) {
+
+                        $resultJson = $row['resultJson'];
+
+                        $resultArray = json_decode($resultJson, true);
+
+                        if ($resultArray['status']) {
+
+                            //Obtener examenes
+                            $result1 = $this->mysqli->execute_query($query1, [$resultArray['idApplication'],$resultArray['idApplication']]);
+
+                            //Insertar examenes en Result
+                            foreach($result1 as $row){
+                                $result2 = $this->mysqli->execute_query($query2, [$resultArray['idApplication'],$row['admissionTest']]);
+                                $exams[] = $row['description'];
+                            };
+
+                            return [
+                                "status" => true,
+                                "message" => "Inscription hecha correctamente",
+                                "exams"=> $exams
+                            ];
+
+                        } else {
+
+                            return [
+                                "status" => false,
+                                "message" => $resultArray['message']
+                            ];
                         }
-                        
-                    }catch (Exception $e){
+
+                    }else {
+
                         return [
                             "status" => false,
-                            "message" => "Error al hacer la consulta"
+                            "message" => "Error al ejecutar el procedimiento: " . $conexion->error
                         ];
                     }
-                }else{
+                    
+                }catch (Exception $e){
                     return [
-                            "status" => false,
-                            "message" => "Alguno de los campos no cumple el formato necesario"
-                        ];
-                } 
+                        "status" => false,
+                        "message" => "Error al hacer la consulta: " . $e
+                    ];
+                }
 
             }
             
@@ -138,15 +199,13 @@
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 11/11/24
+         * version: 0.2.0
+         * date: 23/11/24
          */
         public function getInfoCurrentAdmission(){
 
+            //Obtener información sobre el proceso de admision actual y el subproceso en el que esta
             $query = 'CALL InfoCurrentProcessAdmission();';
-            $query1 = 'CALL AmountInscription(?);';
-            $query2 = 'CALL LastestInscription(?);';
-
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
@@ -160,46 +219,213 @@
                 ] ;
             }
             
+            //Obtener estadisticas de las inscripciones
+            $query1 = 'CALL AmountInscription(?);';
             $result1 = $this->mysqli->execute_query($query1, [$idProcess]);
 
-            foreach($result1 as $row){
-                $amountInscription = $row['amountInscriptions'];
+            if ($row = $result1->fetch_assoc()) {
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+
+                    $inscriptionInfo = [
+                        "amountInscriptions" => $resultArray['amountInscriptions'],
+                        "approvedInscriptions" => $resultArray['approvedInscriptions'],
+                        "missingReviewInscriptions" => $resultArray['missingReviewInscriptions']
+                    ];
+
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else {
+                return [
+                    "status" => false,
+                    "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                ];
             }
 
-            $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
+            //Dependiendo el subproceso de admisiones se va a enviar la siguiente información
+            if($infoProcess['idProcessState']==3){ //proceso de inscripciones
+                //Obtener las ultimas 5 inscripciones
+                $query2 = 'CALL LastestInscription(?);';
+                $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
 
-            foreach($result2 as $row){
-                $lastestInscrptions[] = [
-                    "id" => $row["id"],
-                    "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
-                    "career"=>$row["description"],
-                    "inscriptionDate"=>$row["applicationDate"],
-                ] ;
+                foreach($result2 as $row){
+                    $lastestInscrptions[] = [
+                        "id" => $row["id"],
+                        "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
+                        "career"=>$row["description"],
+                        "inscriptionDate"=>$row["applicationDate"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "lastestInscriptions"=> $lastestInscrptions
+                    ]
+                ];
+
+            }elseif($infoProcess['idProcessState']==4){ //proceso de revision de inscripciones
+                
+                //Obtener información sobre los revisadores
+                $query3 = 'SELECT a.id, CONCAT(a.firstName," ", a.firstLastName) AS name, COUNT(b.id) AS amountReview
+                            FROM Reviewer a
+                            LEFT JOIN Application b ON a.id = b.idReviewer AND b.academicEvent = ?
+                            WHERE a.active = true
+                            GROUP BY a.id, CONCAT(a.firstName," ", a.firstLastName);';
+
+                $result3 = $this->mysqli->execute_query($query3, [$idProcess]);
+
+                foreach($result3 as $row){
+                    $reviewers[] = [
+                        "id"=>$row["id"],
+                        "name"=>$row["name"],
+                        "amountReview"=> $row["amountReview"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "reviewers"=> $reviewers
+                    ]
+                ];
+
+            }elseif($infoProcess['idProcessState']==5){ //subir calificaciones
+                //Obtener los examenes de admision
+                $query6= "SELECT * FROM AdmissionTest";
+                $result6 = $this->mysqli->execute_query($query6);
+
+                foreach($result6 as $row){
+                    $admissionTests[] = [
+                        "id" => $row["id"],
+                        "name"=>$row["description"],
+                        "points"=>$row["points"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "admissionTests"=> $admissionTests
+                    ]
+                ];
+
+            }elseif($infoProcess['idProcessState']==6 || $infoProcess['idProcessState']==7){ //Enviar correos o creacion de expedientes
+                //Obtener información sobre las estadisticas en los centros regionales
+                $query4 = 'CALL RegionalCentersStadistics(?);';
+
+                $result4 = $this->mysqli->execute_query($query4, [$idProcess]);
+
+                foreach($result4 as $row){
+                    $regionalCenters[] = [
+                        "acronym"=>$row["acronym"],
+                        "amountInscriptions"=>$row["amountInscriptions"],
+                        "approvedReview"=> $row["approvedReview"],
+                        "approvedApplicants"=> $row["approvedApplicants"]
+                    ] ;
+                }
+
+                //Obtener las mejores 5 notas
+                $query5= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
+                    FROM Application a
+                    INNER JOIN Applicant b
+                    ON (a.idApplicant = b.id)
+                    INNER JOIN DegreeProgram c 
+                    ON (a.firstDegreeProgramChoice = c.id)
+                    INNER JOIN Results d
+                    ON(a.id = d.application)
+                    WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved = true ORDER BY d.grade DESC LIMIT 5;";
+                $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
+
+                foreach($result5 as $row){
+                    $higherScores[] = [
+                        "id" => $row["id"],
+                        "name"=>$row["name"],
+                        "career"=>$row["career"],
+                        "score"=>$row["grade"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "regionalCenters" => $regionalCenters,
+                        "higherScores" => $higherScores
+                    ]
+                ];
+            }else{
+                return [
+                    "status" => false,
+                    "message" => "EL id del subproceso no existe o hubo algun error con ese id."
+                ];
             }
-
-            return [
-                "infoProcess"=> $infoProcess,
-                "amountInscription"=> $amountInscription,
-                "lastestInscriptions"=> $lastestInscrptions
-            ];
         }
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 12/11/24
+         * version: 0.2.0
+         * date: 24/11/24
          */
         public function getInfoHistoricAdmission(int $id){
 
-            $query0="SET lc_time_names = 'es_ES';";
+            //Pasar los meses a español
+            $query="SET lc_time_names = 'es_ES';";
+            $result= $this->mysqli->execute_query($query);
 
-            $query="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
-                    FROM AcademicEvent a
-                    INNER JOIN AcademicProcess b ON (a.process = b.id)
-                    WHERE a.id = ?;";
-
+            //Obtener estadisticas de las inscripciones
             $query1 = 'CALL AmountInscription(?);';
+            $result1 = $this->mysqli->execute_query($query1, [$id]);
 
+            if ($row = $result1->fetch_assoc()) {
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+
+                    $inscriptionInfo = [
+                        "amountInscriptions" => $resultArray['amountInscriptions'],
+                        "approvedInscriptions" => $resultArray['approvedInscriptions'],
+                        "missingReviewInscriptions" => $resultArray['missingReviewInscriptions']
+                    ];
+
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else {
+                return [
+                    "status" => false,
+                    "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                ];
+            }
+
+            //Obtener estadisticas de las inscripciones
             $query2= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
                     FROM Application a
                     INNER JOIN Applicant b
@@ -208,36 +434,7 @@
                     ON (a.firstDegreeProgramChoice = c.id)
                     INNER JOIN Results d
                     ON(a.id = d.application)
-                    WHERE a.academicEvent = ? AND admissionTest=1 ORDER BY d.grade DESC LIMIT 5;";
-
-            $query3= "SELECT b.acronym, COUNT(*) as amount
-                    FROM Application a
-                    INNER JOIN RegionalCenter b
-                    ON (a.regionalCenterChoice=b.id)
-                    WHERE academicEvent =?
-                    GROUP BY b.id;";
-
-            $query4= "SELECT COUNT(*) as approved
-                    FROM Application
-                    WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);";
-            
-            $result = $this->mysqli->execute_query($query0);
-            $result = $this->mysqli->execute_query($query, [$id]);
-
-            foreach($result as $row){
-                $infoProcess = [
-                    "name"=>$row["processName"],
-                    "start"=>$row["start"],
-                    "end"=>$row["final"]
-                ] ;
-            }
-
-            $result1 = $this->mysqli->execute_query($query1, [$id]);
-
-            foreach($result1 as $row){
-                $amountInscription = $row['amountInscriptions'];
-            }
-
+                    WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved=true ORDER BY d.grade DESC LIMIT 5;";
             $result2 = $this->mysqli->execute_query($query2, [$id]);
 
             foreach($result2 as $row){
@@ -249,27 +446,42 @@
                 ] ;
             }
 
+            //Obtener información sobre las estadisticas en los centros regionales
+            $query3 = 'CALL RegionalCentersStadistics(?);';
+
             $result3 = $this->mysqli->execute_query($query3, [$id]);
 
             foreach($result3 as $row){
-                $amountCentersInscripctions[]= [
-                    "name"=>$row["acronym"],
-                    "amount"=>$row["amount"],
+                $regionalCenters[] = [
+                    "acronym"=>$row["acronym"],
+                    "amountInscriptions"=>$row["amountInscriptions"],
+                    "approvedReview"=> $row["approvedReview"],
+                    "approvedApplicants"=> $row["approvedApplicants"]
                 ] ;
             }
 
+            $result3 = $this->mysqli->execute_query($query3, [$id]);
+
+            //Obtener informacion general del proceso
+            $query4="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicProcess b ON (a.process = b.id)
+                    WHERE a.id = ?;";
             $result4 = $this->mysqli->execute_query($query4, [$id]);
 
             foreach($result4 as $row){
-                $amount= $row['approved'];
+                $infoProcess = [
+                    "name"=>$row["processName"],
+                    "start"=>$row["start"],
+                    "end"=>$row["final"]
+                ] ;
             }
 
             return [
                 "infoProcess"=> $infoProcess,
-                "amountApproved"=> $amount,
-                "amountInscriptions"=> $amountInscription,
+                "inscriptionInfo"=> $inscriptionInfo,
                 "higherScores"=> $higherScores,
-                "amountCentersInscriptions"=>$amountCentersInscripctions
+                "regionalCenters"=>$regionalCenters
             ];
 
         }
@@ -420,6 +632,69 @@
             }
             
         }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 24/11/24
+        */
+        public function toReview(int $idReviwer) {
+            // Inicializar variables
+            $dailyGoal = 0;
+            $amountReviewed = 0;
+            $applications = [];
+            $count = 0;
+        
+            // Obtener la meta diaria
+            $query1 = "SELECT dailyGoal FROM Reviewer WHERE id = ?;";
+            $result1 = $this->mysqli->execute_query($query1, [$idReviwer]);
+            if ($row = $result1->fetch_assoc()) {
+                $dailyGoal = (int) $row['dailyGoal'];
+            }
+        
+            // Obtener aplicaciones revisadas
+            $query2 = "SELECT COUNT(*) as amount 
+                       FROM Application 
+                       WHERE academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process = 1) 
+                         AND approved IS NOT NULL 
+                         AND idReviewer = ?;";
+            $result2 = $this->mysqli->execute_query($query2, [$idReviwer]);
+            if ($row = $result2->fetch_assoc()) {
+                $amountReviewed = (int) $row['amount'];
+            }
+        
+            // Obtener las aplicaciones que va a revisar
+            $query = 'CALL ToReview(?);';
+            $result = $this->mysqli->execute_query($query, [$idReviwer]);
+        
+            if($result!= NULL){
+                foreach($result as $row){
+
+                    if ($count >= 10) {
+                        break; // Salir del bucle después de 10 elementos
+                    }
+                    $applications[] = [
+                        "idApplication" => $row['idApplication'],
+                        "name" => $row['name'],
+                        "firstCareer" => $row['firstCareer'],
+                        "applicationDate" => $row['applicationDate']
+                    ];
+                    $count++;
+                }
+            }
+            
+        
+            // Retornar los resultados
+            return [
+                "status" => true,
+                "message" => "Petición hecha correctamente.",
+                "data" => [
+                    "dailyGoal" => $dailyGoal,
+                    "amountReviewed" => $amountReviewed,
+                    "applications" => $applications
+                ]
+            ];
+        }        
 
         // Método para cerrar la conexión
         public function closeConnection() {

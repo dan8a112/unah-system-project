@@ -3,8 +3,8 @@
   
   session_start();
 
-  if (SessionValidation::isValid($_SESSION, "sedp")){
-    header("Location: /assets/views/administration/sedp-portal.php");
+  if (SessionValidation::isValid($_SESSION, "cri")){
+    header("Location: /assets/views/admission/cri_portal.html");
   }
   
 ?>
@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/logins/login.css">
-    <title>Login</title>
+    <title>Login CRI</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
@@ -50,19 +50,20 @@
           </div>
         </div>
       </nav>
-    <div class="container-fluid login-background d-flex align-items-center justify-content-center">
+      
+    <div class="container-fluid login-background d-flex align-items-center justify-content-center" style="background-image: url('../../img/login/admissions_login.png');">
         <div class="row login-card-wrapper">
 
             <div class="col-lg-6 left-section d-flex flex-column align-items-center justify-content-center text-center">
                 <img src="../../img/login/logo-unah-white.png" alt="Imagen" class="img">
-                <h2 class="title">Administracion SEDP</h2>
+                <h2 class="title">Administracion CRI</h2>
                 <p class="subtitle">Para acceder a este portal debes autenticarte</p>
             </div>
             
             <div class="col-lg-6 d-flex align-items-center justify-content-center">
                 <div class="card login-card p-4">
-                    <h4 class="card-title mb-2">Iniciar Sesión - SEDP</h4>
-                    <p class="card-subtitle mb-3 text-muted">Servicios de administracion de docentes</p>
+                    <h4 class="card-title mb-2">Iniciar Sesión - CRI</h4>
+                    <p class="card-subtitle mb-3 text-muted">Administracion de procesos de admision</p>
                     <form id="loginForm">
                         <div class="mb-4">
                             <input type="email" class="form-control" id="email" placeholder="Correo" name="mail" required>
@@ -80,6 +81,6 @@
     </div>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/login/loginSEDP/main.js" type="module"></script>
+    <script src="../../js/login/loginCRI/main.js" type="module"></script>
 </body>
 </html>

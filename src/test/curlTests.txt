@@ -9,12 +9,15 @@ curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "idFirstDegree
 curl http://localhost:3000/api/get/admission/infoAdmission | jq
 
 
---------------Curl para probar api/post/loginSEDP-----------------------
+--------------Curl para probar api/post/login/loginSEDP-----------------------
 curl -d "mail=juan.perez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginSEDP | jq
 
 
---------------Curl para probar api/post/loginAdmission-----------------------
+--------------Curl para probar api/post/login/loginAdmission-----------------------
 curl -d "mail=maria.ramirez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginAdmission | jq
+
+--------------Curl para probar api/post/login/loginCRI-----------------------
+curl -d "mail=carlos.hernandez@gmail.com" -d "password=1234" http://localhost:3000/api/post/login/loginCRI| jq
 
 --------------Curl para probar api/get/infoHomeSEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
