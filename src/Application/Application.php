@@ -291,7 +291,7 @@
             $result3 = $this->mysqli->execute_query($query3, [$id]);
 
             foreach($result3 as $row){
-                $amountCentersInscripctions[]= [
+                $amountCentersInscriptions[]= [
                     "name"=>$row["acronym"],
                     "amount"=>$row["amount"],
                 ] ;
@@ -308,7 +308,7 @@
                 "amountApproved"=> $amount,
                 "amountInscriptions"=> $amountInscription,
                 "higherScores"=> $higherScores,
-                "amountCentersInscriptions"=>$amountCentersInscripctions
+                "amountCentersInscriptions"=>$amountCentersInscriptions
             ];
 
         }
