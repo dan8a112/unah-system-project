@@ -371,8 +371,8 @@
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 12/11/24
+         * version: 0.2.0
+         * date: 24/11/24
          */
         public function getInfoHistoricAdmission(int $id){
 
