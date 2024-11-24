@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal CRI</title>
     <link rel="stylesheet" href="../../../css/temas/cards.css">
+    <link rel="stylesheet" href="../../../css/admission/cri_portal.css">
     <link rel="stylesheet" href="../../../css/bootstrap.min.css">
 </head>
 <body style="background-color: #FBF9F4;">
@@ -51,7 +52,7 @@
                     <span>Meta de Hoy</span>
                 </div>
                 <div class="d-flex center align-items-center" style="height: 80%;">
-                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="amountInscriptions">80</h1>
+                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="dailyGoal">80</h1>
                 </div>
             </div>
             <div class="card-container col-4">
@@ -60,7 +61,7 @@
                     <span>Cantidad Total Revisadas</span>
                 </div>
                 <div class="d-flex align-items-center" style="height: 80%;">
-                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="amountInscriptions">350</h1>
+                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="totalReviewed">350</h1>
                 </div>
             </div>
         </section>
@@ -73,10 +74,10 @@
         <section class="row">
             <div class="card-container">
                 <div>
-                    <span class="fs-5 ms-3 me-2">Cantidad sin revisar</span>
-                    <span class="status-card" style="background-color: #c3c3c3;" id="periodName" >18</span>
+                    <span class="fs-5 ms-3 me-2">Cantidad por revisar</span>
+                    <span class="status-card" style="background-color: #c3c3c3;" id="amountUnreviewed" >18</span>
                 </div>
-                <table class="table">
+                <table class="table align-middle">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -86,7 +87,7 @@
                             <th scope="col">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="lastInscriptionsTbl">
+                    <tbody id="unreviewedTbl">
                     </tbody>
                 </table>
             </div>
@@ -101,7 +102,7 @@
             <div class="card-container">
                 <div>
                     <span class="fs-5 ms-3 me-2">Cantidad revisadas</span>
-                    <span class="status-card" style="background-color: #c3c3c3;" id="periodName" >25</span>
+                    <span class="status-card" style="background-color: #c3c3c3;" id="amountReviewed" >25</span>
                 </div>
                 <table class="table">
                     <thead>
@@ -113,7 +114,7 @@
                             <th scope="col">Dictamen</th>
                         </tr>
                     </thead>
-                    <tbody id="lastInscriptionsTbl">
+                    <tbody id="reviewedTbl">
                     </tbody>
                 </table>
             </div>
@@ -121,7 +122,80 @@
 
     </div>
 
+    <div class="modal fade" tabindex="-1" id="reviewModal">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Datos de inscripcion</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mx-3">
+                    <section class="mb-3">
+                        <div class="fs-5">Datos Personales</div>
+                        <div class="line-separator"></div>
+                        <div id="personalData">
+                            <div class="row mb-2">
+                                <span class="text-description">Nombre Completo</span>
+                                <span class="text-information"></span>
+                            </div>
+                            <div class="row mb-2">
+                                <span class="text-description">Numero de identidad</span>
+                                <span class="text-information"></span>
+                            </div>
+                            <div class="row mb-2">
+                                <span class="text-description">Numero de telefono</span>
+                                <span class="text-information"></span>
+                            </div>
+                            <div class="row mb-2">
+                                <span class="text-description">Correo Electronico</span>
+                                <span class="text-information"></span>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="mb-3">
+                        <div class="fs-5">Datos de inscripcion</div>
+                        <div class="line-separator"></div>
+                        <div id="inscriptionData">
+                            <div class="row mb-2">
+                                <span class="text-description">Campus</span>
+                                <span class="text-information" id="campusField"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <div class="fs-5">Estudios Previos</div>
+                        <div class="line-separator"></div>
+
+                        <div class="download-button btn d-flex align-items-center">
+                            <img src="../../../img/icons/file.svg" alt="icon-download" class="me-2">
+                            <div style="text-align: start;">
+                                <p style="font-weight: 500;">Descargar Certificado</p>
+                                <p style="font-size: 0.7rem;">10mb</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <div class="mb-4">
+                            <p style="font-size: 1.1rem; font-weight: 500;">¿Ya revisaste los datos de inscripcion?</p>
+                            <p>Puedes decidir si aprobar o rechazar esta inscripcion</p>
+                        </div>
+                        <div class="row gap-3">
+                            <button class="col btn btn-danger">Rechazar</button>
+                            <button class="col btn btn-success">Aprobar</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <script src="../../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../../js/admission/portal_cri/main.js" type="module"></script>
 </body>
 </html>
