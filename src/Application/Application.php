@@ -376,15 +376,43 @@
          */
         public function getInfoHistoricAdmission(int $id){
 
-            $query0="SET lc_time_names = 'es_ES';";
+            //Pasar los meses a español
+            $query="SET lc_time_names = 'es_ES';";
+            $result= $this->mysqli->execute_query($query);
 
-            $query="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
-                    FROM AcademicEvent a
-                    INNER JOIN AcademicProcess b ON (a.process = b.id)
-                    WHERE a.id = ?;";
-
+            //Obtener estadisticas de las inscripciones
             $query1 = 'CALL AmountInscription(?);';
+            $result1 = $this->mysqli->execute_query($query1, [$id]);
 
+            if ($row = $result1->fetch_assoc()) {
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+
+                    $inscriptionInfo = [
+                        "amountInscriptions" => $resultArray['amountInscriptions'],
+                        "approvedInscriptions" => $resultArray['approvedInscriptions'],
+                        "missingReviewInscriptions" => $resultArray['missingReviewInscriptions']
+                    ];
+
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else {
+                return [
+                    "status" => false,
+                    "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                ];
+            }
+
+            //Obtener estadisticas de las inscripciones
             $query2= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
                     FROM Application a
                     INNER JOIN Applicant b
@@ -394,35 +422,6 @@
                     INNER JOIN Results d
                     ON(a.id = d.application)
                     WHERE a.academicEvent = ? AND admissionTest=1 ORDER BY d.grade DESC LIMIT 5;";
-
-            $query3= "SELECT b.acronym, COUNT(*) as amount
-                    FROM Application a
-                    INNER JOIN RegionalCenter b
-                    ON (a.regionalCenterChoice=b.id)
-                    WHERE academicEvent =?
-                    GROUP BY b.id;";
-
-            $query4= "SELECT COUNT(*) as approved
-                    FROM Application
-                    WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);";
-            
-            $result = $this->mysqli->execute_query($query0);
-            $result = $this->mysqli->execute_query($query, [$id]);
-
-            foreach($result as $row){
-                $infoProcess = [
-                    "name"=>$row["processName"],
-                    "start"=>$row["start"],
-                    "end"=>$row["final"]
-                ] ;
-            }
-
-            $result1 = $this->mysqli->execute_query($query1, [$id]);
-
-            foreach($result1 as $row){
-                $amountInscription = $row['amountInscriptions'];
-            }
-
             $result2 = $this->mysqli->execute_query($query2, [$id]);
 
             foreach($result2 as $row){
@@ -434,27 +433,42 @@
                 ] ;
             }
 
+            //Obtener información sobre las estadisticas en los centros regionales
+            $query3 = 'CALL RegionalCentersStadistics(?);';
+
             $result3 = $this->mysqli->execute_query($query3, [$id]);
 
             foreach($result3 as $row){
-                $amountCentersInscriptions[]= [
-                    "name"=>$row["acronym"],
-                    "amount"=>$row["amount"],
+                $regionalCenters[] = [
+                    "acronym"=>$row["acronym"],
+                    "amountInscriptions"=>$row["amountInscriptions"],
+                    "approvedReview"=> $row["approvedReview"],
+                    "approvedApplicants"=> $row["approvedApplicants"]
                 ] ;
             }
 
+            $result3 = $this->mysqli->execute_query($query3, [$id]);
+
+            //Obtener informacion general del proceso
+            $query4="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicProcess b ON (a.process = b.id)
+                    WHERE a.id = ?;";
             $result4 = $this->mysqli->execute_query($query4, [$id]);
 
             foreach($result4 as $row){
-                $amount= $row['approved'];
+                $infoProcess = [
+                    "name"=>$row["processName"],
+                    "start"=>$row["start"],
+                    "end"=>$row["final"]
+                ] ;
             }
 
             return [
                 "infoProcess"=> $infoProcess,
-                "amountApproved"=> $amount,
-                "amountInscriptions"=> $amountInscription,
+                "inscriptionInfo"=> $inscriptionInfo,
                 "higherScores"=> $higherScores,
-                "amountCentersInscriptions"=>$amountCentersInscriptions
+                "regionalCenters"=>$regionalCenters
             ];
 
         }
