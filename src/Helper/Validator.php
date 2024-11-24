@@ -78,9 +78,15 @@
         public static function isValidName($name) {
             return (preg_match("/^(?:[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,25})?$/", $name));
         }
-        
-        
-    }
 
-
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 23/11/24
+         */
+        public static function isValidSecondName($name) {
+            return (preg_match("/^(?:[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,25})(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,25})*$/", $name));
+        }  
+        
+    }  
 ?>

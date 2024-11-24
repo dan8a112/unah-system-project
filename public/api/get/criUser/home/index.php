@@ -7,14 +7,15 @@
 
     //Data Access Object
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $test = $dao->getInfoCurrentAdmission();
 
-    $json = [
-        "message"=> $test['message'],
-        "status"=> $test['status'],
-        "data" => $test['data']
-            
-    ];
+    if(isset($_GET["id"])){
+        $json = $dao->toReview($_GET["id"]);
+    }else{
+        $json = [
+            "message"=> "No se recibió el parámetro correcto",
+            "status"=> false,                
+        ];
+    }
 
     $dao->closeConnection();
     
