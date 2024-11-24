@@ -10,9 +10,9 @@
     $test = $dao->getInfoCurrentAdmission();
 
     $json = [
-        "message"=> "Peticion realizada con exito",
-        "status"=> true,
-        "data" => $test
+        "message"=> $test['message'],
+        "status"=> $test['status'],
+        "data" => $test['data']
             
     ];
 

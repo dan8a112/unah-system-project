@@ -173,21 +173,6 @@
             return $process;  
         }
 
-        public function getAmountApplicationsInProcess(int $id){
-
-            $amount=0;
-            $process = $this->getProcess($id);
-            $query = "SELECT COUNT(*) as amount FROM Application WHERE applicationDate BETWEEN STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s') AND STR_TO_DATE(?,'%Y-%m-%d %H:%i:%s')";
-
-            $result = $this->mysqli->execute_query($query, [$process['start'], $process['end'] ]);
-
-            foreach($result as $row){
-                $amount = $row['amount'];
-            }
-
-            return $amount;  
-        }
-
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

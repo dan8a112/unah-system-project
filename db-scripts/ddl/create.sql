@@ -75,9 +75,10 @@ CREATE TABLE Reviewer(
     firstLastName VARCHAR(15) NOT NULL,
     telephoneNumber VARCHAR(12),
     personalEmail VARCHAR(50),
-    lowerLImit INT DEFAULT NULL,
+    lowerLimit INT DEFAULT NULL,
     password VARCHAR (60) NOT NULL, 
-    active BOOLEAN DEFAULT True
+    active BOOLEAN DEFAULT TRUE,
+    dayGoal INT DEFAULT 0
 );
 
 CREATE TABLE Application(
@@ -510,8 +511,8 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
     (1,'2023-01-20 00:00:00', '2023-02-12 00:00:00', false, NULL),
     (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false, NULL),
     (1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', true, NULL),
-    (3, '2024-11-23 00:00:00', '2024-11-28 00:00:00', true, 5),
-    (4, '2024-11-28 00:00:00', '2024-12-04 00:00:00', false, 5),
+    (3, '2024-11-23 00:00:00', '2024-11-24 00:00:00', true, 5),
+    (4, '2024-11-24 00:00:00', '2024-11-26 00:00:00', false, 5),
     (5, '2024-12-04 00:00:00', '2024-12-09 00:00:00', false, 5),
     (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', false, 5),
     (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5)
@@ -544,21 +545,21 @@ INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName,
     ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
-INSERT INTO Reviewer (firstName, firstLastName, telephoneNumber, personalEmail, password) 
+INSERT INTO Reviewer (firstName, firstLastName, telephoneNumber, personalEmail, password, active) 
 VALUES 
-    ('Carlos', 'Hernández', '9988776655', 'carlos.hernandez@gmail.com','$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-    ('María', 'Lopez', '9966554433', 'maria.lopez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-    ('Luis', 'Martínez', '9876543210', 'luis.martinez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-    ('Ana', 'González', '9999888877', 'ana.gonzalez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-    ('Jorge', 'Mejía', '9900112233', 'jorge.mejia@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.')
+    ('Carlos', 'Hernández', '9988776655', 'carlos.hernandez@gmail.com','$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('María', 'Lopez', '9966554433', 'maria.lopez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('Luis', 'Martínez', '9876543210', 'luis.martinez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('Ana', 'González', '9999888877', 'ana.gonzalez@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', true),
+    ('Jorge', 'Mejía', '9900112233', 'jorge.mejia@gmail.com', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', false)
 ;
 
 INSERT INTO Application (idApplicant, firstDegreeProgramChoice, secondDegreeProgramChoice, regionalCenterChoice, applicationDate, academicEvent, approvedFirstChoice, approvedSecondChoice, approved, idReviewer) VALUES
     ('0801-1990-01234', 12, 1, 19, '2022-01-14 01:00:00', 1, true, false, true, 4),
     ('0802-1995-05678', 4, 5, 17, '2022-01-14 01:00:00', 1, true, true, false, 3),
-    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, true, 1),
+    ('0803-1993-04567', 9, 8, 19, '2022-01-14 01:00:00', 1, false, true, NULL, 1),
     ('0804-1992-02345', 38, 32, 4, '2022-01-14 01:00:00', 1, true, true, true, 2),
-    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false, true, 5),
+    ('0805-1994-08765', 39, 32, 15, '2022-01-14 01:00:00', 1, false, false, false, 5),
     ('0806-1991-03456', 34, 35, 19, '2022-01-14 01:00:00', 1, false, true, true, 1),
     ('0807-1997-09876', 41, 42, 2, '2022-01-14 01:00:00', 1, true, true, false, 2),
     ('0808-1996-05674', 14, 29, 15, '2022-01-14 01:00:00', 1, true, false, true, 3),
@@ -721,7 +722,7 @@ BEGIN
     END IF;
 
     -- Extraer el valor de "attempts" del campo JSON en la tabla Configuration
-    SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttempst") FROM Configuration LIMIT 1);
+    SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttemtps") FROM Configuration WHERE id=1);
     SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id AND approved=true);
     SET idCurrentProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
 
@@ -777,8 +778,7 @@ BEGIN
             'status', false,
             'message', 'No hay una inscripcion para este proceso'
         ) AS resultJson; 
-    END IF;
-    
+    END IF;   
 END //
 
 /**
@@ -820,16 +820,26 @@ END //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 11/11/24
+    version: 0.2.0
+    date: 23/11/24
 
-    Procedimiento almacenado para saber la cantidad de inscripciones
+    Procedimiento almacenado para saber la cantidad de inscripciones totales, inscripciones aprobadas, inscripciones que faltan de revisar
 **/
 CREATE PROCEDURE AmountInscription (IN p_id INT)
 BEGIN
-    SELECT COUNT(*) as amountInscriptions 
-    FROM Application 
-    WHERE academicEvent=p_id AND approved=true;
+    DECLARE amountInscriptions INT DEFAULT 0;
+    DECLARE approvedInscriptions INT DEFAULT 0;
+    DECLARE missingReviewInscriptions INT DEFAULT 0;
+
+    SET approvedInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id AND approved=true);
+    SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id);
+    SET missingReviewInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id AND approved IS NULL);
+
+    SELECT JSON_OBJECT(
+        'amountInscriptions', amountInscriptions,
+        'approvedInscriptions', approvedInscriptions,
+        'missingReviewInscriptions', missingReviewInscriptions
+    ) AS resultJson; 
 END //
 
 /**
@@ -1086,7 +1096,86 @@ BEGIN
     END IF;
 END //
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
 
+    Procedimiento almacenado para poner los limites inferiores y las metas del dia para los revisadores
+**/
+CREATE PROCEDURE reviewersEvent ()
+BEGIN
+    DECLARE amountInscriptions INT DEFAULT 0;
+    DECLARE totalDays INT;
+    DECLARE amountReviewers INT;
+    DECLARE dayGoal INT;
+    DECLARE lim INT DEFAULT 0;
+    DECLARE cont INT DEFAULT 1;
+    DECLARE idReviewer INT;
+    DECLARE reviewerGoal INT;
+
+    IF EXISTS (SELECT 1 FROM AcademicEvent WHERE NOW() BETWEEN startDate AND finalDate AND id = (SELECT b.id FROM AcademicEvent a INNER JOIN AcademicEvent b ON (a.id = b.parentId) WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4)) THEN
+
+        -- Limpiar limites
+        UPDATE Reviewer
+        SET lowerLimit = NULL, dayGoal=0
+        WHERE active = true;
+
+        SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND approved IS NULL);
+        SET totalDays = (SELECT DATEDIFF(finalDate, NOW()) AS total_dias
+                    FROM AcademicEvent WHERE id=(SELECT b.id 
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicEvent b ON (a.id = b.parentId)
+                    WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4));
+        SET amountReviewers = (SELECT COUNT(*) FROM Reviewer WHERE active=true);
+        SET dayGoal = CEIL(amountInscriptions/totalDays);
+        SET reviewerGoal = CEIL(dayGoal/amountReviewers);
+
+        WHILE cont<=amountReviewers DO
+
+            SET idReviewer = (SELECT id FROM Reviewer WHERE active = true AND lowerLimit IS NULL ORDER BY RAND() LIMIT 1);
+
+            IF(dayGoal>0) THEN
+                UPDATE Reviewer
+                SET lowerLimit = lim, dayGoal = reviewerGoal
+                WHERE id = idReviewer;
+                SET dayGoal = dayGoal - reviewerGoal;
+            ELSEIF(dayGoal != 0) THEN
+                UPDATE Reviewer
+                SET lowerLimit = lim, dayGoal = dayGoal
+                WHERE id = idReviewer;
+                SET dayGoal = 0;
+                SET cont = amountReviewers + 1;
+            ELSE
+                SET cont = amountReviewers + 1;
+            END IF;
+
+            SET cont = cont + 1;
+            SET lim = lim + reviewerGoal;
+        END WHILE;
+    END IF;
+END//
+
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
+
+    Procedimiento obtener estadisticas por centro regional
+**/
+CREATE PROCEDURE RegionalCentersStadistics(IN academicEventId INT)
+BEGIN
+    SELECT b.acronym, COUNT(*) as amountInscriptions, COUNT(CASE WHEN a.approved = true THEN 1 ELSE NULL END) AS approvedReview, COUNT(CASE WHEN a.approvedFirstChoice = true OR a.approvedSecondChoice = true THEN 1 ELSE NULL END) AS approvedApplicants
+    FROM Application a
+    INNER JOIN RegionalCenter b
+    ON (a.regionalCenterChoice=b.id)
+    WHERE academicEvent = academicEventId
+    GROUP BY b.id;
+END //
+
+
+/*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
  * author: afcastillof@unah.hn
  * version: 0.1.0
@@ -1138,8 +1227,6 @@ BEGIN
     END IF;
 END //
 
-
-
 /*------------------------------------------------------------------------EVENTS--------------------------------------------------------------------------------*/
 -- Set the event scheduler ON
 SET GLOBAL event_scheduler = ON;
@@ -1147,7 +1234,7 @@ SET GLOBAL event_scheduler = ON;
 -- Create the scheduled event
 CREATE EVENT statusVerification
 ON SCHEDULE EVERY 1 DAY
-STARTS '2024-11-13 00:00:00'
+STARTS '2024-11-25 00:00:00'
 DO
 BEGIN
     -- Activate events within date range
@@ -1159,4 +1246,20 @@ BEGIN
     UPDATE AcademicEvent
     SET active = 0
     WHERE CURDATE() < startDate OR CURDATE() > finalDate;
+END;
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
+
+    Evento para poner los limites inferiores y las metas del dia para los revisadores
+**/
+-- Evento para definir la cantidad de inscripciones a revisar por dia y los rangos de los revisores
+CREATE EVENT reviewersEvent
+ON SCHEDULE EVERY 1 DAY
+STARTS '2024-11-25 00:00:00'
+DO
+BEGIN
+   CALL reviewersEvent; 
 END;

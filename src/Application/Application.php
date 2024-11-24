@@ -38,7 +38,10 @@
                     }
 
                 }else {
-                    echo "Error al ejecutar el procedimiento: " . $conexion->error;
+                    return [
+                        "status" => false,
+                        "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                    ];
                 }
                 
             }catch (Exception $e){
@@ -196,15 +199,13 @@
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 11/11/24
+         * version: 0.2.0
+         * date: 23/11/24
          */
         public function getInfoCurrentAdmission(){
 
+            //Obtener información sobre el proceso de admision actual y el subproceso en el que esta
             $query = 'CALL InfoCurrentProcessAdmission();';
-            $query1 = 'CALL AmountInscription(?);';
-            $query2 = 'CALL LastestInscription(?);';
-
             $result = $this->mysqli->execute_query($query);
 
             foreach($result as $row){
@@ -218,28 +219,154 @@
                 ] ;
             }
             
+            //Obtener estadisticas de las inscripciones
+            $query1 = 'CALL AmountInscription(?);';
             $result1 = $this->mysqli->execute_query($query1, [$idProcess]);
 
-            foreach($result1 as $row){
-                $amountInscription = $row['amountInscriptions'];
+            if ($row = $result1->fetch_assoc()) {
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+
+                    $inscriptionInfo = [
+                        "amountInscriptions" => $resultArray['amountInscriptions'],
+                        "approvedInscriptions" => $resultArray['approvedInscriptions'],
+                        "missingReviewInscriptions" => $resultArray['missingReviewInscriptions']
+                    ];
+
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else {
+                return [
+                    "status" => false,
+                    "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                ];
             }
 
-            $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
+            //Dependiendo el subproceso de admisiones se va a enviar la siguiente información
+            if($infoProcess['idProcessState']==3){ //proceso de inscripciones
+                //Obtener las ultimas 5 inscripciones
+                $query2 = 'CALL LastestInscription(?);';
+                $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
 
-            foreach($result2 as $row){
-                $lastestInscrptions[] = [
-                    "id" => $row["id"],
-                    "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
-                    "career"=>$row["description"],
-                    "inscriptionDate"=>$row["applicationDate"],
-                ] ;
+                foreach($result2 as $row){
+                    $lastestInscrptions[] = [
+                        "id" => $row["id"],
+                        "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
+                        "career"=>$row["description"],
+                        "inscriptionDate"=>$row["applicationDate"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "lastestInscriptions"=> $lastestInscrptions
+                    ]
+                ];
+
+            }elseif($infoProcess['idProcessState']==4){ //proceso de revision de inscripciones
+                
+                //Obtener información sobre los revisadores
+                $query3 = 'SELECT a.id, CONCAT(a.firstName," ", a.firstLastName) AS name, COUNT(b.id) AS amountReview
+                            FROM Reviewer a
+                            LEFT JOIN Application b ON a.id = b.idReviewer AND b.academicEvent = ?
+                            WHERE a.active = true
+                            GROUP BY a.id, CONCAT(a.firstName," ", a.firstLastName);';
+
+                $result3 = $this->mysqli->execute_query($query3, [$idProcess]);
+
+                foreach($result3 as $row){
+                    $reviewers[] = [
+                        "id"=>$row["id"],
+                        "name"=>$row["name"],
+                        "amountReview"=> $row["amountReview"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "reviewers"=> $reviewers
+                    ]
+                ];
+
+            }elseif($infoProcess['idProcessState']==5){ //subir calificaciones
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo
+                    ]
+                ];
+
+            }elseif($infoProcess['idProcessState']==6 || $infoProcess['idProcessState']==7){ //Enviar correos o creacion de expedientes
+                //Obtener información sobre las estadisticas en los centros regionales
+                $query4 = 'CALL RegionalCentersStadistics(?);';
+
+                $result4 = $this->mysqli->execute_query($query4, [$idProcess]);
+
+                foreach($result4 as $row){
+                    $regionalCenters[] = [
+                        "acronym"=>$row["acronym"],
+                        "amountInscriptions"=>$row["amountInscriptions"],
+                        "approvedReview"=> $row["approvedReview"],
+                        "approvedApplicants"=> $row["approvedApplicants"]
+                    ] ;
+                }
+
+                //Obtener las mejores 5 notas
+                $query5= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
+                    FROM Application a
+                    INNER JOIN Applicant b
+                    ON (a.idApplicant = b.id)
+                    INNER JOIN DegreeProgram c 
+                    ON (a.firstDegreeProgramChoice = c.id)
+                    INNER JOIN Results d
+                    ON(a.id = d.application)
+                    WHERE a.academicEvent = ? AND admissionTest=1 ORDER BY d.grade DESC LIMIT 5;";
+                $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
+
+                foreach($result5 as $row){
+                    $higherScores[] = [
+                        "id" => $row["id"],
+                        "name"=>$row["name"],
+                        "career"=>$row["career"],
+                        "score"=>$row["grade"],
+                    ] ;
+                }
+
+                return [
+                    "status" => true,
+                    "message" => "Petición realizada con exito.",
+                    "data" => [
+                        "infoProcess"=> $infoProcess,
+                        "amountInscription"=> $inscriptionInfo,
+                        "regionalCenters" => $regionalCenters,
+                        "higherScores" => $higherScores
+                    ]
+                ];
+            }else{
+                return [
+                    "status" => false,
+                    "message" => "EL id del subproceso no existe o hubo algun error con ese id."
+                ];
             }
-
-            return [
-                "infoProcess"=> $infoProcess,
-                "amountInscription"=> $amountInscription,
-                "lastestInscriptions"=> $lastestInscrptions
-            ];
         }
 
         /**
