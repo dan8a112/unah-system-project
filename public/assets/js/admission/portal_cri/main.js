@@ -1,6 +1,7 @@
 import { Action } from "./Action.js"
 
-const data = {
+const data = 
+{
     period: "Octubre 2024",
     stats: {
         dailyGoal: 140,
@@ -52,7 +53,8 @@ const inscriptionData = {
         email: "dochoao@unah.hn"
     },
     inscription:{
-        options: ["Ingenieria en sistemas", "Ingenieria Civil", "Educacion Fisica"],
+        firstOption: "Ingenieria en Sistemas",
+        secondOption: "Educacion Fisica",
         campus: "Ciudad Universitaria"
     },
     schoolCertificate: "FA93C023EACD6",

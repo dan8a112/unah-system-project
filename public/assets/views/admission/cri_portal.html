@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal CRI</title>
-    <link rel="stylesheet" href="../../../css/temas/cards.css">
-    <link rel="stylesheet" href="../../../css/admission/cri_portal.css">
-    <link rel="stylesheet" href="../../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/temas/cards.css">
+    <link rel="stylesheet" href="../../css/admission/cri_portal.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
 <body style="background-color: #FBF9F4;">
     <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">
-            <img src="../../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
+            <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <img src="../../../img/icons/hamburger-menu.svg" alt="icon">
+            <img src="../../img/icons/hamburger-menu.svg" alt="icon">
           </button>
           <div class="ms-4 mt-3">
             <h1 class="mb-0">Portal CRI</h1>
@@ -25,7 +25,7 @@
             <ul class="navbar-nav gap-3">
               <li class="nav-item">
                 <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;" id="logoutButton">
-                    <img src="../../../img/icons/logout-icon.svg" alt="" class="me-2">
+                    <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
                     Cerrar Sesión
                 </button>
               </li>
@@ -48,7 +48,7 @@
         <section class="row mb-4 gap-5">
             <div class="card-container col-4">
                 <div class="d-flex align-items-center">
-                    <img src="../../../img/icons/state-icon.svg" alt="" class="me-2">
+                    <img src="../../img/icons/state-icon.svg" alt="" class="me-2">
                     <span>Meta de Hoy</span>
                 </div>
                 <div class="d-flex center align-items-center" style="height: 80%;">
@@ -57,7 +57,7 @@
             </div>
             <div class="card-container col-4">
                 <div class="d-flex align-items-center">
-                    <img src="../../../img/icons/inscription-icon.svg" alt="" class="me-2">
+                    <img src="../../img/icons/inscription-icon.svg" alt="" class="me-2">
                     <span>Cantidad Total Revisadas</span>
                 </div>
                 <div class="d-flex align-items-center" style="height: 80%;">
@@ -160,8 +160,16 @@
                         <div class="line-separator"></div>
                         <div id="inscriptionData">
                             <div class="row mb-2">
+                                <span class="text-description">Primera Opcion</span>
+                                <span class="text-information"></span>
+                            </div>
+                            <div class="row mb-2">
+                                <span class="text-description">Segunda Opcion</span>
+                                <span class="text-information"></span>
+                            </div>
+                            <div class="row mb-2">
                                 <span class="text-description">Campus</span>
-                                <span class="text-information" id="campusField"></span>
+                                <span class="text-information"></span>
                             </div>
                         </div>
                     </section>
@@ -171,7 +179,7 @@
                         <div class="line-separator"></div>
 
                         <div class="download-button btn d-flex align-items-center">
-                            <img src="../../../img/icons/file.svg" alt="icon-download" class="me-2">
+                            <img src="../../img/icons/file.svg" alt="icon-download" class="me-2">
                             <div style="text-align: start;">
                                 <p style="font-weight: 500;">Descargar Certificado</p>
                                 <p style="font-size: 0.7rem;">10mb</p>
@@ -195,7 +203,8 @@
         </div>
       </div>
 
-    <script src="../../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../../js/admission/portal_cri/main.js" type="module"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/logout/logout.js" type="module"></script>
+    <script src="../../js/admission/portal_cri/main.js" type="module"></script>
 </body>
 </html>

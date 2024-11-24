@@ -102,37 +102,13 @@ class Action {
         });
         
         //Seccion de informacion de inscripcion
-        const inscriptionSection =  document.querySelector("div#inscriptionData");
+        const inscriptionFields =  document.querySelectorAll("div#inscriptionData span.text-information");
 
-        //Se establece el campus de la inscripcion
-        const campusField = inscriptionSection.querySelector("span#campusField");
-        campusField.innerText = inscription.campus;
-
-        //Se generan dinamicamente las opciones de carrera del apliante
-        inscription.options.forEach((option,index)=>{
-
-            const descriptionOptions = {
-                0: "Primera Opcion",
-                1: "Segunda Opcion",
-                2: "Tercera Opcion"
-            }
-
-            const row = document.createElement("div");
-            row.classList.add("row", "mb-2");
-    
-            const description = document.createElement("span");
-            description.classList.add("text-description");
-            description.innerText = descriptionOptions[index];
-    
-            const information = document.createElement("span");
-            information.classList.add("text-information");
-            information.innerText = option;
-
-            row.appendChild(description);
-            row.appendChild(information);
-
-            inscriptionSection.appendChild(row);
-        })
+        //Se establecen los valores
+        Object.keys(inscription).forEach((key, index)=>{
+            inscriptionFields[index].innerText = inscription[key];
+        });
+        
     }
 }
 
