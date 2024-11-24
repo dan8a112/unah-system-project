@@ -15,7 +15,7 @@ export async function redirectPageToInscription() {
             window.location.href = '/assets/views/admission/inscription_view.html';
         } else {
             const content = "No hay un proceso de admisión activo por el momento. Revisa nuestro calendario académico y mantente pendiente del próximo proceso de admisiones.";
-            Modal.openModal(modal, content, "static");
+            Modal.openModal(modal, content, "Ups!");
         }
     } catch (error) {
         console.error("Error al realizar la solicitud a la API:", error);

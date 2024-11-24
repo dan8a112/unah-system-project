@@ -52,7 +52,7 @@
 
 
 
-    <section class="section">
+    <section class="section" id="containerSection">
         <section class="title">
             <h1>Benvenido al portal de admisiones</h1>
         </section>
