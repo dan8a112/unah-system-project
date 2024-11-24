@@ -306,12 +306,25 @@
                 ];
 
             }elseif($infoProcess['idProcessState']==5){ //subir calificaciones
+                //Obtener los examenes de admision
+                $query6= "SELECT * FROM AdmissionTest";
+                $result6 = $this->mysqli->execute_query($query6);
+
+                foreach($result6 as $row){
+                    $admissionTests[] = [
+                        "id" => $row["id"],
+                        "name"=>$row["description"],
+                        "points"=>$row["points"],
+                    ] ;
+                }
+
                 return [
                     "status" => true,
                     "message" => "Petición realizada con exito.",
                     "data" => [
                         "infoProcess"=> $infoProcess,
-                        "amountInscription"=> $inscriptionInfo
+                        "amountInscription"=> $inscriptionInfo,
+                        "admissionTests"=> $admissionTests
                     ]
                 ];
 
@@ -339,7 +352,7 @@
                     ON (a.firstDegreeProgramChoice = c.id)
                     INNER JOIN Results d
                     ON(a.id = d.application)
-                    WHERE a.academicEvent = ? AND admissionTest=1 ORDER BY d.grade DESC LIMIT 5;";
+                    WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved = true ORDER BY d.grade DESC LIMIT 5;";
                 $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
 
                 foreach($result5 as $row){
@@ -421,7 +434,7 @@
                     ON (a.firstDegreeProgramChoice = c.id)
                     INNER JOIN Results d
                     ON(a.id = d.application)
-                    WHERE a.academicEvent = ? AND admissionTest=1 ORDER BY d.grade DESC LIMIT 5;";
+                    WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved=true ORDER BY d.grade DESC LIMIT 5;";
             $result2 = $this->mysqli->execute_query($query2, [$id]);
 
             foreach($result2 as $row){
@@ -619,6 +632,69 @@
             }
             
         }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 24/11/24
+        */
+        public function toReview(int $idReviwer) {
+            // Inicializar variables
+            $dailyGoal = 0;
+            $amountReviewed = 0;
+            $applications = [];
+            $count = 0;
+        
+            // Obtener la meta diaria
+            $query1 = "SELECT dailyGoal FROM Reviewer WHERE id = ?;";
+            $result1 = $this->mysqli->execute_query($query1, [$idReviwer]);
+            if ($row = $result1->fetch_assoc()) {
+                $dailyGoal = (int) $row['dailyGoal'];
+            }
+        
+            // Obtener aplicaciones revisadas
+            $query2 = "SELECT COUNT(*) as amount 
+                       FROM Application 
+                       WHERE academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process = 1) 
+                         AND approved IS NOT NULL 
+                         AND idReviewer = ?;";
+            $result2 = $this->mysqli->execute_query($query2, [$idReviwer]);
+            if ($row = $result2->fetch_assoc()) {
+                $amountReviewed = (int) $row['amount'];
+            }
+        
+            // Obtener las aplicaciones que va a revisar
+            $query = 'CALL ToReview(?);';
+            $result = $this->mysqli->execute_query($query, [$idReviwer]);
+        
+            if($result!= NULL){
+                foreach($result as $row){
+
+                    if ($count >= 10) {
+                        break; // Salir del bucle después de 10 elementos
+                    }
+                    $applications[] = [
+                        "idApplication" => $row['idApplication'],
+                        "name" => $row['name'],
+                        "firstCareer" => $row['firstCareer'],
+                        "applicationDate" => $row['applicationDate']
+                    ];
+                    $count++;
+                }
+            }
+            
+        
+            // Retornar los resultados
+            return [
+                "status" => true,
+                "message" => "Petición hecha correctamente.",
+                "data" => [
+                    "dailyGoal" => $dailyGoal,
+                    "amountReviewed" => $amountReviewed,
+                    "applications" => $applications
+                ]
+            ];
+        }        
 
         // Método para cerrar la conexión
         public function closeConnection() {

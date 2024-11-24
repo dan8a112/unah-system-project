@@ -78,7 +78,7 @@ CREATE TABLE Reviewer(
     lowerLimit INT DEFAULT NULL,
     password VARCHAR (60) NOT NULL, 
     active BOOLEAN DEFAULT TRUE,
-    dayGoal INT DEFAULT 0
+    dailyGoal INT DEFAULT 0
 );
 
 CREATE TABLE Application(
@@ -1118,7 +1118,7 @@ BEGIN
 
         -- Limpiar limites
         UPDATE Reviewer
-        SET lowerLimit = NULL, dayGoal=0
+        SET lowerLimit = NULL, dailyGoal=0
         WHERE active = true;
 
         SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND approved IS NULL);
@@ -1137,7 +1137,7 @@ BEGIN
 
             IF(dayGoal>0) THEN
                 UPDATE Reviewer
-                SET lowerLimit = lim, dayGoal = reviewerGoal
+                SET lowerLimit = lim, dailyGoal = reviewerGoal
                 WHERE id = idReviewer;
                 SET dayGoal = dayGoal - reviewerGoal;
             ELSEIF(dayGoal != 0) THEN
@@ -1174,6 +1174,32 @@ BEGIN
     GROUP BY b.id;
 END //
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 24/11/24
+
+    Procedimiento obtener las inscripciones que va a revisar cada revisor
+**/
+CREATE PROCEDURE ToReview (IN p_id INT)
+BEGIN 
+    DECLARE lim INT;
+    DECLARE goal INT;
+
+    SET lim = (SELECT lowerLimit FROM Reviewer WHERE id=p_id);
+    SET goal = (SELECT dailyGoal FROM Reviewer WHERE id=p_id);
+
+    IF lim IS NOT NULL THEN
+        SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, c.description as firstCareer, a.applicationDate
+        FROM Application a
+        INNER JOIN Applicant b ON(a.idApplicant=b.id)
+        INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+        INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
+        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND a.approved IS NULL
+        LIMIT goal
+        OFFSET lim;
+    END IF;
+END;
 
 /*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
