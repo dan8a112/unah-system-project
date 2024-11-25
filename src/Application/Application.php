@@ -641,9 +641,13 @@
         public function toReview(int $idReviwer) {
             // Inicializar variables
             $dailyGoal = 0;
+            $lowerLimit = NULL;
             $amountReviewed = 0;
             $applications = [];
-            $count = 0;
+            $countUnreviewed = 0;
+            $countReviewed = 0;
+            $unreviewedInscriptions= [];
+            $reviewedInscriptions= [];
         
             // Obtener la meta diaria
             $query1 = "SELECT dailyGoal FROM Reviewer WHERE id = ?;";
@@ -670,28 +674,63 @@
             if($result!= NULL){
                 foreach($result as $row){
 
-                    if ($count >= 10) {
-                        break; // Salir del bucle después de 10 elementos
+                    if($row['approved']=== NULL){
+                        $unreviewedInscriptions[]=[
+                            "id" => $row['id'],
+                            "name" => $row['name'],
+                            "career" => $row['firstCareer'],
+                            "inscriptionDate" => $row['applicationDate']
+                        ];
+                    }else{
+                        $reviewedInscriptions[] = [
+                            "id" => $row['id'],
+                            "name" => $row['name'],
+                            "career" => $row['firstCareer'],
+                            "inscriptionDate" => $row['applicationDate'],
+                            "approved"=> $row['approved']                            
+                        ];
                     }
-                    $applications[] = [
-                        "idApplication" => $row['idApplication'],
-                        "name" => $row['name'],
-                        "firstCareer" => $row['firstCareer'],
-                        "applicationDate" => $row['applicationDate']
-                    ];
-                    $count++;
                 }
             }
+
+            //Obtener información sobre el proceso de admision actual y el subproceso en el que esta
+            $query3 = 'CALL InfoCurrentProcessAdmission();';
+            $result = $this->mysqli->execute_query($query3);
+
+            foreach($result as $row){
+                $period = $row["processName"];
+            }
             
-        
+            if(count($unreviewedInscriptions) > 10){
+                $unreviewedList = array_slice($unreviewedInscriptions,count($unreviewedInscriptions)-11, count($unreviewedInscriptions)-1);
+            }else{
+                $unreviewedList = $unreviewedInscriptions;
+            }
+
+            if(count($reviewedInscriptions) > 10){
+                $reviewedList = array_slice($reviewedInscriptions,count($reviewedInscriptions)-11, count($reviewedInscriptions)-1);
+            }else{
+                $reviewedList = $reviewedInscriptions;
+            }
+
             // Retornar los resultados
             return [
                 "status" => true,
                 "message" => "Petición hecha correctamente.",
                 "data" => [
-                    "dailyGoal" => $dailyGoal,
-                    "amountReviewed" => $amountReviewed,
-                    "applications" => $applications
+                    "period"=> $period,
+                    "stats"=>[
+                        "dailyGoal" => $dailyGoal,
+                        "amountReviewed" => $amountReviewed
+                    ],
+                    "unreviewedInscriptions" => [
+                        "amountUnreviewed"=> count($unreviewedInscriptions),
+                        "unreviewedList"=> $unreviewedList
+                    ],
+                    "reviewedInscriptions" =>  [
+                        "amounReviewed"=> count($reviewedInscriptions),
+                        "reviewedList"=> $reviewedList
+                    ]
                 ]
             ];
         }        

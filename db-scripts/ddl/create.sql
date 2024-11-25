@@ -1109,12 +1109,15 @@ BEGIN
     DECLARE totalDays INT;
     DECLARE amountReviewers INT;
     DECLARE dayGoal INT;
-    DECLARE lim INT DEFAULT 0;
+    DECLARE lim INT;
     DECLARE cont INT DEFAULT 1;
     DECLARE idReviewer INT;
     DECLARE reviewerGoal INT;
 
     IF EXISTS (SELECT 1 FROM AcademicEvent WHERE NOW() BETWEEN startDate AND finalDate AND id = (SELECT b.id FROM AcademicEvent a INNER JOIN AcademicEvent b ON (a.id = b.parentId) WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4)) THEN
+    
+        -- obtener el limite inferior 
+        SET lim = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND approved IS NOT NULL);
 
         -- Limpiar limites
         UPDATE Reviewer
@@ -1154,7 +1157,7 @@ BEGIN
             SET lim = lim + reviewerGoal;
         END WHILE;
     END IF;
-END//
+END;
 
 
 /**
@@ -1190,16 +1193,22 @@ BEGIN
     SET goal = (SELECT dailyGoal FROM Reviewer WHERE id=p_id);
 
     IF lim IS NOT NULL THEN
-        SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, c.description as firstCareer, a.applicationDate
+        SELECT 
+            a.id as idApplication, 
+            CONCAT(b.firstName, ' ', b.secondName, ' ', b.firstLastName, ' ', b.secondLastName) as name, 
+            c.description as firstCareer, 
+            a.applicationDate, 
+            a.approved
         FROM Application a
         INNER JOIN Applicant b ON(a.idApplicant=b.id)
         INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
         INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
-        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND a.approved IS NULL
+        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1)
+        ORDER BY a.approved IS NULL ASC
         LIMIT goal
         OFFSET lim;
     END IF;
-END;
+END//
 
 /*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
