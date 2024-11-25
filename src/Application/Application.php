@@ -1,5 +1,7 @@
 <?php
-    include_once "../../../../src/Helper/Validator.php";
+    if (file_exists("../../../../src/Helper/Validator.php")) {
+        include_once("../../../../src/Helper/Validator.php");
+    }
     
     class ApplicationDAO{
 
@@ -734,6 +736,83 @@
                 ]
             ];
         }        
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 25/11/24
+        */
+        public function getApplication(int $id) {
+            $applicant = [];
+            $insciption = [];
+            $file = NULL;
+            $mimeType = NULL;
+        
+            // Obtener la información de la base
+            $query = "SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, 
+                             b.id as dni, b.telephoneNumber, b.personalEmail, 
+                             c.description as firstCareer, d.description as secondCareer, e.description as regionalCenter, 
+                             b.pathSchoolCertificate
+                      FROM Application a
+                      INNER JOIN Applicant b ON(a.idApplicant=b.id)
+                      INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+                      INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
+                      INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
+                      WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND a.id = ?;";
+        
+            $result = $this->mysqli->execute_query($query, [$id]);
+        
+            foreach ($result as $row) {
+
+                // Construir la información del solicitante y la inscripción
+                $applicant = [
+                    "name" => $row['name'],
+                    "dni" => $row['dni'],
+                    "phoneNumber" => $row['telephoneNumber'],
+                    "email" => $row['personalEmail']
+                ];
+                $insciption = [
+                    "firstOption" => $row['firstCareer'],
+                    "secondOption" => $row['secondCareer'],
+                    "campus" => $row['regionalCenter'],
+                ];
+        
+                // Procesar el archivo BLOB
+                $file = $row['pathSchoolCertificate']; // BLOB directamente de la base de datos
+                if ($file) {
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE); // Obtener el tipo MIME
+                    $mimeType = finfo_buffer($finfo, $file); // Detectar el tipo del archivo
+                    finfo_close($finfo);
+
+                    // Codificar en base64 para la respuesta
+                    $fileBase64 = base64_encode($file);
+                } else {
+                    $fileBase64 = null;
+                    $mimeType = null;
+                }
+                // Retornar los resultados
+                return [
+                    "status" => true,
+                    "message" => "Petición hecha correctamente.",
+                    "data" => [
+                        "applicant" => $applicant,
+                        "inscription" => $insciption,
+                        "certificate" => [
+                            "type" => $mimeType,
+                            "content" => $fileBase64 // Archivo codificado en base64
+                        ]
+                    ]
+                ];
+            } 
+            
+            return [
+                "status" => false,
+                "message" => "No se encontró la aplicación con el ID proporcionado.",
+                "data" => []
+            ];
+            
+        }
+        
 
         // Método para cerrar la conexión
         public function closeConnection() {

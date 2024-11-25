@@ -35,6 +35,12 @@ curl http://localhost:3000/api/get/admission/infoCurrentAdmission | jq
 -----------Curl para obtener una admision historica------------------
 curl http://localhost:3000/api/get/admission/admissionDetail/?id=1 | jq
 
+-----------Curl para obtener home de CRI------------------
+curl http://localhost:3000/api/get/criUser/home/?id=1 | jq
+
+-----------Curl para obtener info de una inscripcion------------------
+curl http://localhost:3000/api/get/criUser/insciptionInfo/?id=1 | jq
+
 --------------Curl para saber si hay un proceso de inscripcion actualmente---------------
 curl http://localhost:3000/api/get/admission/activeAdmissionProcess | jq
 
