@@ -1113,6 +1113,7 @@ BEGIN
     DECLARE cont INT DEFAULT 1;
     DECLARE idReviewer INT;
     DECLARE reviewerGoal INT;
+    DECLARE totalInscriptions INT;
 
     IF EXISTS (SELECT 1 FROM AcademicEvent WHERE NOW() BETWEEN startDate AND finalDate AND id = (SELECT b.id FROM AcademicEvent a INNER JOIN AcademicEvent b ON (a.id = b.parentId) WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4)) THEN
     
@@ -1133,31 +1134,54 @@ BEGIN
         SET amountReviewers = (SELECT COUNT(*) FROM Reviewer WHERE active=true);
         SET dayGoal = CEIL(amountInscriptions/totalDays);
         SET reviewerGoal = CEIL(dayGoal/amountReviewers);
+        SET totalInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1));
 
         WHILE cont<=amountReviewers DO
 
             SET idReviewer = (SELECT id FROM Reviewer WHERE active = true AND lowerLimit IS NULL ORDER BY RAND() LIMIT 1);
 
-            IF(dayGoal>0) THEN
+            IF(dayGoal - reviewerGoal >= 0 && lim< totalInscriptions) THEN
                 UPDATE Reviewer
                 SET lowerLimit = lim, dailyGoal = reviewerGoal
                 WHERE id = idReviewer;
                 SET dayGoal = dayGoal - reviewerGoal;
-            ELSEIF(dayGoal != 0) THEN
+            ELSEIF(dayGoal > 0) THEN
                 UPDATE Reviewer
-                SET lowerLimit = lim, dayGoal = dayGoal
+                SET lowerLimit = lim, dailyGoal = dayGoal
                 WHERE id = idReviewer;
                 SET dayGoal = 0;
                 SET cont = amountReviewers + 1;
             ELSE
+                UPDATE Reviewer
+                SET lowerLimit = NULL, dailyGoal = 0
+                WHERE id = idReviewer;
+                SET dayGoal = 0;
                 SET cont = amountReviewers + 1;
             END IF;
 
             SET cont = cont + 1;
             SET lim = lim + reviewerGoal;
         END WHILE;
+
+        DROP TABLE IF EXISTS TempTableApplication;
+
+        CREATE TABLE TempTableApplication AS
+        SELECT 
+            a.id, 
+            CONCAT(b.firstName, ' ', b.secondName, ' ', b.firstLastName, ' ', b.secondLastName) as name, 
+            c.description as firstCareer, 
+            a.applicationDate, 
+            a.approved
+        FROM Application a
+        INNER JOIN Applicant b ON(a.idApplicant=b.id)
+        INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+        INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
+        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1)
+        ORDER BY a.approved IS NULL ASC;
+
+        ALTER TABLE TempTableApplication ADD PRIMARY KEY (id);
     END IF;
-END;
+END//
 
 
 /**
@@ -1193,18 +1217,7 @@ BEGIN
     SET goal = (SELECT dailyGoal FROM Reviewer WHERE id=p_id);
 
     IF lim IS NOT NULL THEN
-        SELECT 
-            a.id as idApplication, 
-            CONCAT(b.firstName, ' ', b.secondName, ' ', b.firstLastName, ' ', b.secondLastName) as name, 
-            c.description as firstCareer, 
-            a.applicationDate, 
-            a.approved
-        FROM Application a
-        INNER JOIN Applicant b ON(a.idApplicant=b.id)
-        INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
-        INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
-        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1)
-        ORDER BY a.approved IS NULL ASC
+        SELECT * FROM TempTableApplication
         LIMIT goal
         OFFSET lim;
     END IF;
