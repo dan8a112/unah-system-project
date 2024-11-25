@@ -377,6 +377,15 @@
                     ] ;
                 }
 
+                $query7 = 'SELECT active FROM SendedEmail
+                            WHERE academicProcess=?;';
+
+                $result7 = $this->mysqli->execute_query($query7, [$idProcess]);
+
+                foreach($result7 as $row){
+                    $sendedEmail= $row['active'];
+                }
+
                 return [
                     "status" => true,
                     "message" => "Petición realizada con exito.",
@@ -385,7 +394,8 @@
                         "amountInscription"=> $inscriptionInfo,
                         "regionalCenters" => $regionalCenters,
                         "higherScores" => $higherScores,
-                        "approvedStudents"=> $approvedStudents
+                        "approvedStudents"=> $approvedStudents,
+                        "sendedEmail"=> $sendedEmail
                     ]
                 ];
             }else{
