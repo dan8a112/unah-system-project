@@ -81,6 +81,6 @@
     </div>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/loginAPA/main.js" type="module"></script>
+    <script src="../../js/login/loginAPA/main.js" type="module"></script>
 </body>
 </html>

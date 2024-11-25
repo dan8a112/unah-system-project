@@ -289,9 +289,9 @@
 
                 foreach($result3 as $row){
                     $reviewers[] = [
-                        "id"=>$row["id"],
-                        "name"=>$row["name"],
-                        "amountReview"=> $row["amountReview"],
+                        $row["id"],
+                        $row["name"],
+                        $row["amountReview"],
                     ] ;
                 }
 
