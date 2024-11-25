@@ -259,6 +259,7 @@
                 $query2 = 'CALL LastestInscription(?);';
                 $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
 
+                $lastestInscrptions= [];
                 foreach($result2 as $row){
                     $lastestInscrptions[] = [
                         "id" => $row["id"],
@@ -289,6 +290,7 @@
 
                 $result3 = $this->mysqli->execute_query($query3, [$idProcess]);
 
+                $reviewers= [];
                 foreach($result3 as $row){
                     $reviewers[] = [
                         $row["id"],
@@ -312,6 +314,7 @@
                 $query6= "SELECT * FROM AdmissionTest";
                 $result6 = $this->mysqli->execute_query($query6);
 
+                $admissionTests=[];
                 foreach($result6 as $row){
                     $admissionTests[] = [
                         "id" => $row["id"],
@@ -336,6 +339,7 @@
 
                 $result4 = $this->mysqli->execute_query($query4, [$idProcess]);
 
+                $regionalCenters = [];
                 foreach($result4 as $row){
                     $regionalCenters[] = [
                         "acronym"=>$row["acronym"],
@@ -367,7 +371,6 @@
                 $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
 
                 $higherScores = [];
-                
                 foreach($result5 as $row){
                     $higherScores[] = [
                         "id" => $row["id"],
