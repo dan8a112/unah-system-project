@@ -350,7 +350,7 @@
 
                 $result6 = $this->mysqli->execute_query($query6, [$idProcess]);
 
-                foreach($result5 as $row){
+                foreach($result6 as $row){
                     $approvedStudents= $row['amount'];
                 }
 
