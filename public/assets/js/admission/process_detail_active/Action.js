@@ -26,8 +26,11 @@ class Action {
                 break;
             case 5:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
+                this.provideUploadInfo();
                 break;
             case 6:
+                this.renderUploadCSVSection(infoProcess.idProcessState);
+                //this.renderHistoricInfo();
                 break;
         }
 
@@ -48,6 +51,13 @@ class Action {
         uploadCsvSection.appendChild(card);
     }
 
+    // Crear elemento con clases específicas
+    static createElementWithClasses = (tag, ...classes) => {
+        const element = document.createElement(tag);
+        element.classList.add(...classes);
+        return element;
+    };
+
     /**
      * Genera el contenido de la tabla con la informacion de los revisores
      * author: afcastillof@unah.hn
@@ -60,18 +70,26 @@ class Action {
      * @returns {Object} Contenido dinámico de la tarjeta.
      */
     static renderRevisionProcess(rows, totalInscripciones, inscripcionesRevisadas, inscripcionesPorRevisar) {
-        // Crear elemento con clases específicas
-        const createElementWithClasses = (tag, ...classes) => {
-            const element = document.createElement(tag);
-            element.classList.add(...classes);
-            return element;
-        };
-    
+        const createElementWithClasses = this.createElementWithClasses;
         // Crear estructura general
-        const containerGeneral = createElementWithClasses('div', 'row', 'gap-5');
+        const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
         containerGeneral.id = 'containerGeneral';
         const container = document.getElementById('container');
+
+        const container1 = document.createElement('div');
+
+        const title1 = document.createElement("h3");
+        title1.textContent = "Revision de inscripciones";
+        title1.classList.add("info-title");
+
+        const description = document.createElement("p");
+        description.textContent = "Acontinuacion se muestra la informacion relacionada con el proceso de revision de inscripciones:";
+
+        container1.appendChild(title1);
+        container1.appendChild(description);
+        containerGeneral.appendChild(container1);
     
+
         if (!container) {
             console.error("El contenedor con id 'container' no se encuentra en el DOM.");
             return;
@@ -124,6 +142,64 @@ class Action {
         container.appendChild(containerGeneral);
     }
     
+    
+    
+
+    static provideUploadInfo() {
+        // Obtener el contenedor donde se mostrará la información
+        const contentContainer = document.getElementById("contentt");
+    
+        if (!contentContainer) {
+            console.error("El contenedor con id 'contentt' no existe.");
+            return;
+        }
+    
+        // Limpiar contenido previo (si es necesario)
+        contentContainer.innerHTML = "";
+    
+        const title = document.createElement("h3");
+        title.textContent = "Información sobre el formato del archivo";
+        title.classList.add("info-title");
+    
+        const description = document.createElement("p");
+        description.textContent = "En este proceso se subirán las calificaciones obtenidas por los aspirantes en las pruebas. Asegúrate de seguir las indicaciones para evitar errores durante la carga.";
+    
+        // Crear una lista con las instrucciones para el formato del archivo
+        const formatInstructions = document.createElement("ul");
+        formatInstructions.classList.add("info-list"); // Clase opcional para estilizar la lista
+    
+        const instructions = [
+            "El archivo debe estar en formato Excel (.xlsx o .xls).",
+            "Las columnas obligatorias son: 'dni', 'idTest', 'grade'.",
+            "No debe haber filas vacías entre los datos.",
+            "La calificación debe ser un número entre 0 y 2000."
+        ];
+    
+        instructions.forEach((instruction) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = instruction;
+            formatInstructions.appendChild(listItem);
+        });
+    
+        // Crear un botón para descargar la plantilla
+        const downloadButton = document.createElement("button");
+        downloadButton.classList.add("btn", "btn-template-download"); 
+        downloadButton.style.backgroundColor = '#FFAA34';
+        downloadButton.textContent = "Descargar plantilla";
+        downloadButton.addEventListener("click", () => {
+            // Código para descargar la plantilla
+            const link = document.createElement("a");
+            link.href = "../../../api/get/admission/templateCSV";
+            link.download = "Plantilla_Calificaciones.xlsx";
+            link.click();
+        });
+    
+        // Insertar los elementos en el contenedor
+        contentContainer.appendChild(title);
+        contentContainer.appendChild(description);
+        contentContainer.appendChild(formatInstructions);
+        contentContainer.appendChild(downloadButton);
+    }
     
     
 
@@ -271,6 +347,7 @@ class Action {
      */
     static createTableWithData(title, headers, rows, container, tableId) {
         const section = createTable(title, headers, rows, tableId);
+        section.style.marginTop = '0px'
         container.appendChild(section);
     }
 }
