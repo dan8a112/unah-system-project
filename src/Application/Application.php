@@ -687,7 +687,7 @@
                             "name" => $row['name'],
                             "career" => $row['firstCareer'],
                             "inscriptionDate" => $row['applicationDate'],
-                            "approved"=> $row['approved']                            
+                            "dictum"=> $row['approved']                            
                         ];
                     }
                 }
