@@ -12,7 +12,7 @@ class Action {
      * @param {Object} data - Datos del proceso de admisión actual.
      */
     static renderActiveProcess(data) {
-        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests } = data;
+        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents } = data;
 
         const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
         this.updateTextContent("h1#processName", infoProcess.processState);
@@ -34,9 +34,10 @@ class Action {
                 this.renderHistoricInfo(higherScoress,regionalCenters);
                 const approvedInscription = document.getElementById("amountBox");
                 approvedInscription.innerText = 'Aplicantes aprobados';
-                this.updateTextContent("h1#amountInscriptions", infoProcess.idProcessState);
+                this.updateTextContent("h1#amountInscriptions", approvedStudents);
                 break;
-            default :
+            case 7:
+                this.renderUploadCSVSection(infoProcess.idProcessState);
             break;
         }
 
@@ -420,6 +421,12 @@ class Action {
 
     static openUploadModal() {
         const uploadCSVModal = document.querySelector("div#uploadCSVModal");
+        Modal.openModal(uploadCSVModal);
+    }
+
+    
+    static openMailModal() {
+        const uploadCSVModal = document.querySelector("div#sendEmails");
         Modal.openModal(uploadCSVModal);
     }
 
