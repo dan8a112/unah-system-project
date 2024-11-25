@@ -336,10 +336,19 @@
 
                 $result4 = $this->mysqli->execute_query($query4, [$idProcess]);
 
-                $query5 = 'SELECT COUNT(*) as amount FROM Application
+                foreach($result4 as $row){
+                    $regionalCenters[] = [
+                        "acronym"=>$row["acronym"],
+                        "amountInscriptions"=>$row["amountInscriptions"],
+                        "approvedReview"=> $row["approvedReview"],
+                        "approvedApplicants"=> $row["approvedApplicants"]
+                    ] ;
+                }
+
+                $query6 = 'SELECT COUNT(*) as amount FROM Application
                             WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);';
 
-                $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
+                $result6 = $this->mysqli->execute_query($query6, [$idProcess]);
 
                 foreach($result5 as $row){
                     $approvedStudents= $row['amount'];
