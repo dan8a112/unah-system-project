@@ -336,13 +336,13 @@
 
                 $result4 = $this->mysqli->execute_query($query4, [$idProcess]);
 
-                foreach($result4 as $row){
-                    $regionalCenters[] = [
-                        "acronym"=>$row["acronym"],
-                        "amountInscriptions"=>$row["amountInscriptions"],
-                        "approvedReview"=> $row["approvedReview"],
-                        "approvedApplicants"=> $row["approvedApplicants"]
-                    ] ;
+                $query5 = 'SELECT COUNT(*) as amount FROM Application
+                            WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);';
+
+                $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
+
+                foreach($result5 as $row){
+                    $approvedStudents= $row['amount'];
                 }
 
                 //Obtener las mejores 5 notas
@@ -373,7 +373,8 @@
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
                         "regionalCenters" => $regionalCenters,
-                        "higherScores" => $higherScores
+                        "higherScores" => $higherScores,
+                        "approvedStudents"=> $approvedStudents
                     ]
                 ];
             }else{
