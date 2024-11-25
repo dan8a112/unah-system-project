@@ -33,9 +33,11 @@ class Action {
                 this.renderUploadCSVSection(infoProcess.idProcessState);
                 this.renderHistoricInfo(higherScoress,regionalCenters);
                 const approvedInscription = document.getElementById("amountBox");
-                approvedInscription.innerText = 'Aplicantes aprobados'
+                approvedInscription.innerText = 'Aplicantes aprobados';
                 this.updateTextContent("h1#amountInscriptions", infoProcess.idProcessState);
                 break;
+            default :
+            break;
         }
 
     }
