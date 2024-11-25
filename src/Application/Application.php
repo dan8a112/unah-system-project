@@ -366,6 +366,8 @@
                     WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved = true ORDER BY d.grade DESC LIMIT 5;";
                 $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
 
+                $higherScores = [];
+                
                 foreach($result5 as $row){
                     $higherScores[] = [
                         "id" => $row["id"],
