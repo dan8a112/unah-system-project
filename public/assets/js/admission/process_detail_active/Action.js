@@ -12,8 +12,9 @@ class Action {
      * @param {Object} data - Datos del proceso de admisión actual.
      */
     static renderActiveProcess(data) {
-        const { infoProcess, amountInscription, lastestInscriptions, reviewers } = data;
+        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests } = data;
 
+        const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
         this.updateTextContent("h1#processName", infoProcess.processState);
         this.updateTextContent("p#startDate", infoProcess.start);
         this.updateTextContent("p#finishDate", infoProcess.end);
@@ -26,11 +27,14 @@ class Action {
                 break;
             case 5:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
-                this.provideUploadInfo();
+                this.provideUploadInfo(admissionTests);
                 break;
             case 6:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
-                //this.renderHistoricInfo();
+                this.renderHistoricInfo(higherScoress,regionalCenters);
+                const approvedInscription = document.getElementById("amountBox");
+                approvedInscription.innerText = 'Aplicantes aprobados'
+                this.updateTextContent("h1#amountInscriptions", infoProcess.idProcessState);
                 break;
         }
 
@@ -145,7 +149,7 @@ class Action {
     
     
 
-    static provideUploadInfo() {
+    static provideUploadInfo(tests) {
         // Obtener el contenedor donde se mostrará la información
         const contentContainer = document.getElementById("contentt");
     
@@ -168,11 +172,18 @@ class Action {
         const formatInstructions = document.createElement("ul");
         formatInstructions.classList.add("info-list"); // Clase opcional para estilizar la lista
     
+        let testString = ''; 
+        tests.forEach((test) => {
+            testString += `${test.id} (${test.name} se aprueba con ${test.points} puntos).\n`;
+            console.log(testString);
+        });
+
         const instructions = [
             "El archivo debe estar en formato Excel (.xlsx o .xls).",
             "Las columnas obligatorias son: 'dni', 'idTest', 'grade'.",
             "No debe haber filas vacías entre los datos.",
-            "La calificación debe ser un número entre 0 y 2000."
+            "La calificación debe ser un número entre 0 y 2000.",
+            `Toma en cuenta que los idTest permitidos son:\n ${testString}`,
         ];
     
         instructions.forEach((instruction) => {
@@ -201,6 +212,78 @@ class Action {
         contentContainer.appendChild(downloadButton);
     }
     
+    static renderHistoricInfo(rows, regionalCenters, test) {
+        const createElementWithClasses = this.createElementWithClasses;
+        // Crear estructura general
+        const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
+        containerGeneral.id = 'containerGeneral';
+        const container = document.getElementById('container');
+
+        const container1 = document.createElement('div');
+
+        const title1 = document.createElement("h3");
+        title1.textContent = "Envio de resultados";
+        title1.classList.add("info-title");
+
+        const description = document.createElement("p");
+        description.textContent = "Al presionar enviar correos se notificara a todos los aplicantes sobre su resultado en las pruebas. Toma en cuenta que esto solo podra hacerse una vez y que no se enviaran directamente sino hasta las 01:00 am de mañana";
+
+        //container1.appendChild(title1);
+        container1.appendChild(description);
+        containerGeneral.appendChild(container1);
+    
+
+        if (!container) {
+            console.error("El contenedor con id 'container' no se encuentra en el DOM.");
+            return;
+        }
+    
+        // Contenedor dinámico para la tabla
+        const containerDinamic = createElementWithClasses('div', 'col-8');
+        const headers = ["#", "Nombre", "Carrera Principal", "Puntaje"];
+        this.createTableWithData("Calificaciones mas altas en la PAA", headers, rows, containerDinamic, "reviewersTable");
+    
+        // Sección de progreso de revisiones
+        const containerInfo = createElementWithClasses('div', 'card-container', 'col');
+    
+        const iconRevision = createElementWithClasses('img', 'me-2');
+        iconRevision.src = '../../img/icons/graduation-icon.svg';
+    
+        const title = document.createElement('span');
+        title.classList.add("fw-bold")
+        title.textContent = "Aplicantes aprobados por centro";
+    
+        // Composición de la sección de título
+        const titleContainer = createElementWithClasses('div', 'd-flex', 'align-items-center');
+        titleContainer.append(iconRevision, title);
+    
+        // Información adicional
+        const infoDetails = createElementWithClasses('div', 'mt-3');
+        const createInfoItem = (label, value) => {
+            const item = createElementWithClasses('div', 'd-flex', 'justify-content-between', 'mb-2');
+            const labelElement = document.createElement('span');
+            labelElement.textContent = label;
+    
+            const valueElement = document.createElement('span');
+            valueElement.classList.add("fw-bold")
+            valueElement.textContent = value;
+            valueElement.style.color = "#FFAA34";
+    
+            item.append(labelElement, valueElement);
+            return item;
+        };
+
+        regionalCenters.forEach((center) => {
+            infoDetails.appendChild(createInfoItem(center.acronym, center.approvedApplicants));
+        });
+    
+        containerInfo.appendChild(titleContainer);
+        containerInfo.appendChild(infoDetails);
+    
+        // Ensamblar y agregar al DOM
+        containerGeneral.append(containerInfo, containerDinamic);
+        container.appendChild(containerGeneral);
+    }
     
 
     /**
@@ -220,7 +303,7 @@ class Action {
                 title: "Enviar resultados",
                 description:
                     "Informa a los participantes sobre su dictamen en las pruebas por correo.",
-                button: { id: "sendMail", text: "Enviar resultados CSV", icon: "mail.svg", action: "openMailModal" },
+                button: { id: "sendMail", text: "Enviar resultados CSV", icon: "mail.svg", action: "openMailModal", color: "#3472F8", spanColor: "#fff" },
             },
             7: {
                 title: "Generar CSV",
@@ -253,9 +336,10 @@ class Action {
         const button = document.createElement("button");
         button.classList.add("button-upload", "btn");
         button.id = content.button.id;
+        button.style.backgroundColor = content.button.color;
         button.innerHTML = `
             <img src="../../img/icons/${content.button.icon}" alt="" class="me-2">
-            <span>${content.button.text}</span>
+            <span style="color: ${content.button.spanColor}">${content.button.text}</span>
         `;
         button.addEventListener("click", () => this[content.button.action]?.());
 

@@ -88,7 +88,7 @@
             <div class="card-container col">
                 <div class="d-flex align-items-center">
                     <img src="../../img/icons/inscription-icon.svg" alt="" class="me-2">
-                    <span>Cantidad de inscripciones</span>
+                    <span id="amountBox">Cantidad de inscripciones</span>
                 </div>
                 <div class="d-flex justify-content-center align-items-center" style="height: 80%;">
                     <h1 class="display-6" style="font-weight: 400;" id="amountInscriptions">80</h1>
