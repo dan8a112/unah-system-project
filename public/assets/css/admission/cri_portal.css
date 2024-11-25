@@ -1,0 +1,25 @@
+p{
+    margin-bottom: 0 !important;
+}
+
+.line-separator{
+    width: 100%;
+    height: 1px;
+    background-color: #878787;
+    margin: 5px 0 10px 0;
+}
+
+.text-description{
+    font-size: 0.9rem;
+    color: #878787;
+}
+
+.text-information{
+    font-size: 1.1rem;
+}
+
+.download-button{
+    width: fit-content;
+    background-color: #304987 !important;
+    color: white !important; 
+}

@@ -12,9 +12,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="dochoao@unah.hn">
-    <meta name="date" content="11/11/2024">
-    <meta name="version" content="0.1.0">
+    <meta name="author" content="dochoao@unah.hn, afcastillof@unah.hn">
+    <meta name="date" content="24/11/2024">
+    <meta name="version" content="0.1.3">
     <title>Proceso de admision actual</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/admission/process_detail.css">
@@ -49,7 +49,7 @@
 
     <a class="btn btn-sm m-3" href="./administrative_home.php"><img src="../../img/icons/back-arrow.svg" alt=""></a>
 
-    <div class="container mb-5">
+    <div id="container" class="container mb-5">
 
         <section class="my-4">
             <div class="d-flex align-items-center">
@@ -88,7 +88,7 @@
             <div class="card-container col">
                 <div class="d-flex align-items-center">
                     <img src="../../img/icons/inscription-icon.svg" alt="" class="me-2">
-                    <span>Cantidad de inscripciones</span>
+                    <span id="amountBox">Cantidad de inscripciones</span>
                 </div>
                 <div class="d-flex justify-content-center align-items-center" style="height: 80%;">
                     <h1 class="display-6" style="font-weight: 400;" id="amountInscriptions">80</h1>
@@ -101,25 +101,7 @@
         </section>
 
 
-        <div id="container">
-            <section class="row">
-                <div class="card-container">
-                    <p class="fs-2">Ultimas inscripciones</p>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Carrera principal</th>
-                            <th scope="col">Fecha de inscripcion</th>
-                        </tr>
-                        </thead>
-                        <tbody id="lastInscriptionsTbl">    
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+        <div id="contentt"></div>
     </div>
 
     <div class="popup" id="popupError" style="border: solid 1px #EC0000;">

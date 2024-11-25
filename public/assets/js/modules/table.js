@@ -8,7 +8,7 @@
  * @param {Array<Array<any>>} rows - Matriz de datos para las filas de la tabla.
  * @param {string} tableId - ID opcional para el cuerpo de la tabla.
  */
-export function createTable(sectionTitle, headers, rows, tableId = "dynamicTable") {
+export function createTable(sectionTitle, headers, rows, tableId) {
     // Crear la sección
     const section = document.createElement("section");
     section.className = "row";
