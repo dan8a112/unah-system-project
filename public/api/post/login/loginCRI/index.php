@@ -20,7 +20,7 @@
 
         if($result['status']){
             $json = [
-                "message"=> "Credenciales correctas",
+                "message"=> $result['message'],
                 "id"=> $result['id'],
                 "status"=> 1,                
             ];
@@ -30,7 +30,7 @@
 
         }else{
             $json = [
-                "message"=> "No existe el usuario",
+                "message"=> $result['message'],
                 "status"=> 2,                
             ];
         }

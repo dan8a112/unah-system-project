@@ -14,7 +14,7 @@
          * date: 5/11/24
          */
         public function loginSEDP(string $user, string $password) : bool{
-            
+
             $query = "SELECT a.personalEmail, a.password 
                     FROM Employee a  
                     INNER JOIN Administrative b
@@ -35,8 +35,6 @@
             }catch (Exception $e){
                 return false;
             }
-        
-            
         }
 
         /**
@@ -80,31 +78,46 @@
             $query = "SELECT personalEmail, password, id
                     FROM Reviewer
                     WHERE personalEmail = ? AND active=true";
+            
+            $query1 = "SELECT a.id 
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicEvent b ON (a.id = b.parentId)
+                    WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4;";
+                    
+            $result1 = $this->mysqli->execute_query($query1);
 
-            try{
-                $result = $this->mysqli->execute_query($query, [$user]);
-                
-                foreach($result as $row){
-                    if(password_verify($password, $row["password"])){
-                        return [
-                            "status"=> true,
-                            "id"=> $row['id'],
-                            "message"=> 'Usuario autenticado'
-                        ];
+            if ($result1->num_rows > 0) {
+                try{
+                    $result = $this->mysqli->execute_query($query, [$user]);
+                    
+                    foreach($result as $row){
+                        if(password_verify($password, $row["password"])){
+                            return [
+                                "status"=> true,
+                                "id"=> $row['id'],
+                                "message"=> 'Usuario autenticado'
+                            ];
+                        }
                     }
+    
+                    return [
+                        "status"=> false,
+                        "message"=> 'Usuario inválido.'
+                    ];
+                    
+                }catch (Exception $e){
+                    return [
+                        "status"=> false,
+                        "message"=> 'Ocurrio un error: ' . $e
+                    ];
                 }
-
+            
+            } else {
                 return [
                     "status"=> false,
-                    "message"=> 'Usuario inválido.'
+                    "message"=> 'No hay proceso de revisión de inscripciones activo'
                 ];
-                
-            }catch (Exception $e){
-                return [
-                    "status"=> false,
-                    "message"=> 'Ocurrio un error: ' . $e
-                ];
-            }
+            }        
             
         }
         
