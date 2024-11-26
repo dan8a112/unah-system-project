@@ -4,7 +4,7 @@
   session_start();
 
   if (SessionValidation::isValid($_SESSION, "cri")){
-    header("Location: /assets/views/admission/cri_portal.html");
+    header("Location: /assets/views/admission/cri_portal.php?id=".$_SESSION["idUser"]);
   }
   
 ?>

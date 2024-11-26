@@ -725,7 +725,8 @@
             $result = $this->mysqli->execute_query($query3);
 
             foreach($result as $row){
-                $period = $row["processName"];
+                //Se recorta para solo mostrar el mes y año del proceso
+                $period = substr($row["processName"],22);
             }
             
             if(count($unreviewedInscriptions) > 10){
@@ -755,7 +756,7 @@
                         "unreviewedList"=> $unreviewedList
                     ],
                     "reviewedInscriptions" =>  [
-                        "amounReviewed"=> count($reviewedInscriptions),
+                        "amountReviewed"=> count($reviewedInscriptions),
                         "reviewedList"=> $reviewedList
                     ]
                 ]
