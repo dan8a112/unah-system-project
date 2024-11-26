@@ -20,17 +20,18 @@
 
         if($result['status']){
             $json = [
-                "message"=> "Credenciales correctas",
+                "message"=> $result['message'],
                 "id"=> $result['id'],
                 "status"=> 1,                
             ];
 
             session_start();
             $_SESSION["auth"] = "cri";
+            $_SESSION["idUser"] = $result['id'];
 
         }else{
             $json = [
-                "message"=> "No existe el usuario",
+                "message"=> $result['message'],
                 "status"=> 2,                
             ];
         }

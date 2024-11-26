@@ -259,6 +259,7 @@
                 $query2 = 'CALL LastestInscription(?);';
                 $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
 
+                $lastestInscrptions= [];
                 foreach($result2 as $row){
                     $lastestInscrptions[] = [
                         "id" => $row["id"],
@@ -289,6 +290,7 @@
 
                 $result3 = $this->mysqli->execute_query($query3, [$idProcess]);
 
+                $reviewers= [];
                 foreach($result3 as $row){
                     $reviewers[] = [
                         $row["id"],
@@ -312,6 +314,7 @@
                 $query6= "SELECT * FROM AdmissionTest";
                 $result6 = $this->mysqli->execute_query($query6);
 
+                $admissionTests=[];
                 foreach($result6 as $row){
                     $admissionTests[] = [
                         "id" => $row["id"],
@@ -336,6 +339,7 @@
 
                 $result4 = $this->mysqli->execute_query($query4, [$idProcess]);
 
+                $regionalCenters = [];
                 foreach($result4 as $row){
                     $regionalCenters[] = [
                         "acronym"=>$row["acronym"],
@@ -367,7 +371,6 @@
                 $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
 
                 $higherScores = [];
-                
                 foreach($result5 as $row){
                     $higherScores[] = [
                         "id" => $row["id"],
@@ -719,10 +722,11 @@
 
             //Obtener información sobre el proceso de admision actual y el subproceso en el que esta
             $query3 = 'CALL InfoCurrentProcessAdmission();';
-            $result = $this->mysqli->execute_query($query3);
+            $result3 = $this->mysqli->execute_query($query3);
 
-            foreach($result as $row){
-                $period = $row["processName"];
+            foreach($result3 as $row){
+                //Se recorta para solo mostrar el mes y año del proceso
+                $period = substr($row["processName"],22);
             }
             
             if(count($unreviewedInscriptions) > 10){
@@ -752,7 +756,7 @@
                         "unreviewedList"=> $unreviewedList
                     ],
                     "reviewedInscriptions" =>  [
-                        "amounReviewed"=> count($reviewedInscriptions),
+                        "amountReviewed"=> count($reviewedInscriptions),
                         "reviewedList"=> $reviewedList
                     ]
                 ]
@@ -831,6 +835,46 @@
                 "status" => false,
                 "message" => "No se encontró la aplicación con el ID proporcionado.",
                 "data" => []
+            ];
+            
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 25/11/24
+        */
+        public function setApprovedApplication(int $idApplication, int $idReviewer, bool $approved){
+
+            //Update en la tabla de temporal
+            $query = 'UPDATE TempTableApplication
+                    SET approved=?
+                    WHERE id=?;';
+            $result = $this->mysqli->execute_query($query, [$approved, $idApplication]);
+
+            if($result === NULL){
+                return [
+                    "status"=> false,
+                    "message"=> "Hubo un error al hacer update en la tabla temporal."
+                ];
+            }
+
+            //update en la tabla application
+            $query1 = 'UPDATE Application
+                    SET approved=?, idReviewer=?
+                    WHERE id=?;';
+            $result1 = $this->mysqli->execute_query($query1, [$approved, $idReviewer, $idApplication]);
+
+            if($result1 === NULL){
+                return [
+                    "status"=> false,
+                    "message"=> "Hubo un error al hacer update en la tabla Application."
+                ];
+            }
+
+            return [
+                "status"=> true,
+                "message"=> "Incripción verificada."
             ];
             
         }

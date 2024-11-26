@@ -326,7 +326,7 @@ CREATE PROCEDURE InfoCurrentProcessAdmission ()
 BEGIN
     SET lc_time_names = 'es_ES';
 
-    SELECT a.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final, d.id as idProcessState, d.description as processState
+    SELECT a.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(c.startDate, '%d de %M, %Y') as start, DATE_FORMAT(c.finalDate, '%d de %M, %Y') as final, d.id as idProcessState, d.description as processState
     FROM AcademicEvent a
     INNER JOIN AcademicProcess b ON (a.process = b.id)
     INNER JOIN AcademicEvent c ON (a.id = c.parentId)
