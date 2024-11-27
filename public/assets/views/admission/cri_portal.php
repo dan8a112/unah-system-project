@@ -1,3 +1,17 @@
+<?php 
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (!SessionValidation::isValid($_SESSION, "cri")){
+    header("Location: /assets/views/logins/login_cri.php");
+  }else{
+    if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $_SESSION['idUser']) {
+        header("Location: /assets/views/logins/login_cri.php?id=" . $_SESSION['idUser']);
+        exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +54,7 @@
         <section class="my-4">
             <div class="d-flex align-items-center">
                 <h1 class="me-3">Revision de inscripciones</h1>
-                <div class="status-card" style="background-color: #00C500;" id="periodName" >2 PAC 2024</div>
+                <div class="status-card" style="background-color: #00C500;" id="periodName" ></div>
             </div>
             <p>A continuación encontrará información y estadísticas sobre este proceso de admisión.</p>
         </section>
@@ -52,7 +66,7 @@
                     <span>Meta de Hoy</span>
                 </div>
                 <div class="d-flex center align-items-center" style="height: 80%;">
-                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="dailyGoal">80</h1>
+                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="dailyGoal"></h1>
                 </div>
             </div>
             <div class="card-container col-4">
@@ -61,7 +75,7 @@
                     <span>Cantidad Total Revisadas</span>
                 </div>
                 <div class="d-flex align-items-center" style="height: 80%;">
-                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="totalReviewed">350</h1>
+                    <h1 class="display-6 ms-5" style="font-weight: 400;" id="totalReviewed"></h1>
                 </div>
             </div>
         </section>
@@ -124,84 +138,97 @@
 
     <div class="modal fade" tabindex="-1" id="reviewModal">
         <div class="modal-dialog modal-md">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Datos de inscripcion</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-                <div class="mx-3">
-                    <section class="mb-3">
-                        <div class="fs-5">Datos Personales</div>
-                        <div class="line-separator"></div>
-                        <div id="personalData">
-                            <div class="row mb-2">
-                                <span class="text-description">Nombre Completo</span>
-                                <span class="text-information"></span>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Datos de inscripcion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+    
+                    <div class="mx-3">
+                        <section class="mb-3">
+                            <div class="fs-5">Datos Personales</div>
+                            <div class="line-separator"></div>
+                            <div id="personalData">
+                                <div class="row mb-2">
+                                    <span class="text-description">Nombre Completo</span>
+                                    <span class="text-information"></span>
+                                </div>
+                                <div class="row mb-2">
+                                    <span class="text-description">Numero de identidad</span>
+                                    <span class="text-information"></span>
+                                </div>
+                                <div class="row mb-2">
+                                    <span class="text-description">Numero de telefono</span>
+                                    <span class="text-information"></span>
+                                </div>
+                                <div class="row mb-2">
+                                    <span class="text-description">Correo Electronico</span>
+                                    <span class="text-information"></span>
+                                </div>
                             </div>
-                            <div class="row mb-2">
-                                <span class="text-description">Numero de identidad</span>
-                                <span class="text-information"></span>
+                        </section>
+    
+                        <section class="mb-3">
+                            <div class="fs-5">Datos de inscripcion</div>
+                            <div class="line-separator"></div>
+                            <div id="inscriptionData">
+                                <div class="row mb-2">
+                                    <span class="text-description">Primera Opcion</span>
+                                    <span class="text-information"></span>
+                                </div>
+                                <div class="row mb-2">
+                                    <span class="text-description">Segunda Opcion</span>
+                                    <span class="text-information"></span>
+                                </div>
+                                <div class="row mb-2">
+                                    <span class="text-description">Campus</span>
+                                    <span class="text-information"></span>
+                                </div>
                             </div>
-                            <div class="row mb-2">
-                                <span class="text-description">Numero de telefono</span>
-                                <span class="text-information"></span>
+                        </section>
+    
+                        <section class="mb-4">
+                            <div class="fs-5">Estudios Previos</div>
+                            <div class="line-separator"></div>
+    
+                            <div class="download-button btn d-flex align-items-center" id="showCertificateBtn">
+                                <img src="../../img/icons/file.svg" alt="icon-download" class="me-2">
+                                <div style="text-align: start;">
+                                    <p style="font-weight: 500;">Mostrar Certificado</p>
+                                </div>
                             </div>
-                            <div class="row mb-2">
-                                <span class="text-description">Correo Electronico</span>
-                                <span class="text-information"></span>
+                        </section>
+    
+                        <section class="mb-4">
+                            <div class="mb-4">
+                                <p style="font-size: 1.1rem; font-weight: 500;">¿Ya revisaste los datos de inscripcion?</p>
+                                <p>Puedes decidir si aprobar o rechazar esta inscripcion</p>
                             </div>
-                        </div>
-                    </section>
-                    
-                    <section class="mb-3">
-                        <div class="fs-5">Datos de inscripcion</div>
-                        <div class="line-separator"></div>
-                        <div id="inscriptionData">
-                            <div class="row mb-2">
-                                <span class="text-description">Primera Opcion</span>
-                                <span class="text-information"></span>
+                            <div class="row gap-3" id="approveButtons">
+                                <button class="col btn btn-danger" id="denyInscriptionBtn">Rechazar</button>
+                                <button class="col btn btn-success" id="approveInscriptionBtn">Aprobar</button>
                             </div>
-                            <div class="row mb-2">
-                                <span class="text-description">Segunda Opcion</span>
-                                <span class="text-information"></span>
-                            </div>
-                            <div class="row mb-2">
-                                <span class="text-description">Campus</span>
-                                <span class="text-information"></span>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="mb-4">
-                        <div class="fs-5">Estudios Previos</div>
-                        <div class="line-separator"></div>
-
-                        <div class="download-button btn d-flex align-items-center">
-                            <img src="../../img/icons/file.svg" alt="icon-download" class="me-2">
-                            <div style="text-align: start;">
-                                <p style="font-weight: 500;">Descargar Certificado</p>
-                                <p style="font-size: 0.7rem;">10mb</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="mb-4">
-                        <div class="mb-4">
-                            <p style="font-size: 1.1rem; font-weight: 500;">¿Ya revisaste los datos de inscripcion?</p>
-                            <p>Puedes decidir si aprobar o rechazar esta inscripcion</p>
-                        </div>
-                        <div class="row gap-3">
-                            <button class="col btn btn-danger">Rechazar</button>
-                            <button class="col btn btn-success">Aprobar</button>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="fileModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Certificado de estudios</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Imagen o pdf con el certificado de estudio -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/logout/logout.js" type="module"></script>

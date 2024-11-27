@@ -102,7 +102,7 @@
     
                     return [
                         "status"=> false,
-                        "message"=> 'Usuario inválido.'
+                        "message"=> 'El correo o la contraseña es incorrecto, vuelva a intentarlo.'
                     ];
                     
                 }catch (Exception $e){
@@ -115,7 +115,7 @@
             } else {
                 return [
                     "status"=> false,
-                    "message"=> 'No hay proceso de revisión de inscripciones activo'
+                    "message"=> 'No hay un proceso de revisión de inscripciones activo.'
                 ];
             }        
             
