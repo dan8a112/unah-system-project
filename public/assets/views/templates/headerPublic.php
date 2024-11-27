@@ -9,7 +9,7 @@
           <div class="collapse navbar-collapse flex-row-reverse me-5" id="navbarNavDropdown">
             <ul class="navbar-nav gap-3">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/assets/views/admission/inscription_view.html" id="admissions">Admisiones</a>
+                <a class="nav-link active" aria-current="page" href="/assets/views/admission/inscription_view.php" id="admissions">Admisiones</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Estudiantes</a>
