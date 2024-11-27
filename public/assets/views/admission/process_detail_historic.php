@@ -91,10 +91,20 @@
           </div>
 
           <div class="card-container col" id="amountCentersContainer">
-                  <div class="d-flex align-items-center">
-                      <img src="../../img/icons/graduation-icon.svg" alt="" class="me-2">
-                      <span>Inscripciones por centro</span>
-                  </div>
+            <div class="d-flex align-items-center">
+                <img src="../../img/icons/graduation-icon.svg" alt="" class="me-2">
+                <span>Inscripciones por centro</span>
+            </div>
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">Centro</th>
+                  <th scope="col">Ins</th>
+                  <th scope="col">Apvs</th>
+                  <tbody id="summaryApplicationsTbl"></tbody>
+                </tr>
+              </thead>
+            </table>
           </div>
       </div>
     </div>

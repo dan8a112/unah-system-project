@@ -203,7 +203,9 @@ class Action{
      * @since 05/11/24
      * @param {*} event evento submit de envio de formulario
      */
-    static submitFormProfessor = async (event)=>{
+    static submitFormProfessor = async (form, event)=>{
+
+        console.log(form)
 
         event.preventDefault();
         
