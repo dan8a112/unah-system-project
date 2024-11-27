@@ -202,6 +202,11 @@
                             ];
                         }
     
+                    }else{
+                        return [
+                            'status' => false,
+                            'mensaje' => "Los correos ya fueron programados"
+                        ];
                     }
 
                 }
