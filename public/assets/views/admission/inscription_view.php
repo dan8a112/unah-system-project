@@ -1,23 +1,19 @@
-<!-- <?php
-// URL del servicio
-//$service_url = '../../../api/get/admission/activeAdmissionProcess';
+<?php
+  $path = "../../../../";
 
-// Inicializar cURL para consumir el servicio
-//$curl = curl_init();
-//curl_setopt($curl, CURLOPT_URL, $service_url);
-//curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-//$response = curl_exec($curl);
-//curl_close($curl);
+  include_once $path."src/DbConnection/DbConnection.php";
+  include_once $path."src/Application/Application.php";
 
-// Decodificar la respuesta JSON del servicio
-//$service_response = json_decode($response, true);
-//echo $service_response;// Validar el estado de la admisión
-//if (!$service_response['status']) {
-    // Si el servicio retorna false o hay un error
-    // header('Location: /'); // Redirigir a una página de error
-    // exit;
-//}
-?> -->
+  //Se verifica si existe un proceso de inscripcion activo
+  $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
+  $result = $dao->isActiveInscriptionProcess();
+
+  //Se evalua si el resultado es true o false
+  if (!$result) {
+    header("Location: /index.html");
+  }
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,38 +29,11 @@
     <title>Document</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">
-            <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
-            <ul class="navbar-nav gap-3">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Admisiones</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Estudiantes</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Docentes</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Administracion
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="../logins/login_sedp.php">SEDP Login</a></li>
-                  <li><a class="dropdown-item" href="../logins/login_apa.php">APA Login</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+
+  <?php 
+      $path = "../";
+      include_once($path . "templates/headerPublic.php");
+  ?>
     <section class="section">
         <section class="title">
             <h1>Inscripción de admisión</h1>
