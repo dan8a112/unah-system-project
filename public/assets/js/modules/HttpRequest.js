@@ -1,3 +1,5 @@
+import { Forms } from "./Forms.js";
+
 /**
  * Esta clase proporciona métodos para realizar solicitudes HTTP GET y POST.
  * En el caso de POST, usa un formulario HTML para enviar los datos.
@@ -75,6 +77,9 @@ export class HttpRequest {
     event.preventDefault(); 
     const form = event.target; 
     const formData = new FormData(form);
+
+    //Se desactiva el formulario
+    Forms.disableForm(form,true);
   
     try {
       const response = await fetch(url, {
@@ -82,10 +87,13 @@ export class HttpRequest {
         body: formData, 
       });
   
+      //Se activa el formulario
+      Forms.disableForm(form,false);
+
       if (!response.ok) {
         throw new Error('La respuesta de la red no fue correcta ' + response.statusText);
       }
-  
+      
       // Se procesa la respuesta como JSON
       const data = await response.json();
       console.log("Respuesta del backend:", data);

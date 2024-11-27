@@ -83,6 +83,24 @@ class Forms{
         dateInput.setAttribute("max", minAgeDate);
 
     }
+
+    static disableForm(form, state){
+        
+        const inputs = form.querySelectorAll("input, textarea, select, button");
+
+        if(state){
+            inputs.forEach(input=>{
+                input.setAttribute("disabled", `${state}`);
+            })
+        }else{
+            inputs.forEach(input=>{
+                input.removeAttribute("disabled");
+            })
+        }
+
+
+
+    }
 }
 
 export {Forms}
