@@ -106,7 +106,7 @@
                 ];
             }
 
-            if(!Validator::isValidName($secondName)){
+            if(!Validator::isValidSecondName($secondName)){
                 return [
                     "status" => false,
                     "message" => "Segundo nombre inválido"
