@@ -13,7 +13,7 @@ class Action{
     static renderHistoricProcess(data){
         
         //Se destructura la data
-        const {infoProcess, amountApproved, amountInscriptions, higherScores, amountCentersInscriptions, regionalCenters} = data;
+        const {infoProcess, amountApproved, amountInscriptions, higherScores, inscriptionInfo, regionalCenters, approvedStudents} = data;
 
         //Se renderiza el nombre del proceso
         const processName = document.querySelector("h1#processName");
@@ -29,12 +29,12 @@ class Action{
         //Se renderiza cantidad de aprobados
 
         const approbed = document.querySelector("h1#amountApprobed");
-        approbed.innerText = amountApproved;
+        approbed.innerText = approvedStudents;
 
         //Se renderiza cantidad actual de inscripciones
         
         const amountProcessInscription = document.querySelector("h1#amountInscriptions");
-        amountProcessInscription.innerText = amountInscriptions;
+        amountProcessInscription.innerText = inscriptionInfo.approvedInscriptions;
 
         //Se renderizan las cinco notas mas altas del proceso de admision
 
