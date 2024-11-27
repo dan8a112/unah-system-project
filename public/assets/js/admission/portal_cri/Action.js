@@ -158,10 +158,10 @@ class Action {
         const approveInscriptionButton = document.querySelector("#approveInscriptionBtn");
 
         denyInscriptionButton.addEventListener("click", 
-            ()=>{this.finishReviewInscription(false, inscriptionId)});
+            ()=>{this.finishReviewInscription(0, inscriptionId, applicant.name, applicant.email)});
 
         approveInscriptionButton.addEventListener("click", 
-            ()=>{this.finishReviewInscription(true, inscriptionId)})
+            ()=>{this.finishReviewInscription(1, inscriptionId, applicant.name, applicant.email)})
     }
 
     static openCertificateFile(certificate){
@@ -197,7 +197,7 @@ class Action {
         }
     }
 
-    static finishReviewInscription = async (dictum, inscriptionId) =>{
+    static finishReviewInscription = async (dictum, inscriptionId, name, email) =>{
 
         //Se obtiene el id del usuario revisor en los parametros de la url
         const userId = new URLSearchParams(window.location.search).get("id");
@@ -205,7 +205,9 @@ class Action {
         const body = {
             idApplication: inscriptionId,
             idReviewer: userId,
-            approved: dictum
+            approved: dictum,
+            name: name,
+            mail: email
         }
         
         const response = await HttpRequest.post("../../../api/update/verifyApplication", body);
