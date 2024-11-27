@@ -17,6 +17,9 @@ sendEmailsButton.addEventListener("click", async () => {
         const response = await HttpRequest.get(url);
         console.log("Correos enviados:", response);
         Modal.closeModal();
+        const sendButton = document.getElementById('sendMail');
+        sendButton.disabled = true;
+        sendButton.style.backgroundColor = '#878787';
     } catch (error) {
         console.error("Error al enviar correos:", error);
     }

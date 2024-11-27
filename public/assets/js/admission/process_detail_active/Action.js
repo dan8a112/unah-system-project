@@ -12,7 +12,7 @@ class Action {
      * @param {Object} data - Datos del proceso de admisión actual.
      */
     static renderActiveProcess(data) {
-        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents } = data;
+        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents, lastestInscriptions, sendedEmail } = data;
 
         const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
         this.updateTextContent("h1#processName", infoProcess.processState);
@@ -22,6 +22,9 @@ class Action {
         this.updateTextContent("h1#amountInscriptions", amountInscription.amountInscriptions);
 
         switch (infoProcess.idProcessState) {
+            case 3:
+
+                break;
             case 4:
                 this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions);
                 break;
@@ -30,7 +33,7 @@ class Action {
                 this.provideUploadInfo(admissionTests);
                 break;
             case 6:
-                this.renderUploadCSVSection(infoProcess.idProcessState);
+                this.renderUploadCSVSection(infoProcess.idProcessState, sendedEmail);
                 this.renderHistoricInfo(higherScoress,regionalCenters);
                 const approvedInscription = document.getElementById("amountBox");
                 approvedInscription.innerText = 'Aplicantes aprobados';
@@ -38,6 +41,7 @@ class Action {
                 break;
             case 7:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
+                this.renderHistoricInfo(higherScoress,regionalCenters);
             break;
         }
 
@@ -50,10 +54,10 @@ class Action {
      * date: 24/11/24
      * @param {number} processState - Estado actual del proceso de admisión.
      */
-    static renderUploadCSVSection(processState) {
+    static renderUploadCSVSection(processState, sendedEmail) {
         const uploadCsvSection = document.querySelector("section#upload_csv");
         const cardContent = this.getCardContent(processState);
-        const card = this.createCard(cardContent, processState);
+        const card = this.createCard(cardContent, sendedEmail);
 
         uploadCsvSection.appendChild(card);
     }
@@ -215,7 +219,7 @@ class Action {
         contentContainer.appendChild(downloadButton);
     }
     
-    static renderHistoricInfo(rows, regionalCenters, test) {
+    static renderHistoricInfo(rows, regionalCenters, mode) {
         const createElementWithClasses = this.createElementWithClasses;
         // Crear estructura general
         const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
@@ -229,7 +233,10 @@ class Action {
         title1.classList.add("info-title");
 
         const description = document.createElement("p");
-        description.textContent = "Al presionar enviar correos se notificara a todos los aplicantes sobre su resultado en las pruebas. Toma en cuenta que esto solo podra hacerse una vez y que no se enviaran directamente sino hasta las 01:00 am de mañana";
+        mode == 1? 
+            description.textContent = "Al presionar enviar correos se notificara a todos los aplicantes sobre su resultado en las pruebas. Toma en cuenta que esto solo podra hacerse una vez y que no se enviaran directamente sino hasta las 01:00 am de mañana"
+            : description.textContent = "A continuación, encontrarás un resumen estadístico del proceso de admisiones. Este incluye la distribución de estudiantes aprobados por centro regional y una lista de los aspirantes con las calificaciones más altas. Estos datos te permitirán tener una visión más clara del desempeño general en esta etapa final del proceso.";
+        
 
         //container1.appendChild(title1);
         container1.appendChild(description);
@@ -325,7 +332,7 @@ class Action {
      * @param {number} processState - Estado actual del proceso.
      * @returns {HTMLElement} Elemento HTML de la tarjeta.
      */
-    static createCard(content, processState) {
+    static createCard(content, sendedEmail) {
         const card = document.createElement("div");
         card.classList.add("card-container", "d-flex", "justify-content-between");
 
@@ -345,6 +352,10 @@ class Action {
             <span style="color: ${content.button.spanColor}">${content.button.text}</span>
         `;
         button.addEventListener("click", () => this[content.button.action]?.());
+        if(sendedEmail==1){
+            button.disabled = true;
+            button.style.backgroundColor = '#878787';
+        }
 
         card.appendChild(button);
         return card;
