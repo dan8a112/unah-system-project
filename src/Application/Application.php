@@ -504,11 +504,21 @@
                 ] ;
             }
 
+            $query6 = 'SELECT COUNT(*) as amount FROM Application
+                        WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);';
+
+            $result6 = $this->mysqli->execute_query($query6, [$id]);
+
+            foreach($result6 as $row){
+                $approvedStudents= $row['amount'];
+            }
+
             return [
                 "infoProcess"=> $infoProcess,
                 "inscriptionInfo"=> $inscriptionInfo,
                 "higherScores"=> $higherScores,
-                "regionalCenters"=>$regionalCenters
+                "regionalCenters"=>$regionalCenters,
+                "approvedStudents"=> $approvedStudents,
             ];
 
         }
