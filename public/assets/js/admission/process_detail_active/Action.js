@@ -23,7 +23,7 @@ class Action {
 
         switch (infoProcess.idProcessState) {
             case 3:
-
+                this.renderLastesInscriptions(lastestInscriptions);
                 break;
             case 4:
                 this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions);
@@ -153,7 +153,11 @@ class Action {
         container.appendChild(containerGeneral);
     }
     
-    
+    static renderLastesInscriptions(data) {
+        const container = document.getElementById('container');
+        const headers = ["id", "Nombre", "Carrera", "Fecha de inscripcion"];
+        this.createTableWithData("Ultimos aplicantes", headers, data, container, "lastInscriptions")
+    }
     
 
     static provideUploadInfo(tests) {

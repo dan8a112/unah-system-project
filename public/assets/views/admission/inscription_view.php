@@ -1,3 +1,24 @@
+<!-- <?php
+// URL del servicio
+//$service_url = '../../../api/get/admission/activeAdmissionProcess';
+
+// Inicializar cURL para consumir el servicio
+//$curl = curl_init();
+//curl_setopt($curl, CURLOPT_URL, $service_url);
+//curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+//$response = curl_exec($curl);
+//curl_close($curl);
+
+// Decodificar la respuesta JSON del servicio
+//$service_response = json_decode($response, true);
+//echo $service_response;// Validar el estado de la admisión
+//if (!$service_response['status']) {
+    // Si el servicio retorna false o hay un error
+    // header('Location: /'); // Redirigir a una página de error
+    // exit;
+//}
+?> -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,11 +74,12 @@
           <section class="form">
               <h4>Datos Generales</h4>
               <div class="line"></div>
+              <p>En esta seccion debes ingresar tus datos generales, toma en cuenta que en caso de tener solo un nombre, o caso contrario tienes mas de dos, podras ingresar tu unico nombre en el campo de primer nombre o tu tercer nombre en el campo de segundo nombre separado por un espacio.</p>
               <section class="input-container">
                   <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primer nombre" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
                   <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo nombre" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido">
                   <input type="text" class="form-control" id="firstLastName" name="firstLastName" placeholder="Primer apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
-                  <input type="text" class="form-control" id="SecondLastName" name="SecondLastName" placeholder="Segundo apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido">
+                  <input type="text" class="form-control" id="SecondLastName" name="SecondLastName" placeholder="Segundo apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
                   <input type="text" class="form-control" id="identity" name="identityNumber" placeholder="Numero de identidad"  pattern="\d{4}-?(19|20)\d{2}-?\d{5}" title="El numero de identidad debe tener el siguiente formato: 0801-2000-00000" required>
                   <input type="email" class="form-control" id="mail" name="personalEmail" placeholder="Correo electronico" required>
                   <input type="text" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Telefono" required pattern="[9283]\d{3}-?\d{4}" title="El numero de telefono no es valido">
@@ -90,6 +112,7 @@
           <section class="form">
               <h4>Estudios previos</h4>
               <div class="line"></div>
+              <p>En esta seccion debes subir tu certificado de estudios de educacion secundaria. Toma en cuenta que solo podras adjuntar archivos pdf o en formato de imagen. Este archivo debera pesar minimo 100 kb y maximo 2 mb.</p>
               <section class="input-container">
                   <div class="select-control">
                       <label for="formFile" class="form-label">Subir certificacion de secundaria</label>
