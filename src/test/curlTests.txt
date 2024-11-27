@@ -47,6 +47,9 @@ curl http://localhost:3000/api/get/admission/activeAdmissionProcess | jq
 --------------Curl para enviar correos---------------
 curl http://localhost:3000/api/get/admission/sendMails | jq
 
+--------------Curl para programar correos---------------
+curl http://localhost:3000/api/get/admission/programEmails | jq
+
 ------------Curl insert professor----------------------
 curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeId=1" -d "departmentId=3" -d "birthDate=2003-12-08" http://localhost:3000/api/post/professor | jq
 

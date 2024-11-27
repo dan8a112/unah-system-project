@@ -158,10 +158,14 @@ class Action {
         const approveInscriptionButton = document.querySelector("#approveInscriptionBtn");
 
         denyInscriptionButton.addEventListener("click", 
-            ()=>{this.finishReviewInscription(0, inscriptionId, applicant.name, applicant.email)});
+            ()=>{
+                this.finishReviewInscription(0, inscriptionId, applicant.name, applicant.email, denyInscriptionButton, approveInscriptionButton)
+            });
 
         approveInscriptionButton.addEventListener("click", 
-            ()=>{this.finishReviewInscription(1, inscriptionId, applicant.name, applicant.email)})
+            ()=>{
+                this.finishReviewInscription(1, inscriptionId, applicant.name, applicant.email, denyInscriptionButton, approveInscriptionButton)
+            })
     }
 
     static openCertificateFile(certificate){
@@ -197,7 +201,11 @@ class Action {
         }
     }
 
-    static finishReviewInscription = async (dictum, inscriptionId, name, email) =>{
+    static finishReviewInscription = async (dictum, inscriptionId, name, email, DenyBtn, approveBtn) =>{
+
+        //Se desactivan ambos botones (Rechazar y Aprobar)
+        DenyBtn.setAttribute("disabled","true");
+        approveBtn.setAttribute("disabled","true");
 
         //Se obtiene el id del usuario revisor en los parametros de la url
         const userId = new URLSearchParams(window.location.search).get("id");
@@ -215,6 +223,9 @@ class Action {
         if(response.status===true){
            this.renderAllPage();
            Modal.closeModal();
+           //Se reactivan ambos botones (Rechazar y Aprobar)
+           DenyBtn.setAttribute("disabled","false");
+           approveBtn.setAttribute("disabled","false");
         }
 
     }

@@ -1,5 +1,4 @@
 import {Action} from "./Action.js";
-import {Forms} from "../modules/Forms.js"
 
 //Se hace la peticion de los maestros
 Action.fetchProfessors();
