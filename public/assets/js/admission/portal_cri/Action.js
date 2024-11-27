@@ -46,6 +46,7 @@ class Action {
         document.querySelector("#amountUnreviewed").innerText = amountUnreviewed;
 
         const tableBody = document.querySelector("tbody#unreviewedTbl");
+        tableBody.innerHTML = "";
 
         unreviewedList.forEach(inscription => {
 
@@ -84,6 +85,7 @@ class Action {
         document.querySelector("#amountReviewed").innerText = amountReviewed;
 
         const tableBody = document.querySelector("tbody#reviewedTbl");
+        tableBody.innerHTML = ""; 
 
         reviewedList.forEach(inscription => {
 
@@ -92,11 +94,13 @@ class Action {
             //Se recorre el objeto y se crea una columna por cada valor
             Object.keys(inscription).forEach(key => {
                 const td = document.createElement("td");
-                td.innerText = inscription[key];
 
                 if(key=="dictum"){
                     //Si esta aprobada se pinta en verde sino en rojo
-                    td.style.color = inscription[key] == "Aprobada" ? "#00C500" : "#C51A00";
+                    td.style.color = inscription[key] == 1 ? "#00C500" : "#C51A00";
+                    td.innerText = inscription[key] == 1 ? "Aprobada" : "Rechazada";
+                }else{
+                    td.innerText = inscription[key];
                 }
                 
                 row.appendChild(td);
@@ -115,7 +119,7 @@ class Action {
 
         if (response.status) {
             //Se establecen los datos de la inscripcion
-            this.setInscriptionData(response.data);
+            this.setInscriptionData(response.data, inscriptionId);
 
             //Se abre la modal con los datos de revision
             const reviewModal = document.querySelector("div#reviewModal")
@@ -125,7 +129,7 @@ class Action {
         }
     }
 
-    static setInscriptionData(data){
+    static setInscriptionData(data, inscriptionId){
         const {applicant, inscription, certificate} = data;
 
         //Espacios a rellenar, de la seccion de informacion personal.
@@ -144,10 +148,20 @@ class Action {
             inscriptionFields[index].innerText = inscription[key];
         });
 
+        //Boton de mostrar certificado
         const showCertificateButton = document.querySelector("#showCertificateBtn");
-
+        //Se agrega funcion de abrir modal con certificado
         showCertificateButton.addEventListener("click", ()=>{this.openCertificateFile(certificate)});
         
+        //Botones de aprobar o rechazar inscripcion
+        const denyInscriptionButton = document.querySelector("#denyInscriptionBtn");
+        const approveInscriptionButton = document.querySelector("#approveInscriptionBtn");
+
+        denyInscriptionButton.addEventListener("click", 
+            ()=>{this.finishReviewInscription(false, inscriptionId)});
+
+        approveInscriptionButton.addEventListener("click", 
+            ()=>{this.finishReviewInscription(true, inscriptionId)})
     }
 
     static openCertificateFile(certificate){
@@ -155,6 +169,7 @@ class Action {
         // Obtener contenedor donde mostrar el archivo
         const modal = document.querySelector("div#fileModal");
 
+        //Obtener cuerpo de modal
         const modalBody = modal.querySelector("div.modal-body");
         modalBody.innerHTML = "";
 
@@ -182,8 +197,24 @@ class Action {
         }
     }
 
-    static finishReviewInscription(dictum){
-        console.log(dictum);
+    static finishReviewInscription = async (dictum, inscriptionId) =>{
+
+        //Se obtiene el id del usuario revisor en los parametros de la url
+        const userId = new URLSearchParams(window.location.search).get("id");
+
+        const body = {
+            idApplication: inscriptionId,
+            idReviewer: userId,
+            approved: dictum
+        }
+        
+        const response = await HttpRequest.post("../../../api/update/verifyApplication", body);
+        
+        if(response.status===true){
+           this.renderAllPage();
+           Modal.closeModal();
+        }
+
     }
 }
 

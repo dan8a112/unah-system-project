@@ -32,6 +32,39 @@ export class HttpRequest {
   }
 
   /**
+   * Envia una peticion asincrona de tipo POST sin necesidad de que este sea un formulario.
+   * @param {string} url url de la api 
+   * @param {Object} body objeto con los parametros necesarios a enviar 
+   */
+  static async post(url, body){
+    
+    try {
+        const response = await fetch(url,
+            {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "method": "POST",
+            "body": new URLSearchParams(body)  //Convierte un objeto a tipo x-www-form-urlencode
+            }
+        )
+
+        if (!response.ok) {
+            throw new Error('La respuesta de la red no fue correcta ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data) {
+          return data;
+        }
+        throw new Error('Datos no encontrados');
+    } catch (error) {
+        console.error("Ocurrio un error: ", error);
+    }
+  }
+
+  /**
    * Realiza una solicitud POST a la URL especificada usando los datos de un formulario.
    * @param {Event} event El evento submit del formulario.
    * @param {string} url La URL a la que se enviarán los datos del formulario.

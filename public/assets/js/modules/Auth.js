@@ -25,7 +25,7 @@ class Auth {
         const data = await HttpRequest.submitForm(event,url);
 
         //Se evalua la respuesta
-        if (data.status==1 || data.status==0) {
+        if (data.status==1) {
             //redirecciona a pagina principal
             window.location.href = redirect
         
@@ -36,7 +36,7 @@ class Auth {
             const errorText = document.createElement("p");
             
             //Se genera un texto de error
-            errorText.innerText =  "El correo o la contraseña es incorrecto, vuelva a intentarlo."
+            errorText.innerText =  data.message;
             errorText.style.color = "red";
             errorSection.appendChild(errorText);
         }

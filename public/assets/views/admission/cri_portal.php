@@ -207,7 +207,7 @@
                             </div>
                             <div class="row gap-3" id="approveButtons">
                                 <button class="col btn btn-danger" id="denyInscriptionBtn">Rechazar</button>
-                                <button class="col btn btn-success" id="aproveInscriptionBtn">Aprobar</button>
+                                <button class="col btn btn-success" id="approveInscriptionBtn">Aprobar</button>
                             </div>
                         </section>
                     </div>
