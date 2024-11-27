@@ -8,8 +8,10 @@ const createButton = document.querySelector("#createBtn");
 createButton.addEventListener('click', ()=>Action.openCreateForm());
 
 //Se agrega accion al enviar el formulario de creacion de profesor
-const createProfessorForm = document.querySelector("#createProfessorForm")
-createProfessorForm.addEventListener('submit', Action.submitFormProfessor.bind(createProfessorForm));
+createProfessorForm.addEventListener('submit', (event) => {
+    Action.submitFormProfessor(createProfessorForm, event);
+});
+
 
 //Se agrega accion al enviar el formulario de editar un profesors
 const editProfessorForm = document.querySelector("#editProfessorForm")

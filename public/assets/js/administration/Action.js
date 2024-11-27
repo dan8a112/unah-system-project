@@ -210,6 +210,7 @@ class Action{
         event.preventDefault();
         
         const response = await HttpRequest.submitForm(event, "../../../api/post/professor");
+        console.log(response);
 
         Modal.closeModal();
 
