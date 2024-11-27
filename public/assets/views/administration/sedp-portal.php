@@ -127,11 +127,13 @@
                 <div>
                   <label class="form-label">Tipo de profesor</label>
                   <select class="form-select" aria-label="Default select example" name="professorTypeId" id="professorTypeSelect" required>
+                    <option selected>Seleccione una opcion</option>
                   </select>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Departamento</label>
                   <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelect" required>
+                    <option selected>Seleccione una opcion</option>
                   </select>
                 </div>
                 <div class="col-6">
@@ -201,11 +203,13 @@
                 <div>
                   <label class="form-label">Tipo de profesor</label>
                   <select class="form-select" aria-label="Default select example" name="professorTypeId" id="professorTypeSelectEdit" required>
-                  </select>
+                    <option selected>Seleccione una opcion</option>
+                </select>
                 </div>
                 <div>
                   <label class="form-label">Departamento</label>
                   <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelectEdit" required>
+                    <option selected>Seleccione una opcion</option>
                   </select>
                 </div>
                 <div>

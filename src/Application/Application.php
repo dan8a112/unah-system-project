@@ -262,10 +262,10 @@
                 $lastestInscrptions= [];
                 foreach($result2 as $row){
                     $lastestInscrptions[] = [
-                        "id" => $row["id"],
-                        "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
-                        "career"=>$row["description"],
-                        "inscriptionDate"=>$row["applicationDate"],
+                        $row["id"],
+                        implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
+                        $row["description"],
+                        $row["applicationDate"]
                     ] ;
                 }
 
