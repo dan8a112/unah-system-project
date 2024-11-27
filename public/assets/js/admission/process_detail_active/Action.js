@@ -380,7 +380,7 @@ class Action {
      */
     static fetchActiveData = async () => {
         try {
-            const response = await HttpRequest.get(`../../../api/get/admission/infoCurrentAdmission`);
+            const response = await HttpRequest.get(`../../../api/get/admission/infoCurrentAdmission/`);
             if (response.status) {
                 this.renderActiveProcess(response.data);
             } else {
@@ -414,7 +414,7 @@ class Action {
      * Descarga automáticamente un archivo CSV generado por la API.
      */
     static downloadCSV() {
-        const url = "../../../api/get/admission/generateCSV";
+        const url = "../../../api/get/admission/generateCSV/";
 
         fetch(url)
             .then((response) => {

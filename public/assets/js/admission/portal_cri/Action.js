@@ -218,7 +218,7 @@ class Action {
             mail: email
         }
         
-        const response = await HttpRequest.post("../../../api/update/verifyApplication", body);
+        const response = await HttpRequest.post("../../../api/update/verifyApplication/", body);
         
         if(response.status===true){
            this.renderAllPage();

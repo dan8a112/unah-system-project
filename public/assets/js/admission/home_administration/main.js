@@ -2,7 +2,7 @@ import {BarChart} from './chart.js';
 import { makeCurrentProcesCard, makeTimeLine, separateData } from './Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';
 
-const url = '../../../api/get/homeAPA';
+const url = '../../../api/get/homeAPA/';
 
 async function loadData() {
   // Realizar la solicitud GET usando HttpRequest

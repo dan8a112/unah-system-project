@@ -76,13 +76,13 @@
               <div class="line"></div>
               <p>En esta seccion debes ingresar tus datos generales, toma en cuenta que en caso de tener solo un nombre, o caso contrario tienes mas de dos, podras ingresar tu unico nombre en el campo de primer nombre o tu tercer nombre en el campo de segundo nombre separado por un espacio.</p>
               <section class="input-container">
-                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primer nombre" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
-                  <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo nombre" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido">
-                  <input type="text" class="form-control" id="firstLastName" name="firstLastName" placeholder="Primer apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
-                  <input type="text" class="form-control" id="SecondLastName" name="SecondLastName" placeholder="Segundo apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
-                  <input type="text" class="form-control" id="identity" name="identityNumber" placeholder="Numero de identidad"  pattern="\d{4}-?(19|20)\d{2}-?\d{5}" title="El numero de identidad debe tener el siguiente formato: 0801-2000-00000" required>
+                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primer nombre" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido. Primera letra en mayúscula." required>
+                  <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Segundo nombre" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido. Primera letra en mayúscula.">
+                  <input type="text" class="form-control" id="firstLastName" name="firstLastName" placeholder="Primer apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido. Primera letra en mayúscula." required>
+                  <input type="text" class="form-control" id="SecondLastName" name="SecondLastName" placeholder="Segundo apellido" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido. Primera letra en mayúscula." required>
+                  <input type="text" class="form-control" id="identity" name="identityNumber" placeholder="Numero de identidad"  pattern="\d{4}-?(19|20)\d{2}-?\d{5}" title="El numero de identidad debe tener el siguiente formato: 0000-0000-00000" required>
                   <input type="email" class="form-control" id="mail" name="personalEmail" placeholder="Correo electronico" required>
-                  <input type="text" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Telefono" required pattern="[9283]\d{3}-?\d{4}" title="El numero de telefono no es valido">
+                  <input type="text" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Telefono" required pattern="[9283]\d{3}-?\d{4}" title="El número de telefono no es valido.">
               </section>
           </section>
           <section class="form">

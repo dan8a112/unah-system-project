@@ -8,7 +8,7 @@ Action.fetchActiveData();
 // Selecciona el botón de enviar correos
 const sendEmailsButton = document.getElementById("sendEmailsButton");
 const container = document.getElementById("contentt")
-const url = "../../../api/get/admission/sendMails";
+const url = "../../../api/get/admission/programEmails/";
 const headersLastInscriptionTable = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
 
 // Se agrega la acción de enviar correos
@@ -29,7 +29,7 @@ document.getElementById('formCsv').addEventListener('submit', async (event) => {
     event.preventDefault(); 
 
     try {
-        const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv');
+        const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv/');
         console.log(result.message); 
         console.log(result); 
         container.innerHTML = "";

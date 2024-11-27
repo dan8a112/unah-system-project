@@ -1,7 +1,7 @@
 import { HttpRequest } from '../../modules/HttpRequest.js'; 
 import { Selects } from '../../modules/Selects.js'; 
 
-const url = '../../../api/get/admission/infoAdmission'; 
+const url = '../../../api/get/admission/infoAdmission/'; 
 let regionalCentersData = [];
 let careersData = [];
 

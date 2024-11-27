@@ -60,7 +60,7 @@ document.getElementById('form-inscription').addEventListener('submit', (event) =
     return;
   }
 
-  HttpRequest.submitForm(event, '../../../api/post/application')
+  HttpRequest.submitForm(event, '../../../api/post/application/')
     .then(result => {
       if (result.status) {
         Popup.open(popup);
