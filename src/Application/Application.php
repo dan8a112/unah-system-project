@@ -924,7 +924,7 @@
                     WHERE id=?;';
             $result = $this->mysqli->execute_query($query, [$approved, $idApplication]);
 
-            if($result === NULL){
+            if(!$result){
                 return [
                     "status"=> false,
                     "message"=> "Hubo un error al hacer update en la tabla temporal."
@@ -937,7 +937,7 @@
                     WHERE id=?;';
             $result1 = $this->mysqli->execute_query($query1, [$approved, $idReviewer, $idApplication]);
 
-            if($result1 === NULL){
+            if(!$result1){
                 return [
                     "status"=> false,
                     "message"=> "Hubo un error al hacer update en la tabla Application."
@@ -945,6 +945,18 @@
             }
 
             if($approved === 0){
+
+                //Eliminar los datos en Results
+                $query2 = "DELETE FROM Results where application = ?;";
+                $result2 = $this->mysqli->execute_query($query2, [$idApplication]);
+
+                if(!$result2){
+                    return [
+                        "status"=> false,
+                        "message"=> "Hubo un error al borrar los registros de la tabla result."
+                    ];
+                }
+
                 $statusEmail = $this->sendAdmissionProcessMail($name, $email);
 
                 //Enviar correo
