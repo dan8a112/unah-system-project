@@ -102,10 +102,15 @@
                 $exams = [];
                 $result1 = $this->mysqli->execute_query($query1, [$student["idApplication"]]);
                 foreach($result1 as $row){
+                    if($row["grade"] === NULL){
+                        $grade=0;
+                    }else{
+                        $grade=$row["grade"];
+                    }
                     $exams[] = [
                         "idApplication" => $row["idApplication"],
                         "description"=>$row["description"],
-                        "grade"=>$row["grade"],
+                        "grade"=>$grade,
                     ];
 
                     if ($student["approvedFirstChoice"] && $student["approvedSecondChoice"]) {
@@ -133,6 +138,82 @@
             }
 
             return true;
+        }
+
+        public function programEmailSend(){
+
+            //Validar que no se hayan enviado los correos
+            $query0 = "SELECT active FROM SendedEmail
+                    WHERE academicProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);";
+            $result0 = $this->mysqli->execute_query($query0);
+
+            if($result0){
+                foreach($result0 as $row){
+                    if($row['active'] === 0){
+                        date_default_timezone_set('America/Tegucigalpa');
+    
+                        // Obtener la fecha y hora actual
+                        $now = new DateTime();
+    
+                        // Crear un objeto DateTime para las 1 AM de hoy
+                        $today1AM = new DateTime('today 1:00 AM');
+    
+                        // Comprobar si la fecha actual es mayor o igual a la 1 AM de hoy
+                        if ($now >= $today1AM) {
+                            // Si la fecha actual es mayor o igual, obtenemos el día siguiente a las 1 AM
+                            $today1AM->modify('+1 day');
+                        }
+    
+                        $dateString = $today1AM->format("H:i Y-m-d");
+    
+                        // URL del `curl`
+                        $url = "http://localhost:3000/api/get/admission/sendMails";
+    
+                        // Comando `curl` a ejecutar
+                        $comando = "/usr/bin/curl -X GET '$url'";
+    
+                        // Programar con `at`
+                        exec("echo '$comando' | at $dateString", $output, $returnVar);
+    
+                        // Verificar el resultado de la ejecución
+                        if ($returnVar === 0) {
+    
+                            //Hacer update del active que dice si se enviaron los correos
+                            $query = "UPDATE SendedEmail
+                                SET active=true
+                                WHERE academicProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);";
+                            $result = $this->mysqli->execute_query($query);
+                            if($result){
+                                return [
+                                    'status'=> true,
+                                    'message'=> 'Correos programados correctamente. Se enviaran exactamente a las ' . $dateString
+                                ];
+                            };
+    
+                            return [
+                                'status' => false,
+                                'mensaje' => "Error al hacer update"
+                            ];
+    
+                        } else {
+                            return [
+                                'status' => false,
+                                'mensaje' => "Error al programar la tarea. Salida: " . implode("\n", $output)
+                            ];
+                        }
+    
+                    }
+
+                }
+                
+
+            }else{
+                return [
+                    'status' => false,
+                    'mensaje' => "Error al hacer la consulta"
+                ]; 
+            }
+            
         }
 
         // Método para cerrar la conexión
