@@ -4,7 +4,7 @@ import { HttpRequest } from "../modules/HttpRequest.js";
 const modal = document.querySelector("#modalDom");
 
 export async function redirectPageToInscription() {
-    const url = '../../../api/get/admission/activeAdmissionProcess';
+    const url = '../../../api/get/admission/activeAdmissionProcess/';
 
     try {
         const response = await HttpRequest.get(url);
