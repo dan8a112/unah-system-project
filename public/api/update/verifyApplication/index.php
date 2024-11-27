@@ -9,10 +9,12 @@ include_once "../../../../src/Application/Application.php";
 if(
     isset($_POST["idApplication"]) &&
     isset($_POST["idReviewer"]) &&
-    isset($_POST["approved"])
+    isset($_POST["approved"]) &&
+    isset($_POST['name']) &&
+    isset($_POST['mail'])
 ){
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $json = $dao->setApprovedApplication($_POST["idApplication"], $_POST["idReviewer"], $_POST["approved"]);
+    $json = $dao->setApprovedApplication($_POST["idApplication"], $_POST["idReviewer"], $_POST["approved"], $_POST['name'], $_POST['mail']);
     
 } else {
     $json = [

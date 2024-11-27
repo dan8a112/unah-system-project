@@ -841,9 +841,71 @@
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
+         * date: 26/11/24
+         * 
+         * Funcion para enviar correo en caso se que se invalide una inscripcion
+         */
+        public function sendAdmissionProcessMail($name, $mail){
+
+            // Configuración del correo
+            $subject = "Invalidación de su inscripción de admisión par la UNiversidad Nacional Autónoma de Honduras";
+            $from = "noreply@unah.com";
+            $date = date("d/m/Y");
+            $link= "http://3.138.199.65";
+            $to = $mail;
+
+            // Crear el contenido del mensaje HTML con encabezados
+            $message = <<<EOD
+            Subject: $subject
+            From: $from
+            Reply-To: $from
+            MIME-Version: 1.0
+            Content-Type: text/html; charset=UTF-8
+
+            <html>
+            <head>
+                <title>Correo HTML Formateado</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; color: #333;">
+                <h1 style="color: #007BFF;">¡Hola, $name!</h1>
+                <p>Por este medio la Direccion de Admisiones de la UNAH le informa que su inscripción fue invalidada por nuestro comité de revisión de inscripciones
+                por no cumplir con los requerimientos especificados al momento de hacer su inscripción. Esto debido a que subió un archivo incorrecto de su certificación
+                de estudios.</p>
+                <p>Le recordamos que para futuras inscripciones valide que su archivo sea legible.</p>
+                <p>Este correo fue enviado el <strong>$date</strong> y contiene un enlace a <a href="$link">nuestro sitio web</a>.</p>
+                <footer>
+                    <p style="font-size: 0.9em; color: #555;">Gracias por elegir nuestro servicio.</p>
+                </footer>
+            </body>
+            </html>
+            EOD;
+
+            // Guardar el mensaje en un archivo temporal
+            $tempFile = tempnam(sys_get_temp_dir(), 'msmtp_email');
+            file_put_contents($tempFile, $message);
+
+            // Enviar el correo usando msmtp con el archivo temporal
+            $command = "msmtp $to < $tempFile";
+            $output = shell_exec($command);
+
+            // Eliminar el archivo temporal
+            unlink($tempFile);
+
+            // Confirmación de envío
+            if ($output === null) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
          * date: 25/11/24
         */
-        public function setApprovedApplication(int $idApplication, int $idReviewer, bool $approved){
+        public function setApprovedApplication(int $idApplication, int $idReviewer, int $approved, string $name, string $email){
 
             //Update en la tabla de temporal
             $query = 'UPDATE TempTableApplication
@@ -871,6 +933,24 @@
                 ];
             }
 
+            if($approved === 0){
+                $statusEmail = $this->sendAdmissionProcessMail($name, $email);
+
+                //Enviar correo
+                if($statusEmail){
+                    return [
+                        "status"=> true,
+                        "message"=> "Incripción verificada y correo enviado."
+                    ];
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Hubo un error al enviar correo al postulante."
+                    ];
+                }
+            }   
+            
+                            
             return [
                 "status"=> true,
                 "message"=> "Incripción verificada."
