@@ -420,6 +420,8 @@ CREATE PROCEDURE insertProfessor(
 BEGIN
 
     DECLARE newEmail VARCHAR(50) DEFAULT p_personalEmail;
+    DECLARE randomLetter CHAR(1);
+    DECLARE emailExists BOOLEAN DEFAULT TRUE;
     DECLARE counter INT DEFAULT 1;
 
     -- Verificar si el ID existe
@@ -442,8 +444,51 @@ BEGIN
             'message', 'Ya existe un coordinador de departamento.'
         ) AS resultJson;
     ELSE
-        WHILE EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) DO
-            SET newEmail=CONCAT(LOWER(p_firstName),'.',LOWER(p_firstLastName),counter,'@unah.edu.hn');
+
+        WHILE emailExists DO
+            -- Verificar si el correo ya existe
+            IF EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) THEN
+                -- Cambiar a la siguiente estrategia dependiendo del valor del contador
+                CASE counter
+                    WHEN 1 THEN
+                        -- Primer nombre + segundo apellido
+                        SET newEmail = CONCAT(LOWER(p_firstName), '.', LOWER(p_secondLastName), '@unah.edu.hn');  
+                    WHEN 2 THEN
+                        -- Primera letra del primer nombre + primer apellido
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(p_firstLastName), '@unah.edu.hn');
+                    WHEN 3 THEN
+                        -- Primeras letras de ambos nombres + primer apellido
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), LOWER(p_firstLastName), '@unah.edu.hn');
+                    WHEN 4 THEN
+                        -- Primeras letras de ambos nombres y primer apellido + segundo nombre
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), LOWER(SUBSTRING(p_firstLastName, 1, 1)), LOWER(p_secondLastName), '@unah.edu.hn');
+                    WHEN 5 THEN
+                        -- Primeras dos letras de ambos nombres + primer apellido
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 2)), LOWER(SUBSTRING(p_secondName, 1, 2)), LOWER(p_firstLastName), '@unah.edu.hn');
+                    WHEN 6 THEN
+                        -- Segundo apellido + Primer nombre 
+                        SET newEmail = CONCAT(LOWER(p_secondLastName), '.', LOWER(p_firstName), '@unah.edu.hn');  
+                    WHEN 7 THEN
+                        -- Primera letra del primer nombre + primer apellido (al reves)
+                        SET newEmail = CONCAT(LOWER(p_firstLastName), LOWER(SUBSTRING(p_firstName, 1, 1)), '@unah.edu.hn');
+                    WHEN 8 THEN
+                        -- Primeras letras de ambos nombres + primer apellido (al reves)
+                        SET newEmail = CONCAT(LOWER(p_firstLastName), LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), '@unah.edu.hn');
+                    WHEN 9 THEN 
+                        -- Primeras letras de ambos nombres y primer apellido + segundo nombre (al reves)
+                        SET newEmail = CONCAT(LOWER(p_secondLastName), LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), LOWER(SUBSTRING(p_firstLastName, 1, 1)),  '@unah.edu.hn');
+                    WHEN 10 THEN
+                        -- Primeras dos letras de ambos nombres + primer apellido
+                        SET newEmail = CONCAT(LOWER(p_firstLastName), LOWER(SUBSTRING(p_firstName, 1, 2)), LOWER(SUBSTRING(p_secondName, 1, 2)), '@unah.edu.hn');
+                    ELSE
+                        -- Agregar una letra como último recurso
+                        SET randomLetter = CHAR(FLOOR(65 + (RAND() * 26)));
+                        SET newEmail = CONCAT(LOWER(p_firstName), '.', LOWER(p_firstLastName), LOWER(randomLetter), '@unah.edu.hn');
+                END CASE;
+            ELSE
+                -- Salir del bucle si el correo es único
+                SET emailExists = FALSE;
+            END IF;
             SET counter = counter + 1;
         END WHILE;
 
@@ -1191,9 +1236,9 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
     (1,'2023-01-20 00:00:00', '2023-02-12 00:00:00', false, NULL),
     (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false, NULL),
     (1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', true, NULL),
-    (3, '2024-11-23 00:00:00', '2024-11-24 00:00:00', true, 5),
-    (4, '2024-11-24 00:00:00', '2024-11-26 00:00:00', false, 5),
-    (5, '2024-12-04 00:00:00', '2024-12-09 00:00:00', false, 5),
+    (3, '2024-11-23 00:00:00', '2024-11-25 00:00:00', true, 5),
+    (4, '2024-11-27 00:00:00', '2024-11-30 00:00:00', false, 5),
+    (5, '2024-12-01 00:00:00', '2024-12-09 00:00:00', false, 5),
     (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', false, 5),
     (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5)
 ;
