@@ -15,7 +15,7 @@
         public function getProfessors() : array {
 
             $professors = [];
-            $query = 'SELECT a.id, a.firstName, a.secondName, a.firstLastName, a.secondLastName, a.personalEmail, a.dni, c.description as professorType, b.active
+            $query = 'SELECT a.id, a.names, a.lastNames, a.personalEmail, a.dni, c.description as professorType, b.active
                  FROM Employee a
                  INNER JOIN Professor b
                  ON a.id = b.id
@@ -27,7 +27,7 @@
             foreach($result as $row){
                 $professors[] = [
                     "professorId" => $row["id"],
-                    "name"=>implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
+                    "name"=>implode(" ",[$row["names"], $row["lastNames"]]),
                     "email" => $row["personalEmail"],
                     "dni"=>$row["dni"],
                     "professorType" => $row["professorType"],
@@ -84,11 +84,14 @@
          * version: 0.1.0
          * date: 16/11/24
          */
-        public function setProfessor($dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department){
+        public function setProfessor($dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department){
+            $namesCapital = mb_convert_case($names, MB_CASE_TITLE, "UTF-8");
+            $lastNamesCapital = mb_convert_case($lastNames, MB_CASE_TITLE, "UTF-8");
+
             if(!Validator::isHondurasIdentityNumber($dni)){
                 return [
                     "status" => false,
-                    "message" => "Número de identidad inválido"
+                    "message" => "EL número de identidad no es válido."
                 ];
             }
 
@@ -99,42 +102,25 @@
                 ];
             }
 
-            if(!Validator::isValidName($firstName) || $firstName==""){
+            if(!Validator::isValidName($namesCapital)){
                 return [
                     "status" => false,
-                    "message" => "Primer nombre inválido"
+                    "message" => "Nombres inválidos. Recuerde no usar números o caracteres especiales."
                 ];
             }
 
-            if(!Validator::isValidSecondName($secondName)){
+            if(!Validator::isValidName($lastNamesCapital)){
                 return [
                     "status" => false,
-                    "message" => "Segundo nombre inválido"
+                    "message" => "Apellidos inválidos. Recuerde no usar números o caracteres especiales."
                 ];
             }
-
-            if(!Validator::isValidName($firstLastName) || $firstLastName==""){
-                return [
-                    "status" => false,
-                    "message" => "Primer apellido inválido"
-                ];
-            }
-
-            if(!Validator::isValidName($secondLastName)){
-                return [
-                    "status" => false,
-                    "message" => "Segundo apellido inválido"
-                ];
-            }
-            
-            
-            $query= "CALL insertProfessor(?,?,?,?,?,?,?,?,?,?,?,?);";
-            $email=strtolower($firstName).'.'.strtolower($firstLastName).'@unah.edu.hn';
+                 
+            $query= "CALL insertProfessor(?,?,?,?,?,?,?,?,?);";
             $password= $this->generatePassword();
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             try{
-                $result = $this->mysqli->execute_query($query, [$dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber,
-                    $email, $hashedPassword, $address, $dateOfBirth, $professorType, $department]);
+                $result = $this->mysqli->execute_query($query, [$dni, $namesCapital, $lastNamesCapital, $telephoneNumber, $hashedPassword, $address, $dateOfBirth, $professorType, $department]);
                 
                 if ($row = $result->fetch_assoc()) {
 
@@ -145,7 +131,7 @@
                     if ($resultArray !== null && $resultArray['status']) {
                         $data = [
                             "id"=>$resultArray['idProfessor'],
-                            "name"=>$firstName.' '.$secondName.' '.$firstLastName.' '.$secondLastName,
+                            "name"=>$namesCapital.' '.$lastNamesCapital,
                             "password"=>$password,
                             "personalEmail"=>$resultArray['personalEmail']
 
@@ -184,7 +170,7 @@
          * date: 16/11/24
          */
         public function getProfessor($id){
-            $query = 'SELECT a.id, a.dni, a.firstName, a.secondName, a.firstLastName, a.secondLastName, a.telephoneNumber, a.address, a.dateOfBirth, a.personalEmail, b.professorType, b.department, b.active
+            $query = 'SELECT a.id, a.dni, a.names, a.lastNames, a.telephoneNumber, a.address, a.dateOfBirth, a.personalEmail, b.professorType, b.department, b.active
                 FROM Employee a
                 INNER JOIN Professor b 
                 ON (a.id = b.id)
@@ -196,10 +182,8 @@
                 $professor = [
                     "id" => $row["id"],
                     "identityNumber"=>$row["dni"],
-                    "firstName"=>$row["firstName"],
-                    "secondName"=>$row["secondName"],
-                    "firstLastName"=>$row["firstLastName"],
-                    "secondLastName"=>$row["secondLastName"],
+                    "names"=>$row["names"],
+                    "lastNames"=>$row["lastNames"],
                     "phoneNumber"=>$row["telephoneNumber"],
                     "address"=>$row["address"],
                     "birthDate"=>$row["dateOfBirth"],
@@ -218,8 +202,38 @@
          * version: 0.1.0
          * date: 16/11/24
          */
-        public function updateProfessor($id, $dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $active){
-            $query="CALL updateProfessor(?,?,?,?,?,?,?,?,?,?,?,?);";
+        public function updateProfessor($id, $dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $active){
+            $names = mb_convert_case($names, MB_CASE_TITLE, "UTF-8");
+            $lastNames = mb_convert_case($lastNames, MB_CASE_TITLE, "UTF-8");
+
+            if(!Validator::isHondurasIdentityNumber($dni)){
+                return [
+                    "status" => false,
+                    "message" => "EL número de identidad no es válido."
+                ];
+            }
+
+            if(!Validator::isPhoneNumber($telephoneNumber)){
+                return [
+                    "status" => false,
+                    "message" => "Número de teléfono inválido"
+                ];
+            }
+
+            if(!Validator::isValidName($names)){
+                return [
+                    "status" => false,
+                    "message" => "Nombres inválidos. Recuerde no usar números o caracteres especiales."
+                ];
+            }
+
+            if(!Validator::isValidName($lastNames)){
+                return [
+                    "status" => false,
+                    "message" => "Apellidos inválidos. Recuerde no usar números o caracteres especiales."
+                ];
+            }
+            $query="CALL updateProfessor(?,?,?,?,?,?,?,?,?,?);";
             
             if($active){
                 $bool=1;
@@ -228,7 +242,7 @@
             }
 
             try{
-                $result = $this->mysqli->execute_query($query,[$id, $dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $bool]);
+                $result = $this->mysqli->execute_query($query,[$id, $dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $bool]);
                 if ($row = $result->fetch_assoc()) {
     
                     $resultJson = $row['resultJson'];

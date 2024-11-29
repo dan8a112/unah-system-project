@@ -9,10 +9,8 @@
 
     if(
         isset($_POST["identityNumber"]) &&
-        isset($_POST['firstName'])&&
-        isset($_POST['secondName'])&&
-        isset($_POST['firstLastName'])&&
-        isset($_POST['secondLastName'])&&
+        isset($_POST['names'])&&
+        isset($_POST['lastNames'])&&
         isset($_POST['phoneNumber'])&&
         isset($_POST['birthDate'])&&
         isset($_POST['address'])&&
@@ -20,10 +18,8 @@
         isset($_POST['departmentId'])
     ){
         $dni = $_POST["identityNumber"];
-        $firstName = $_POST['firstName'] ?? '';
-        $secondName = $_POST['secondName'] ?? '';
-        $firstLastName = $_POST['firstLastName'] ?? '';
-        $secondLastName = $_POST['secondLastName'] ?? '';
+        $names = $_POST['names'] ?? '';
+        $lastNames = $_POST['lastNames'] ?? '';
         $telephoneNumber = $_POST['phoneNumber'] ?? '';
         $address = $_POST['address'];
         $dateOfBirth = $_POST['birthDate'];
@@ -31,7 +27,7 @@
         $department = $_POST['departmentId'];
 
         $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-        $result = $dao->setProfessor($dni, $firstName, $secondName, $firstLastName, $secondLastName, $telephoneNumber, $address, $dateOfBirth, $professorType, $department);
+        $result = $dao->setProfessor($dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department);
 
         $json = [
             "message" => $result["message"],
