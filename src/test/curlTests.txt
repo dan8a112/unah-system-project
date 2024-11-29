@@ -61,3 +61,14 @@ curl -d "identityNumber=0801-2004-03099" -d "names=Actualizado" -d "lastNames=Ve
 
 ----------------------Curl para revision de inscripcion----------
 curl -d "idApplication=47" -d "idReviewer=3" -d "approved=0" -d "name=Samantha" -d "mail=dorian.contreras@unah.hn" http://localhost:3000/api/update/verifyApplication | jq
+
+------------------------PAGINACION--------------------------------
+
+----------------------obtener todas las incripciones---------------
+curl "http://localhost:3000/api/get/pagination/allInscriptions/?idProcess=1&offset=0" | jq
+
+----------------------obtener revisores---------------
+curl "http://localhost:3000/api/get/pagination/reviewers/?idProcess=1&offset=0" | jq
+
+----------------------obtener inscrpciones d elos aplicantes que aprobaron el procesp---------------
+curl "http://localhost:3000/api/get/pagination/approvedApplicants/?idProcess=1&offset=0" | jq

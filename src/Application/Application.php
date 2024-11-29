@@ -56,6 +56,99 @@
 
         /**
          * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 28/11/24
+         * 
+         * Funcion para paginar el total de inscripciones de un proceso
+         */
+        public function getApplications(int $idProcess, int $offset){
+            $query = "SELECT a.id, CONCAT(b.names, ' ', b.lastNames) as name, c.description, a.applicationDate
+                    FROM Application a
+                    INNER JOIN Applicant b
+                    ON (a.idApplicant = b.id)
+                    INNER JOIN DegreeProgram c 
+                    ON (a.firstDegreeProgramChoice = c.id)
+                    WHERE a.academicEvent = ? ORDER BY a.id DESC 
+                    LIMIT 10 OFFSET ?;";
+            $result = $this->mysqli->execute_query($query, [$idProcess, $offset]);
+            $applications = [];
+            if ($result) {
+                foreach($result as $row){
+                    $applications[] = [
+                        $row["id"],
+                        $row["name"],
+                        $row["description"],
+                        $row["applicationDate"]
+                    ];
+                } 
+            } 
+            return $applications;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 28/11/24
+         * 
+         * Funcion para paginar el total de revisores
+         */
+        public function getReviewers(int $idProcess, int $offset){
+            $query = "SELECT a.id, CONCAT(a.firstName,' ', a.firstLastName) AS name, COUNT(b.id) AS amountReview
+                    FROM Reviewer a
+                    LEFT JOIN Application b ON a.id = b.idReviewer AND b.academicEvent = ?
+                    WHERE a.active = true
+                    GROUP BY a.id, CONCAT(a.firstName,' ', a.firstLastName)
+                    LIMIT 10 OFFSET ?;";
+            $result = $this->mysqli->execute_query($query, [$idProcess, $offset]);
+            $reviewers = [];
+            if ($result) {
+                foreach($result as $row){
+                    $reviewers[] = [
+                        $row["id"],
+                        $row["name"],
+                        $row["amountReview"],
+                    ] ;
+                } 
+            } 
+            return $reviewers;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 28/11/24
+         * 
+         * Funcion para paginar el total de inscripciones APROBADAS de un proceso
+         */
+        public function getApprovedApplications(int $idProcess, int $offset){
+            $query = "SELECT a.id, CONCAT(b.names, ' ', b.lastNames) as name, c.description as career, d.grade
+                    FROM Application a
+                    INNER JOIN Applicant b
+                    ON (a.idApplicant = b.id)
+                    INNER JOIN DegreeProgram c 
+                    ON (a.firstDegreeProgramChoice = c.id)
+                    INNER JOIN Results d
+                    ON(a.id = d.application)
+                    WHERE a.academicEvent = ? AND admissionTest=1 AND (a.approvedFirstChoice = 1 OR a.approvedSecondChoice = 1) ORDER BY d.grade DESC 
+                    LIMIT 10 OFFSET ?;";
+            $result = $this->mysqli->execute_query($query, [$idProcess, $offset]);
+            $applications = [];
+            if ($result) {
+                foreach($result as $row){
+                    $applications[] = [
+                        "id" => $row["id"],
+                        "name"=>$row["name"],
+                        "career"=>$row["career"],
+                        "score"=>$row["grade"],
+                    ];
+                } 
+            } 
+            return $applications;
+        }
+
+
+        /**
+         * author: dorian.contreras@unah.hn
          * version: 0.3.0
          * date: 20/11/24
          * 
@@ -244,53 +337,28 @@
             //Dependiendo el subproceso de admisiones se va a enviar la siguiente información
             if($infoProcess['idProcessState']==3){ //proceso de inscripciones
                 //Obtener las ultimas 5 inscripciones
-                $query2 = 'CALL LastestInscription(?);';
-                $result2 = $this->mysqli->execute_query($query2, [$idProcess]);
-
-                $lastestInscrptions= [];
-                foreach($result2 as $row){
-                    $lastestInscrptions[] = [
-                        $row["id"],
-                        implode(" ",[$row["firstName"], $row["secondName"], $row["firstLastName"], $row["secondLastName"]]),
-                        $row["description"],
-                        $row["applicationDate"]
-                    ] ;
-                }
-
+                $inscriptions= $this->getApplications($idProcess, 0);;
                 return [
                     "status" => true,
                     "message" => "Petición realizada con exito.",
                     "data" => [
+                        "idAcademicEvent"=> $idProcess,
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
-                        "lastestInscriptions"=> $lastestInscrptions
+                        "inscriptions"=> $inscriptions
                     ]
                 ];
 
             }elseif($infoProcess['idProcessState']==4){ //proceso de revision de inscripciones
                 
                 //Obtener información sobre los revisadores
-                $query3 = 'SELECT a.id, CONCAT(a.firstName," ", a.firstLastName) AS name, COUNT(b.id) AS amountReview
-                            FROM Reviewer a
-                            LEFT JOIN Application b ON a.id = b.idReviewer AND b.academicEvent = ?
-                            WHERE a.active = true
-                            GROUP BY a.id, CONCAT(a.firstName," ", a.firstLastName);';
-
-                $result3 = $this->mysqli->execute_query($query3, [$idProcess]);
-
-                $reviewers= [];
-                foreach($result3 as $row){
-                    $reviewers[] = [
-                        $row["id"],
-                        $row["name"],
-                        $row["amountReview"],
-                    ] ;
-                }
+                $reviewers= $this->getReviewers($idProcess, 0);
 
                 return [
                     "status" => true,
                     "message" => "Petición realizada con exito.",
                     "data" => [
+                        "idAcademicEvent"=> $idProcess,
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
                         "reviewers"=> $reviewers
@@ -315,6 +383,7 @@
                     "status" => true,
                     "message" => "Petición realizada con exito.",
                     "data" => [
+                        "idAcademicEvent"=> $idProcess,
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
                         "admissionTests"=> $admissionTests
@@ -346,27 +415,7 @@
                     $approvedStudents= $row['amount'];
                 }
 
-                //Obtener las mejores 5 notas
-                $query5= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
-                    FROM Application a
-                    INNER JOIN Applicant b
-                    ON (a.idApplicant = b.id)
-                    INNER JOIN DegreeProgram c 
-                    ON (a.firstDegreeProgramChoice = c.id)
-                    INNER JOIN Results d
-                    ON(a.id = d.application)
-                    WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved = true ORDER BY d.grade DESC LIMIT 5;";
-                $result5 = $this->mysqli->execute_query($query5, [$idProcess]);
-
-                $higherScores = [];
-                foreach($result5 as $row){
-                    $higherScores[] = [
-                        "id" => $row["id"],
-                        "name"=>$row["name"],
-                        "career"=>$row["career"],
-                        "score"=>$row["grade"],
-                    ] ;
-                }
+                $applications = $this->getApprovedApplications($idProcess, 0);
 
                 $query7 = 'SELECT active FROM SendedEmail
                             WHERE academicProcess=?;';
@@ -381,10 +430,11 @@
                     "status" => true,
                     "message" => "Petición realizada con exito.",
                     "data" => [
+                        "idAcademicEvent"=> $idProcess,
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
                         "regionalCenters" => $regionalCenters,
-                        "higherScores" => $higherScores,
+                        "applications" => $applications,
                         "approvedStudents"=> $approvedStudents,
                         "sendedEmail"=> $sendedEmail
                     ]
@@ -440,27 +490,6 @@
                 ];
             }
 
-            //Obtener estadisticas de las inscripciones
-            $query2= "SELECT a.id, CONCAT(b.names, ' ', b.lastNames) as name, c.description as career, d.grade
-                    FROM Application a
-                    INNER JOIN Applicant b
-                    ON (a.idApplicant = b.id)
-                    INNER JOIN DegreeProgram c 
-                    ON (a.firstDegreeProgramChoice = c.id)
-                    INNER JOIN Results d
-                    ON(a.id = d.application)
-                    WHERE a.academicEvent = ? AND admissionTest=1 AND a.approved=true ORDER BY d.grade DESC LIMIT 5;";
-            $result2 = $this->mysqli->execute_query($query2, [$id]);
-
-            foreach($result2 as $row){
-                $higherScores[] = [
-                    "id" => $row["id"],
-                    "name"=>$row["name"],
-                    "career"=>$row["career"],
-                    "score"=>$row["grade"],
-                ] ;
-            }
-
             //Obtener información sobre las estadisticas en los centros regionales
             $query3 = 'CALL RegionalCentersStadistics(?);';
 
@@ -478,7 +507,7 @@
             $result3 = $this->mysqli->execute_query($query3, [$id]);
 
             //Obtener informacion general del proceso
-            $query4="SELECT CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
+            $query4="SELECT a.id, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(a.startDate, '%d de %M, %Y') as start, DATE_FORMAT(a.finalDate, '%d de %M, %Y') as final
                     FROM AcademicEvent a
                     INNER JOIN AcademicProcess b ON (a.process = b.id)
                     WHERE a.id = ?;";
@@ -486,11 +515,15 @@
 
             foreach($result4 as $row){
                 $infoProcess = [
+                    "id"=> $row['id'],
                     "name"=>$row["processName"],
                     "start"=>$row["start"],
                     "end"=>$row["final"]
                 ] ;
             }
+
+            //Obtener inscripciones
+            $applications = $this->getApprovedApplications((int) $infoProcess['id'], 0);
 
             $query6 = 'SELECT COUNT(*) as amount FROM Application
                         WHERE academicEvent=? AND (approvedFirstChoice=true OR approvedSecondChoice=true);';
@@ -504,7 +537,7 @@
             return [
                 "infoProcess"=> $infoProcess,
                 "inscriptionInfo"=> $inscriptionInfo,
-                "higherScores"=> $higherScores,
+                "applications"=> $applications,
                 "regionalCenters"=>$regionalCenters,
                 "approvedStudents"=> $approvedStudents,
             ];

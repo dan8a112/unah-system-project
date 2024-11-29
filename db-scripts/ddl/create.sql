@@ -353,24 +353,6 @@ END //
     version: 0.2.0
     date: 28/11/24
 
-    Procedimiento almacenado para saber la cantidad de inscripciones
-**/
-CREATE PROCEDURE LastestInscription (IN p_id INT)
-BEGIN
-    SELECT a.id,  b.firstName, CONCAT(b.names, ' ', b.lastNames) as name, c.description, a.applicationDate
-    FROM Application a
-    INNER JOIN Applicant b
-    ON (a.idApplicant = b.id)
-    INNER JOIN DegreeProgram c 
-    ON (a.firstDegreeProgramChoice = c.id)
-    WHERE a.academicEvent = p_id ORDER BY a.id DESC LIMIT 5;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.2.0
-    date: 28/11/24
-
     Procedimiento almacenado para obtener los resultados de las inscripciones
 **/
 CREATE PROCEDURE ResultsActualProcess()
