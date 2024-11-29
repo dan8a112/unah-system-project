@@ -10,7 +10,7 @@
 
    
     $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-    $professors = $dao->getProfessors();
+    $professors = $dao->getProfessors(0);
     $amount = $dao->getAmountProfessors();
 
     $json = [

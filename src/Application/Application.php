@@ -146,6 +146,37 @@
             return $applications;
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 28/11/24
+         * 
+         * Funcion para paginar las inscripciones a las que no se les inserto resultados
+         */
+        public function getMissingResults(int $offset, int $counter){
+            $query = "SELECT  d.id as dni, a.admissionTest, a.grade
+                    FROM Results a 
+                    INNER JOIN Application b ON(a.application=b.id)
+                    INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                    INNER JOIN Applicant d ON(b.idApplicant=d.id)
+                    WHERE c.active = true AND a.grade IS NULL
+                    LIMIT 10 OFFSET ?;";
+            $result = $this->mysqli->execute_query($query, [$offset]);
+            $applications = [];
+            if ($result) {
+                foreach($result as $row){
+                    $applications[] = [
+                        $counter,
+                        $row["dni"],
+                        $row["admissionTest"],
+                        $row["grade"]
+                    ];
+                    $counter ++;
+                } 
+            } 
+            return $applications;
+        }
+
 
         /**
          * author: dorian.contreras@unah.hn
@@ -653,27 +684,37 @@
                 
                     fclose($handle);
 
-                    $missingData = [];
-                    $query1 = 'SELECT  d.id as dni, a.admissionTest, a.grade
-                                FROM Results a 
-                                INNER JOIN Application b ON(a.application=b.id)
-                                INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
-                                INNER JOIN Applicant d ON(b.idApplicant=d.id)
-                                WHERE c.active = true AND a.grade IS NULL;';
-        
-                    $result1 = $this->mysqli->execute_query($query1);
-                    $counter2= 1;
+                    $missingData = $this->getMissingResults(0, 1);
 
-                    foreach($result1 as $row){
-                        $missingData[] = [
-                            $counter2,
-                            $row["dni"],
-                            $row["admissionTest"],
-                            $row["grade"]
+                    $query1 = "SELECT COUNT(*) as amount
+                        FROM Results a 
+                        INNER JOIN Application b ON(a.application=b.id)
+                        INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                        WHERE c.active = true AND a.grade IS NULL;";
+                    $result1 = $this->mysqli->execute_query($query1);
+                    $reviewers = [];
+                    if ($result1) {
+                        foreach($result1 as $row){
+                            $missingTotalAmount = $row['amount'];
+                        } 
+
+                        return [
+                            "status" => true,
+                            "message" => "CSV leido",
+                            "incorrectData"=> $incorrectData,
+                            "missingData"=> $missingData,
+                            "missingAmount"=> $missingTotalAmount
                         ];
 
-                        $counter2++;
-                    };
+                    }else{
+                        return [
+                            "status" => true,
+                            "message" => "Error al obtener cantidad total de inscripciones faltantes.",
+                            "incorrectData"=> $incorrectData,
+                            "missingData"=> $missingData,
+                            "missingAmount"=> 0
+                        ];
+                    }
 
                     return [
                         "status" => true,
