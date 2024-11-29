@@ -394,6 +394,15 @@
                 //Obtener información sobre los revisadores
                 $reviewers= $this->getReviewers($idProcess, 0);
 
+                $query8 = 'SELECT COUNT(*) as amount FROM Reviewer
+                            WHERE active=true';
+
+                $result8 = $this->mysqli->execute_query($query8);
+
+                foreach($result8 as $row){
+                    $amountReviewers= $row['amount'];
+                }
+
                 return [
                     "status" => true,
                     "message" => "Petición realizada con exito.",
@@ -401,7 +410,8 @@
                         "idAcademicEvent"=> $idProcess,
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
-                        "reviewers"=> $reviewers
+                        "reviewers"=> $reviewers,
+                        "amountReviewers"=> $amountReviewers
                     ]
                 ];
 
