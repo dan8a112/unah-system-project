@@ -32,3 +32,11 @@ h1{
 .select-control {
     width: 100%;
 }
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+input::placeholder {
+    text-transform: none;
+}
