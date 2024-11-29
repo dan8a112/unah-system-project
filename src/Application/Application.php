@@ -165,6 +165,7 @@
             if($currentProcess['status']){
                 return [
                     "status" => false,
+                    "code"=> 0,
                     "message" => $currentProcess['message']
                 ];
             }else{
@@ -173,6 +174,7 @@
                 if(!Validator::isHondurasIdentityNumber($identityNumber)){
                     return [
                         "status" => false,
+                        "code"=> 0,
                         "message" => "EL número de identidad no es válido."
                     ];
                 }
@@ -180,6 +182,7 @@
                 if(!Validator::isPhoneNumber($telephoneNumber)){
                     return [
                         "status" => false,
+                        "code"=> 0,
                         "message" => "Número de teléfono inválido"
                     ];
                 }
@@ -187,6 +190,7 @@
                 if(!Validator::isEmail($personalEmail)){
                     return [
                         "status" => false,
+                        "code"=> 0,
                         "message" => "Email inválido"
                     ];
                 }
@@ -194,6 +198,7 @@
                 if(!Validator::isValidName($names)){
                     return [
                         "status" => false,
+                        "code"=> 0,
                         "message" => "Nombres inválidos. Recuerde no usar números."
                     ];
                 }
@@ -201,6 +206,7 @@
                 if(!Validator::isValidName($lastNames)){
                     return [
                         "status" => false,
+                        "code"=> 0,
                         "message" => "Apellidos inválidos. Recuerde no usar números."
                     ];
                 }
@@ -250,6 +256,7 @@
                             return [
                                 "status" => true,
                                 "message" => "Inscription hecha correctamente",
+                                "code"=> 3,
                                 "exams"=> $exams
                             ];
 
@@ -257,7 +264,8 @@
 
                             return [
                                 "status" => false,
-                                "message" => $resultArray['message']
+                                "message" => $resultArray['message'],
+                                "code"=> $resultArray['code']
                             ];
                         }
 
@@ -265,7 +273,8 @@
 
                         return [
                             "status" => false,
-                            "message" => "Error al ejecutar el procedimiento: " . $conexion->error
+                            "message" => "Error al ejecutar el procedimiento: " . $conexion->error,
+                            "code"=> 1
                         ];
                     }
                     

@@ -45,24 +45,28 @@
                 $json = [
                     "message" => $result["message"],
                     "status" => $result["status"],
-                    "exams" => $result["exams"]
+                    "exams" => $result["exams"],
+                    "code"=> $result['code']
                 ];
             } else {
                 $json = [
                     "status" => false,
-                    "message" => "El archivo del certificado no cumple con el tamaño mínimo de " . ($minSize / 1024) . " KB."
+                    "message" => "El archivo del certificado no cumple con el tamaño mínimo de " . ($minSize / 1024) . " KB.",
+                    "code"=> 5
                 ];
             }
         } else {
             $json = [
                 "status" => false,
-                "message" => "No se pudo leer el archivo del certificado."
+                "message" => "No se pudo leer el archivo del certificado.",
+                "code" => 6
             ];
         }
     } else {
         $json = [
             "status" => false,
-            "message" => "No se recibió el parámetro correcto"
+            "message" => "No se recibió el parámetro correcto",
+            "code"=> 7,
         ];
     }
 

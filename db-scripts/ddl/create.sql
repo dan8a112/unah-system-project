@@ -205,7 +205,8 @@ BEGIN
         -- Si el ID ya existe pero los datos no coinciden, lanzamos un error
         SELECT JSON_OBJECT(
             'status', false,
-            'message', 'El ID ya existe con datos diferentes; no se puede insertar el nuevo solicitante.'
+            'message', 'El ID ya existe con datos diferentes; no se puede insertar el nuevo solicitante.',
+            'code', '3'
         ) AS resultJson;
 
     ELSE
@@ -235,7 +236,8 @@ BEGIN
     IF (attempts >= 3) THEN
         SELECT JSON_OBJECT(
             'status', false,
-            'message', 'Excede el limite de intentos permitidos para el proceso de admisión'
+            'message', 'Excede el limite de intentos permitidos para el proceso de admisión',
+            'code', '4'
         ) AS resultJson;  
     ELSE
         INSERT INTO Application (
