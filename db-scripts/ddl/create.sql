@@ -219,8 +219,8 @@ BEGIN
             personalEmail
         ) VALUES (
             p_id,
-            names,
-            lastNames,
+            p_names,
+            p_lastNames,
             p_schoolCertificate,
             p_telephoneNumber,
             p_personalEmail
@@ -1237,7 +1237,7 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
 ;
 
 INSERT INTO Configuration(data) VALUES
-    ('{"maxAttemtps":3}')
+    ('{"maxAttemtps":2}')
 ;
 
 INSERT INTO Applicant (id, names, lastNames, schoolCertificate, telephoneNumber, personalEmail) VALUES

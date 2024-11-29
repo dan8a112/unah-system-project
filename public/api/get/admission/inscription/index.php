@@ -8,8 +8,8 @@
     //Data Access Object
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    if(isset($_GET["id"])){
-        $json = $dao->getApplication($_GET["id"]);
+    if(isset($_GET["id"]) && isset($_GET["idAdmissionProcess"])){
+        $json = $dao->getApplication($_GET["id"],$_GET["idAdmissionProcess"] );
     }else{
         $json = [
             "message"=> "No se recibió el parámetro correcto",

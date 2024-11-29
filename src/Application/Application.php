@@ -61,9 +61,11 @@
          * 
          * Función para insertar una inscripción en la tabla 'Application'
          */
-        public function setApplication(string $identityNumber,string $firstName,string $secondName,string $firstLastName, string $secondLastName, $pathSchoolCertificate, string $telephoneNumber,
+        public function setApplication(string $identityNumber,string $names,string $lastNames, $schoolCertificate, string $telephoneNumber,
             string $personalEmail, int $firstDegreeProgramChoice,int $secondDegreeProgramChoice,int $regionalCenterChoice){
 
+            $names = mb_convert_case($names, MB_CASE_TITLE, "UTF-8");
+            $lastNames = mb_convert_case($lastNames, MB_CASE_TITLE, "UTF-8");
             //validación de que no exista una aplicacion del aplicante con este dni
             $currentProcess = $this->applicationInCurrentProcess($identityNumber);
 
@@ -78,7 +80,7 @@
                 if(!Validator::isHondurasIdentityNumber($identityNumber)){
                     return [
                         "status" => false,
-                        "message" => "Número de identidad inválido"
+                        "message" => "EL número de identidad no es válido."
                     ];
                 }
 
@@ -96,36 +98,22 @@
                     ];
                 }
 
-                if(!Validator::isValidName($firstName) || $firstName==""){
+                if(!Validator::isValidName($names)){
                     return [
                         "status" => false,
-                        "message" => "Primer nombre inválido"
+                        "message" => "Nombres inválidos. Recuerde no usar números."
                     ];
                 }
 
-                if(!Validator::isValidSecondName($secondName)){
+                if(!Validator::isValidName($lastNames)){
                     return [
                         "status" => false,
-                        "message" => "Segundo nombre inválido"
+                        "message" => "Apellidos inválidos. Recuerde no usar números."
                     ];
                 }
 
-                if(!Validator::isValidName($firstLastName) || $firstLastName==""){
-                    return [
-                        "status" => false,
-                        "message" => "Primer apellido inválido"
-                    ];
-                }
-
-                if(!Validator::isValidName($secondLastName)){
-                    return [
-                        "status" => false,
-                        "message" => "Segundo apellido inválido"
-                    ];
-                }
-                
                 //Procedimiento almacenado para insertar la inscripcion
-                $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?,?,?);";
+                $query= "CALL insertApplicant(?,?,?,?,?,?,?,?,?);";
 
                 //Obtener los examenes que tiene que hacer el aplicante
                 $query1= 
@@ -146,7 +134,7 @@
 
                 try{
                     //Insertar inscripcion
-                    $result = $this->mysqli->execute_query($query, [$identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $pathSchoolCertificate, $telephoneNumber,
+                    $result = $this->mysqli->execute_query($query, [$identityNumber, $names, $lastNames, $schoolCertificate, $telephoneNumber,
                         $personalEmail, $firstDegreeProgramChoice,$secondDegreeProgramChoice,$regionalCenterChoice]);
                     
                     if ($row = $result->fetch_assoc()) {
@@ -453,7 +441,7 @@
             }
 
             //Obtener estadisticas de las inscripciones
-            $query2= "SELECT a.id, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName) as name, c.description as career, d.grade
+            $query2= "SELECT a.id, CONCAT(b.names, ' ', b.lastNames) as name, c.description as career, d.grade
                     FROM Application a
                     INNER JOIN Applicant b
                     ON (a.idApplicant = b.id)
@@ -778,55 +766,93 @@
          * version: 0.1.0
          * date: 25/11/24
         */
-        public function getApplication(int $id) {
+        public function getApplication(int $id, int $idAdmissionProcess) {
             $applicant = [];
             $insciption = [];
             $file = NULL;
             $mimeType = NULL;
-        
-            // Obtener la información de la base
-            $query = "SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, 
-                             b.id as dni, b.telephoneNumber, b.personalEmail, 
-                             c.description as firstCareer, d.description as secondCareer, e.description as regionalCenter, 
-                             b.pathSchoolCertificate
-                      FROM Application a
-                      INNER JOIN Applicant b ON(a.idApplicant=b.id)
-                      INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
-                      INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
-                      INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
-                      WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND a.id = ?;";
-        
-            $result = $this->mysqli->execute_query($query, [$id]);
-        
-            foreach ($result as $row) {
 
-                // Construir la información del solicitante y la inscripción
-                $applicant = [
+            if($idAdmissionProcess>0){
+                // Obtener la información de la base
+                $query = "SELECT a.id as idApplication, CONCAT(b.names, ' ', b.lastNames) as name, 
+                    b.id as dni, b.telephoneNumber, b.personalEmail, 
+                    c.description as firstCareer, d.description as secondCareer, e.description as regionalCenter, 
+                    b.schoolCertificate
+                    FROM Application a
+                    INNER JOIN Applicant b ON(a.idApplicant=b.id)
+                    INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+                    INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
+                    INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
+                    WHERE a.academicEvent = ? AND a.id = ?;";
+
+                $result = $this->mysqli->execute_query($query, [$idAdmissionProcess, $id]);
+
+                foreach ($result as $row) {
+                    // Construir la información del solicitante y la inscripción
+                    $applicant = [
                     "name" => $row['name'],
                     "dni" => $row['dni'],
                     "phoneNumber" => $row['telephoneNumber'],
                     "email" => $row['personalEmail']
-                ];
-                $insciption = [
+                    ];
+                    $insciption = [
                     "firstOption" => $row['firstCareer'],
                     "secondOption" => $row['secondCareer'],
                     "campus" => $row['regionalCenter'],
-                ];
-        
-                // Procesar el archivo BLOB
-                $file = $row['pathSchoolCertificate']; // BLOB directamente de la base de datos
-                if ($file) {
-                    $finfo = finfo_open(FILEINFO_MIME_TYPE); // Obtener el tipo MIME
-                    $mimeType = finfo_buffer($finfo, $file); // Detectar el tipo del archivo
-                    finfo_close($finfo);
+                    ];
 
-                    // Codificar en base64 para la respuesta
-                    $fileBase64 = base64_encode($file);
-                } else {
-                    $fileBase64 = null;
-                    $mimeType = null;
+                    // Procesar el archivo BLOB
+                    $file = $row['schoolCertificate']; // BLOB directamente de la base de datos
                 }
-                // Retornar los resultados
+
+            }else{
+                // Obtener la información de la base
+                $query = "SELECT a.id as idApplication, CONCAT(b.names, ' ', b.lastNames) as name, 
+                    b.id as dni, b.telephoneNumber, b.personalEmail, 
+                    c.description as firstCareer, d.description as secondCareer, e.description as regionalCenter, 
+                    b.schoolCertificate
+                    FROM Application a
+                    INNER JOIN Applicant b ON(a.idApplicant=b.id)
+                    INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
+                    INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
+                    INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
+                    WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND a.id = ?;";
+
+                $result = $this->mysqli->execute_query($query, [$id]);
+
+                foreach ($result as $row) {
+                    // Construir la información del solicitante y la inscripción
+                    $applicant = [
+                    "name" => $row['name'],
+                    "dni" => $row['dni'],
+                    "phoneNumber" => $row['telephoneNumber'],
+                    "email" => $row['personalEmail']
+                    ];
+                    $insciption = [
+                    "firstOption" => $row['firstCareer'],
+                    "secondOption" => $row['secondCareer'],
+                    "campus" => $row['regionalCenter'],
+                    ];
+
+                    // Procesar el archivo BLOB
+                    $file = $row['schoolCertificate']; // BLOB directamente de la base de datos
+                }
+
+            }
+        
+            if ($file) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE); // Obtener el tipo MIME
+                $mimeType = finfo_buffer($finfo, $file); // Detectar el tipo del archivo
+                finfo_close($finfo);
+
+                // Codificar en base64 para la respuesta
+                $fileBase64 = base64_encode($file);
+            } else {
+                $fileBase64 = null;
+                $mimeType = null;
+            }
+            // Retornar los resultados
+            if($applicant['dni'] != NULL){
                 return [
                     "status" => true,
                     "message" => "Petición hecha correctamente.",
@@ -838,8 +864,8 @@
                             "content" => $fileBase64 // Archivo codificado en base64
                         ]
                     ]
-                ];
-            } 
+                ]; 
+            }
             
             return [
                 "status" => false,

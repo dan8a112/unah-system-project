@@ -11,13 +11,16 @@
         isset($_POST["idFirstDegreeProgramChoice"]) &&
         isset($_POST["idSecondDegreeProgramChoice"]) &&
         isset($_POST["idRegionalCenterChoice"]) &&
+        isset($_POST["names"]) &&
+        isset($_POST["lastNames"]) &&
+        isset($_POST["personalEmail"]) &&
+        isset($_POST["telephoneNumber"]) &&
+        isset($_POST["identityNumber"]) &&
         isset($_FILES["pathSchoolCertificate"])
     ) {
         $identityNumber = $_POST["identityNumber"];
-        $firstName = $_POST['firstName'] ?? '';
-        $secondName = $_POST['secondName'] ?? '';
-        $firstLastName = $_POST['firstLastName'] ?? '';
-        $secondLastName = $_POST['SecondLastName'] ?? '';
+        $names = $_POST['names'] ?? '';
+        $lastNames = $_POST['lastNames'] ?? '';
         $pathSchoolCertificate = $_FILES['pathSchoolCertificate']['tmp_name'] ?? '';  // Obtener ruta temporal del archivo
         $certificateSize = $_FILES['pathSchoolCertificate']['size'] ?? 0;  // Tamaño del archivo en bytes
         $telephoneNumber = $_POST['telephoneNumber'] ?? '';
@@ -28,16 +31,15 @@
 
         // Tamaño mínimo en bytes (por ejemplo, 100 KB = 100 * 1024 bytes)
         $minSize = 100 * 1024;
-
         if (!empty($pathSchoolCertificate) && file_exists($pathSchoolCertificate)) {
             if ($certificateSize >= $minSize) {
                 $fileData = file_get_contents($pathSchoolCertificate);
 
                 // Escapar los datos binarios para seguridad
-                //$fileData = $conn->real_escape_string($fileData);
+                //$fileData = $conn->real_escape_string($fileData);*/
 
                 $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-                $result = $dao->setApplication($identityNumber, $firstName, $secondName, $firstLastName, $secondLastName, $fileData, $telephoneNumber, $personalEmail,
+                $result = $dao->setApplication($identityNumber, $names, $lastNames, $fileData, $telephoneNumber, $personalEmail,
                     $firstDegreeProgramChoice, $secondDegreeProgramChoice, $regionalCenterChoice);
 
                 $json = [
