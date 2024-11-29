@@ -44,11 +44,9 @@ CREATE TABLE AdmissionDegree(
 
 CREATE TABLE Applicant(
 	id VARCHAR(15) PRIMARY KEY,
-    firstName VARCHAR(15) NOT NULL,
-    secondName VARCHAR(15) NOT NULL,
-    firstLastName VARCHAR(15) NOT NULL,
-    secondLastName VARCHAR(15) NOT NULL,
-    pathSchoolCertificate LONGBLOB NOT NULL,
+    names VARCHAR(60) NOT NULL,
+    lastNames VARCHAR(60) NOT NULL,
+    schoolCertificate LONGBLOB NOT NULL,
     telephoneNumber VARCHAR(12),
     personalEmail VARCHAR(50) 
 );
@@ -111,10 +109,8 @@ CREATE TABLE Application(
 CREATE TABLE Employee(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     dni VARCHAR (15) NOT NULL,
-	firstName VARCHAR(15) NOT NULL,
-    secondName VARCHAR(15) NOT NULL,
-    firstLastName VARCHAR(15) NOT NULL,
-    secondLastName VARCHAR(15) NOT NULL,
+    names VARCHAR(60) NOT NULL,
+    lastNames VARCHAR(60) NOT NULL,
     telephoneNumber VARCHAR(12) NOT NULL,
     personalEmail VARCHAR(30) NOT NULL,
     password VARCHAR (60) NOT NULL,
@@ -173,18 +169,16 @@ DELIMITER //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.2.0
-    date: 11/11/24
+    version: 0.3.0
+    date: 28/11/24
 
     Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante y el limite de aplicaciones que puede hacer
 **/
 CREATE PROCEDURE insertApplicant(
     IN p_id VARCHAR(15),
-    IN p_firstName VARCHAR(15),
-    IN p_secondName VARCHAR(15),
-    IN p_firstLastName VARCHAR(15),
-    IN p_secondLastName VARCHAR(15),
-    IN p_pathSchoolCertificate LONGBLOB,
+    IN p_names VARCHAR(60),
+    IN p_lastNames VARCHAR(60),
+    IN p_schoolCertificate LONGBLOB,
     IN p_telephoneNumber VARCHAR(12),
     IN p_personalEmail VARCHAR(50),
     IN p_firstDegreeProgramChoice SMALLINT,
@@ -198,11 +192,11 @@ BEGIN
     DECLARE idCurrentProcess INT;
 
     -- Verificar si el ID y el nombre completo ya existen en la tabla Applicant
-    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id AND firstName = p_firstName AND secondName = p_secondName AND  firstLastName = p_firstLastName AND secondLastName=p_secondLastName) THEN
+    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id AND names = p_names AND lastNames = p_lastNames) THEN
         -- Si existen, actualizar los datos del solicitante y hacer la nueva aplicacion
         UPDATE Applicant
         SET 
-            pathSchoolCertificate = p_pathSchoolCertificate,
+            schoolCertificate = p_schoolCertificate,
             telephoneNumber = p_telephoneNumber,
             personalEmail = p_personalEmail
         WHERE id = p_id;
@@ -218,20 +212,16 @@ BEGIN
         -- Si el solicitante no existe, insertamos un nuevo registro en Applicant y en Application
         INSERT INTO Applicant (
             id,
-            firstName,
-            secondName,
-            firstLastName,
-            secondLastName,
-            pathSchoolCertificate,
+            names,
+            lastNames,
+            schoolCertificate,
             telephoneNumber,
             personalEmail
         ) VALUES (
             p_id,
-            p_firstName,
-            p_secondName,
-            p_firstLastName,
-            p_secondLastName,
-            p_pathSchoolCertificate,
+            names,
+            lastNames,
+            p_schoolCertificate,
             p_telephoneNumber,
             p_personalEmail
         );
@@ -360,14 +350,14 @@ END //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 11/11/24
+    version: 0.2.0
+    date: 28/11/24
 
     Procedimiento almacenado para saber la cantidad de inscripciones
 **/
 CREATE PROCEDURE LastestInscription (IN p_id INT)
 BEGIN
-    SELECT a.id,  b.firstName, b.secondName, b.firstLastName, b.secondLastName, c.description, a.applicationDate
+    SELECT a.id,  b.firstName, CONCAT(b.names, ' ', b.lastNames) as name, c.description, a.applicationDate
     FROM Application a
     INNER JOIN Applicant b
     ON (a.idApplicant = b.id)
@@ -378,8 +368,8 @@ END //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 12/11/24
+    version: 0.2.0
+    date: 28/11/24
 
     Procedimiento almacenado para obtener los resultados de las inscripciones
 **/
@@ -388,7 +378,7 @@ BEGIN
     DECLARE idCurrent INT;
     SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=true);
 
-    SELECT a.id as idApplication, CONCAT(b.firstName, ' ', b.secondName,' ', b.firstLastName, ' ', b.secondLastName) as name, b.personalEmail, c.description as firstCareer, d.description as secondCareer, a.approvedFirstChoice, a.approvedSecondChoice
+    SELECT a.id as idApplication, CONCAT(b.names, ' ', b.lastNames) as name, b.personalEmail, c.description as firstCareer, d.description as secondCareer, a.approvedFirstChoice, a.approvedSecondChoice
     FROM Application a
     INNER JOIN Applicant b ON(a.idApplicant=b.id)
     INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
@@ -398,19 +388,16 @@ END //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 16/11/24
+    version: 0.2.0
+    date: 28/11/24
 
     Procedimiento almacenado para insertar docentes
 **/
 CREATE PROCEDURE insertProfessor(
     IN p_dni VARCHAR(15),
-    IN p_firstName VARCHAR(15),
-    IN p_secondName VARCHAR(15),
-    IN p_firstLastName VARCHAR(15),
-    IN p_secondLastName VARCHAR(15),
+    IN p_names VARCHAR(60),
+    IN p_lastNames VARCHAR(60),
     IN p_telephoneNumber VARCHAR(12),
-    IN p_personalEmail VARCHAR(50),
     IN p_password VARCHAR(60),
     IN p_address VARCHAR(30),
     IN p_dateOfBirth DATE,
@@ -418,11 +405,17 @@ CREATE PROCEDURE insertProfessor(
     IN p_department INT
 )
 BEGIN
-
-    DECLARE newEmail VARCHAR(50) DEFAULT p_personalEmail;
+    DECLARE newEmail VARCHAR(50);
     DECLARE randomLetter CHAR(1);
     DECLARE emailExists BOOLEAN DEFAULT TRUE;
     DECLARE counter INT DEFAULT 1;
+    DECLARE nameParts INT;
+    DECLARE lastNameParts INT;
+    DECLARE firstName VARCHAR(15);
+    DECLARE secondName VARCHAR(15);
+    DECLARE firstLastName VARCHAR(15);
+    DECLARE secondLastName VARCHAR(15);
+    DECLARE nameLength INT;
 
     -- Verificar si el ID existe
     IF EXISTS (SELECT 1 FROM Employee WHERE dni = p_dni) THEN
@@ -444,60 +437,66 @@ BEGIN
             'message', 'Ya existe un coordinador de departamento.'
         ) AS resultJson;
     ELSE
+        -- Separar los nombres
+        SET nameParts = LENGTH(p_names) - LENGTH(REPLACE(p_names, ' ', '')) + 1;
+        SET lastNameParts = LENGTH(p_lastNames) - LENGTH(REPLACE(p_lastNames, ' ', '')) + 1;
 
+        -- Extraer nombres
+        SET firstName = TRIM(SUBSTRING_INDEX(p_names, ' ', 1));
+        SET secondName = TRIM(IF(nameParts > 1, SUBSTRING_INDEX(SUBSTRING_INDEX(p_names, ' ', 2), ' ', -1), ''));
+
+        -- Extraer apellidos
+        SET firstLastName = TRIM(SUBSTRING_INDEX(p_lastNames, ' ', 1));
+        SET secondLastName = TRIM(IF(lastNameParts > 1, SUBSTRING_INDEX(SUBSTRING_INDEX(p_lastNames, ' ', 2), ' ', -1), ''));
+
+        SET newEmail = CONCAT(firstName, '.', firstLastName, '@unah.edu.hn');
+        
         WHILE emailExists DO
             -- Verificar si el correo ya existe
             IF EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) THEN
-                -- Cambiar a la siguiente estrategia dependiendo del valor del contador
                 CASE counter
                     WHEN 1 THEN
-                        -- Primer nombre + segundo apellido
-                        SET newEmail = CONCAT(LOWER(p_firstName), '.', LOWER(p_secondLastName), '@unah.edu.hn');  
-                    WHEN 2 THEN
                         -- Primera letra del primer nombre + primer apellido
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(p_firstLastName), '@unah.edu.hn');
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 1)), LOWER(firstLastName), '@unah.edu.hn');
+                    WHEN 2 THEN
+                        -- Primeras dos letras del primer nombre + primer apellido
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 2)), LOWER(firstLastName), '@unah.edu.hn');
                     WHEN 3 THEN
-                        -- Primeras letras de ambos nombres + primer apellido
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), LOWER(p_firstLastName), '@unah.edu.hn');
+                        -- Primer nombre completo + primera letra del segundo nombre (si existe) + primer apellido
+                        SET newEmail = CONCAT(LOWER(firstName), LOWER(SUBSTRING(secondName, 1, 1)), LOWER(firstLastName), '@unah.edu.hn');
                     WHEN 4 THEN
-                        -- Primeras letras de ambos nombres y primer apellido + segundo nombre
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), LOWER(SUBSTRING(p_firstLastName, 1, 1)), LOWER(p_secondLastName), '@unah.edu.hn');
+                        -- Primer nombre completo + primeras dos letras del segundo nombre (si existe) + primer apellido
+                        SET newEmail = CONCAT(LOWER(firstName), LOWER(SUBSTRING(secondName, 1, 2)), LOWER(firstLastName), '@unah.edu.hn');
                     WHEN 5 THEN
-                        -- Primeras dos letras de ambos nombres + primer apellido
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(p_firstName, 1, 2)), LOWER(SUBSTRING(p_secondName, 1, 2)), LOWER(p_firstLastName), '@unah.edu.hn');
+                        -- Primera letra del primer nombre + segundo apellido (si existe)
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 1)), LOWER(secondLastName), '@unah.edu.hn');
                     WHEN 6 THEN
-                        -- Segundo apellido + Primer nombre 
-                        SET newEmail = CONCAT(LOWER(p_secondLastName), '.', LOWER(p_firstName), '@unah.edu.hn');  
-                    WHEN 7 THEN
-                        -- Primera letra del primer nombre + primer apellido (al reves)
-                        SET newEmail = CONCAT(LOWER(p_firstLastName), LOWER(SUBSTRING(p_firstName, 1, 1)), '@unah.edu.hn');
-                    WHEN 8 THEN
-                        -- Primeras letras de ambos nombres + primer apellido (al reves)
-                        SET newEmail = CONCAT(LOWER(p_firstLastName), LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), '@unah.edu.hn');
-                    WHEN 9 THEN 
-                        -- Primeras letras de ambos nombres y primer apellido + segundo nombre (al reves)
-                        SET newEmail = CONCAT(LOWER(p_secondLastName), LOWER(SUBSTRING(p_firstName, 1, 1)), LOWER(SUBSTRING(p_secondName, 1, 1)), LOWER(SUBSTRING(p_firstLastName, 1, 1)),  '@unah.edu.hn');
-                    WHEN 10 THEN
-                        -- Primeras dos letras de ambos nombres + primer apellido
-                        SET newEmail = CONCAT(LOWER(p_firstLastName), LOWER(SUBSTRING(p_firstName, 1, 2)), LOWER(SUBSTRING(p_secondName, 1, 2)), '@unah.edu.hn');
+                        -- Primeras dos letras del primer nombre + segundo apellido (si existe)
+                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 2)), LOWER(secondLastName), '@unah.edu.hn');
                     ELSE
-                        -- Agregar una letra como último recurso
-                        SET randomLetter = CHAR(FLOOR(65 + (RAND() * 26)));
-                        SET newEmail = CONCAT(LOWER(p_firstName), '.', LOWER(p_firstLastName), LOWER(randomLetter), '@unah.edu.hn');
+                        -- Continuar incrementando las letras del primer nombre si no hay combinaciones
+                        SET nameLength = LENGTH(firstName);
+                        IF counter - 6 <= nameLength THEN
+                            -- Usar hasta la siguiente letra del primer nombre
+                            SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, counter - 6)), '.', LOWER(firstLastName), '@unah.edu.hn');
+                        ELSE
+                            -- Agregar una letra como último recurso
+                            SET randomLetter = CHAR(FLOOR(65 + (RAND() * 26)));
+                            SET newEmail = CONCAT(LOWER(firstName), '.', LOWER(firstLastName), LOWER(randomLetter), '@unah.edu.hn');
+                        END IF;
                 END CASE;
+                -- Incrementar el contador
+                SET counter = counter + 1;
             ELSE
                 -- Salir del bucle si el correo es único
                 SET emailExists = FALSE;
             END IF;
-            SET counter = counter + 1;
         END WHILE;
 
         INSERT INTO Employee (
             dni, 
-            firstName, 
-            secondName, 
-            firstLastName, 
-            secondLastName, 
+            names,
+            lastNames,
             telephoneNumber, 
             personalEmail, 
             password, 
@@ -505,10 +504,8 @@ BEGIN
             dateOfBirth
         ) VALUES (
             p_dni, 
-            p_firstName, 
-            p_secondName, 
-            p_firstLastName, 
-            p_secondLastName, 
+            p_names, 
+            p_lastNames, 
             p_telephoneNumber, 
             newEmail, 
             p_password, 
@@ -539,18 +536,16 @@ END //
 
 /**
     author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 17/11/24
+    version: 0.2.0
+    date: 28/11/24
 
     Procedimiento almacenado para actualizar docentes
 **/
 CREATE PROCEDURE updateProfessor(
     IN p_id INT,
     IN p_dni VARCHAR(15),
-    IN p_firstName VARCHAR(15),
-    IN p_secondName VARCHAR(15),
-    IN p_firstLastName VARCHAR(15),
-    IN p_secondLastName VARCHAR(15),
+    IN p_names VARCHAR(60),
+    IN p_lastNames VARCHAR(60),
     IN p_telephoneNumber VARCHAR(12),
     IN p_address VARCHAR(30),
     IN p_dateOfBirth DATE,
@@ -570,10 +565,8 @@ BEGIN
         UPDATE Employee
         SET 
             dni = p_dni,
-            firstName = p_firstName,
-            secondName = p_secondName,
-            firstLastName = p_firstLastName,
-            secondLastName = p_secondLastName,
+            names = p_names,
+            lastNames = p_lastNames,
             telephoneNumber = p_telephoneNumber,
             address = p_address,
             dateOfBirth = p_dateOfBirth
@@ -1156,14 +1149,14 @@ INSERT INTO RegionalCenterDegree (degree, regionalCenter) VALUES
     (51,19)
 ;
 
-INSERT INTO Employee (dni, firstName, secondName, firstLastName, secondLastName, telephoneNumber, personalEmail, password, address, dateOfBirth) VALUES 
-    ('0801-1999-01234', 'Juan', 'Carlos', 'Perez', 'Lopez', '98765432', 'juan.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
-    ('0801-1998-05678', 'Maria', 'Elena', 'Ramirez', 'Garcia', '91234567', 'maria.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
-    ('0801-2001-01111', 'Pedro', 'Luis', 'Castillo', 'Martinez', '98765432', 'pedro.castillo@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
-    ('0801-2002-02222', 'Ana', 'Maria', 'Lopez', 'Fernandez', '91234567', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
-    ('0801-2003-03333', 'Luis', 'Carlos', 'Hernandez', 'Diaz', '98765432', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
-    ('0801-2004-04444', 'Sofia', 'Isabel', 'Gomez', 'Rodriguez', '91234567', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
-    ('0801-2005-05555', 'Carlos', 'Alberto', 'Martinez', 'Lopez', '98765432', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
+INSERT INTO Employee (dni, names, lastNames, telephoneNumber, personalEmail, password, address, dateOfBirth) VALUES 
+    ('0801-1999-01234', 'Juan Carlos', 'Perez Lopez', '98765432', 'juan.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Principal #123', '1990-05-15'),
+    ('0801-1998-05678', 'Maria Elena', 'Ramirez Garcia', '91234567', 'maria.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Secundaria #456', '1988-10-20'),
+    ('0801-2001-01111', 'Pedro Luis', 'Castillo Martinez', '98765432', 'pedro.castillo@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Norte #789', '2001-03-10'),
+    ('0801-2002-02222', 'Ana Maria', 'Lopez Fernandez', '91234567', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
+    ('0801-2003-03333', 'Luis Carlos', 'Hernandez Diaz', '98765432', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
+    ('0801-2004-04444', 'Sofia Isabel', 'Gomez Rodriguez', '91234567', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
+    ('0801-2005-05555', 'Carlos Alberto', 'Martinez Lopez', '98765432', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
 ;
 
 INSERT INTO Administrative (id, administrativeType) VALUES
@@ -1247,27 +1240,27 @@ INSERT INTO Configuration(data) VALUES
     ('{"maxAttemtps":3}')
 ;
 
-INSERT INTO Applicant (id, firstName, secondName, firstLastName, secondLastName, pathSchoolCertificate, telephoneNumber, personalEmail) VALUES
-    ('0801-1990-01234', 'Juan', 'Carlos', 'Martínez', 'López', 'path1.pdf', '12345678', 'juan.carlos@gmail.com'),
-    ('0802-1995-05678', 'María', 'Alejandra', 'Gómez', 'Cruz', 'path2.pdf', '87654321', 'maria.gomez@gmail.com'),
-    ('0803-1993-04567', 'Carlos', 'Eduardo', 'Pérez', 'Mejía', 'path3.pdf', '12349876', 'carlos.perez@gmail.com'),
-    ('0804-1992-02345', 'Ana', 'Lucía', 'Rodríguez', 'Hernández', 'path4.pdf', '56781234', 'ana.rodriguez@gmail.com'),
-    ('0805-1994-08765', 'Luis', 'Fernando', 'Ramos', 'García', 'path5.pdf', '23456789', 'luis.ramos@gmail.com'),
-    ('0806-1991-03456', 'Sofía', 'María', 'Flores', 'Martínez', 'path6.pdf', '34567891', 'sofia.flores@gmail.com'),
-    ('0807-1997-09876', 'Miguel', 'Ángel', 'López', 'Ortega', 'path7.pdf', '45678912', 'miguel.lopez@gmail.com'),
-    ('0808-1996-05674', 'Sara', 'Isabel', 'Castro', 'Padilla', 'path8.pdf', '56789123', 'sara.castro@gmail.com'),
-    ('0809-1992-01234', 'Jorge', 'Manuel', 'Mendoza', 'Gutiérrez', 'path9.pdf', '67891234', 'jorge.mendoza@gmail.com'),
-    ('0810-1995-02345', 'Lucía', 'Andrea', 'Reyes', 'Castillo', 'path10.pdf', '78912345', 'lucia.reyes@gmail.com'),
-    ('0811-1991-04567', 'Daniel', 'Alberto', 'González', 'Díaz', 'path11.pdf', '89123456', 'daniel.gonzalez@gmail.com'),
-    ('0812-1998-03456', 'Paola', 'Montserrat', 'Sánchez', 'Morales', 'path12.pdf', '91234567', 'paola.sanchez@gmail.com'),
-    ('0813-1993-05678', 'Fernando', 'José', 'Ramírez', 'Velásquez', 'path13.pdf', '23451234', 'fernando.ramirez@gmail.com'),
-    ('0814-1997-01234', 'Alejandro', 'Luis', 'Navarro', 'Acosta', 'path14.pdf', '34562345', 'alejandro.navarro@gmail.com'),
-    ('0815-1995-08765', 'Mónica', 'Patricia', 'Campos', 'Ruiz', 'path15.pdf', '45673456', 'monica.campos@gmail.com'),
-    ('0816-1992-03456', 'Andrea', 'Carolina', 'Álvarez', 'Montes', 'path16.pdf', '56784567', 'andrea.alvarez@gmail.com'),
-    ('0817-1993-09876', 'Julio', 'César', 'Hernández', 'Espinoza', 'path17.pdf', '67895678', 'julio.hernandez@gmail.com'),
-    ('0818-1996-05678', 'Francisco', 'José', 'Lara', 'González', 'path18.pdf', '78906789', 'francisco.lara@gmail.com'),
-    ('0819-1995-02345', 'Sandra', 'Marcela', 'Velasco', 'Zelaya', 'path19.pdf', '89017890', 'sandra.velasco@gmail.com'),
-    ('0820-1991-06789', 'Ricardo', 'Antonio', 'Moncada', 'Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
+INSERT INTO Applicant (id, names, lastNames, schoolCertificate, telephoneNumber, personalEmail) VALUES
+    ('0801-1990-01234', 'Juan Carlos', 'Martínez López', 'path1.pdf', '12345678', 'juan.carlos@gmail.com'),
+    ('0802-1995-05678', 'María Alejandra', 'Gómez Cruz', 'path2.pdf', '87654321', 'maria.gomez@gmail.com'),
+    ('0803-1993-04567', 'Carlos Eduardo', 'Pérez Mejía', 'path3.pdf', '12349876', 'carlos.perez@gmail.com'),
+    ('0804-1992-02345', 'Ana Lucía', 'Rodríguez Hernández', 'path4.pdf', '56781234', 'ana.rodriguez@gmail.com'),
+    ('0805-1994-08765', 'Luis Fernando', 'Ramos García', 'path5.pdf', '23456789', 'luis.ramos@gmail.com'),
+    ('0806-1991-03456', 'Sofía María', 'Flores Martínez', 'path6.pdf', '34567891', 'sofia.flores@gmail.com'),
+    ('0807-1997-09876', 'Miguel Ángel', 'López Ortega', 'path7.pdf', '45678912', 'miguel.lopez@gmail.com'),
+    ('0808-1996-05674', 'Sara Isabel', 'Castro Padilla', 'path8.pdf', '56789123', 'sara.castro@gmail.com'),
+    ('0809-1992-01234', 'Jorge Manuel', 'Mendoza Gutiérrez', 'path9.pdf', '67891234', 'jorge.mendoza@gmail.com'),
+    ('0810-1995-02345', 'Lucía Andrea', 'Reyes Castillo', 'path10.pdf', '78912345', 'lucia.reyes@gmail.com'),
+    ('0811-1991-04567', 'Daniel Alberto', 'González Díaz', 'path11.pdf', '89123456', 'daniel.gonzalez@gmail.com'),
+    ('0812-1998-03456', 'Paola Montserrat', 'Sánchez Morales', 'path12.pdf', '91234567', 'paola.sanchez@gmail.com'),
+    ('0813-1993-05678', 'Fernando José', 'Ramírez Velásquez', 'path13.pdf', '23451234', 'fernando.ramirez@gmail.com'),
+    ('0814-1997-01234', 'Alejandro Luis', 'Navarro Acosta', 'path14.pdf', '34562345', 'alejandro.navarro@gmail.com'),
+    ('0815-1995-08765', 'Mónica Patricia', 'Campos Ruiz', 'path15.pdf', '45673456', 'monica.campos@gmail.com'),
+    ('0816-1992-03456', 'Andrea Carolina', 'Álvarez Montes', 'path16.pdf', '56784567', 'andrea.alvarez@gmail.com'),
+    ('0817-1993-09876', 'Julio César', 'Hernández Espinoza', 'path17.pdf', '67895678', 'julio.hernandez@gmail.com'),
+    ('0818-1996-05678', 'Francisco José', 'Lara González', 'path18.pdf', '78906789', 'francisco.lara@gmail.com'),
+    ('0819-1995-02345', 'Sandra Marcela', 'Velasco Zelaya', 'path19.pdf', '89017890', 'sandra.velasco@gmail.com'),
+    ('0820-1991-06789', 'Ricardo Antonio', 'Moncada Benítez', 'path20.pdf', '90128901', 'ricardo.moncada@gmail.com')
 ;
 
 INSERT INTO Reviewer (firstName, firstLastName, telephoneNumber, personalEmail, password, active) 
