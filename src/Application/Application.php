@@ -496,13 +496,14 @@
 
                 $applications = $this->getApprovedApplications($idProcess, 0);
 
-                $query7 = 'SELECT active FROM SendedEmail
+                $query7 = 'SELECT active, programmingDate FROM SendedEmail
                             WHERE academicProcess=?;';
 
                 $result7 = $this->mysqli->execute_query($query7, [$idProcess]);
 
                 foreach($result7 as $row){
                     $sendedEmail= $row['active'];
+                    $programmingDate= $row['programmingDate'];
                 }
 
                 return [
@@ -515,7 +516,8 @@
                         "regionalCenters" => $regionalCenters,
                         "applications" => $applications,
                         "approvedStudents"=> $approvedStudents,
-                        "sendedEmail"=> $sendedEmail
+                        "sendedEmail"=> $sendedEmail,
+                        "programmingDate"=> $programmingDate
                     ]
                 ];
             }else{

@@ -71,6 +71,7 @@ CREATE TABLE SendedEmail(
     id INT PRIMARY KEY AUTO_INCREMENT,
     academicProcess INT NOT NULL,
     active BOOLEAN,
+    programmingDate DATETIME DEFAULT NULL,
     CONSTRAINT fk_academicProcess FOREIGN KEY(academicProcess) REFERENCES AcademicEvent(id)
 );
 

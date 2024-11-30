@@ -168,17 +168,23 @@
                             // Obtener la fecha y hora actual
                             date_default_timezone_set('America/Tegucigalpa');
                             $now = new DateTime();
-                            $now->modify('+5 minutes');
-                            $today1AM = $now;
             
-                            /*// Crear un objeto DateTime para las 1 AM de hoy
+                            // Crear un objeto DateTime para las 1 AM de hoy
                             $today1AM = new DateTime('today 1:00 AM');
 
                             // Comprobar si la fecha actual es mayor o igual a la 1 AM de hoy
                             if ($now >= $today1AM) {
                                 // Si la fecha actual es mayor o igual, obtenemos el día siguiente a las 1 AM
                                 $today1AM->modify('+1 day');
-                            }*/
+                            }
+                            // Clonar el objeto DateTime
+                            $firstTime = clone $today1AM;
+                            $formattedDate = $firstTime->format('Y-m-d H:i:s');
+                            
+                            // Obtener limite para enviar correos 
+                            $limit5AM = clone $today1AM;
+                            // Sumar 4 horas al clon
+                            $limit5AM->modify('+4 hour');
                             
                             while($amount>0){
                                 $dateString = $today1AM->format("H:i Y-m-d");
@@ -200,7 +206,19 @@
                                     ];
             
                                 }else{
-                                    $today1AM->modify('+1 hour');
+                                    if ($today1AM->modify('+1 hour') >= $limit5AM) {
+                                        // Si excede las 5 AM, ajustar a las 1 AM del día siguiente
+                                        $date = $today1AM->format('Y-m-d');
+                                        $today1AM = new DateTime("$date +1 day 1:00 AM");
+
+                                        //nuevo limite
+                                        $limit5AM = clone $today1AM;
+                                        // Sumar 4 horas al clon
+                                        $limit5AM->modify('+4 hour');
+
+                                    }else{
+                                        $today1AM->modify('+1 hour');
+                                    }
                                     $amount = $amount - 2;
                                     $offset = $offset + 2;
                                 }
@@ -208,13 +226,13 @@
 
                             //Hacer update del active que dice si se enviaron los correos
                             $query = "UPDATE SendedEmail
-                                SET active=true
+                                SET active=true, programmingDate =?
                                 WHERE academicProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);";
-                            $result = $this->mysqli->execute_query($query);
+                            $result = $this->mysqli->execute_query($query, [$formattedDate]);
                             if($result){
                                 return [
                                     'status'=> true,
-                                    'message'=> 'Correos programados correctamente. Se enviaran exactamente a las ' . $dateString
+                                    'message'=> 'Correos programados correctamente. Empezaran a enviarse a las ' . $formattedDate
                                 ];
                             }else{
                                 return [
