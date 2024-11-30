@@ -10,6 +10,7 @@ const sendEmailsButton = document.getElementById("sendEmailsButton");
 const container = document.getElementById("contentt")
 const url = "../../../api/get/admission/programEmails/";
 const headersLastInscriptionTable = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
+const headerMissingData = ["#", "DNI", "Examen"];
 
 // Se agrega la acción de enviar correos
 sendEmailsButton.addEventListener("click", async () => {
@@ -33,8 +34,14 @@ document.getElementById('formCsv').addEventListener('submit', async (event) => {
         console.log(result.message); 
         console.log(result); 
         container.innerHTML = "";
-        Action.createTableWithData("Registros que no estaban en el csv", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable')
-        Action.createTableWithData("Registros que no estaban en el csv", headersLastInscriptionTable,result.missingData, container, 'MissingInscriptionTable')
+        if(result.status == false) {
+            let message = document.createElement('p');
+            message.innerHTML = result.message;
+            container.style.color = 'red';
+            container.appendChild(message);
+        }
+        Action.createTableWithData("Registros invalidos", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable', 10, result.incorrectData.length, '', true)
+        Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
         Modal.closeModal();
         
     } catch (error) {

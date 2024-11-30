@@ -45,10 +45,10 @@
               <div class="line"></div>
               <p>En esta seccion debes ingresar tus datos generales.</p>
               <section class="input-container">
-                  <input type="text" class="form-control uppercase" id="firstName" name="firstName" placeholder="Nombres" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
-                  <input type="text" class="form-control uppercase" id="firstLastName" name="firstLastName" placeholder="Apellidos" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
-                  <input type="text" class="form-control" id="identity" name="identityNumber" placeholder="Numero de identidad"  pattern="\d{4}-?(19|20)\d{2}-?\d{5}" title="El numero de identidad debe tener el siguiente formato: 0801-2000-00000" required>
-                  <input type="email" class="form-control" id="mail" name="personalEmail" placeholder="Correo electronico" required>
+                  <input type="text" class="form-control uppercase" id="names" name="names" placeholder="Nombres" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
+                  <input type="text" class="form-control uppercase" id="lastNames" name="lastNames" placeholder="Apellidos" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" title="No cumple con el formato admitido" required>
+                  <input type="text" class="form-control" id="identityNumber" name="identityNumber" placeholder="Numero de identidad"  pattern="\d{4}-?(19|20)\d{2}-?\d{5}" title="El numero de identidad debe tener el siguiente formato: 0801-2000-00000" required>
+                  <input type="email" class="form-control" id="personalEmail" name="personalEmail" placeholder="Correo electronico" required>
                   <input type="text" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Telefono" required pattern="(?!.*(\d)\1{2})[9283]\d{3}-?\d{4}" title="El numero de telefono no es valido">
               </section>
           </section>

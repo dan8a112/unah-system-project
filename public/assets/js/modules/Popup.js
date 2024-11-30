@@ -29,6 +29,12 @@ export class Popup {
         popup.style.display = "none";
         console.log('hola')
     }
+
+    //Cierra el componente y redirige a la pantalla informativa
+    static close2(popup) {
+        popup.style.display = "none";
+        window.location.href = '/assets/views/informative/InformativeAdmission.php';
+    }
         
   }
   

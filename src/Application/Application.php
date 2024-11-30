@@ -136,10 +136,10 @@
             if ($result) {
                 foreach($result as $row){
                     $applications[] = [
-                        "id" => $row["id"],
-                        "name"=>$row["name"],
-                        "career"=>$row["career"],
-                        "score"=>$row["grade"],
+                        $row["id"],
+                        $row["name"],
+                        $row["career"],
+                        $row["grade"],
                     ];
                 } 
             } 

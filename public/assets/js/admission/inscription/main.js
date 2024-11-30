@@ -111,41 +111,34 @@ selectRegionalCenters.addEventListener('change', () => {
 
 // Validación y envío del formulario
 document.getElementById('form-inscription').addEventListener('submit', async (event) => {
-  const file = fileInput.files[0];
+  event.preventDefault();
+  const form = event.target; 
+  const formData = new FormData(form);
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
 
-  try {
-    if (file) {
-      if (file.size > maxSizeInBytes) {
-        throw new Error('El archivo es demasiado grande. Máximo permitido: 5 MB.');
-      }
-
-      const fileType = file.type;
-
-      if (fileType.startsWith('image/')) {
-        await validateImageDimensions(file);
-      } else if (fileType === 'application/pdf') {
-        await validatePdfDimensions(file);
-      } else {
-        throw new Error('Solo se permiten imágenes y PDFs.');
-      }
-    }
+  // Opcional: Imprimir solo los valores de los datos
+  console.log("Datos del formulario:", Object.fromEntries(formData.entries()));
 
     HttpRequest.submitForm(event, '../../../api/post/application')
       .then(result => {
         if (result.status) {
           Popup.open(popup);
           exitMessage.innerHTML = `Tu inscripción fue realizada exitosamente, tendrás que realizar los exámenes: ${result.exams}`;
-        } else {
+                  } else {
           Popup.open(popupError);
-          message.innerHTML = result.message;
-          buttonOk2.style.background = '#EC0000';
+          if(result.code == 4){
+            message.innerHTML = result.message;
+            buttonOk2.style.background = '#EC0000';
+            buttonOk2.addEventListener('click', () => Popup.close2(popupError));
+          } else {
+            message.innerHTML = result.message;
+            buttonOk2.style.background = '#EC0000';
+          }
+          
         }
       });
-  } catch (error) {
-    event.preventDefault();
-    formErrorMessage.textContent = error.message || error;
-    formErrorMessage.style.display = 'block';
-  }
 });
 
 buttonOk1.addEventListener('click', () => Popup.close1(popup));
