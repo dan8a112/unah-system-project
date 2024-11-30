@@ -21,9 +21,12 @@
     <link rel="stylesheet" href="../../css/temas/popup.css">
 </head>
 <body>
-    <?php 
-      $path = "../";
-      include_once($path . "templates/headerAdmission.php");
+    <?php
+        $title = "Portal APA";
+        $description = "Administracion de sistema de admisiones de la UNAH";
+        $portal = "apa";
+        $path = "../";
+        include_once($path . "templates/headerAdmission.php");
     ?>
 
     <a class="btn btn-sm m-3" href="./administrative_home.php"><img src="../../img/icons/back-arrow.svg" alt=""></a>

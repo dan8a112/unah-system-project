@@ -22,7 +22,12 @@
                 "message"=> "Credenciales correctas",
                 "status"=> 1,                
             ];
-            $_SESSION['auth'] = "sedp";
+            
+            session_start();
+            $_SESSION["portals"]["sedp"] = [
+                "user" => 1
+            ];
+
         }else{
             $json = [
                 "message"=> "No existe el usuario",

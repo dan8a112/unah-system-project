@@ -6,8 +6,11 @@
   if (!SessionValidation::isValid($_SESSION, "cri")){
     header("Location: /assets/views/logins/login_cri.php");
   }else{
-    if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $_SESSION['idUser']) {
-        header("Location: /assets/views/logins/login_cri.php?id=" . $_SESSION['idUser']);
+
+    $userId = $_SESSION['portals']['cri']['user'];
+
+    if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $userId) {
+        header("Location: /assets/views/logins/login_cri.php?id=" . $userId);
         exit;
     }
   }
@@ -23,31 +26,13 @@
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
 <body style="background-color: #FBF9F4;">
-    <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">
-            <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <img src="../../img/icons/hamburger-menu.svg" alt="icon">
-          </button>
-          <div class="ms-4 mt-3">
-            <h1 class="mb-0">Portal CRI</h1>
-            <p>Portal del Comité de revisión de inscripciones de admisión de la UNAH</p>
-          </div>
-          <div class="collapse navbar-collapse flex-row-reverse me-5" id="navbarNavDropdown">
-            <ul class="navbar-nav gap-3">
-              <li class="nav-item">
-                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;" id="logoutButton">
-                    <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
-                    Cerrar Sesión
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-    </nav>
-    <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
+    <?php 
+        $title = "Portal CRI";
+        $description = "Comite de revision de Inscripciones de procesos de admision de la UNAH";
+        $portal = "cri";
+        $path = "../";
+        include_once($path . "templates/headerAdmission.php");
+    ?>
 
     <div class="container mb-5">
 

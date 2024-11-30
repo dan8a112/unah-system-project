@@ -21,6 +21,9 @@
 </head>
 <body>
     <?php 
+      $title = "Portal APA";
+      $description = "Administracion de sistema de admisiones de la UNAH";
+      $portal = "apa";
       $path = "../";
       include_once($path . "templates/headerAdmission.php");
     ?>

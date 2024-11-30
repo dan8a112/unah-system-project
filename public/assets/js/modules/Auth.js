@@ -48,8 +48,8 @@ class Auth {
     * @version 0.1.0
     * @date 2024-11-24 
     */
-    static async logout() {
-        const response = await HttpRequest.get("../../../api/get/logout/");
+    static async logout(portal) {
+        const response = await HttpRequest.get(`../../../api/get/logout/?portal=${portal}`);
         if (response.status) {
             window.location.href = "/"
         }

@@ -1,3 +1,12 @@
+<?php 
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (!SessionValidation::isValid($_SESSION, "sedp")){
+    header("Location: /assets/views/logins/login_sedp.php");
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,31 +20,13 @@
     <title>Portal SEDP</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">
-            <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="ms-4 mt-3">
-            <h1 class="mb-0">Portal SEDP</h1>
-            <p>Administración del personal docente de la UNAH</p>
-          </div>
-          <div class="collapse navbar-collapse d-flex flex-row-reverse me-5" id="navbarNavDropdown">
-            <ul class="navbar-nav gap-3">
-              <li class="nav-item">
-                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;" id="logoutBtn">
-                    <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
-                    Cerrar Sesión
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
+  <?php 
+      $title = "Portal SEDP";
+      $description = "Administración del personal docente de la UNAH";
+      $portal = "sedp";
+      $path = "../";
+      include_once($path . "templates/headerAdmission.php");
+    ?>
 
       <div class="mt-5 d-flex-col" style="margin: 0 auto; width: 90vw; border: #A1A1A1 solid 1px; border-radius: 20px; padding: 20px;">
         <div class="d-flex justify-content-between">

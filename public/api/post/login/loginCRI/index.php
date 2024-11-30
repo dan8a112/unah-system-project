@@ -26,8 +26,9 @@
             ];
 
             session_start();
-            $_SESSION["auth"] = "cri";
-            $_SESSION["idUser"] = $result['id'];
+            $_SESSION["portals"]["cri"] = [
+                "user" => $result['id']
+            ];
 
         }else{
             $json = [
