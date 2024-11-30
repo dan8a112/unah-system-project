@@ -27,4 +27,4 @@
     </div>
 </nav>
 <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
-<script src="../../js/behaviorTemplates/admission/header.js" type="module"></script>
+<script src="../../js/logout/logout.js" type="module"></script>
