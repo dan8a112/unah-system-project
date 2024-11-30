@@ -98,7 +98,7 @@
         </section>
 
         <section class="row">
-            <div class="card-container">
+            <div class="card-container" id="reviewedSection">
                 <div>
                     <span class="fs-5 ms-3 me-2">Cantidad revisadas</span>
                     <span class="status-card" style="background-color: #c3c3c3;" id="amountReviewed" >25</span>

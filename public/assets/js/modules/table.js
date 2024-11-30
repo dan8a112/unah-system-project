@@ -180,3 +180,66 @@ function renderRows(rows, tbody) {
         tbody.appendChild(row);
     });
 }
+
+export function createPagination(section, tbody, limit, totalRecords, apiUrl, isFetchPagination, rows){
+
+    // Crear la paginación si es necesario
+    if (totalRecords > limit) {
+        const totalPages = Math.ceil(totalRecords / limit);
+        const pagination = document.createElement("nav");
+        pagination.setAttribute("aria-label", "Page navigation");
+        pagination.style.marginTop = "3px";
+
+        const paginationList = document.createElement("ul");
+        paginationList.className = "pagination";
+
+        // Botón "Previous"
+        const prevButton = document.createElement("li");
+        prevButton.className = "page-item disabled";
+        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+        paginationList.appendChild(prevButton);
+
+        // Botones de número de página
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement("li");
+            pageButton.className = `page-item ${i === 1 ? 'active' : ''}`;
+            pageButton.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+
+            pageButton.addEventListener("click", () => {
+                updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows);
+                document.querySelectorAll(".pagination .page-item").forEach(item => item.classList.remove("active"));
+                pageButton.classList.add("active");
+                prevButton.classList.toggle("disabled", i === 1);
+                nextButton.classList.toggle("disabled", i === totalPages);
+            });
+
+            paginationList.appendChild(pageButton);
+        }
+
+        // Botón "Next"
+        const nextButton = document.createElement("li");
+        nextButton.className = `page-item ${totalPages > 1 ? '' : 'disabled'}`;
+        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
+        paginationList.appendChild(nextButton);
+
+        pagination.appendChild(paginationList);
+        section.appendChild(pagination);
+
+        // Eventos para botones "Previous" y "Next"
+        prevButton.addEventListener("click", () => {
+            const currentPage = parseInt(document.querySelector(".pagination .page-item.active a").textContent, 10);
+            if (currentPage > 1) {
+                const newPage = currentPage - 1;
+                paginationList.children[newPage].querySelector("a").click();
+            }
+        });
+
+        nextButton.addEventListener("click", () => {
+            const currentPage = parseInt(document.querySelector(".pagination .page-item.active a").textContent, 10);
+            if (currentPage < totalPages) {
+                const newPage = currentPage + 1;
+                paginationList.children[newPage].querySelector("a").click();
+            }
+        });
+    }
+}

@@ -1,5 +1,6 @@
 import {Modal} from "../../../js/modules/Modal.js" 
 import {HttpRequest} from "../../../js/modules/HttpRequest.js" 
+import {createPagination} from "../../../js/modules/table.js" 
 
 class Action {
 
@@ -142,6 +143,14 @@ class Action {
             tableBody.appendChild(row)
         })
 
+        const reviewedSection = document.querySelector("div#reviewedSection");
+
+        //Se obtiene el id del usuario en los parametros de la url
+        const userId = new URLSearchParams(window.location.search).get("id");
+        const urlPagination = `../../../../api/get/pagination/reviewedInscriptions/?idReviewer=${userId}`
+
+        createPagination(reviewedSection,tableBody,2 ,amountReviewed,urlPagination,false);
+
     }
 
     /**
@@ -150,7 +159,7 @@ class Action {
      */
     static openReviewModal = async (inscriptionId)=>{
 
-        const response = await HttpRequest.get(`../../../../api/get/criUser/inscription/?id=${inscriptionId}`)
+        const response = await HttpRequest.get(`../../../../api/get/admission/inscription/?id=${inscriptionId}&idAdmissionProcess=0`)
 
         if (response.status) {
             //Se establecen los datos de la inscripcion
