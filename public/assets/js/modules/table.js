@@ -78,12 +78,14 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
         paginationList.appendChild(prevButton);
 
         // Botones de número de página
+        // Botones de número de página
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement("li");
             pageButton.className = `page-item ${i === 1 ? 'active' : ''}`;
             pageButton.innerHTML = `<a class="page-link" href="#">${i}</a>`;
 
-            pageButton.addEventListener("click", () => {
+            pageButton.querySelector("a").addEventListener("click", (event) => {
+                event.preventDefault(); // Evita que la página se desplace hacia arriba
                 updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows);
                 document.querySelectorAll(".pagination .page-item").forEach(item => item.classList.remove("active"));
                 pageButton.classList.add("active");
@@ -93,6 +95,7 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
 
             paginationList.appendChild(pageButton);
         }
+
 
         // Botón "Next"
         const nextButton = document.createElement("li");
@@ -104,7 +107,8 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
         section.appendChild(pagination);
 
         // Eventos para botones "Previous" y "Next"
-        prevButton.addEventListener("click", () => {
+        prevButton.querySelector("a").addEventListener("click", (event) => {
+            event.preventDefault(); // Evita que la página se desplace hacia arriba
             const currentPage = parseInt(document.querySelector(".pagination .page-item.active a").textContent, 10);
             if (currentPage > 1) {
                 const newPage = currentPage - 1;
@@ -112,7 +116,8 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
             }
         });
 
-        nextButton.addEventListener("click", () => {
+        nextButton.querySelector("a").addEventListener("click", (event) => {
+            event.preventDefault(); // Evita que la página se desplace hacia arriba
             const currentPage = parseInt(document.querySelector(".pagination .page-item.active a").textContent, 10);
             if (currentPage < totalPages) {
                 const newPage = currentPage + 1;

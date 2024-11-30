@@ -12,7 +12,7 @@ class Action {
      * @param {Object} data - Datos del proceso de admisión actual.
      */
     static renderActiveProcess(data) {
-        const { idAcademicEvent, infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents, inscriptions, sendedEmail } = data;
+        const { idAcademicEvent, infoProcess, amountInscription, regionalCenters, reviewers, amountReviewers, admissionTests, approvedStudents, inscriptions, sendedEmail, applications } = data;
 
         const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
         this.updateTextContent("h1#processName", infoProcess.processState);
@@ -23,12 +23,12 @@ class Action {
 
         switch (infoProcess.idProcessState) {
             case 3:
-                const url = `../../../api/get/pagination/allInscriptions/?idProcess=${idAcademicEvent}`
+                const url = `../../../api/get/pagination/allInscriptions/?idProcess=${idAcademicEvent}`;
                 this.renderLastesInscriptions(inscriptions, 10, amountInscription.amountInscriptions, url);
                 break;
             case 4:
                 const urlReviewers = `../../../api/get/pagination/reviewers/?idProcess=${idAcademicEvent}`
-                this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions, 10, 5, urlReviewers);
+                this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions, 10, amountReviewers, urlReviewers);
                 break;
             case 5:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
@@ -36,14 +36,15 @@ class Action {
                 break;
             case 6:
                 this.renderUploadCSVSection(infoProcess.idProcessState, sendedEmail);
-                this.renderHistoricInfo(higherScoress,regionalCenters);
+                const apprvedStudentsUrl = `../../../api/get/pagination/approvedApplicants/?idProcess=${idAcademicEvent}`
+                this.renderHistoricInfo(applications,regionalCenters,1, 10, approvedStudents, apprvedStudentsUrl);
                 const approvedInscription = document.getElementById("amountBox");
                 approvedInscription.innerText = 'Aplicantes aprobados';
                 this.updateTextContent("h1#amountInscriptions", approvedStudents);
                 break;
             case 7:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
-                this.renderHistoricInfo(higherScoress,regionalCenters);
+                this.renderHistoricInfo(applications,regionalCenters, 0, 10, approvedStudents,apprvedStudentsUrl);
             break;
         }
 
@@ -158,7 +159,7 @@ class Action {
     static renderLastesInscriptions(data, limit, totalRecords, apiUrl) {
         const container = document.getElementById('container');
         const headers = ["id", "Nombre", "Carrera", "Fecha de inscripcion"];
-        this.createTableWithData("Ultimos aplicantes", headers, data, container, "lastInscriptions", limit, totalRecords, apiUrl)
+        this.createTableWithData("Todos los aplicantes", headers, data, container, "lastInscriptions", limit, totalRecords, apiUrl)
     }
     
 
@@ -225,7 +226,7 @@ class Action {
         contentContainer.appendChild(downloadButton);
     }
     
-    static renderHistoricInfo(rows, regionalCenters, mode) {
+    static renderHistoricInfo(rows, regionalCenters, mode, limit, totalRecords, apiUrl, sendedEmail) {
         const createElementWithClasses = this.createElementWithClasses;
         // Crear estructura general
         const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
@@ -240,8 +241,8 @@ class Action {
 
         const description = document.createElement("p");
         mode == 1? 
-            description.textContent = "Al presionar enviar correos se notificara a todos los aplicantes sobre su resultado en las pruebas. Toma en cuenta que esto solo podra hacerse una vez y que no se enviaran directamente sino hasta las 01:00 am de mañana"
-            : description.textContent = "A continuación, encontrarás un resumen estadístico del proceso de admisiones. Este incluye la distribución de estudiantes aprobados por centro regional y una lista de los aspirantes con las calificaciones más altas. Estos datos te permitirán tener una visión más clara del desempeño general en esta etapa final del proceso.";
+        description.textContent = "Al presionar enviar correos se notificara a todos los aplicantes sobre su resultado en las pruebas. Toma en cuenta que esto solo podra hacerse una vez y que no se enviaran directamente sino hasta la una hora estrategica del siguiente dia"
+        : description.textContent = "A continuación, encontrarás un resumen estadístico del proceso de admisiones. Este incluye la distribución de estudiantes aprobados por centro regional y una lista de los aspirantes con las calificaciones más altas. Estos datos te permitirán tener una visión más clara del desempeño general en esta etapa final del proceso.";
         
 
         //container1.appendChild(title1);
@@ -256,8 +257,15 @@ class Action {
     
         // Contenedor dinámico para la tabla
         const containerDinamic = createElementWithClasses('div', 'col-8');
-        const headers = ["#", "Nombre", "Carrera Principal", "Puntaje"];
-        this.createTableWithData("Calificaciones mas altas en la PAA", headers, rows, containerDinamic, "reviewersTable");
+        if(mode==1){
+            const headers = ["id", "Nombre", "Carrera", "Fecha de inscripcion"];
+            this.createTableWithData("Todos los aprobados", headers, rows, containerDinamic, "reviewersTable", limit, totalRecords, apiUrl);
+        } else {
+            const headers = ["id", "Nombre", "Carrera", "Puntaje"];
+            this.createTableWithData("Calificaciones mas altas", headers, rows, containerDinamic, "reviewersTable", limit, totalRecords, apiUrl);
+        }
+        
+        
     
         // Sección de progreso de revisiones
         const containerInfo = createElementWithClasses('div', 'card-container', 'col');
@@ -307,7 +315,7 @@ class Action {
      * @param {number} processState - Estado actual del proceso.
      * @returns {Object} Contenido dinámico de la tarjeta.
      */
-    static getCardContent(processState) {
+    static getCardContent(processState, sendedEmail) {
         const contentMap = {
             5: {
                 title: "Subida de calificaciones",
@@ -317,9 +325,17 @@ class Action {
             },
             6: {
                 title: "Enviar resultados",
-                description:
-                    "Informa a los participantes sobre su dictamen en las pruebas por correo.",
-                button: { id: "sendMail", text: "Enviar resultados CSV", icon: "mail.svg", action: "openMailModal", color: "#3472F8", spanColor: "#fff" },
+                description: sendedEmail 
+                    ? "Informa a los participantes sobre su dictamen en las pruebas por correo." 
+                    : "Informa a los participantes sobre su dictamen en las pruebas por correo.",
+                button: { 
+                    id: "sendMail", 
+                    text: "Enviar resultados CSV", 
+                    icon: "mail.svg", 
+                    action: "openMailModal", 
+                    color: "#3472F8", 
+                    spanColor: "#fff" 
+                },
             },
             7: {
                 title: "Generar CSV",
@@ -345,7 +361,7 @@ class Action {
         card.innerHTML = `
             <div>
                 <p class="font-medium">${content.title}</p>
-                <p>${content.description}</p>
+                <p >${content.description}</p>
             </div>
         `;
 
@@ -361,6 +377,11 @@ class Action {
         if(sendedEmail==1){
             button.disabled = true;
             button.style.backgroundColor = '#878787';
+            card.innerHTML = `
+            <div>
+                <p class="font-medium">${content.title}</p>
+                <p style="color: '#3472f8'";>${content.description}</p>
+            </div>`;
         }
 
         card.appendChild(button);
