@@ -6,8 +6,11 @@
   if (!SessionValidation::isValid($_SESSION, "cri")){
     header("Location: /assets/views/logins/login_cri.php");
   }else{
-    if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $_SESSION['idUser']) {
-        header("Location: /assets/views/logins/login_cri.php?id=" . $_SESSION['idUser']);
+
+    $userId = $_SESSION['portals']['cri']['user'];
+
+    if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $userId) {
+        header("Location: /assets/views/logins/login_cri.php?id=" . $userId);
         exit;
     }
   }
@@ -38,7 +41,7 @@
           <div class="collapse navbar-collapse flex-row-reverse me-5" id="navbarNavDropdown">
             <ul class="navbar-nav gap-3">
               <li class="nav-item">
-                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;" id="logoutButton">
+                <button class="btn d-flex align-items-center" style="background-color: #3472F8; color: #F4F7FB;" id="logoutButton" data-portal="cri">
                     <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
                     Cerrar Sesión
                 </button>

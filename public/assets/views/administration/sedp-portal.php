@@ -1,3 +1,12 @@
+<?php 
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  if (!SessionValidation::isValid($_SESSION, "sedp")){
+    header("Location: /assets/views/logins/login_sedp.php");
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

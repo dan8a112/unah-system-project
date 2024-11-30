@@ -25,7 +25,9 @@
             ];
 
             session_start();
-            $_SESSION["auth"] = "apa";
+            $_SESSION["portals"]["apa"] = [
+                "user" => 1
+            ];
 
         }else{
             $json = [

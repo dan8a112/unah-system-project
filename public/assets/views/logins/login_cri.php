@@ -3,8 +3,10 @@
   
   session_start();
 
+  $userId = $_SESSION['portals']['cri']['user'];
+
   if (SessionValidation::isValid($_SESSION, "cri")){
-    header("Location: /assets/views/admission/cri_portal.php?id=".$_SESSION["idUser"]);
+    header("Location: /assets/views/admission/cri_portal.php?id=".$userId);
   }
   
 ?>
