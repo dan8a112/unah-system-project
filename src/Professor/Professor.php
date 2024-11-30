@@ -12,7 +12,7 @@
          * version: 0.1.0
          * date: 6/11/24
          */
-        public function getProfessors() : array {
+        public function getProfessors($offset) : array {
 
             $professors = [];
             $query = 'SELECT a.id, a.names, a.lastNames, a.personalEmail, a.dni, c.description as professorType, b.active
@@ -20,9 +20,10 @@
                  INNER JOIN Professor b
                  ON a.id = b.id
                  INNER JOIN ProfessorType c
-                 ON b.professorType = c.id';
+                 ON b.professorType = c.id
+                 LIMIT 10 OFFSET ?';
 
-            $result = $this->mysqli->execute_query($query);
+            $result = $this->mysqli->execute_query($query, [$offset]);
 
             foreach($result as $row){
                 $professors[] = [

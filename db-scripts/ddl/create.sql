@@ -357,7 +357,7 @@ END //
 
     Procedimiento almacenado para obtener los resultados de las inscripciones
 **/
-CREATE PROCEDURE ResultsActualProcess()
+CREATE PROCEDURE ResultsActualProcess(IN p_offset INT)
 BEGIN
     DECLARE idCurrent INT;
     SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=true);
@@ -367,7 +367,9 @@ BEGIN
     INNER JOIN Applicant b ON(a.idApplicant=b.id)
     INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
     INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
-    WHERE a.academicEvent=idCurrent;
+    WHERE a.academicEvent=idCurrent
+    ORDER BY a.id ASC
+    LIMIT 2 OFFSET p_offset;
 END //
 
 /**
@@ -706,7 +708,7 @@ BEGIN
         CREATE TABLE TempTableApplication AS
         SELECT 
             a.id, 
-            CONCAT(b.firstName, ' ', b.secondName, ' ', b.firstLastName, ' ', b.secondLastName) as name, 
+            CONCAT(b.names, ' ', b.lastNames) as name, 
             c.description as firstCareer, 
             a.applicationDate, 
             a.approved

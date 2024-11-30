@@ -45,7 +45,7 @@ curl "http://localhost:3000/api/get/admission/inscription/?id=1&idAdmissionProce
 curl http://localhost:3000/api/get/admission/activeAdmissionProcess | jq
 
 --------------Curl para enviar correos---------------
-curl http://localhost:3000/api/get/admission/sendMails | jq
+curl "http://localhost:3000/api/get/admission/sendMails/?offset=0" | jq
 
 --------------Curl para programar correos---------------
 curl http://localhost:3000/api/get/admission/programEmails | jq
@@ -70,5 +70,14 @@ curl "http://localhost:3000/api/get/pagination/allInscriptions/?idProcess=1&offs
 ----------------------obtener revisores---------------
 curl "http://localhost:3000/api/get/pagination/reviewers/?idProcess=1&offset=0" | jq
 
-----------------------obtener inscrpciones d elos aplicantes que aprobaron el procesp---------------
+----------obtener inscrpciones de los aplicantes que aprobaron el proceso---------------
 curl "http://localhost:3000/api/get/pagination/approvedApplicants/?idProcess=1&offset=0" | jq
+
+-------------obtener inscrpciones de los aplicantes que les hace falta el resultado---------------
+curl "http://localhost:3000/api/get/pagination/missingResults/?offset=0&counter=1" | jq
+
+----------------------------obtener profesores--------------------------------
+curl "http://localhost:3000/api/get/pagination/professors/?offset=0" | jq
+
+------------------------obtener aplicaciones revisadas por revisor----------------------
+curl "http://localhost:3000/api/get/pagination/reviewedInscriptions/?idReviewer=1&offset=0" | jq
