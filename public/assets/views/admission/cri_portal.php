@@ -98,7 +98,7 @@
         </section>
 
         <section class="row">
-            <div class="card-container">
+            <div class="card-container" id="reviewedSection">
                 <div>
                     <span class="fs-5 ms-3 me-2">Cantidad revisadas</span>
                     <span class="status-card" style="background-color: #c3c3c3;" id="amountReviewed" >25</span>
@@ -122,7 +122,7 @@
     </div>
 
     <div class="modal fade" tabindex="-1" id="reviewModal">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Datos de inscripcion</h5>
@@ -130,72 +130,65 @@
                 </div>
                 <div class="modal-body">
     
-                    <div class="mx-3">
-                        <section class="mb-3">
-                            <div class="fs-5">Datos Personales</div>
-                            <div class="line-separator"></div>
-                            <div id="personalData">
-                                <div class="row mb-2">
-                                    <span class="text-description">Nombre Completo</span>
-                                    <span class="text-information"></span>
+                    <div class="mx-3 row mb-4">
+                        <section class="col">
+                            <div class="mb-3">
+                                <div class="fs-5">Datos Personales</div>
+                                <div class="line-separator"></div>
+                                <div id="personalData">
+                                    <div class="row mb-2">
+                                        <span class="text-description">Nombre Completo</span>
+                                        <span class="text-information"></span>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <span class="text-description">Numero de identidad</span>
+                                        <span class="text-information"></span>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <span class="text-description">Numero de telefono</span>
+                                        <span class="text-information"></span>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <span class="text-description">Correo Electronico</span>
+                                        <span class="text-information"></span>
+                                    </div>
                                 </div>
-                                <div class="row mb-2">
-                                    <span class="text-description">Numero de identidad</span>
-                                    <span class="text-information"></span>
-                                </div>
-                                <div class="row mb-2">
-                                    <span class="text-description">Numero de telefono</span>
-                                    <span class="text-information"></span>
-                                </div>
-                                <div class="row mb-2">
-                                    <span class="text-description">Correo Electronico</span>
-                                    <span class="text-information"></span>
+                            </div>
+                            <div class="mb-3">
+                                <div class="fs-5">Datos de inscripcion</div>
+                                <div class="line-separator"></div>
+                                <div id="inscriptionData">
+                                    <div class="row mb-2">
+                                        <span class="text-description">Primera Opcion</span>
+                                        <span class="text-information"></span>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <span class="text-description">Segunda Opcion</span>
+                                        <span class="text-information"></span>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <span class="text-description">Campus</span>
+                                        <span class="text-information"></span>
+                                    </div>
                                 </div>
                             </div>
                         </section>
-    
-                        <section class="mb-3">
-                            <div class="fs-5">Datos de inscripcion</div>
-                            <div class="line-separator"></div>
-                            <div id="inscriptionData">
-                                <div class="row mb-2">
-                                    <span class="text-description">Primera Opcion</span>
-                                    <span class="text-information"></span>
-                                </div>
-                                <div class="row mb-2">
-                                    <span class="text-description">Segunda Opcion</span>
-                                    <span class="text-information"></span>
-                                </div>
-                                <div class="row mb-2">
-                                    <span class="text-description">Campus</span>
-                                    <span class="text-information"></span>
-                                </div>
-                            </div>
-                        </section>
-    
-                        <section class="mb-4">
-                            <div class="fs-5">Estudios Previos</div>
-                            <div class="line-separator"></div>
-    
-                            <div class="download-button btn d-flex align-items-center" id="showCertificateBtn">
-                                <img src="../../img/icons/file.svg" alt="icon-download" class="me-2">
-                                <div style="text-align: start;">
-                                    <p style="font-weight: 500;">Mostrar Certificado</p>
-                                </div>
-                            </div>
-                        </section>
-    
-                        <section class="mb-4">
-                            <div class="mb-4">
-                                <p style="font-size: 1.1rem; font-weight: 500;">¿Ya revisaste los datos de inscripcion?</p>
-                                <p>Puedes decidir si aprobar o rechazar esta inscripcion</p>
-                            </div>
-                            <div class="row gap-3" id="approveButtons">
-                                <button class="col btn btn-danger" id="denyInscriptionBtn">Rechazar</button>
-                                <button class="col btn btn-success" id="approveInscriptionBtn">Aprobar</button>
-                            </div>
+
+                        <section id="fileSection" class="col-8">
+
                         </section>
                     </div>
+
+                    <section class="mb-4 mx-4">
+                        <div class="mb-4">
+                            <p style="font-size: 1.1rem; font-weight: 500;">¿Ya revisaste los datos de inscripcion?</p>
+                            <p>Puedes decidir si aprobar o rechazar esta inscripcion</p>
+                        </div>
+                        <div class="row gap-3" id="approveButtons">
+                            <button class="col btn btn-danger" id="denyInscriptionBtn">Rechazar</button>
+                            <button class="col btn btn-success" id="approveInscriptionBtn">Aprobar</button>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
