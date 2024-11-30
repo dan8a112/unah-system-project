@@ -12,7 +12,7 @@ class Action {
      * @param {Object} data - Datos del proceso de admisión actual.
      */
     static renderActiveProcess(data) {
-        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents, lastestInscriptions, sendedEmail } = data;
+        const { idAcademicEvent, infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents, inscriptions, sendedEmail } = data;
 
         const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
         this.updateTextContent("h1#processName", infoProcess.processState);
@@ -23,10 +23,12 @@ class Action {
 
         switch (infoProcess.idProcessState) {
             case 3:
-                this.renderLastesInscriptions(lastestInscriptions);
+                const url = `../../../api/get/pagination/allInscriptions/?idProcess=${idAcademicEvent}`
+                this.renderLastesInscriptions(inscriptions, 10, amountInscription.amountInscriptions, url);
                 break;
             case 4:
-                this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions);
+                const urlReviewers = `../../../api/get/pagination/reviewers/?idProcess=${idAcademicEvent}`
+                this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions, 10, 5, urlReviewers);
                 break;
             case 5:
                 this.renderUploadCSVSection(infoProcess.idProcessState);
@@ -80,7 +82,7 @@ class Action {
      * @param {totalInscripciones} totalInscripciones 
      * @returns {Object} Contenido dinámico de la tarjeta.
      */
-    static renderRevisionProcess(rows, totalInscripciones, inscripcionesRevisadas, inscripcionesPorRevisar) {
+    static renderRevisionProcess(rows, totalInscripciones, inscripcionesRevisadas, inscripcionesPorRevisar, limit, totalReviewers, apiUrl) {
         const createElementWithClasses = this.createElementWithClasses;
         // Crear estructura general
         const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
@@ -109,7 +111,7 @@ class Action {
         // Contenedor dinámico para la tabla
         const containerDinamic = createElementWithClasses('div', 'col-8');
         const headers = ["#", "Nombre", "Inscripciones revisadas"];
-        this.createTableWithData("Revisores", headers, rows, containerDinamic, "reviewersTable");
+        this.createTableWithData("Revisores", headers, rows, containerDinamic, "reviewersTable", limit, totalReviewers, apiUrl);
     
         // Sección de progreso de revisiones
         const containerInfo = createElementWithClasses('div', 'card-container', 'col');
@@ -153,10 +155,10 @@ class Action {
         container.appendChild(containerGeneral);
     }
     
-    static renderLastesInscriptions(data) {
+    static renderLastesInscriptions(data, limit, totalRecords, apiUrl) {
         const container = document.getElementById('container');
         const headers = ["id", "Nombre", "Carrera", "Fecha de inscripcion"];
-        this.createTableWithData("Ultimos aplicantes", headers, data, container, "lastInscriptions")
+        this.createTableWithData("Ultimos aplicantes", headers, data, container, "lastInscriptions", limit, totalRecords, apiUrl)
     }
     
 
@@ -453,8 +455,8 @@ class Action {
      * @param {HTMLElement} container - Contenedor de la tabla.
      * @param {string} tableId - ID único para la tabla.
      */
-    static createTableWithData(title, headers, rows, container, tableId) {
-        const section = createTable(title, headers, rows, tableId);
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination) {
+        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination);
         section.style.marginTop = '0px'
         container.appendChild(section);
     }

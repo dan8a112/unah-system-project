@@ -82,11 +82,11 @@
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Primer Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" pattern="^\w+$" required>
+                    <input type="text" class="form-control uppercase" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" pattern="^\w+$" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName" pattern="^\w+(\s\w+)?$">
+                    <input type="text" class="form-control uppercase" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName" pattern="^\w+(\s\w+)?$">
                   </div>
                 </div>
                 <div class="row my-2">

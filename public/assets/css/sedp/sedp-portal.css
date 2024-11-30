@@ -8,3 +8,11 @@
 .editBtn:hover{
     background-color: bisque;
 }
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+input::placeholder {
+    text-transform: none;
+}

@@ -8,8 +8,13 @@
     //Data Access Object
     $dao = new ApplicationDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    if(isset($_GET["id"])){
-        $json = $dao->getApplication($_GET["id"]);
+    if(isset($_GET["idProcess"]) && isset($_GET["offset"])){
+        $result = $dao->getReviewers((int) $_GET["idProcess"], (int) $_GET["offset"]);
+        $json = [
+            "status"=> true,
+            "message"=> "Array obtenido.",
+            "data"=> $result
+        ];
     }else{
         $json = [
             "message"=> "No se recibió el parámetro correcto",

@@ -1,4 +1,5 @@
 import {HttpRequest} from '../../modules/HttpRequest.js'
+import { createTable } from "../../modules/table.js";
 
 class Action{
 
@@ -40,40 +41,16 @@ class Action{
 
         const higherScoreBody = document.querySelector("tbody#higherScoreTbl");
 
+        const container = document.getElementById('container');
+        const headers = ["#", "Nombre", "Carrera", "Puntaje en PAA"];
+        const limit = 10;
+        const apiUrl = `../../../api/get/pagination/allInscriptions/?idProcess=${infoProcess.id}`
+        this.createTableWithData("Todos los aplicantes", headers, data.applications, container, "allAprovedInscriptions", limit, inscriptionInfo.approvedInscriptions, apiUrl)
+    
+
         const summaryApplications = document.getElementById("summaryApplicationsTbl")
         
-        //Se crean las filas y columnas de la tabla
-        higherScores.forEach(inscription=>{
-            
-            const row = document.createElement("tr");
-            
-            //Se crea la columna de id
-            const idCol = document.createElement("th");
-            idCol.setAttribute("scope","row");
-            idCol.innerText = inscription.id;
-
-            row.appendChild(idCol);
-
-            //Se crea un elemento columna
-            const colName = document.createElement("td");
-            const colCareer = document.createElement("td");
-            const colScore = document.createElement("td");
-            
-            //Se agrega columna de nombre del aplicante
-            colName.innerText = inscription.name;
-            row.appendChild(colName);
-
-            //Se agrega la columna de la carrera 
-            colCareer.innerText = inscription.career;
-            row.appendChild(colCareer);
-
-            //Se agrega la columna del puntaje del aplicante
-            colScore.innerText = inscription.score;
-            row.appendChild(colScore);
-
-            //Se agrega la fila al cuerpo de la tabla
-            higherScoreBody.appendChild(row)
-        })
+        
 
 
         regionalCenters.forEach(center=>{
@@ -106,6 +83,12 @@ class Action{
         
     }
 
+    static renderLastesInscriptions(data, limit, totalRecords, apiUrl) {
+        const container = document.getElementById('container');
+        const headers = ["id", "Nombre", "Carrera", "Fecha de inscripcion"];
+        this.createTableWithData("Ultimos aplicantes", headers, data, container, "lastInscriptions", limit, totalRecords, apiUrl)
+    }
+
     /**
      * Este metodo manda a llamar a la api para obtener la informacion de un proceso de admision historico
      * @author dochoao@unah.hn
@@ -121,6 +104,23 @@ class Action{
         }else{
             console.error(response.message);
         }
+    }
+
+    /**
+     * Crea una tabla con los datos especificados.
+     * @author afcastillof@unah.hn
+     * @version 0.1.0
+     * @date 30/11/24
+     * @param {string} title - Título de la tabla.
+     * @param {Array} headers - Encabezados de la tabla.
+     * @param {Array} rows - Filas de datos.
+     * @param {HTMLElement} container - Contenedor de la tabla.
+     * @param {string} tableId - ID único para la tabla.
+     */
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl) {
+        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl);
+        section.style.marginTop = '0px'
+        container.appendChild(section);
     }
     
 }

@@ -6,17 +6,19 @@
          * version: 0.1.0
          * date: 08/11/24
          */
-        public static function isPhoneNumber(string $number){
-            return(preg_match("/(\(\+504\))?\s*[23789]\d{3}-?\d{4}/", $number));
-        }
-
+        public static function isPhoneNumber(string $number) {
+            // Validar formato y no permitir 4 dígitos consecutivos repetidos, ignorando el guion
+            $numberWithoutDash = str_replace("-", "", $number); // Eliminar guiones
+            return preg_match("/^(?:\(\+504\)\s?)?(3|8|9)\d{3}[-]?\d{4}$/", $number) && !preg_match("/(\d)\1{3}/", $numberWithoutDash);
+        }    
+        
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 08/11/24
          */
         public static function isAccountNumber(string $number){
-            return (preg_match("/((19([89]\d))|(2\d\d\d))(1\d\d)(\d{4})/", $number));
+            return (preg_match("/^((19([89]\d))|(2\d\d\d))(1\d\d)(\d{4})$/", $number));
         }
 
         /**
@@ -76,17 +78,8 @@
          * date: 20/11/24
          */
         public static function isValidName($name) {
-            return (preg_match("/^(?:[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,25})?$/", $name));
-        }
-
-        /**
-         * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 23/11/24
-         */
-        public static function isValidSecondName($name) {
-            return (preg_match("/^(?:[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,25})(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]{2,25})*$/", $name));
-        }  
+            return preg_match("/^([A-ZÁÉÍÓÚÑa-záéíóúñ]{1,50})(\s[A-ZÁÉÍÓÚÑa-záéíóúñ]{1,50}){0,2}$/", $name);
+        }               
         
     }  
 ?>
