@@ -146,6 +146,66 @@
             return $applications;
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 28/11/24
+         * 
+         * Funcion para paginar las inscripciones a las que no se les inserto resultados
+         */
+        public function getMissingResults(int $offset, int $counter){
+            $query = "SELECT  d.id as dni, a.admissionTest, a.grade
+                    FROM Results a 
+                    INNER JOIN Application b ON(a.application=b.id)
+                    INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                    INNER JOIN Applicant d ON(b.idApplicant=d.id)
+                    WHERE c.active = true AND a.grade IS NULL
+                    LIMIT 10 OFFSET ?;";
+            $result = $this->mysqli->execute_query($query, [$offset]);
+            $applications = [];
+            if ($result) {
+                foreach($result as $row){
+                    $applications[] = [
+                        $counter,
+                        $row["dni"],
+                        $row["admissionTest"],
+                        $row["grade"]
+                    ];
+                    $counter ++;
+                } 
+            } 
+            return $applications;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 29/11/24
+         * 
+         * Funcion para paginar las inscripciones ya revisadas
+         */
+        public function getReviewedInscriptions(int $idReviewer, int $offset){
+            $query = 'SELECT b.id, b.name, b.firstCareer, b.applicationDate FROM Application a
+                INNER JOIN TempTableApplication b ON(a.id = b.id)
+                WHERE a.idReviewer=? AND b.approved IS NOT NULL
+                ORDER BY b.id DESC 
+                LIMIT 10 OFFSET ?;';
+            $result = $this->mysqli->execute_query($query, [$idReviewer, $offset]);
+        
+            $applications = [];
+            if ($result) {
+                foreach($result as $row){
+                    $applications[] = [
+                        "id" => $row['id'],
+                        "name" => $row['name'],
+                        "career" => $row['firstCareer'],
+                        "inscriptionDate" => $row['applicationDate']
+                    ];
+                } 
+            } 
+            
+            return $applications;
+        }
 
         /**
          * author: dorian.contreras@unah.hn
@@ -363,6 +423,15 @@
                 //Obtener información sobre los revisadores
                 $reviewers= $this->getReviewers($idProcess, 0);
 
+                $query8 = 'SELECT COUNT(*) as amount FROM Reviewer
+                            WHERE active=true';
+
+                $result8 = $this->mysqli->execute_query($query8);
+
+                foreach($result8 as $row){
+                    $amountReviewers= $row['amount'];
+                }
+
                 return [
                     "status" => true,
                     "message" => "Petición realizada con exito.",
@@ -370,7 +439,8 @@
                         "idAcademicEvent"=> $idProcess,
                         "infoProcess"=> $infoProcess,
                         "amountInscription"=> $inscriptionInfo,
-                        "reviewers"=> $reviewers
+                        "reviewers"=> $reviewers,
+                        "amountReviewers"=> $amountReviewers
                     ]
                 ];
 
@@ -653,27 +723,37 @@
                 
                     fclose($handle);
 
-                    $missingData = [];
-                    $query1 = 'SELECT  d.id as dni, a.admissionTest, a.grade
-                                FROM Results a 
-                                INNER JOIN Application b ON(a.application=b.id)
-                                INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
-                                INNER JOIN Applicant d ON(b.idApplicant=d.id)
-                                WHERE c.active = true AND a.grade IS NULL;';
-        
-                    $result1 = $this->mysqli->execute_query($query1);
-                    $counter2= 1;
+                    $missingData = $this->getMissingResults(0, 1);
 
-                    foreach($result1 as $row){
-                        $missingData[] = [
-                            $counter2,
-                            $row["dni"],
-                            $row["admissionTest"],
-                            $row["grade"]
+                    $query1 = "SELECT COUNT(*) as amount
+                        FROM Results a 
+                        INNER JOIN Application b ON(a.application=b.id)
+                        INNER JOIN AcademicEvent c ON(b.academicEvent=c.id)
+                        WHERE c.active = true AND a.grade IS NULL;";
+                    $result1 = $this->mysqli->execute_query($query1);
+                    $reviewers = [];
+                    if ($result1) {
+                        foreach($result1 as $row){
+                            $missingTotalAmount = $row['amount'];
+                        } 
+
+                        return [
+                            "status" => true,
+                            "message" => "CSV leido",
+                            "incorrectData"=> $incorrectData,
+                            "missingData"=> $missingData,
+                            "missingAmount"=> $missingTotalAmount
                         ];
 
-                        $counter2++;
-                    };
+                    }else{
+                        return [
+                            "status" => true,
+                            "message" => "Error al obtener cantidad total de inscripciones faltantes.",
+                            "incorrectData"=> $incorrectData,
+                            "missingData"=> $missingData,
+                            "missingAmount"=> 0
+                        ];
+                    }
 
                     return [
                         "status" => true,
@@ -705,7 +785,7 @@
          * version: 0.1.0
          * date: 24/11/24
         */
-        public function toReview(int $idReviwer) {
+        public function toReview(int $idReviewer) {
             // Inicializar variables
             $dailyGoal = 0;
             $lowerLimit = NULL;
@@ -718,7 +798,7 @@
         
             // Obtener la meta diaria
             $query1 = "SELECT dailyGoal FROM Reviewer WHERE id = ?;";
-            $result1 = $this->mysqli->execute_query($query1, [$idReviwer]);
+            $result1 = $this->mysqli->execute_query($query1, [$idReviewer]);
             if ($row = $result1->fetch_assoc()) {
                 $dailyGoal = (int) $row['dailyGoal'];
             }
@@ -729,14 +809,15 @@
                        WHERE academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process = 1) 
                          AND approved IS NOT NULL 
                          AND idReviewer = ?;";
-            $result2 = $this->mysqli->execute_query($query2, [$idReviwer]);
+            $result2 = $this->mysqli->execute_query($query2, [$idReviewer]);
             if ($row = $result2->fetch_assoc()) {
                 $amountReviewed = (int) $row['amount'];
             }
         
             // Obtener las aplicaciones que va a revisar
             $query = 'CALL ToReview(?);';
-            $result = $this->mysqli->execute_query($query, [$idReviwer]);
+            $result = $this->mysqli->execute_query($query, [$idReviewer]);
+            $reviewedAmount = 0;
         
             if($result!= NULL){
                 foreach($result as $row){
@@ -749,16 +830,13 @@
                             "inscriptionDate" => $row['applicationDate']
                         ];
                     }else{
-                        $reviewedInscriptions[] = [
-                            "id" => $row['id'],
-                            "name" => $row['name'],
-                            "career" => $row['firstCareer'],
-                            "inscriptionDate" => $row['applicationDate'],
-                            "dictum"=> $row['approved']                            
-                        ];
+                        $reviewedAmount ++;
                     }
                 }
             }
+
+            //obtener aplicaciones revisadas
+            $reviewedList = $this->getReviewedInscriptions((int) $idReviewer, 0);
 
             //Obtener información sobre el proceso de admision actual y el subproceso en el que esta
             $query3 = 'CALL InfoCurrentProcessAdmission();';
@@ -770,15 +848,9 @@
             }
             
             if(count($unreviewedInscriptions) > 10){
-                $unreviewedList = array_slice($unreviewedInscriptions,count($unreviewedInscriptions)-11, count($unreviewedInscriptions)-1);
+                $unreviewedList = array_slice($unreviewedInscriptions,0, 9);
             }else{
                 $unreviewedList = $unreviewedInscriptions;
-            }
-
-            if(count($reviewedInscriptions) > 10){
-                $reviewedList = array_slice($reviewedInscriptions,count($reviewedInscriptions)-11, count($reviewedInscriptions)-1);
-            }else{
-                $reviewedList = $reviewedInscriptions;
             }
 
             // Retornar los resultados
@@ -796,9 +868,9 @@
                         "unreviewedList"=> $unreviewedList
                     ],
                     "reviewedInscriptions" =>  [
-                        "amountReviewed"=> count($reviewedInscriptions),
+                        "amountReviewed"=> $reviewedAmount,
                         "reviewedList"=> $reviewedList
-                    ]
+                    ],
                 ]
             ];
         }        

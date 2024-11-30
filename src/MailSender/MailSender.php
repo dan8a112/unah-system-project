@@ -74,15 +74,11 @@
          * version: 0.1.0
          * date: 12/11/24
          */
-        public function sendAllMails(){
-            $query = 'CALL ResultsActualProcess();';
-            $query1 = 'SELECT a.id as idApplication,c.description, b.grade 
-                    FROM Application a 
-                    INNER JOIN Results b ON (a.id = b.application)
-                    INNER JOIN AdmissionTest c ON(b.admissionTest = c.id)
-                    WHERE a.id = ?;';
+        public function sendAllMails(int $offset){
+            //  Obtener los primeros 500 estudiantes para enviar correos
+            $query = 'CALL ResultsActualProcess(?);';
+            $result = $this->mysqli->execute_query($query, [$offset]);
 
-            $result = $this->mysqli->execute_query($query);
             $bodyGrades= '';
             $testsResults='';
 
@@ -100,6 +96,12 @@
 
             foreach($students as $student){
                 $exams = [];
+                // Dar dictamen de los resultados
+                $query1 = 'SELECT a.id as idApplication,c.description, b.grade 
+                    FROM Application a 
+                    INNER JOIN Results b ON (a.id = b.application)
+                    INNER JOIN AdmissionTest c ON(b.admissionTest = c.id)
+                    WHERE a.id = ?;';
                 $result1 = $this->mysqli->execute_query($query1, [$student["idApplication"]]);
                 foreach($result1 as $row){
                     if($row["grade"] === NULL){
@@ -150,34 +152,60 @@
             if($result0){
                 foreach($result0 as $row){
                     if($row['active'] === 0){
-                        date_default_timezone_set('America/Tegucigalpa');
-    
-                        // Obtener la fecha y hora actual
-                        $now = new DateTime();
-    
-                        // Crear un objeto DateTime para las 1 AM de hoy
-                        $today1AM = new DateTime('today 1:00 AM');
-    
-                        // Comprobar si la fecha actual es mayor o igual a la 1 AM de hoy
-                        if ($now >= $today1AM) {
-                            // Si la fecha actual es mayor o igual, obtenemos el día siguiente a las 1 AM
-                            $today1AM->modify('+1 day');
-                        }
-    
-                        $dateString = $today1AM->format("H:i Y-m-d");
-    
-                        // URL del `curl`
-                        $url = "http://localhost:3000/api/get/admission/sendMails";
-    
-                        // Comando `curl` a ejecutar
-                        $comando = "/usr/bin/curl -X GET '$url'";
-    
-                        // Programar con `at`
-                        exec("echo '$comando' | at $dateString", $output, $returnVar);
-    
-                        // Verificar el resultado de la ejecución
-                        if ($returnVar === 0) {
-    
+
+                        // Obtener la cantidad total de inscripciones
+                        $query2 = "SELECT COUNT(*) as amount FROM Application WHERE 
+                            academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);";
+                        $result2 = $this->mysqli->execute_query($query2);
+
+                        $amount = 0; // Valor predeterminado en caso de que no haya resultados
+
+                        if ($result2) {
+                            $row = $result2->fetch_assoc(); // Obtener la fila como un array asociativo
+                            $amount = $row['amount']; //COnvertirlo en offset
+                            $offset = 0;
+
+                            // Obtener la fecha y hora actual
+                            date_default_timezone_set('America/Tegucigalpa');
+                            $now = new DateTime();
+                            $now->modify('+5 minutes');
+                            $today1AM = $now;
+            
+                            /*// Crear un objeto DateTime para las 1 AM de hoy
+                            $today1AM = new DateTime('today 1:00 AM');
+
+                            // Comprobar si la fecha actual es mayor o igual a la 1 AM de hoy
+                            if ($now >= $today1AM) {
+                                // Si la fecha actual es mayor o igual, obtenemos el día siguiente a las 1 AM
+                                $today1AM->modify('+1 day');
+                            }*/
+                            
+                            while($amount>0){
+                                $dateString = $today1AM->format("H:i Y-m-d");
+            
+                                // URL del `curl`
+                                $url = "http://localhost:3000/api/get/admission/sendMails/?offset=$offset";
+            
+                                // Comando `curl` a ejecutar
+                                $comando = "/usr/bin/curl -X GET '$url'";
+            
+                                // Programar con `at`
+                                exec("echo '$comando' | at $dateString", $output, $returnVar);
+            
+                                // Verificar el resultado de la ejecución
+                                if ($returnVar != 0) {
+                                    return [
+                                        'status' => false,
+                                        'mensaje' => "Error al programar la tarea. Salida: " . implode("\n", $output)
+                                    ];
+            
+                                }else{
+                                    $today1AM->modify('+1 hour');
+                                    $amount = $amount - 2;
+                                    $offset = $offset + 2;
+                                }
+                            }
+
                             //Hacer update del active que dice si se enviaron los correos
                             $query = "UPDATE SendedEmail
                                 SET active=true
@@ -188,18 +216,14 @@
                                     'status'=> true,
                                     'message'=> 'Correos programados correctamente. Se enviaran exactamente a las ' . $dateString
                                 ];
-                            };
-    
-                            return [
-                                'status' => false,
-                                'mensaje' => "Error al hacer update"
-                            ];
-    
-                        } else {
-                            return [
-                                'status' => false,
-                                'mensaje' => "Error al programar la tarea. Salida: " . implode("\n", $output)
-                            ];
+                            }else{
+                                return [
+                                    'status' => false,
+                                    'mensaje' => "Error al hacer update"
+                                ];
+
+                            }
+ 
                         }
     
                     }else{
