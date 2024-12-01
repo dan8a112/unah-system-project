@@ -46,7 +46,7 @@
             </div>    
         </div>
         <hr>
-        <table class="table">
+        <div id="table">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -60,7 +60,7 @@
             <tbody id="table-body">
               
             </tbody>
-          </table>
+          </div>
       </div>
 
       

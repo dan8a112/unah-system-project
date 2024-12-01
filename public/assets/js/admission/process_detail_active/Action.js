@@ -14,7 +14,8 @@ class Action {
     static renderActiveProcess(data) {
         const { idAcademicEvent, infoProcess, amountInscription, regionalCenters, reviewers, amountReviewers, admissionTests, approvedStudents, inscriptions, sendedEmail, applications } = data;
 
-        const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
+        const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]];
+        const apprvedStudentsUrl = `../../../api/get/pagination/approvedApplicants/?idProcess=${idAcademicEvent}`;
         this.updateTextContent("h1#processName", infoProcess.processState);
         this.updateTextContent("p#startDate", infoProcess.start);
         this.updateTextContent("p#finishDate", infoProcess.end);
@@ -36,7 +37,6 @@ class Action {
                 break;
             case 6:
                 this.renderUploadCSVSection(infoProcess.idProcessState, sendedEmail);
-                const apprvedStudentsUrl = `../../../api/get/pagination/approvedApplicants/?idProcess=${idAcademicEvent}`
                 this.renderHistoricInfo(applications,regionalCenters,1, 10, approvedStudents, apprvedStudentsUrl);
                 const approvedInscription = document.getElementById("amountBox");
                 approvedInscription.innerText = 'Aplicantes aprobados';

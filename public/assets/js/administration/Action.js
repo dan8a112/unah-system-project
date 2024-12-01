@@ -1,7 +1,8 @@
-import {Selects} from "../modules/Selects.js"
-import {Modal} from "../modules/Modal.js"
-import {Forms} from "../modules/Forms.js"
-import {HttpRequest} from "../modules/HttpRequest.js"
+import {Selects} from "../modules/Selects.js";
+import {Modal} from "../modules/Modal.js";
+import {Forms} from "../modules/Forms.js";
+import {HttpRequest} from "../modules/HttpRequest.js";
+import { createTable } from "../modules/table.js";
 
 class Action{
 
@@ -17,126 +18,86 @@ class Action{
         .then(data => {
             if (data.status) {
                 console.log(data.data)
-                this.generateProfessors(data.data);    
+                this.generateProfessorsWithTable(response.data);    
             }
         });
     }
 
     /**
      * Este metodo genera la tabla con los profesores registrados en el sistema, su rol, y sus acciones correspondientes
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 05/11/24
+     * @author dochoao@unah.hn, afcastillof@unah.hn
+     * @version 0.1.1
+     * @date 30/11/24
      * @param {object} data Informacion que contiene una lista de profesores y cantidad de profesores registrados 
      */
-    static generateProfessors(data){
-
-        const {professors, professorsAmount } = data;
-
-        //nodo donde se insertara la cantidad de maestros registrados 
+    static generateProfessorsWithTable(data) {
+        const { professors, professorsAmount } = data;
+    
+        // Nodo donde se insertará la cantidad de maestros registrados
         const amountProfessors = document.querySelector("span#amountProfessors");
         amountProfessors.innerText = professorsAmount;
-
-        const tableBody = document.querySelector("#table-body");
-        tableBody.innerHTML = "";
-
-        for (const professor of professors) {
-
-            const row = document.createElement("tr");
-            row.style.verticalAlign = "middle";
-            
-            //Se crea columna de id de maestro
-            const idCol = document.createElement("th");
-            idCol.setAttribute("scope","row");
-
-            //Se agrega el id del maestro
-            idCol.innerHTML = professor.professorId;
-
-            //Se agrega id a fila
-            row.appendChild(idCol);
-
-            //Se crea columna de nombre y correo (Usuario)
-            const userCol = document.createElement("td");
-            userCol.innerHTML = `
-            <div class="d-flex align-items-center">
-                        <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
-                        <div>
-                            <p class="mb-0 fw-bold">${professor.name}</p>
-                            <p class="mb-0">${professor.email}</p>
+    
+        // Encabezados de la tabla
+        const headers = ["#", "Usuario", "Roles", "DNI", "Estado", "Acciones"];
+    
+        // Filas iniciales para la tabla
+        const rows = professors.map((professor, index) => {
+            const idCell = professor.professorId;
+    
+            const userCell = `
+                <div class="d-flex align-items-center">
+                    <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
+                    <div>
+                        <p class="mb-0 fw-bold">${professor.name}</p>
+                        <p class="mb-0">${professor.email}</p>
+                    </div>
+                </div>
+            `;
+    
+            const rolesCell = (() => {
+                const colorMap = {
+                    jefe: "#3472F8",
+                    coordinador: "#00C500",
+                    default: "#FFAA34",
+                };
+                const colorTypeCard = colorMap[professor.professorType.toLowerCase()] || colorMap.default;
+                return `
+                    <div class="d-flex gap-3">
+                        <div style="border-radius: 5px; border: solid 1px ${colorTypeCard}; color: ${colorTypeCard}; padding: 0 5px;">
+                            ${professor.professorType}
                         </div>
-            </div>
-            `
-
-            //Se agrega la columna usuario a la fila
-            row.appendChild(userCol);
-
-            //Columna de roles de maestro
-            const roleCol = document.createElement("td");
-
-            //Se crea un contenedor de roles
-            const roleContainer = document.createElement("div");
-            roleContainer.classList.add("d-flex", "gap-3");
-
-            //Se crea la card con el rol de maestros
-            const professorTypeCard = document.createElement("div");
-            professorTypeCard.classList.add("px-1");
-            professorTypeCard.style.borderRadius = "5px"
-
-            //Por defecto el color es anaranjado
-            let colorTypeCard = "#FFAA34";
-
-            //El maestro es un jefe
-            if (professor.professorType.match(/[jJ]efe(\s+)?(\w+)?/g)) {
-                //Se cambia el color de la card a azul
-                colorTypeCard = "#3472F8";
-                //El maestro es un coordinador
-            }else if(professor.professorType.match(/[Cc]oordinador(\s+)?(\w+)?/g)){
-                //Se cambia el color de la card a verde
-                colorTypeCard = "#00C500";
-            }
-
-            professorTypeCard.innerText = professor.professorType;
-            professorTypeCard.style.color = colorTypeCard;
-            professorTypeCard.style.border = `solid 1px ${colorTypeCard}`;
-
-            //Se inserta la card dentro del contenedor
-            roleContainer.appendChild(professorTypeCard);
-
-            //Se inserta el contenedor en la columna de rol
-            roleCol.appendChild(roleContainer)
-
-            row.appendChild(roleCol);
-
-            const dniCol = document.createElement("td");
-            dniCol.innerText = professor.dni;
-            
-            row.appendChild(dniCol);
-
-            const stateCol = document.createElement("td");
-            //Determina si esta activo o inactivo
-            stateCol.innerText = professor.active == 1 ? "Activo" : "Inactivo";
-            //Coloca color rojo si es inactivo
-            stateCol.style.color = professor.active != 1 && "#ff5651";
-
-            row.appendChild(stateCol);
-
-            //Se crean elementos acciones de editar
-            const actionsCol = document.createElement("td");
-
-            const editBtn = document.createElement("img");
-            editBtn.src = "../../img/icons/edit.svg";
-            editBtn.classList.add("editBtn");
-
-            editBtn.addEventListener("click",()=>this.openEditForm(professor.professorId));
-            
-            actionsCol.appendChild(editBtn);
-
-            row.appendChild(actionsCol);
-
-            tableBody.appendChild(row);
-        }
-
+                    </div>
+                `;
+            })();
+    
+            const dniCell = professor.dni;
+    
+            const stateCell = `
+                <span style="color: ${professor.active !== 1 ? '#ff5651' : 'inherit'};">
+                    ${professor.active === 1 ? "Activo" : "Inactivo"}
+                </span>
+            `;
+    
+            const actionsCell = `
+                <img src="../../img/icons/edit.svg" class="editBtn" alt="Editar" onclick="openEditForm(${professor.professorId})">
+            `;
+    
+            return [index + 1, userCell, rolesCell, dniCell, stateCell, actionsCell];
+        });
+    
+        // Crear la tabla con el componente `createTable`
+        createTable(
+            "Lista de Profesores",
+            headers,
+            rows,
+            "table-body",
+            10, // Límite de filas por página
+            professorsAmount, // Total de registros
+            "/api/professors", // URL del API (debe ser reemplazada con la real)
+            true // Activar paginación basada en API
+        );
     }
+    
 
     /**
      * Abre modal para crear docente
@@ -336,7 +297,21 @@ class Action{
             window.location.href = "/"
         }
     }
+    
 
+    /**
+     * Crea una tabla con los datos especificados.
+     * @param {string} title - Título de la tabla.
+     * @param {Array} headers - Encabezados de la tabla.
+     * @param {Array} rows - Filas de datos.
+     * @param {HTMLElement} container - Contenedor de la tabla.
+     * @param {string} tableId - ID único para la tabla.
+     */
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination) {
+        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination);
+        section.style.marginTop = '0px'
+        container.appendChild(section);
+    }
 }
 
 export {Action}
