@@ -149,7 +149,9 @@ class Action {
         const userId = new URLSearchParams(window.location.search).get("id");
         const urlPagination = `../../../../api/get/pagination/reviewedInscriptions/?idReviewer=${userId}`
 
-        createPagination(reviewedSection,tableBody,2,amountReviewed,urlPagination,false);
+        const limit = 10;
+
+        createPagination(reviewedSection,tableBody,limit,amountReviewed,urlPagination,false);
 
     }
 
