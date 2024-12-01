@@ -368,9 +368,9 @@ BEGIN
     INNER JOIN Applicant b ON(a.idApplicant=b.id)
     INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
     INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
-    WHERE a.academicEvent=idCurrent
+    WHERE a.academicEvent=idCurrent AND a.approved=true
     ORDER BY a.id ASC
-    LIMIT 2 OFFSET p_offset;
+    LIMIT 5 OFFSET p_offset;
 END //
 
 /**

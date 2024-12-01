@@ -184,7 +184,7 @@
                             // Obtener limite para enviar correos 
                             $limit5AM = clone $today1AM;
                             // Sumar 4 horas al clon
-                            $limit5AM->modify('+4 hour');
+                            $limit5AM->modify('+3 hour');
                             
                             while($amount>0){
                                 $dateString = $today1AM->format("H:i Y-m-d");
@@ -214,13 +214,13 @@
                                         //nuevo limite
                                         $limit5AM = clone $today1AM;
                                         // Sumar 4 horas al clon
-                                        $limit5AM->modify('+4 hour');
+                                        $limit5AM->modify('+3 hour');
 
                                     }else{
                                         $today1AM->modify('+1 hour');
                                     }
-                                    $amount = $amount - 2;
-                                    $offset = $offset + 2;
+                                    $amount = $amount - 5;
+                                    $offset = $offset + 5;
                                 }
                             }
 
@@ -232,7 +232,8 @@
                             if($result){
                                 return [
                                     'status'=> true,
-                                    'message'=> 'Correos programados correctamente. Empezaran a enviarse a las ' . $formattedDate
+                                    'message'=> 'Correos programados correctamente.' ,
+                                    'programmingDate'=>$formattedDate
                                 ];
                             }else{
                                 return [
