@@ -169,23 +169,50 @@ async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, ro
 
 /**
  * Renderiza las filas en un tbody dado.
- * @param {Array<Array<any>>} rows - Matriz de datos para las filas.
+ * @param {Array<Array<any>> || Array<Object>} rows - Matriz de datos para las filas. O un arreglo de objetos
  * @param {HTMLElement} tbody - Elemento tbody donde se agregarán las filas.
  */
 function renderRows(rows, tbody) {
+
     rows.forEach(rowData => {
         const row = document.createElement("tr");
+        //Si el contenido de las filas es un objeto
+        if (typeof rowData === "object" && rowData !== null) {
 
-        rowData.forEach(cellData => {
-            const td = document.createElement("td");
-            td.textContent = cellData;
-            row.appendChild(td);
-        });
+            Object.keys(rowData).forEach(key => {
+                const td = document.createElement("td");
+                td.textContent = rowData[key];
+                row.appendChild(td);
+            });
+
+        //Si el contenido de las filas es un array
+        } else if(rowData !== null && Array.isArray(rowData)){
+
+            rowData.forEach(cellData => {
+                const td = document.createElement("td");
+                td.textContent = cellData;
+                row.appendChild(td);
+            });
+
+        }else{
+            console.error("El Formato de rows no es el correcto");
+        }
 
         tbody.appendChild(row);
     });
 }
 
+/**
+ * Crea paginación solamente renderizando las filas. 
+ * Este metodo se usa en paginas en las que el contenido de las filas es muy cambiante.
+ * @param {*} section - Seccion donde se quiere insertar el elemento de paginacion
+ * @param {*} tbody - cuerpo de la tabla
+ * @param {*} limit - Limite de filas en cada paginas
+ * @param {*} totalRecords - Cantidad total de las filas
+ * @param {*} apiUrl - url de la api de paginacion
+ * @param {*} isFetchPagination - si la data es producto de una peticion asincrona
+ * @param {*} rows - Matriz de datos locales (si isFetchPagination es true).
+ */
 export function createPagination(section, tbody, limit, totalRecords, apiUrl, isFetchPagination, rows){
 
     // Crear la paginación si es necesario
@@ -201,14 +228,14 @@ export function createPagination(section, tbody, limit, totalRecords, apiUrl, is
         // Botón "Previous"
         const prevButton = document.createElement("li");
         prevButton.className = "page-item disabled";
-        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+        prevButton.innerHTML = `<a class="page-link">Previous</a>`;
         paginationList.appendChild(prevButton);
 
         // Botones de número de página
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement("li");
             pageButton.className = `page-item ${i === 1 ? 'active' : ''}`;
-            pageButton.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            pageButton.innerHTML = `<a class="page-link">${i}</a>`;
 
             pageButton.addEventListener("click", () => {
                 updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows);
@@ -224,7 +251,7 @@ export function createPagination(section, tbody, limit, totalRecords, apiUrl, is
         // Botón "Next"
         const nextButton = document.createElement("li");
         nextButton.className = `page-item ${totalPages > 1 ? '' : 'disabled'}`;
-        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
+        nextButton.innerHTML = `<a class="page-link">Next</a>`;
         paginationList.appendChild(nextButton);
 
         pagination.appendChild(paginationList);
