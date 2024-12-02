@@ -1,249 +1,463 @@
 import { HttpRequest } from "../../modules/HttpRequest.js";
-import { Modal } from "../../modules/Modal.js"
-import {Popup} from "../../modules/Popup.js"
+import { Modal } from "../../modules/Modal.js";
+import { Popup } from "../../modules/Popup.js";
 import { createTable } from "../../modules/table.js";
 
-class Action{
-
+class Action {
     /**
-     * Este metodo se encarga de renderizar en la pagina, la data recibida del servidor.
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 11/11/24
-     * @param {*} data un objeto que contiene estadisticas sobre el proceso de admision actual
+     * Renderiza información del proceso de admisión en la página.
+     * author: afcastillof@unah.hn, dochoa@unah.hn
+     * version: 0.1.0
+     * date: 24/11/24
+     * @param {Object} data - Datos del proceso de admisión actual.
      */
-    static renderActiveProcess(data){
-        
-        //Se destructura la data
-        const {infoProcess, amountInscription, lastestInscriptions, csvStatus} = data;
+    static renderActiveProcess(data) {
+        const { infoProcess, amountInscription, regionalCenters, reviewers, higherScores, admissionTests, approvedStudents, lastestInscriptions, sendedEmail } = data;
 
-        //Se renderiza el nombre del proceso de admision
-        const processName = document.querySelector("h1#processName");
-        processName.innerText = infoProcess.name;
+        const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]]
+        this.updateTextContent("h1#processName", infoProcess.processState);
+        this.updateTextContent("p#startDate", infoProcess.start);
+        this.updateTextContent("p#finishDate", infoProcess.end);
+        this.updateTextContent("h1#admissionState", infoProcess.processState);
+        this.updateTextContent("h1#amountInscriptions", amountInscription.amountInscriptions);
 
-        //Se renderizan las fechas
-        const startDate = document.querySelector("p#startDate");
-        const finishDate = document.querySelector("p#finishDate");
-        
-        startDate.innerText = infoProcess.start;
-        finishDate.innerText = infoProcess.end;
-
-        //Se renderiza estado del proceso de admision
-
-        const admissionState = document.querySelector("h1#admissionState");
-
-        admissionState.innerText = infoProcess.processState;
-
-        //Se renderiza cantidad actual de inscripciones
-        
-        const amountProcessInscription = document.querySelector("h1#amountInscriptions");
-
-        amountProcessInscription.innerText = amountInscription;
-
-        //Se renderizan las ultimas cinco inscripciones
-
-        const lastInscriptionsBody = document.querySelector("tbody#lastInscriptionsTbl");
-        
-        //Se crean las filas y columnas de la tabla
-        if (lastestInscriptions!==null) {
-            lastestInscriptions.forEach(inscription=>{
-            
-                const row = document.createElement("tr");
-                
-                //Se crea la columna de id
-                const idCol = document.createElement("th");
-                idCol.setAttribute("scope","row");
-                idCol.innerText = inscription.id;
-    
-                row.appendChild(idCol);
-    
-                //Se crean las columnas
-                const colName = document.createElement("td");
-                const colCareer = document.createElement("td");
-                const colDate = document.createElement("td");
-                
-                //Se agrega columna de nombre del aplicante
-                colName.innerText = inscription.name;
-                row.appendChild(colName);
-    
-                //Se agrega la columna de la carrera 
-                colCareer.innerText = inscription.career;
-                row.appendChild(colCareer);
-    
-                //Se agrega la columna de la fecha de inscripcion
-                colDate.innerText = inscription.inscriptionDate;
-                row.appendChild(colDate);
-    
-                //Se agrega la fila al cuerpo de la tabla
-                lastInscriptionsBody.appendChild(row)
-            })
-        }
-
-        //Si el proceso no es subida de notas
-        if (infoProcess.idProcessState!=3) {
-            //Se renderiza la seccion de subida de csv
-            this.renderUploadCSVSection(infoProcess.idProcessState);
+        switch (infoProcess.idProcessState) {
+            case 3:
+                this.renderLastesInscriptions(lastestInscriptions);
+                break;
+            case 4:
+                this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions);
+                break;
+            case 5:
+                this.renderUploadCSVSection(infoProcess.idProcessState);
+                this.provideUploadInfo(admissionTests);
+                break;
+            case 6:
+                this.renderUploadCSVSection(infoProcess.idProcessState, sendedEmail);
+                this.renderHistoricInfo(higherScoress,regionalCenters);
+                const approvedInscription = document.getElementById("amountBox");
+                approvedInscription.innerText = 'Aplicantes aprobados';
+                this.updateTextContent("h1#amountInscriptions", approvedStudents);
+                break;
+            case 7:
+                this.renderUploadCSVSection(infoProcess.idProcessState);
+                this.renderHistoricInfo(higherScoress,regionalCenters);
+            break;
         }
 
     }
 
     /**
-     * Renderiza la tarjeta que permite subir el csv de calificaciones al portal
-     * @author dochoao@unah.hn, afcastillof@unah.hn
-     * @version 0.1.2
-     * @date 17/11/24
-     * @param {*} id el id del proceso de admision solicitado
+     * Renderiza la tarjeta para subir o gestionar archivos CSV.
+     * author: afcastillof@unah.hn
+     * version: 0.1.0
+     * date: 24/11/24
+     * @param {number} processState - Estado actual del proceso de admisión.
      */
-    static renderUploadCSVSection(processState){
-
-        //Se selecciona la sección de subida del CSV
+    static renderUploadCSVSection(processState, sendedEmail) {
         const uploadCsvSection = document.querySelector("section#upload_csv");
+        const cardContent = this.getCardContent(processState);
+        const card = this.createCard(cardContent, sendedEmail);
 
-        //Se crea card contenedora
-        const card = document.createElement("div");
-        card.classList.add("card-container", "d-flex", "justify-content-between");
-
-        //Se agrega texto informativo a card
-        card.innerHTML = processState===4 ?
-            `<div>
-                <p class="font-medium">Subida de calificaciones</p>
-                <p>El proceso de admisión está en publicacion de resultados puedes subir el archivo de calificaciones aqui.</p>
-            </div>` : processState === 6 ? 
-            `<div>
-                <p class="font-medium">Generar CSV</p>
-                <p>Genera un archivo csv con todos los estudiante aprobados de este proceso de admision.</p>
-            </div>`:
-            `<div>
-                <p class="font-medium">Enviar resultados</p>
-                <p>Manda un correo e informa a todos los participantes del proceso de admision sobre su dictamen en las pruebas.</p>
-            </div>`;
-
-        //Se crea el boton de subida de csv
-        const button = document.createElement("button");
-        button.classList.add("button-upload", "btn");
-        if (processState===4){
-            button.setAttribute("id", "uploadCSVBtn");
-            //Se agrega accion de abrir modal de subir archivo
-            button.addEventListener("click", ()=>{
-            const uploadCSVModal = document.querySelector("div#uploadCSVModal");
-            Modal.openModal(uploadCSVModal);
-            });
-        } else if(processState===5){
-            button.setAttribute("id", "sendMail");
-            button.style.backgroundColor = "#3472F8";
-            //Se agrega accion de abrir modal de mandar correos
-            button.addEventListener("click", ()=>{
-                const uploadCSVModal = document.querySelector("div#sendEmails");
-                Modal.openModal(uploadCSVModal);
-            });
-        } else if(processState===6){
-            button.setAttribute("id", "downloadCsvBtn");
-            //Se agrega accion para descargar el csv
-            button.addEventListener("click", ()=>{
-                this.downloadCSV()
-            })
-        }
-
-        
-
-        //Se agrega imagen y texto dentro del boton
-        button.innerHTML = processState===4 ?
-            `<img src="../../img/icons/upload.svg" alt="" class="me-2">
-             <span>Subir CSV</span>` : processState===6 ?
-             `<img src="../../img/icons/download.svg" alt="" class="me-2">
-             <span>Descargar CSV</span>`: 
-             `<img src="../../img/icons/mail.svg" alt="" class="me-2" style="width:24px">
-             <span style="color: white;">Enviar resultados CSV</span>`;
-
-        //Se agrega el boton a la card
-        card.appendChild(button);
-
-        //Se agrega la card la seccion
         uploadCsvSection.appendChild(card);
     }
 
+    // Crear elemento con clases específicas
+    static createElementWithClasses = (tag, ...classes) => {
+        const element = document.createElement(tag);
+        element.classList.add(...classes);
+        return element;
+    };
+
     /**
-     * Este metodo manda a llamar a la api para obtener la informacion de un proceso de admision activo
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 11/11/24
-     * @param {*} id el id del proceso de admision solicitado
+     * Genera el contenido de la tabla con la informacion de los revisores
+     * author: afcastillof@unah.hn
+     * version: 0.1.0
+     * date: 24/11/24
+     * @param {row} processState - Filas para la tabla de revisiones.
+     * @param {inscripcionesPorRevisar} inscripcionesPorRevisar 
+     * @param {inscripcionesRevisadas} inscripcionesRevisadas 
+     * @param {totalInscripciones} totalInscripciones 
+     * @returns {Object} Contenido dinámico de la tarjeta.
      */
-    static fetchActiveData = async ()=>{
-        const response = await HttpRequest.get(`../../../api/get/admission/infoCurrentAdmission`);
-        if (response.status) {
-            this.renderActiveProcess(response.data)
-        }else{
+    static renderRevisionProcess(rows, totalInscripciones, inscripcionesRevisadas, inscripcionesPorRevisar) {
+        const createElementWithClasses = this.createElementWithClasses;
+        // Crear estructura general
+        const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
+        containerGeneral.id = 'containerGeneral';
+        const container = document.getElementById('container');
 
-            const popupError = document.querySelector("#popupError");
-            const messageError = popupError.querySelector("#message");
-            const buttonClose = popupError.querySelector("#buttonClose");
+        const container1 = document.createElement('div');
 
-            messageError.innerText = response.message;
+        const title1 = document.createElement("h3");
+        title1.textContent = "Revision de inscripciones";
+        title1.classList.add("info-title");
 
-            buttonClose.addEventListener('click',()=>{
-                Popup.close(popupError);
-                window.location.href = "../administrative_home.html"
-            })
+        const description = document.createElement("p");
+        description.textContent = "Acontinuacion se muestra la informacion relacionada con el proceso de revision de inscripciones:";
 
-            Popup.open(popupError);
+        container1.appendChild(title1);
+        container1.appendChild(description);
+        containerGeneral.appendChild(container1);
+    
 
+        if (!container) {
+            console.error("El contenedor con id 'container' no se encuentra en el DOM.");
+            return;
         }
+    
+        // Contenedor dinámico para la tabla
+        const containerDinamic = createElementWithClasses('div', 'col-8');
+        const headers = ["#", "Nombre", "Inscripciones revisadas"];
+        this.createTableWithData("Revisores", headers, rows, containerDinamic, "reviewersTable");
+    
+        // Sección de progreso de revisiones
+        const containerInfo = createElementWithClasses('div', 'card-container', 'col');
+    
+        const iconRevision = createElementWithClasses('img', 'me-2');
+        iconRevision.src = '../../img/icons/graduation-icon.svg';
+    
+        const title = document.createElement('span');
+        title.classList.add("fw-bold")
+        title.textContent = "Progreso de revisiones";
+    
+        // Composición de la sección de título
+        const titleContainer = createElementWithClasses('div', 'd-flex', 'align-items-center');
+        titleContainer.append(iconRevision, title);
+    
+        // Información adicional
+        const infoDetails = createElementWithClasses('div', 'mt-3');
+        const createInfoItem = (label, value) => {
+            const item = createElementWithClasses('div', 'd-flex', 'justify-content-between', 'mb-2');
+            const labelElement = document.createElement('span');
+            labelElement.textContent = label;
+    
+            const valueElement = document.createElement('span');
+            valueElement.classList.add("fw-bold")
+            valueElement.textContent = value;
+            valueElement.style.color = "#FFAA34";
+    
+            item.append(labelElement, valueElement);
+            return item;
+        };
+    
+        infoDetails.appendChild(createInfoItem("Total de inscripciones:", totalInscripciones, true));
+        infoDetails.appendChild(createInfoItem("Inscripciones aprobadas:", inscripcionesRevisadas, true));
+        infoDetails.appendChild(createInfoItem("Inscripciones por revisar:", inscripcionesPorRevisar, true));
+    
+        containerInfo.appendChild(titleContainer);
+        containerInfo.appendChild(infoDetails);
+    
+        // Ensamblar y agregar al DOM
+        containerGeneral.append(containerInfo, containerDinamic);
+        container.appendChild(containerGeneral);
+    }
+    
+    static renderLastesInscriptions(data) {
+        const container = document.getElementById('container');
+        const headers = ["id", "Nombre", "Carrera", "Fecha de inscripcion"];
+        this.createTableWithData("Ultimos aplicantes", headers, data, container, "lastInscriptions")
+    }
+    
+
+    static provideUploadInfo(tests) {
+        // Obtener el contenedor donde se mostrará la información
+        const contentContainer = document.getElementById("contentt");
+    
+        if (!contentContainer) {
+            console.error("El contenedor con id 'contentt' no existe.");
+            return;
+        }
+    
+        // Limpiar contenido previo (si es necesario)
+        contentContainer.innerHTML = "";
+    
+        const title = document.createElement("h3");
+        title.textContent = "Información sobre el formato del archivo";
+        title.classList.add("info-title");
+    
+        const description = document.createElement("p");
+        description.textContent = "En este proceso se subirán las calificaciones obtenidas por los aspirantes en las pruebas. Asegúrate de seguir las indicaciones para evitar errores durante la carga.";
+    
+        // Crear una lista con las instrucciones para el formato del archivo
+        const formatInstructions = document.createElement("ul");
+        formatInstructions.classList.add("info-list"); // Clase opcional para estilizar la lista
+    
+        let testString = ''; 
+        tests.forEach((test) => {
+            testString += `${test.id} (${test.name} se aprueba con ${test.points} puntos).\n`;
+            console.log(testString);
+        });
+
+        const instructions = [
+            "El archivo debe estar en formato Excel (.xlsx o .xls).",
+            "Las columnas obligatorias son: 'dni', 'idTest', 'grade'.",
+            "No debe haber filas vacías entre los datos.",
+            "La calificación debe ser un número entre 0 y 2000.",
+            `Toma en cuenta que los idTest permitidos son:\n ${testString}`,
+        ];
+    
+        instructions.forEach((instruction) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = instruction;
+            formatInstructions.appendChild(listItem);
+        });
+    
+        // Crear un botón para descargar la plantilla
+        const downloadButton = document.createElement("button");
+        downloadButton.classList.add("btn", "btn-template-download"); 
+        downloadButton.style.backgroundColor = '#FFAA34';
+        downloadButton.textContent = "Descargar plantilla";
+        downloadButton.addEventListener("click", () => {
+            // Código para descargar la plantilla
+            const link = document.createElement("a");
+            link.href = "../../../api/get/admission/templateCSV";
+            link.download = "Plantilla_Calificaciones.xlsx";
+            link.click();
+        });
+    
+        // Insertar los elementos en el contenedor
+        contentContainer.appendChild(title);
+        contentContainer.appendChild(description);
+        contentContainer.appendChild(formatInstructions);
+        contentContainer.appendChild(downloadButton);
+    }
+    
+    static renderHistoricInfo(rows, regionalCenters, mode) {
+        const createElementWithClasses = this.createElementWithClasses;
+        // Crear estructura general
+        const containerGeneral = createElementWithClasses('div', 'row', 'gap-4');
+        containerGeneral.id = 'containerGeneral';
+        const container = document.getElementById('container');
+
+        const container1 = document.createElement('div');
+
+        const title1 = document.createElement("h3");
+        title1.textContent = "Envio de resultados";
+        title1.classList.add("info-title");
+
+        const description = document.createElement("p");
+        mode == 1? 
+            description.textContent = "Al presionar enviar correos se notificara a todos los aplicantes sobre su resultado en las pruebas. Toma en cuenta que esto solo podra hacerse una vez y que no se enviaran directamente sino hasta las 01:00 am de mañana"
+            : description.textContent = "A continuación, encontrarás un resumen estadístico del proceso de admisiones. Este incluye la distribución de estudiantes aprobados por centro regional y una lista de los aspirantes con las calificaciones más altas. Estos datos te permitirán tener una visión más clara del desempeño general en esta etapa final del proceso.";
+        
+
+        //container1.appendChild(title1);
+        container1.appendChild(description);
+        containerGeneral.appendChild(container1);
+    
+
+        if (!container) {
+            console.error("El contenedor con id 'container' no se encuentra en el DOM.");
+            return;
+        }
+    
+        // Contenedor dinámico para la tabla
+        const containerDinamic = createElementWithClasses('div', 'col-8');
+        const headers = ["#", "Nombre", "Carrera Principal", "Puntaje"];
+        this.createTableWithData("Calificaciones mas altas en la PAA", headers, rows, containerDinamic, "reviewersTable");
+    
+        // Sección de progreso de revisiones
+        const containerInfo = createElementWithClasses('div', 'card-container', 'col');
+    
+        const iconRevision = createElementWithClasses('img', 'me-2');
+        iconRevision.src = '../../img/icons/graduation-icon.svg';
+    
+        const title = document.createElement('span');
+        title.classList.add("fw-bold")
+        title.textContent = "Aplicantes aprobados por centro";
+    
+        // Composición de la sección de título
+        const titleContainer = createElementWithClasses('div', 'd-flex', 'align-items-center');
+        titleContainer.append(iconRevision, title);
+    
+        // Información adicional
+        const infoDetails = createElementWithClasses('div', 'mt-3');
+        const createInfoItem = (label, value) => {
+            const item = createElementWithClasses('div', 'd-flex', 'justify-content-between', 'mb-2');
+            const labelElement = document.createElement('span');
+            labelElement.textContent = label;
+    
+            const valueElement = document.createElement('span');
+            valueElement.classList.add("fw-bold")
+            valueElement.textContent = value;
+            valueElement.style.color = "#FFAA34";
+    
+            item.append(labelElement, valueElement);
+            return item;
+        };
+
+        regionalCenters.forEach((center) => {
+            infoDetails.appendChild(createInfoItem(center.acronym, center.approvedApplicants));
+        });
+    
+        containerInfo.appendChild(titleContainer);
+        containerInfo.appendChild(infoDetails);
+    
+        // Ensamblar y agregar al DOM
+        containerGeneral.append(containerInfo, containerDinamic);
+        container.appendChild(containerGeneral);
+    }
+    
+
+    /**
+     * Genera el contenido dinámico para la tarjeta según el estado del proceso.
+     * @param {number} processState - Estado actual del proceso.
+     * @returns {Object} Contenido dinámico de la tarjeta.
+     */
+    static getCardContent(processState) {
+        const contentMap = {
+            5: {
+                title: "Subida de calificaciones",
+                description:
+                    "El proceso de admisión está en publicación de resultados. Puedes subir el archivo de calificaciones aquí.",
+                button: { id: "uploadCSVBtn", text: "Subir CSV", icon: "upload.svg", action: "openUploadModal" },
+            },
+            6: {
+                title: "Enviar resultados",
+                description:
+                    "Informa a los participantes sobre su dictamen en las pruebas por correo.",
+                button: { id: "sendMail", text: "Enviar resultados CSV", icon: "mail.svg", action: "openMailModal", color: "#3472F8", spanColor: "#fff" },
+            },
+            7: {
+                title: "Generar CSV",
+                description:
+                    "Genera un archivo CSV con todos los estudiantes aprobados de este proceso.",
+                button: { id: "downloadCsvBtn", text: "Descargar CSV", icon: "download.svg", action: "downloadCSV" },
+            },
+        };
+
+        return contentMap[processState] || {};
     }
 
-    
     /**
-     * Accion para el boton de descargar CSV que obteniene un archivo y lo descarga automaticamente.
-     * @author afcastillof@unah.hn
-     * @version 0.1.0
-     * @date 12/11/24
+     * Crea una tarjeta con el contenido especificado.
+     * @param {Object} content - Contenido de la tarjeta.
+     * @param {number} processState - Estado actual del proceso.
+     * @returns {HTMLElement} Elemento HTML de la tarjeta.
      */
-    static downloadCSV(){
-        const url = '../../../api/get/admission/generateCSV';
-    
-        // Hacer la solicitud para obtener el CSV
+    static createCard(content, sendedEmail) {
+        const card = document.createElement("div");
+        card.classList.add("card-container", "d-flex", "justify-content-between");
+
+        card.innerHTML = `
+            <div>
+                <p class="font-medium">${content.title}</p>
+                <p>${content.description}</p>
+            </div>
+        `;
+
+        const button = document.createElement("button");
+        button.classList.add("button-upload", "btn");
+        button.id = content.button.id;
+        button.style.backgroundColor = content.button.color;
+        button.innerHTML = `
+            <img src="../../img/icons/${content.button.icon}" alt="" class="me-2">
+            <span style="color: ${content.button.spanColor}">${content.button.text}</span>
+        `;
+        button.addEventListener("click", () => this[content.button.action]?.());
+        if(sendedEmail==1){
+            button.disabled = true;
+            button.style.backgroundColor = '#878787';
+        }
+
+        card.appendChild(button);
+        return card;
+    }
+
+    /**
+     * Actualiza el texto de un elemento.
+     * @param {string} selector - Selector del elemento.
+     * @param {string} text - Texto a asignar.
+     */
+    static updateTextContent(selector, text) {
+        const element = document.querySelector(selector);
+        if (element) element.innerText = text;
+    }
+
+    /**
+     * Llama a la API para obtener información del proceso de admisión activo.
+     */
+    static fetchActiveData = async () => {
+        try {
+            const response = await HttpRequest.get(`../../../api/get/admission/infoCurrentAdmission/`);
+            if (response.status) {
+                this.renderActiveProcess(response.data);
+            } else {
+                this.handleError(response.message);
+            }
+        } catch (error) {
+            console.error("Error al obtener datos del proceso activo:", error);
+        }
+    };
+
+    /**
+     * Maneja errores mostrando un popup.
+     * @param {string} message - Mensaje de error.
+     */
+    static handleError(message) {
+        const popupError = document.querySelector("#popupError");
+        const messageError = popupError.querySelector("#message");
+        const buttonClose = popupError.querySelector("#buttonClose");
+
+        messageError.innerText = message;
+
+        buttonClose.addEventListener("click", () => {
+            Popup.close(popupError);
+            window.location.href = "../administrative_home.html";
+        });
+
+        Popup.open(popupError);
+    }
+
+    /**
+     * Descarga automáticamente un archivo CSV generado por la API.
+     */
+    static downloadCSV() {
+        const url = "../../../api/get/admission/generateCSV/";
+
         fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo generar el CSV');
-                }
+            .then((response) => {
+                if (!response.ok) throw new Error("No se pudo generar el CSV");
                 return response.blob();
             })
-            .then(blob => {
-                const blobUrl = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
+            .then((blob) => {
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement("a");
                 link.href = blobUrl;
-                link.download = 'estudiantes_admitidos.csv';
+                link.download = "estudiantes_admitidos.csv";
                 document.body.appendChild(link);
                 link.click();
-    
                 document.body.removeChild(link);
-                window.URL.revokeObjectURL(blobUrl);
+                URL.revokeObjectURL(blobUrl);
             })
-            .catch(error => {
-                console.error('Error al descargar el archivo CSV:', error);
-            });
+            .catch((error) => console.error("Error al descargar el archivo CSV:", error));
     }
 
-    static makeTableIncorrectData(rows, container){
-        const headers = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
+    static openUploadModal() {
+        const uploadCSVModal = document.querySelector("div#uploadCSVModal");
+        Modal.openModal(uploadCSVModal);
+    }
 
-        const section = createTable("Registros no insertados en el csv", headers, rows, "incorrectData");
+    
+    static openMailModal() {
+        const uploadCSVModal = document.querySelector("div#sendEmails");
+        Modal.openModal(uploadCSVModal);
+    }
 
+    /**
+     * Crea una tabla con los datos especificados.
+     * @param {string} title - Título de la tabla.
+     * @param {Array} headers - Encabezados de la tabla.
+     * @param {Array} rows - Filas de datos.
+     * @param {HTMLElement} container - Contenedor de la tabla.
+     * @param {string} tableId - ID único para la tabla.
+     */
+    static createTableWithData(title, headers, rows, container, tableId) {
+        const section = createTable(title, headers, rows, tableId);
+        section.style.marginTop = '0px'
         container.appendChild(section);
     }
-
-    static makeTableMissingData(rows, container){
-        const headers = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
-
-        const section = createTable("Registros que no estaban en el csv", headers, rows, "missingData");
-
-        container.appendChild(section);
-    }
-
 }
 
-
-
-
-export {Action}
+export { Action };

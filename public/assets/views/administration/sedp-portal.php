@@ -13,7 +13,7 @@
 <body>
     <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="/">
             <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,11 +127,13 @@
                 <div>
                   <label class="form-label">Tipo de profesor</label>
                   <select class="form-select" aria-label="Default select example" name="professorTypeId" id="professorTypeSelect" required>
+                    <option selected>Seleccione una opcion</option>
                   </select>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Departamento</label>
                   <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelect" required>
+                    <option selected>Seleccione una opcion</option>
                   </select>
                 </div>
                 <div class="col-6">
@@ -201,11 +203,13 @@
                 <div>
                   <label class="form-label">Tipo de profesor</label>
                   <select class="form-select" aria-label="Default select example" name="professorTypeId" id="professorTypeSelectEdit" required>
-                  </select>
+                    <option selected>Seleccione una opcion</option>
+                </select>
                 </div>
                 <div>
                   <label class="form-label">Departamento</label>
                   <select class="form-select" aria-label="Default select example" name="departmentId" id="departmentSelectEdit" required>
+                    <option selected>Seleccione una opcion</option>
                   </select>
                 </div>
                 <div>

@@ -43,6 +43,7 @@ export const makeCurrentProcesCard = (id, name) => {
  **/
 export const makeTimeLine = (processes) => {
   const timeline = document.getElementById('timeline');
+  const containerSection = document.getElementById('containerSection')
 
   //Se crear los circulos con los anios
   for (let i = 0; i < processes.length; i++) {
@@ -88,7 +89,7 @@ export const makeTimeLine = (processes) => {
     timeline.appendChild(timelineItem);
   }
 
-  document.body.appendChild(timeline);
+  containerSection.appendChild(timeline);
 }
 
 /**

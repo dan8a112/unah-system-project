@@ -7,8 +7,9 @@ Action.fetchActiveData();
 
 // Selecciona el botón de enviar correos
 const sendEmailsButton = document.getElementById("sendEmailsButton");
-const container = document.getElementById("container")
-const url = "../../../api/get/admission/sendMails";
+const container = document.getElementById("contentt")
+const url = "../../../api/get/admission/programEmails/";
+const headersLastInscriptionTable = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
 
 // Se agrega la acción de enviar correos
 sendEmailsButton.addEventListener("click", async () => {
@@ -16,6 +17,9 @@ sendEmailsButton.addEventListener("click", async () => {
         const response = await HttpRequest.get(url);
         console.log("Correos enviados:", response);
         Modal.closeModal();
+        const sendButton = document.getElementById('sendMail');
+        sendButton.disabled = true;
+        sendButton.style.backgroundColor = '#878787';
     } catch (error) {
         console.error("Error al enviar correos:", error);
     }
@@ -25,12 +29,12 @@ document.getElementById('formCsv').addEventListener('submit', async (event) => {
     event.preventDefault(); 
 
     try {
-        const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv');
+        const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv/');
         console.log(result.message); 
-        console.log(result.incorrectData); 
+        console.log(result); 
         container.innerHTML = "";
-        Action.makeTableIncorrectData(result.incorrectData, container)
-        Action.makeTableMissingData(result.missingData, container)
+        Action.createTableWithData("Registros que no estaban en el csv", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable')
+        Action.createTableWithData("Registros que no estaban en el csv", headersLastInscriptionTable,result.missingData, container, 'MissingInscriptionTable')
         Modal.closeModal();
         
     } catch (error) {

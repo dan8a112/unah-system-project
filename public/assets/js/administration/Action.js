@@ -12,7 +12,7 @@ class Action{
      * @date 05/11/24
      */
     static fetchProfessors(){
-        fetch('../../../api/get/infoHomeSEDP')
+        fetch('../../../api/get/infoHomeSEDP/')
         .then(response => response.json())
         .then(data => {
             if (data.status) {
@@ -203,11 +203,14 @@ class Action{
      * @since 05/11/24
      * @param {*} event evento submit de envio de formulario
      */
-    static submitFormProfessor = async (event)=>{
+    static submitFormProfessor = async (form, event)=>{
+
+        console.log(form)
 
         event.preventDefault();
         
-        const response = await HttpRequest.submitForm(event, "../../../api/post/professor");
+        const response = await HttpRequest.submitForm(event, "../../../api/post/professor/");
+        console.log(response);
 
         Modal.closeModal();
 
@@ -284,13 +287,13 @@ class Action{
         let data = {}
 
         //Se hace la peticion de los tipos de profesores
-        const responseTypes = await HttpRequest.get("../../../api/get/professor/professorTypes");
+        const responseTypes = await HttpRequest.get("../../../api/get/professor/professorTypes/");
         
         //Se agregan a data
         data.professorTypes = responseTypes.professorTypes;
 
         //Se hace la peticion de los departamentos
-        const responseDeparments = await HttpRequest.get("../../../api/get/departments");
+        const responseDeparments = await HttpRequest.get("../../../api/get/departments/");
 
         data.departments = responseDeparments.departments;
 
@@ -328,7 +331,7 @@ class Action{
      * Cierra la sesion y redirecciona al home
      */
     static async logout(){
-        const response = await HttpRequest.get("../../../api/get/logout");
+        const response = await HttpRequest.get("../../../api/get/logout/");
         if (response.status) {
             window.location.href = "/"
         }

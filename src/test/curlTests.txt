@@ -1,6 +1,6 @@
 
 ----Curl para probar la api/post/applicant--------
-curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "pathSchoolCertificate=/hdxhd/hdvdh" -d "telephoneNumber=3347-6290" -d "personalEmail=samvel200355@gmail.com" -d "idFirstDegreeProgramChoice=1" -d "idSecondDegreeProgramChoice=3" -d "idRegionalCenterChoice=4" http://localhost:3000/api/post/application | jq
+curl -d "identityNumber=0801-2004-03085" -d "names=DorIAAHan" -d "lastNames=ContreDJDs DDjbdudJ" -d "pathSchoolCertificate=/hdxhd/hdvdh" -d "telephoneNumber=3347-6290" -d "personalEmail=samvel200355@gmail.com" -d "idFirstDegreeProgramChoice=1" -d "idSecondDegreeProgramChoice=3" -d "idRegionalCenterChoice=4" http://localhost:3000/api/post/application | jq
 
 curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "idFirstDegreeProgramChoice=1" -d "idSecondDegreeProgramChoice=3" -d "idRegionalCenterChoice=4" http://localhost:3000/api/post/application | jq
 
@@ -39,19 +39,45 @@ curl http://localhost:3000/api/get/admission/admissionDetail/?id=1 | jq
 curl http://localhost:3000/api/get/criUser/home/?id=1 | jq
 
 -----------Curl para obtener info de una inscripcion------------------
-curl http://localhost:3000/api/get/criUser/insciptionInfo/?id=1 | jq
+curl "http://localhost:3000/api/get/admission/inscription/?id=1&idAdmissionProcess=1" | jq
 
 --------------Curl para saber si hay un proceso de inscripcion actualmente---------------
 curl http://localhost:3000/api/get/admission/activeAdmissionProcess | jq
 
 --------------Curl para enviar correos---------------
-curl http://localhost:3000/api/get/admission/sendMails | jq
+curl "http://localhost:3000/api/get/admission/sendMails/?offset=0" | jq
+
+--------------Curl para programar correos---------------
+curl http://localhost:3000/api/get/admission/programEmails | jq
 
 ------------Curl insert professor----------------------
-curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeSelect=1" -d "departmentSelect=3" -d "birthDate=2003-12-08" http://localhost:3000/api/post/professor | jq
+curl -d "identityNumber=0801-2004-03085" -d "names=Dorian" -d "lastNames=Samantha" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeId=1" -d "departmentId=3" -d "birthDate=2003-12-08" http://localhost:3000/api/post/professor | jq
 
 ---------Curl para probar api/get/professor-------------------
 curl http://localhost:3000/api/get/professor/professor/?id=3 | jq
 
 -------------------Curl para actualizar docente----------------
-curl -d "identityNumber=0801-2004-03099" -d "firstName=Actualizado" -d "secondName=Samantha" -d "firstLastName=Contreras" -d "secondLastName=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeSelect=1" -d "departmentSelect=3" -d "birthDate=2003-12-08" -d "active=false" http://localhost:3000/api/update/professor?id=8 | jq
+curl -d "identityNumber=0801-2004-03099" -d "names=Actualizado" -d "lastNames=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeId=1" -d "departmentId=3" -d "birthDate=2003-12-08" -d "active=false" http://localhost:3000/api/update/professor?id=8 | jq
+
+----------------------Curl para revision de inscripcion----------
+curl -d "idApplication=47" -d "idReviewer=3" -d "approved=0" -d "name=Samantha" -d "mail=dorian.contreras@unah.hn" http://localhost:3000/api/update/verifyApplication | jq
+
+------------------------PAGINACION--------------------------------
+
+----------------------obtener todas las incripciones---------------
+curl "http://localhost:3000/api/get/pagination/allInscriptions/?idProcess=1&offset=0" | jq
+
+----------------------obtener revisores---------------
+curl "http://localhost:3000/api/get/pagination/reviewers/?idProcess=1&offset=0" | jq
+
+----------obtener inscrpciones de los aplicantes que aprobaron el proceso---------------
+curl "http://localhost:3000/api/get/pagination/approvedApplicants/?idProcess=1&offset=0" | jq
+
+-------------obtener inscrpciones de los aplicantes que les hace falta el resultado---------------
+curl "http://localhost:3000/api/get/pagination/missingResults/?offset=0&counter=1" | jq
+
+----------------------------obtener profesores--------------------------------
+curl "http://localhost:3000/api/get/pagination/professors/?offset=0" | jq
+
+------------------------obtener aplicaciones revisadas por revisor----------------------
+curl "http://localhost:3000/api/get/pagination/reviewedInscriptions/?idReviewer=1&offset=0" | jq

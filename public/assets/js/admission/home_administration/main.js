@@ -2,18 +2,7 @@ import {BarChart} from './chart.js';
 import { makeCurrentProcesCard, makeTimeLine, separateData } from './Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';
 
-
-const logoutButton = document.querySelector("button#logoutButton");
-
-logoutButton.addEventListener("click",async ()=>{
-    const response = await HttpRequest.get("../../../api/get/logout");
-    if (response.status) {
-        window.location.href = "/"
-    }
-})
-
-
-const url = '../../../api/get/homeAPA';
+const url = '../../../api/get/homeAPA/';
 
 async function loadData() {
   // Realizar la solicitud GET usando HttpRequest

@@ -13,7 +13,7 @@ class Action{
     static renderHistoricProcess(data){
         
         //Se destructura la data
-        const {infoProcess, amountApproved, amountInscriptions, higherScores, amountCentersInscriptions} = data;
+        const {infoProcess, amountApproved, amountInscriptions, higherScores, inscriptionInfo, regionalCenters, approvedStudents} = data;
 
         //Se renderiza el nombre del proceso
         const processName = document.querySelector("h1#processName");
@@ -29,16 +29,18 @@ class Action{
         //Se renderiza cantidad de aprobados
 
         const approbed = document.querySelector("h1#amountApprobed");
-        approbed.innerText = amountApproved;
+        approbed.innerText = approvedStudents;
 
         //Se renderiza cantidad actual de inscripciones
         
         const amountProcessInscription = document.querySelector("h1#amountInscriptions");
-        amountProcessInscription.innerText = amountInscriptions;
+        amountProcessInscription.innerText = inscriptionInfo.approvedInscriptions;
 
         //Se renderizan las cinco notas mas altas del proceso de admision
 
         const higherScoreBody = document.querySelector("tbody#higherScoreTbl");
+
+        const summaryApplications = document.getElementById("summaryApplicationsTbl")
         
         //Se crean las filas y columnas de la tabla
         higherScores.forEach(inscription=>{
@@ -73,28 +75,35 @@ class Action{
             higherScoreBody.appendChild(row)
         })
 
-        const amountCentersContainer = document.querySelector("div#amountCentersContainer");
 
-        amountCentersInscriptions.forEach(center=>{
+        regionalCenters.forEach(center=>{
+            
+            const row = document.createElement("tr");
+            
+            //Se crea la columna de id
+            const centerCol = document.createElement("th");
+            centerCol.setAttribute("scope","row");
+            centerCol.innerText = center.acronym;
 
-            //Se crea un item de centro regional
-            const centerItem = document.createElement("div");
-            centerItem.classList.add("regional-center-item");
+            row.appendChild(centerCol);
 
-            //Se crea texto de nombre de centro
-            const centerName = document.createElement("span");
-            centerName.classList.add("font-medium");
-            centerName.innerText = center.name;
+            //Se crea un elemento columna
+            const Ins = document.createElement("td");
+            const Apvs = document.createElement("td");
+            
+            //Se agrega columna de nombre del aplicante
+            Ins.innerText = center.approvedReview;
+            row.appendChild(Ins);
 
-            //Se crea texto de cantidad de inscripciones
-            const amountInscripted = document.createElement("span");
-            amountInscripted.innerText = center.amount;
+            //Se agrega la columna de la carrera 
+            Apvs.innerText = center.approvedApplicants;
+            row.appendChild(Apvs);
 
-            centerItem.appendChild(centerName);
-            centerItem.appendChild(amountInscripted);
-
-            amountCentersContainer.appendChild(centerItem);
+            //Se agrega la fila al cuerpo de la tabla
+            summaryApplications.appendChild(row)
         })
+
+        
     }
 
     /**
