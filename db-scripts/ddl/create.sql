@@ -161,6 +161,88 @@ CREATE TABLE Configuration(
     data json
 );
 
+CREATE TABLE Student(
+    account VARCHAR(11) PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    lastName VARCHAR(30) NOT NULL,
+    DNI VARCHAR(13) NOT NULL,
+    address VARCHAR(70) NOT NULL,
+    email VARCHAR(60) NOT NULL,
+    degreeProgram SMALLINT NOT NULL,
+    regionalCenter TINYINT NOT NULL,
+    globalAverage TINYINT,
+    periodAverage TINYINT,
+    photo1 LONGBLOB,
+    photo2 LONGBLOB,
+    photo3 LONGBLOB,
+    password VARCHAR(80),
+   CONSTRAINT fk_degreeProgram_student FOREIGN KEY (degreeProgram) REFERENCES DegreeProgram(id),
+   CONSTRAINT fk_regionalCenter_student FOREIGN KEY (regionalCenter) REFERENCES RegionalCenter(id)
+);
+
+CREATE TABLE Subject(
+    id VARCHAR(8) PRIMARY KEY,
+    description VARCHAR(20),
+    department SMALLINT,
+    uv  SMALLINT, 
+    CONSTRAINT fk_department_subject FOREIGN KEY(department) REFERENCES Department(id)
+);
+
+CREATE TABLE SubjectDegree(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subject VARCHAR(8),
+    degreeProgram SMALLINT,
+    requirement VARCHAR(8),
+    CONSTRAINT fk_degreeProgram_SubjectDegree FOREIGN KEY(degreeProgram) REFERENCES DegreeProgram(id),
+    CONSTRAINT fk_SubjectDegree_Subject FOREIGN KEY(subject) REFERENCES Subject(id),
+    CONSTRAINT fk_SubjectDegree_Subject2 FOREIGN KEY(requirement) REFERENCES Subject(id)
+);
+
+CREATE TABLE Building(
+    id SMALLINT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(10),
+    regionalCenter TINYINT,
+    CONSTRAINT fk_Building_RegionalCenter FOREIGN KEY(regionalCenter) REFERENCES RegionalCenter(id)
+);
+
+CREATE TABLE Classroom(
+    id SMALLINT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(20),
+    building SMALLINT,
+    CONSTRAINT fk_building_classroom FOREIGN KEY(building) REFERENCES Building(id)
+);
+
+CREATE TABLE Section(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    subject VARCHAR(8),
+    professor INT,
+    year INT,
+    period INT,
+    section INT,
+    building SMALLINT,
+    classroom SMALLINT,
+    maximumCapacity TINYINT,
+    CONSTRAINT fk_subject_section FOREIGN KEY(subject) REFERENCES Subject(id),
+    CONSTRAINT fk_subject_professor FOREIGN KEY(professor) REFERENCES Professor(id),
+    CONSTRAINT fk_building_section FOREIGN KEY(building) REFERENCES Building(id),
+    CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id));
+
+CREATE TABLE Observation(
+    id TINYINT PRIMARY KEY,
+    observation VARCHAR(4)
+);
+
+CREATE TABLE StudentSection(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    studentAccount VARCHAR(11),
+    section INT,
+    grade TINYINT,
+    observation TINYINT,
+   CONSTRAINT fk_student_studentSection FOREIGN KEY(studentAccount) REFERENCES Student(account),
+   CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
+   CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
+
+
 /*------------------------------------------------------------------INSERTS-------------------------------------------------------------------------------------*/
 INSERT INTO RegionalCenter(description, location, acronym) VALUES
     ('Centro Universitario Regional del Centro', 'Comayagua', 'CURNO'),
