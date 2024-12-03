@@ -277,23 +277,23 @@ class Action {
         
         const response = await HttpRequest.post("../../../api/update/verifyApplication/", body);
         
-        if(response.status===true){
+        
+        if (response.status === true) {
 
-           Modal.closeModal();
+            Modal.closeModal();
 
-           console.log("antes de eliminar:",this.unreviewedInscriptionsId)
-           this.unreviewedInscriptionsId.shift();
-           console.log("despues de eliminar:",this.unreviewedInscriptionsId)
+            //se elimina la inscripcion revisada de la lista
+            this.unreviewedInscriptionsId.shift();
 
-           if (this.unreviewedInscriptionsId.length>0) {
-            this.openReviewModal(this.unreviewedInscriptionsId[0])
-           }
+            if (this.unreviewedInscriptionsId.length > 0) {
+                this.openReviewModal(this.unreviewedInscriptionsId[0])
+            }
 
-           this.renderAllPage(0);
+            this.renderAllPage(0);
 
-           //Se reactivan ambos botones (Rechazar y Aprobar)
-           DenyBtn.removeAttribute("disabled");
-           approveBtn.removeAttribute("disabled");
+            //Se reactivan ambos botones (Rechazar y Aprobar)
+            DenyBtn.removeAttribute("disabled");
+            approveBtn.removeAttribute("disabled");
         }
 
     }
