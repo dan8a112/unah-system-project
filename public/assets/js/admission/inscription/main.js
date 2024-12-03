@@ -128,7 +128,7 @@ document.getElementById('form-inscription').addEventListener('submit', async (ev
           exitMessage.innerHTML = `Tu inscripción fue realizada exitosamente, tendrás que realizar los exámenes: ${result.exams}`;
                   } else {
           Popup.open(popupError);
-          if(result.code == 4){
+          if(result.code == 0){
             message.innerHTML = result.message;
             buttonOk2.style.background = '#EC0000';
             buttonOk2.addEventListener('click', () => Popup.close2(popupError));
