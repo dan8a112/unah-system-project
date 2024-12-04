@@ -135,6 +135,7 @@ CREATE TABLE Professor(
     department SMALLINT,
     CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES Employee(id),
     active BOOLEAN,
+    changePassword BOOLEAN DEFAULT TRUE,
     CONSTRAINT fk_professorType FOREIGN KEY (professorType) REFERENCES ProfessorType(id),
     CONSTRAINT fk_department FOREIGN KEY (department) REFERENCES Department (id)
 );
@@ -1274,11 +1275,11 @@ INSERT INTO Department (description) VALUES
     ('Microbiología')
 ;
 
-INSERT INTO Professor(id, professorType, department, active) VALUES
-    (3, 3, 1, true),
-    (4, 4, 1, true),
-    (5, 1, 1, true),
-    (6, 2, 1, false)
+INSERT INTO Professor(id, professorType, department, active, changePassword) VALUES
+    (3, 3, 1, true, false),
+    (4, 4, 1, true, false),
+    (5, 1, 1, true, false),
+    (6, 2, 1, false, false)
 ;
 
 INSERT INTO AcademicProcess(description) VALUES 

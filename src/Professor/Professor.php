@@ -1,5 +1,4 @@
 <?php
-    include_once "../../../../src/Helper/Validator.php";
 
     class ProfessorDAO{
 
@@ -266,6 +265,101 @@
             
            
         }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 03/12/24
+         * 
+         * Login para los diferentes tipos de docentes
+         */
+        public function setPassword(int $id, string $newPassword, string $currentPassword) {
+            // Obtener la información del profesor
+            $query = "SELECT b.password, a.changePassword
+                      FROM Professor a
+                      INNER JOIN Employee b ON (a.id = b.id)
+                      WHERE a.id=?;";
+        
+            $result = $this->mysqli->execute_query($query, [$id]);
+        
+            // Validar la nueva contraseña
+            if (!Validator::isPassword($newPassword)) {
+                return [
+                    "status" => false,
+                    "message" => "La contraseña no cumple con los requisitos."
+                ];
+            }
+        
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+        
+            foreach ($result as $row) {
+                // Validar si es la primera vez que cambia la contraseña
+                if ($row['changePassword'] == 1) {
+                    // Actualizar nueva contraseña
+                    $query1 = "UPDATE Employee
+                               SET password=?
+                               WHERE id=?";
+                    $this->mysqli->execute_query($query1, [$hashedPassword, $id]);
+        
+                    // Verificar si el UPDATE afectó una fila
+                    if ($this->mysqli->affected_rows > 0) {
+                        $query2 = "UPDATE Professor
+                                   SET changePassword=0
+                                   WHERE id=?";
+                        $this->mysqli->execute_query($query2, [$id]);
+        
+                        // Verificar si el segundo UPDATE afectó una fila
+                        if ($this->mysqli->affected_rows > 0) {
+                            return [
+                                "status" => true,
+                                "message" => "Contraseña actualizada correctamente."
+                            ];
+                        }
+                    }
+        
+                    return [
+                        "status" => false,
+                        "message" => "Hubo un error al actualizar la contraseña."
+                    ];
+                } else {
+                    // Validar que la contraseña actual sea la correcta
+                    if (password_verify($currentPassword, $row["password"])) {
+                        //Verificar que la contraseña acual y la nuevo no son las mismas
+                        if($newPassword === $currentPassword){
+                            return [
+                                "status" => false,
+                                "message" => "La contraseña actual y la nueva son las mismas."
+                            ];
+                        }
+                        // Hacer el update en Professor y Employee
+                        $query1 = "UPDATE Employee
+                                   SET password=?
+                                   WHERE id=?";
+                        $this->mysqli->execute_query($query1, [$hashedPassword, $id]);
+        
+                        // Verificar si el UPDATE afectó una fila
+                        if ($this->mysqli->affected_rows > 0) {
+                            return [
+                                "status" => true,
+                                "message" => "Contraseña actualizada correctamente."
+                            ];
+                        }
+
+                    } else {
+                        return [
+                            "status" => false,
+                            "message" => "La contraseña actual no correcta."
+                        ];
+                    }
+                }
+            }
+        
+            return [
+                "status" => false,
+                "message" => "Error al actualizar la contraseña."
+            ];
+        }
+        
 
         // Método para cerrar la conexión
         public function closeConnection() {
