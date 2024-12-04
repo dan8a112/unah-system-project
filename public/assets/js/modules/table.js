@@ -1,8 +1,8 @@
 /**
  * Crea una sección con una tabla dinámica que respeta los estilos dados y agrega paginación si es necesario.
  * @author afcastillof@unah.hn
- * @version 0.3.0
- * @date 29/11/24
+ * @version 0.3.1
+ * @date 02/12/24
  * @param {string} sectionTitle - Título de la sección.
  * @param {Array<string>} headers - Lista de encabezados para las columnas de la tabla.
  * @param {Array<Array<any>>} rows - Matriz de datos para las filas iniciales de la tabla.
@@ -11,13 +11,13 @@
  * @param {number} totalRecords - Número total de registros disponibles.
  * @param {string} apiUrl - URL del servicio que entrega los nuevos datos, con soporte para paginación.
  * @param {boolean} isFetchPagination - Indica si la paginación se basa en datos locales o en un servicio externo.
+ * @param {boolean} [renderAsHtml=false] - Indica si las celdas deben renderizarse como HTML (true) o como texto (false).
  */
-export function createTable(sectionTitle, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination) {
+export function createTable(sectionTitle, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml = true) {
     // Crear la sección
     const section = document.createElement("section");
     section.className = "row";
     section.style.marginBottom = "8px";
-
 
     // Crear el contenedor de la tarjeta
     const cardContainer = document.createElement("div");
@@ -52,7 +52,7 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
 
     // Mostrar registros iniciales
     const currentRows = rows.slice(0, limit);
-    renderRows(currentRows, tbody);
+    renderRows(currentRows, tbody, renderAsHtml);
 
     table.appendChild(tbody);
 
@@ -78,15 +78,14 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
         paginationList.appendChild(prevButton);
 
         // Botones de número de página
-        // Botones de número de página
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement("li");
             pageButton.className = `page-item ${i === 1 ? 'active' : ''}`;
             pageButton.innerHTML = `<a class="page-link" href="#">${i}</a>`;
 
             pageButton.querySelector("a").addEventListener("click", (event) => {
-                event.preventDefault(); // Evita que la página se desplace hacia arriba
-                updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows);
+                event.preventDefault();
+                updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows, renderAsHtml);
                 document.querySelectorAll(".pagination .page-item").forEach(item => item.classList.remove("active"));
                 pageButton.classList.add("active");
                 prevButton.classList.toggle("disabled", i === 1);
@@ -95,7 +94,6 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
 
             paginationList.appendChild(pageButton);
         }
-
 
         // Botón "Next"
         const nextButton = document.createElement("li");
@@ -106,27 +104,64 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
         pagination.appendChild(paginationList);
         section.appendChild(pagination);
 
-        // Eventos para botones "Previous" y "Next"
+        // Asignar eventos de los botones "Previous" y "Next" después de que se hayan creado.
         prevButton.querySelector("a").addEventListener("click", (event) => {
-            event.preventDefault(); // Evita que la página se desplace hacia arriba
+            event.preventDefault();
             const currentPage = parseInt(document.querySelector(".pagination .page-item.active a").textContent, 10);
             if (currentPage > 1) {
                 const newPage = currentPage - 1;
-                paginationList.children[newPage].querySelector("a").click();
+                pagination.querySelector(`.page-item:nth-child(${newPage + 1}) a`).click();
             }
         });
 
         nextButton.querySelector("a").addEventListener("click", (event) => {
-            event.preventDefault(); // Evita que la página se desplace hacia arriba
+            event.preventDefault();
             const currentPage = parseInt(document.querySelector(".pagination .page-item.active a").textContent, 10);
             if (currentPage < totalPages) {
                 const newPage = currentPage + 1;
-                paginationList.children[newPage].querySelector("a").click();
+                pagination.querySelector(`.page-item:nth-child(${newPage + 1}) a`).click();
             }
         });
+
     }
 
     return section;
+}
+
+/**
+ * Renderiza las filas en un tbody dado.
+ * @param {Array<Array<any>> || Array<Object>} rows - Matriz de datos para las filas. O un arreglo de objetos.
+ * @param {HTMLElement} tbody - Elemento tbody donde se agregarán las filas.
+ * @param {boolean} renderAsHtml - Indica si las celdas deben renderizarse como HTML (true) o como texto (false).
+ */
+function renderRows(rows, tbody, renderAsHtml) {
+    rows.forEach(rowData => {
+        const row = document.createElement("tr");
+        if (typeof rowData === "object" && rowData !== null) {
+            Object.keys(rowData).forEach(key => {
+                const td = document.createElement("td");
+                if (renderAsHtml) {
+                    td.innerHTML = rowData[key];
+                } else {
+                    td.textContent = rowData[key];
+                }
+                row.appendChild(td);
+            });
+        } else if (rowData !== null && Array.isArray(rowData)) {
+            rowData.forEach(cellData => {
+                const td = document.createElement("td");
+                if (renderAsHtml) {
+                    td.innerHTML = cellData;
+                } else {
+                    td.textContent = cellData;
+                }
+                row.appendChild(td);
+            });
+        } else {
+            console.error("El Formato de rows no es el correcto");
+        }
+        tbody.appendChild(row);
+    });
 }
 
 /**
@@ -167,52 +202,7 @@ async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, ro
     }
 }
 
-/**
- * Renderiza las filas en un tbody dado.
- * @param {Array<Array<any>> || Array<Object>} rows - Matriz de datos para las filas. O un arreglo de objetos
- * @param {HTMLElement} tbody - Elemento tbody donde se agregarán las filas.
- */
-function renderRows(rows, tbody) {
 
-    rows.forEach(rowData => {
-        const row = document.createElement("tr");
-        //Si el contenido de las filas es un objeto
-        if (typeof rowData === "object" && rowData !== null) {
-
-            Object.keys(rowData).forEach(key => {
-                const td = document.createElement("td");
-                td.textContent = rowData[key];
-                row.appendChild(td);
-            });
-
-        //Si el contenido de las filas es un array
-        } else if(rowData !== null && Array.isArray(rowData)){
-
-            rowData.forEach(cellData => {
-                const td = document.createElement("td");
-                td.textContent = cellData;
-                row.appendChild(td);
-            });
-
-        }else{
-            console.error("El Formato de rows no es el correcto");
-        }
-
-        tbody.appendChild(row);
-    });
-}
-
-/**
- * Crea paginación solamente renderizando las filas. 
- * Este metodo se usa en paginas en las que el contenido de las filas es muy cambiante.
- * @param {*} section - Seccion donde se quiere insertar el elemento de paginacion
- * @param {*} tbody - cuerpo de la tabla
- * @param {*} limit - Limite de filas en cada paginas
- * @param {*} totalRecords - Cantidad total de las filas
- * @param {*} apiUrl - url de la api de paginacion
- * @param {*} isFetchPagination - si la data es producto de una peticion asincrona
- * @param {*} rows - Matriz de datos locales (si isFetchPagination es true).
- */
 export function createPagination(section, tbody, limit, totalRecords, apiUrl, isFetchPagination, rows){
 
     // Crear la paginación si es necesario
@@ -228,14 +218,14 @@ export function createPagination(section, tbody, limit, totalRecords, apiUrl, is
         // Botón "Previous"
         const prevButton = document.createElement("li");
         prevButton.className = "page-item disabled";
-        prevButton.innerHTML = `<a class="page-link">Previous</a>`;
+        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
         paginationList.appendChild(prevButton);
 
         // Botones de número de página
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement("li");
             pageButton.className = `page-item ${i === 1 ? 'active' : ''}`;
-            pageButton.innerHTML = `<a class="page-link">${i}</a>`;
+            pageButton.innerHTML = `<a class="page-link" href="#">${i}</a>`;
 
             pageButton.addEventListener("click", () => {
                 updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows);
@@ -251,7 +241,7 @@ export function createPagination(section, tbody, limit, totalRecords, apiUrl, is
         // Botón "Next"
         const nextButton = document.createElement("li");
         nextButton.className = `page-item ${totalPages > 1 ? '' : 'disabled'}`;
-        nextButton.innerHTML = `<a class="page-link">Next</a>`;
+        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
         paginationList.appendChild(nextButton);
 
         pagination.appendChild(paginationList);
