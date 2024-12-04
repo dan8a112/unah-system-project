@@ -120,7 +120,51 @@
             }        
             
         }
-        
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 03/12/24
+         * 
+         * Login para los diferentes tipos de docentes
+         */
+        public function loginProfessor(string $user, string $password) : array{
+
+            $query = "SELECT a.id, a.professorType, b.personalEmail, b.password, a.changePassword
+                    FROM Professor a
+                    INNER JOIN Employee b ON (a.id = b.id)
+                    WHERE b.personalEmail = ?;";
+            
+            try{
+                $result = $this->mysqli->execute_query($query, [$user]);
+                
+                foreach($result as $row){
+                    if(password_verify($password, $row["password"])){
+                        return [
+                            "status"=> true,
+                            "message"=> 'Usuario autenticado',
+                            "data"=>[
+                                "id"=> $row['id'],
+                                "professorType"=> $row['professorType'],
+                                "changePassword"=> $row['changePassword']
+                            ]
+                        ];
+                    }
+                }
+                return [
+                    "status"=> false,
+                    "message"=> 'El correo o la contraseña es incorrecto, vuelva a intentarlo.'
+                ];
+                
+            }catch (Exception $e){
+                return [
+                    "status"=> false,
+                    "message"=> 'Ocurrio un error: ' . $e
+                ];
+            }
+            
+        }
+       
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();
