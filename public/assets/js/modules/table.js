@@ -173,18 +173,19 @@ function renderRows(rows, tbody, renderAsHtml) {
  * @param {boolean} isFetchPagination - Indica si la paginación se basa en datos locales o en un servicio externo.
  * @param {Array<Array<any>>} rows - Matriz de datos locales (si isFetchPagination es true).
  */
-async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, rows) {
+async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, getRowsFunction, renderAsHtml) {
     tbody.innerHTML = ""; // Limpia las filas existentes
 
     if (isFetchPagination) {
         // Paginación basada en datos locales
+        const rows = getRowsFunction(); // Llama a la función para obtener las filas
         const start = (page - 1) * limit;
         const currentRows = rows.slice(start, start + limit);
-        renderRows(currentRows, tbody);
+        renderRows(currentRows, tbody, renderAsHtml);
     } else {
         // Paginación basada en un servicio externo
         const offset = (page - 1) * limit;
-        const url = `${apiUrl}&offset=${offset}`;
+        const url = `${apiUrl}offset=${offset}`;
 
         try {
             const response = await fetch(url);
@@ -195,12 +196,13 @@ async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, ro
             const data = await response.json();
             const fetchedRows = data.data || []; // Suponiendo que el servicio devuelve un objeto con una propiedad "data"
 
-            renderRows(fetchedRows, tbody);
+            renderRows(fetchedRows, tbody, renderAsHtml);
         } catch (error) {
             console.error("Error al actualizar la tabla:", error);
         }
     }
 }
+
 
 
 export function createPagination(section, tbody, limit, totalRecords, apiUrl, isFetchPagination, rows){
