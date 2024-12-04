@@ -1254,3 +1254,13 @@ INSERT INTO Classroom (description, building) values
 (304, 18), 
 (401, 18), 
 (402, 18);
+
+INSERT INTO Days(description, uv) VALUES
+("LuMaMiJuVi",5),
+("LuMaMiJi",4),
+("LuMaMi",3),
+("LuMi",2),
+("Vi",3),
+("Vi",4),
+("Sa",5),
+("Sa",4);
