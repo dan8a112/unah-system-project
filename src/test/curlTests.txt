@@ -73,7 +73,7 @@ curl -d "newPassword=asdf" -d "currentPassword=1234" http://localhost:3000/api/u
 ----------------------obtener todas las incripciones---------------
 curl "http://localhost:3000/api/get/pagination/allInscriptions/?idProcess=1&offset=0" | jq
 
-----------------------obtener revisores---------------
+-------------------------------obtener revisores--------------------
 curl "http://localhost:3000/api/get/pagination/reviewers/?idProcess=1&offset=0" | jq
 
 ----------obtener inscrpciones de los aplicantes que aprobaron el proceso---------------
