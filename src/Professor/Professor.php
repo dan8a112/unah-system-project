@@ -303,7 +303,7 @@
                     $result1 = $this->mysqli->execute_query($query1,[$hashedPassword, $id]);
                     
                     if($result1){
-                        foreach ($result1 as $row) {
+                        //foreach ($result1 as $row) {
                             $query2 = "UPDATE Professor
                                     SET changePassword=0
                                     WHERE id=?";
@@ -315,7 +315,7 @@
                                     "message"=> "Contraseña actualizada correctamente."
                                 ];
                             }
-                        }
+                        //}
 
                         return [
                             "status"=> false,
@@ -335,19 +335,13 @@
                         $result1 = $this->mysqli->execute_query($query1,[$hashedPassword, $id]);
                         
                         if($result1){
-                            foreach($result1 as $row) {
-                                $query2 = "UPDATE Professor
-                                        SET changePassword=0
-                                        WHERE id=?";
-
-                                $result2 = $this->mysqli->execute_query($query2,[$id]);
-                                if($result2){
-                                    return [
-                                        "status"=> true,
-                                        "message"=> "Contraseña actualizada correctamente."
-                                    ];;
-                                }
-                            }
+                            //foreach($result1 as $row) {
+                                return [
+                                    "status"=> true,
+                                    "message"=> "Contraseña actualizada correctamente."
+                                ];
+                                
+                            //}
                         }
 
                         return [
