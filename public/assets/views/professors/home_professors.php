@@ -43,7 +43,7 @@
         <?php
             $path = "../";
             $selected = 1;
-            include_once($path . "templates/professors/standardProfessor.php");
+            include_once($path . "templates/professors/professorSidebar.php");
         ?>
 
         <section class="col ms-4">

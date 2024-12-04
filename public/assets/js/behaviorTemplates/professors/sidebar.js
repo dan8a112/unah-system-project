@@ -8,11 +8,6 @@ const sideBarElements = {
     3:[],
     4:[
         {
-            text: "Tus Clases",
-            img: "/assets/img/icons/Classes.svg",
-            href: "#"
-        },
-        {
             text: "Secciones",
             img: "/assets/img/icons/Classes.svg",
             href: "#"
