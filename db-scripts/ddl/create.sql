@@ -1284,13 +1284,22 @@ INSERT INTO Professor(id, professorType, department, active, changePassword) VAL
 
 INSERT INTO AcademicProcess(description) VALUES 
     ('Proceso de Admisiones'),
-    ('Proceso de Matricula'),
+    ('Proceso'),
     ('Inscripciones'),
     ('Revisión de inscripciones'),
     ('Subir calificaciones'),
     ('Envio de resultados'),
     ('Creación de expediente'),
-    ('Planificación académica')
+    ("I PAC"),
+    ("II PAC"),
+    ("III PAC"),
+    ('Planificación académica'),
+    ('Prematrícula'),
+    ('Matrícula'),
+    ('Inicio de clases'),
+    ('Adiciones y cancelaciones'),
+    ('Cancelación excepcional'),
+    ('Ingreso de notas y evaluaciones de docentes')
 ;
 
 INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUES
@@ -1303,7 +1312,10 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
     (4, '2024-11-27 00:00:00', '2024-12-08 00:00:00', false, 5),
     (5, '2024-12-08 00:00:00', '2024-12-09 00:00:00', false, 5),
     (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', false, 5),
-    (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5)
+    (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5),
+    (8, '2024-01-15 00:00:00', '2024-05-31 00:00:00', false, NULL),
+    (9, '2024-06-12 00:00:00', '2024-09-20 00:00:00', false, NULL),
+    (10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', true, NULL),
 ;
 
 INSERT INTO Configuration(data) VALUES
