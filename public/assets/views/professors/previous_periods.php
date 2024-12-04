@@ -1,3 +1,24 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  $portal = "professors";
+
+  if (!SessionValidation::isValid($_SESSION, $portal)){
+    header("Location: /assets/views/logins/login_professors.php");
+  }else{
+
+    $userId = $_SESSION['portals'][$portal]['user'];
+    $userType = $_SESSION['portals'][$portal]['user'];
+
+    //Si los parametros no coinciden con los de la sesion se corrigen
+    if (!SessionValidation::validateParam("id", $userId) || !SessionValidation::validateParam("type", $userType)) {
+        header("Location: /assets/views/professors/home_professors.php?id=".$userId."&type=".$userType);
+        exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,7 +50,7 @@
         $path = "../";
         $pathImg = "../../";
         $selected = 2;
-        include_once($path . "templates/professors/standardProfessor.php");
+        include_once($path . "templates/professors/professorSidebar.php");
         ?>
 
         <section class="col ms-4">

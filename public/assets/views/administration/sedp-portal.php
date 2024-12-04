@@ -75,13 +75,13 @@
                 <div class="row my-2">
                   <div class="col">
                   <label class="form-label">Apellidos</label>
-                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="lastNames" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" required>
+                    <input type="text" class="form-control uppercase" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="lastNames" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
                     <label class="form-label">Numero de telefono</label>
-                    <input type="text" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" pattern="^(\(\+504\))?\s*[23789]\d{3}-?\d{4}$" required>
+                    <input type="text" class="form-control" placeholder="e.g. 98475241" aria-label="Numero de telefono" name="phoneNumber" pattern="^(?!.*(\d)\1{2})[9283]\d{3}-?\d{4}" required>
                   </div>
                   <div class="col">
                     <label class="form-label">Fecha de nacimiento</label>
