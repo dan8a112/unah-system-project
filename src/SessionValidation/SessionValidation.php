@@ -10,6 +10,18 @@
             return false;
         }
 
+        /**
+         * Valida si el parametro de la url coincide con el valor en la URL
+         */
+        static function validateParam($param, $value){
+
+            //Si no existe el parametro, esta vacío o es distinto al de la sesión retorna falso
+            if (!isset($_GET[$param]) || empty($_GET[$param]) ||$_GET[$param] != $value){
+                return false;
+            }
+            return true;
+        }
+
         static function closeSession($portalKey){
 
             session_start();

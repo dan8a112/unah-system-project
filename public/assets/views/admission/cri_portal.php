@@ -10,7 +10,7 @@
     $userId = $_SESSION['portals']['cri']['user'];
 
     if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $userId) {
-        header("Location: /assets/views/logins/login_cri.php?id=" . $userId);
+        header("Location: /assets/views/admission/cri_portal.php?id=" . $userId);
         exit;
     }
   }

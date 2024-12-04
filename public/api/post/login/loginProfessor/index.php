@@ -24,10 +24,11 @@
                 "data"=>  $result['data']               
             ];
             
-            /*session_start();
-            $_SESSION["portals"]["sedp"] = [
-                "user" => 1
-            ];*/
+            session_start();
+            $_SESSION["portals"]["professors"] = [
+                "user" => $result['data']['id'],
+                "professorType" => $result['data']['professorType']
+            ];
 
         }else{
             $json = [

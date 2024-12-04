@@ -187,7 +187,7 @@ CREATE TABLE Student(
 
 CREATE TABLE Subject(
     id VARCHAR(8) PRIMARY KEY,
-    description VARCHAR(20),
+    description VARCHAR(60),
     department SMALLINT,
     uv  SMALLINT, 
     CONSTRAINT fk_department_subject FOREIGN KEY(department) REFERENCES Department(id)
@@ -217,20 +217,30 @@ CREATE TABLE Classroom(
     CONSTRAINT fk_building_classroom FOREIGN KEY(building) REFERENCES Building(id)
 );
 
+CREATE TABLE Days(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(10),
+    uv INT
+);
+
+
 CREATE TABLE Section(
     id INT PRIMARY KEY AUTO_INCREMENT,
     subject VARCHAR(8),
     professor INT,
-    year INT,
-    period INT,
+    academicEvent INT,
     section INT,
-    building SMALLINT,
+    days INT,
+    startHour INT,
+    finishHour INT,
     classroom SMALLINT,
     maximumCapacity TINYINT,
     CONSTRAINT fk_subject_section FOREIGN KEY(subject) REFERENCES Subject(id),
     CONSTRAINT fk_subject_professor FOREIGN KEY(professor) REFERENCES Professor(id),
-    CONSTRAINT fk_building_section FOREIGN KEY(building) REFERENCES Building(id),
-    CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id));
+    CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id),
+    CONSTRAINT fk_section_academicEvent FOREIGN KEY(academicEvent) REFERENCES AcademicEvent(id),
+    CONSTRAINT fk_section_days FOREIGN KEY(days) REFERENCES Days(id)
+    );
 
 CREATE TABLE Observation(
     id TINYINT PRIMARY KEY,
@@ -247,707 +257,6 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
 
-
-/*--------------------------------------------------------------------PROCEDURES--------------------------------------------------------------------------------*/
-DELIMITER //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.3.0
-    date: 28/11/24
-
-    Procedimiento almacenado para hacer insert en la tabla Application manejando si ya existe o no un aplicante y el limite de aplicaciones que puede hacer
-**/
-CREATE PROCEDURE insertApplicant(
-    IN p_id VARCHAR(15),
-    IN p_names VARCHAR(60),
-    IN p_lastNames VARCHAR(60),
-    IN p_schoolCertificate LONGBLOB,
-    IN p_telephoneNumber VARCHAR(12),
-    IN p_personalEmail VARCHAR(50),
-    IN p_firstDegreeProgramChoice SMALLINT,
-    IN p_secondDegreeProgramChoice SMALLINT,
-    IN p_regionalCenterChoice TINYINT
-)
-BEGIN
-
-    DECLARE maxAttempts INT;
-    DECLARE attempts INT;
-    DECLARE idCurrentProcess INT;
-
-    -- Verificar si el ID y el nombre completo ya existen en la tabla Applicant
-    IF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id AND names = p_names AND lastNames = p_lastNames) THEN
-        -- Si existen, actualizar los datos del solicitante y hacer la nueva aplicacion
-        UPDATE Applicant
-        SET 
-            schoolCertificate = p_schoolCertificate,
-            telephoneNumber = p_telephoneNumber,
-            personalEmail = p_personalEmail
-        WHERE id = p_id;
-
-    ELSEIF EXISTS (SELECT 1 FROM Applicant WHERE id = p_id) THEN
-        -- Si el ID ya existe pero los datos no coinciden, lanzamos un error
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'El ID ya existe con datos diferentes; no se puede insertar el nuevo solicitante.',
-            'code', '3'
-        ) AS resultJson;
-
-    ELSE
-        -- Si el solicitante no existe, insertamos un nuevo registro en Applicant y en Application
-        INSERT INTO Applicant (
-            id,
-            names,
-            lastNames,
-            schoolCertificate,
-            telephoneNumber,
-            personalEmail
-        ) VALUES (
-            p_id,
-            p_names,
-            p_lastNames,
-            p_schoolCertificate,
-            p_telephoneNumber,
-            p_personalEmail
-        );
-    END IF;
-
-    -- Extraer el valor de "attempts" del campo JSON en la tabla Configuration
-    SET maxAttempts = (SELECT JSON_EXTRACT(data, "$.maxAttemtps") FROM Configuration WHERE id=1);
-    SET attempts = (SELECT COUNT(*) FROM Application WHERE idApplicant = p_id AND approved=true);
-    SET idCurrentProcess = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
-
-    IF (attempts >= 3) THEN
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'Excede el limite de intentos permitidos para el proceso de admisión',
-            'code', '4'
-        ) AS resultJson;  
-    ELSE
-        INSERT INTO Application (
-            idApplicant,
-            firstDegreeProgramChoice,
-            secondDegreeProgramChoice,
-            regionalCenterChoice,
-            academicEvent
-
-        ) VALUES (
-            p_id,
-            p_firstDegreeProgramChoice,
-            p_secondDegreeProgramChoice,
-            p_regionalCenterChoice,
-            idCurrentProcess
-        );
-
-        SELECT JSON_OBJECT(
-            'status', true,
-            'idApplication', LAST_INSERT_ID(),
-            'message', 'Inscripción hecha correctamente'
-        ) AS resultJson;
-    END IF;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 11/11/24
-
-    Procedimiento almacenado para saber si un aplicante ya tiene una aplicacion en el proceso de admision actual
-**/
-CREATE PROCEDURE ApplicationInCurrentEvent (IN p_identityNumber VARCHAR(15))
-BEGIN
-    DECLARE idCurrentEvent int;
-
-    SET idCurrentEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1);
-
-    IF EXISTS (SELECT * FROM Application WHERE idApplicant = p_identityNumber AND academicEvent=idCurrentEvent AND (approved=true OR approved IS NULL)) THEN 
-        SELECT JSON_OBJECT(
-            'status', true,
-            'message', 'Ya hay una inscripcion para este proceso'
-        ) AS resultJson; 
-    ELSE
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'No hay una inscripcion para este proceso'
-        ) AS resultJson; 
-    END IF;   
-END //
-
-/**
-    author: wamorales@unah.hn
-    version: 0.1.0
-    date: 5/11/24
-
-    Procedimiento almacenado para obtener las carreras que pertenecen a un centro regional
-**/
-CREATE PROCEDURE GetDegreeProgramsByRegionalCenter (IN regionalCenterId INT)
-BEGIN
-    SELECT DegreeProgram.id AS degreeProgramId
-    FROM RegionalCenterDegree
-    INNER JOIN DegreeProgram
-    ON RegionalCenterDegree.degree = DegreeProgram.id
-    INNER JOIN RegionalCenter
-    ON RegionalCenterDegree.regionalCenter = RegionalCenter.id
-    WHERE RegionalCenter.id = regionalCenterId;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 11/11/24
-
-    Procedimiento almacenado para obtener la informacion del proceso actual
-**/
-CREATE PROCEDURE InfoCurrentProcessAdmission ()
-BEGIN
-    SET lc_time_names = 'es_ES';
-
-    SELECT a.id as idAcademicEvent, CONCAT(b.description,' ', CONCAT(UPPER(LEFT(DATE_FORMAT(a.startDate, '%M'), 1)), SUBSTRING(DATE_FORMAT(a.startDate, '%M'), 2)), ' ', YEAR(a.startDate)) as processName, DATE_FORMAT(c.startDate, '%d de %M, %Y') as start, DATE_FORMAT(c.finalDate, '%d de %M, %Y') as final, d.id as idProcessState, d.description as processState
-    FROM AcademicEvent a
-    INNER JOIN AcademicProcess b ON (a.process = b.id)
-    INNER JOIN AcademicEvent c ON (a.id = c.parentId)
-    INNER JOIN AcademicProcess d ON (c.process = d.id)
-    WHERE a.active = true AND b.id=1 and c.active=true;      
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.2.0
-    date: 23/11/24
-
-    Procedimiento almacenado para saber la cantidad de inscripciones totales, inscripciones aprobadas, inscripciones que faltan de revisar
-**/
-CREATE PROCEDURE AmountInscription (IN p_id INT)
-BEGIN
-    DECLARE amountInscriptions INT DEFAULT 0;
-    DECLARE approvedInscriptions INT DEFAULT 0;
-    DECLARE missingReviewInscriptions INT DEFAULT 0;
-
-    SET approvedInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id AND approved=true);
-    SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id);
-    SET missingReviewInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent=p_id AND approved IS NULL);
-
-    SELECT JSON_OBJECT(
-        'amountInscriptions', amountInscriptions,
-        'approvedInscriptions', approvedInscriptions,
-        'missingReviewInscriptions', missingReviewInscriptions
-    ) AS resultJson; 
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.2.0
-    date: 28/11/24
-
-    Procedimiento almacenado para obtener los resultados de las inscripciones
-**/
-CREATE PROCEDURE ResultsActualProcess(IN p_offset INT)
-BEGIN
-    DECLARE idCurrent INT;
-    SET idCurrent = (SELECT id FROM AcademicEvent WHERE process=1 and active=true);
-
-    SELECT a.id as idApplication, CONCAT(b.names, ' ', b.lastNames) as name, b.personalEmail, c.description as firstCareer, d.description as secondCareer, a.approvedFirstChoice, a.approvedSecondChoice
-    FROM Application a
-    INNER JOIN Applicant b ON(a.idApplicant=b.id)
-    INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
-    INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
-    WHERE a.academicEvent=idCurrent AND a.approved=true
-    ORDER BY a.id ASC
-    LIMIT 5 OFFSET p_offset;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.2.0
-    date: 28/11/24
-
-    Procedimiento almacenado para insertar docentes
-**/
-CREATE PROCEDURE insertProfessor(
-    IN p_dni VARCHAR(15),
-    IN p_names VARCHAR(60),
-    IN p_lastNames VARCHAR(60),
-    IN p_telephoneNumber VARCHAR(12),
-    IN p_password VARCHAR(60),
-    IN p_address VARCHAR(30),
-    IN p_dateOfBirth DATE,
-    IN p_professorType INT,
-    IN p_department INT
-)
-BEGIN
-    DECLARE newEmail VARCHAR(50);
-    DECLARE randomLetter CHAR(1);
-    DECLARE emailExists BOOLEAN DEFAULT TRUE;
-    DECLARE counter INT DEFAULT 1;
-    DECLARE nameParts INT;
-    DECLARE lastNameParts INT;
-    DECLARE firstName VARCHAR(15);
-    DECLARE secondName VARCHAR(15);
-    DECLARE firstLastName VARCHAR(15);
-    DECLARE secondLastName VARCHAR(15);
-    DECLARE nameLength INT;
-
-    -- Verificar si el ID existe
-    IF EXISTS (SELECT 1 FROM Employee WHERE dni = p_dni) THEN
-         -- Si el ID ya existe no se puede insertar
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'El DNI ya existe, no se puede insertar docente.'
-        ) AS resultJson;
-    ELSEIF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=4) THEN
-         -- Ya existe jefe de departamento 
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'Ya existe un jefe de departamento.'
-        ) AS resultJson;
-    ELSEIF EXISTS(SELECT * FROM Professor WHERE department=p_department AND active=true AND professorType=3) THEN
-         -- Ya existe jefe de departamento 
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'Ya existe un coordinador de departamento.'
-        ) AS resultJson;
-    ELSE
-        -- Separar los nombres
-        SET nameParts = LENGTH(p_names) - LENGTH(REPLACE(p_names, ' ', '')) + 1;
-        SET lastNameParts = LENGTH(p_lastNames) - LENGTH(REPLACE(p_lastNames, ' ', '')) + 1;
-
-        -- Extraer nombres
-        SET firstName = TRIM(SUBSTRING_INDEX(p_names, ' ', 1));
-        SET secondName = TRIM(IF(nameParts > 1, SUBSTRING_INDEX(SUBSTRING_INDEX(p_names, ' ', 2), ' ', -1), ''));
-
-        -- Extraer apellidos
-        SET firstLastName = TRIM(SUBSTRING_INDEX(p_lastNames, ' ', 1));
-        SET secondLastName = TRIM(IF(lastNameParts > 1, SUBSTRING_INDEX(SUBSTRING_INDEX(p_lastNames, ' ', 2), ' ', -1), ''));
-
-        SET newEmail = CONCAT(firstName, '.', firstLastName, '@unah.edu.hn');
-        
-        WHILE emailExists DO
-            -- Verificar si el correo ya existe
-            IF EXISTS (SELECT 1 FROM Employee WHERE personalEmail = newEmail) THEN
-                CASE counter
-                    WHEN 1 THEN
-                        -- Primera letra del primer nombre + primer apellido
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 1)), LOWER(firstLastName), '@unah.edu.hn');
-                    WHEN 2 THEN
-                        -- Primeras dos letras del primer nombre + primer apellido
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 2)), LOWER(firstLastName), '@unah.edu.hn');
-                    WHEN 3 THEN
-                        -- Primer nombre completo + primera letra del segundo nombre (si existe) + primer apellido
-                        SET newEmail = CONCAT(LOWER(firstName), LOWER(SUBSTRING(secondName, 1, 1)), LOWER(firstLastName), '@unah.edu.hn');
-                    WHEN 4 THEN
-                        -- Primer nombre completo + primeras dos letras del segundo nombre (si existe) + primer apellido
-                        SET newEmail = CONCAT(LOWER(firstName), LOWER(SUBSTRING(secondName, 1, 2)), LOWER(firstLastName), '@unah.edu.hn');
-                    WHEN 5 THEN
-                        -- Primera letra del primer nombre + segundo apellido (si existe)
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 1)), LOWER(secondLastName), '@unah.edu.hn');
-                    WHEN 6 THEN
-                        -- Primeras dos letras del primer nombre + segundo apellido (si existe)
-                        SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, 2)), LOWER(secondLastName), '@unah.edu.hn');
-                    ELSE
-                        -- Continuar incrementando las letras del primer nombre si no hay combinaciones
-                        SET nameLength = LENGTH(firstName);
-                        IF counter - 6 <= nameLength THEN
-                            -- Usar hasta la siguiente letra del primer nombre
-                            SET newEmail = CONCAT(LOWER(SUBSTRING(firstName, 1, counter - 6)), '.', LOWER(firstLastName), '@unah.edu.hn');
-                        ELSE
-                            -- Agregar una letra como último recurso
-                            SET randomLetter = CHAR(FLOOR(65 + (RAND() * 26)));
-                            SET newEmail = CONCAT(LOWER(firstName), '.', LOWER(firstLastName), LOWER(randomLetter), '@unah.edu.hn');
-                        END IF;
-                END CASE;
-                -- Incrementar el contador
-                SET counter = counter + 1;
-            ELSE
-                -- Salir del bucle si el correo es único
-                SET emailExists = FALSE;
-            END IF;
-        END WHILE;
-
-        INSERT INTO Employee (
-            dni, 
-            names,
-            lastNames,
-            telephoneNumber, 
-            personalEmail, 
-            password, 
-            address, 
-            dateOfBirth
-        ) VALUES (
-            p_dni, 
-            p_names, 
-            p_lastNames, 
-            p_telephoneNumber, 
-            newEmail, 
-            p_password, 
-            p_address, 
-            p_dateOfBirth
-        );
-
-        INSERT INTO Professor (
-            id, 
-            professorType, 
-            department, 
-            active
-        ) VALUES (
-            LAST_INSERT_ID(), 
-            p_professorType, 
-            p_department, 
-            true
-        );
-
-        SELECT JSON_OBJECT(
-            'status', true,
-            'personalEmail', newEmail,
-            'idProfessor', LAST_INSERT_ID(),
-            'message', 'Usuario del docente creado correctamente'
-        ) AS resultJson;
-    END IF;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.2.0
-    date: 28/11/24
-
-    Procedimiento almacenado para actualizar docentes
-**/
-CREATE PROCEDURE updateProfessor(
-    IN p_id INT,
-    IN p_dni VARCHAR(15),
-    IN p_names VARCHAR(60),
-    IN p_lastNames VARCHAR(60),
-    IN p_telephoneNumber VARCHAR(12),
-    IN p_address VARCHAR(30),
-    IN p_dateOfBirth DATE,
-    IN p_professorType INT,
-    IN p_department INT,
-    IN p_active BOOLEAN
-)
-BEGIN
-
-    DECLARE idVerify INT;
-    SET idVerify = (SELECT id FROM Employee WHERE dni=p_dni);
-
-    -- Verificar si el ID existe hacer el update
-    IF EXISTS (SELECT 1 FROM Professor WHERE id = p_id) AND (idVerify IS NULL OR idVerify=p_id)THEN
-
-
-        UPDATE Employee
-        SET 
-            dni = p_dni,
-            names = p_names,
-            lastNames = p_lastNames,
-            telephoneNumber = p_telephoneNumber,
-            address = p_address,
-            dateOfBirth = p_dateOfBirth
-        WHERE id = p_id;
-
-        UPDATE Professor
-        SET 
-            professorType = p_professorType, 
-            department = p_department,    
-            active = p_active     
-        WHERE id = p_id;
-
-        SELECT JSON_OBJECT(
-            'status', true,
-            'message', 'Datos actualizados correctamente.'
-        ) AS resultJson;
-    ELSE
-
-        SELECT JSON_OBJECT(
-            'status', false,
-            'message', 'El id no existe o el dni ya pertenece a otra persona.'
-        ) AS resultJson;
-    END IF;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 17/11/24
-
-    Procedimiento almacenado para actualizar results 
-**/
-CREATE PROCEDURE updateResults(
-    IN p_dni VARCHAR(15),
-    IN p_test INT,
-    IN p_grade FLOAT
-)
-BEGIN
-
-    DECLARE idApplication INT;
-    DECLARE points1 INT;
-
-    SET idApplication = (SELECT a.id
-                            FROM Application a
-                            INNER JOIN AcademicEvent c ON (a.academicEvent = c.id)
-                            WHERE c.active=true AND a.idApplicant=p_dni);
-
-    SET points1 = (SELECT points
-                    FROM AdmissionTest WHERE id=p_test);
-
-    IF(idApplication IS NOT NULL) THEN
-
-        IF (points1 IS NOT NULL) THEN
-            IF (points1>=p_grade) THEN
-                UPDATE Results
-                    SET grade = p_grade
-                WHERE application = idApplication AND admissionTest = p_test;
-
-                SELECT JSON_OBJECT(
-                    'status', true,
-                    'message', 'Resultado insertado'
-                ) AS resultJson;
-            ELSE
-                SELECT JSON_OBJECT(
-                        'status', false,
-                        'message', 'Puntuación inválida.'
-                    ) AS resultJson;
-            END IF;
-        ELSE
-            SELECT JSON_OBJECT(
-                    'status', false,
-                    'message', 'Id del examen incorrecto.',
-                    'points', points
-                ) AS resultJson;
-        END IF;
-    ELSE
-        SELECT JSON_OBJECT(
-                'status', false,
-                'message', 'No existe aplicante con ese DNI en el proceso de admisión actual'
-            ) AS resultJson;
-    END IF;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 24/11/24
-
-    Procedimiento almacenado para poner los limites inferiores y las metas del dia para los revisadores
-**/
-CREATE PROCEDURE reviewersEvent ()
-BEGIN
-    DECLARE amountInscriptions INT DEFAULT 0;
-    DECLARE totalDays INT;
-    DECLARE amountReviewers INT;
-    DECLARE dayGoal INT;
-    DECLARE lim INT;
-    DECLARE cont INT DEFAULT 1;
-    DECLARE idReviewer INT;
-    DECLARE reviewerGoal INT;
-    DECLARE totalInscriptions INT;
-
-    IF EXISTS (SELECT 1 FROM AcademicEvent WHERE NOW() BETWEEN startDate AND finalDate AND id = (SELECT b.id FROM AcademicEvent a INNER JOIN AcademicEvent b ON (a.id = b.parentId) WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4)) THEN
-    
-        -- obtener el limite inferior 
-        SET lim = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND approved IS NOT NULL);
-
-        -- Limpiar limites
-        UPDATE Reviewer
-        SET lowerLimit = NULL, dailyGoal=0
-        WHERE active = true;
-
-        SET amountInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1) AND approved IS NULL);
-        SET totalDays = (SELECT DATEDIFF(finalDate, NOW()) AS total_dias
-                    FROM AcademicEvent WHERE id=(SELECT b.id 
-                    FROM AcademicEvent a
-                    INNER JOIN AcademicEvent b ON (a.id = b.parentId)
-                    WHERE a.process=1 AND a.active=true AND b.active=true AND b.process=4));
-        SET amountReviewers = (SELECT COUNT(*) FROM Reviewer WHERE active=true);
-        SET dayGoal = CEIL(amountInscriptions/totalDays);
-        SET reviewerGoal = CEIL(dayGoal/amountReviewers);
-        SET totalInscriptions = (SELECT COUNT(*) FROM Application WHERE academicEvent= (SELECT id FROM AcademicEvent WHERE active = true AND process=1));
-
-        WHILE cont<=amountReviewers DO
-
-            SET idReviewer = (SELECT id FROM Reviewer WHERE active = true AND lowerLimit IS NULL ORDER BY RAND() LIMIT 1);
-
-            IF(dayGoal - reviewerGoal >= 0 && lim< totalInscriptions) THEN
-                UPDATE Reviewer
-                SET lowerLimit = lim, dailyGoal = reviewerGoal
-                WHERE id = idReviewer;
-                SET dayGoal = dayGoal - reviewerGoal;
-            ELSEIF(dayGoal > 0) THEN
-                UPDATE Reviewer
-                SET lowerLimit = lim, dailyGoal = dayGoal
-                WHERE id = idReviewer;
-                SET dayGoal = 0;
-                SET cont = amountReviewers + 1;
-            ELSE
-                UPDATE Reviewer
-                SET lowerLimit = NULL, dailyGoal = 0
-                WHERE id = idReviewer;
-                SET dayGoal = 0;
-                SET cont = amountReviewers + 1;
-            END IF;
-
-            SET cont = cont + 1;
-            SET lim = lim + reviewerGoal;
-        END WHILE;
-
-        DROP TABLE IF EXISTS TempTableApplication;
-
-        CREATE TABLE TempTableApplication AS
-        SELECT 
-            a.id, 
-            CONCAT(b.names, ' ', b.lastNames) as name, 
-            c.description as firstCareer, 
-            a.applicationDate, 
-            a.approved
-        FROM Application a
-        INNER JOIN Applicant b ON(a.idApplicant=b.id)
-        INNER JOIN DegreeProgram c ON(a.firstDegreeProgramChoice = c.id)
-        INNER JOIN RegionalCenter e ON(a.regionalCenterChoice = e.id)
-        WHERE a.academicEvent = (SELECT id FROM AcademicEvent WHERE active = true AND process=1)
-        ORDER BY a.approved IS NULL ASC;
-
-        ALTER TABLE TempTableApplication ADD PRIMARY KEY (id);
-    END IF;
-END//
-
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 24/11/24
-
-    Procedimiento obtener estadisticas por centro regional
-**/
-CREATE PROCEDURE RegionalCentersStadistics(IN academicEventId INT)
-BEGIN
-    SELECT b.acronym, COUNT(*) as amountInscriptions, COUNT(CASE WHEN a.approved = true THEN 1 ELSE NULL END) AS approvedReview, COUNT(CASE WHEN a.approvedFirstChoice = true OR a.approvedSecondChoice = true THEN 1 ELSE NULL END) AS approvedApplicants
-    FROM Application a
-    INNER JOIN RegionalCenter b
-    ON (a.regionalCenterChoice=b.id)
-    WHERE academicEvent = academicEventId
-    GROUP BY b.id;
-END //
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 24/11/24
-
-    Procedimiento obtener las inscripciones que va a revisar cada revisor
-**/
-CREATE PROCEDURE ToReview (IN p_id INT)
-BEGIN 
-    DECLARE lim INT;
-    DECLARE goal INT;
-
-    SET lim = (SELECT lowerLimit FROM Reviewer WHERE id=p_id);
-    SET goal = (SELECT dailyGoal FROM Reviewer WHERE id=p_id);
-
-    IF lim IS NOT NULL THEN
-        SELECT * FROM TempTableApplication
-        LIMIT goal
-        OFFSET lim;
-    END IF;
-END//
-
-/*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
-/**
- * author: afcastillof@unah.hn
- * version: 0.1.0
- * date: 17/11/24
- */
-CREATE TRIGGER after_update_result
-AFTER UPDATE ON Results
-FOR EACH ROW
-BEGIN
-    DECLARE num_required_exams_first INT;
-    DECLARE num_passed_exams_first INT;
-    DECLARE num_required_exams_second INT;
-    DECLARE num_passed_exams_second INT;
-
-    SELECT COUNT(*) INTO num_required_exams_first
-    FROM AdmissionDegree
-    WHERE degree = (SELECT firstDegreeProgramChoice FROM Application WHERE id = NEW.application);
-
-    SELECT COUNT(*)
-    INTO num_passed_exams_first
-    FROM Results R
-    JOIN AdmissionDegree AD ON R.admissionTest = AD.admissionTest
-    WHERE R.application = NEW.application
-    AND AD.degree = (SELECT firstDegreeProgramChoice FROM Application WHERE id = NEW.application)
-    AND R.grade >= AD.passingGrade;
-
-    SELECT COUNT(*) INTO num_required_exams_second
-    FROM AdmissionDegree
-    WHERE degree = (SELECT secondDegreeProgramChoice FROM Application WHERE id = NEW.application);
-
-    SELECT COUNT(*)
-    INTO num_passed_exams_second
-    FROM Results R
-    JOIN AdmissionDegree AD ON R.admissionTest = AD.admissionTest
-    WHERE R.application = NEW.application
-    AND AD.degree = (SELECT secondDegreeProgramChoice FROM Application WHERE id = NEW.application)
-    AND R.grade >= AD.passingGrade;
-
-    IF num_required_exams_first = num_passed_exams_first THEN
-        UPDATE Application
-        SET approvedFirstChoice = TRUE
-        WHERE id = NEW.application;
-    END IF;
-
-    IF num_required_exams_second = num_passed_exams_second THEN
-        UPDATE Application
-        SET approvedSecondChoice = TRUE
-        WHERE id = NEW.application;
-    END IF;
-END //
-
-
-CREATE TRIGGER after_insert_academic_event
-AFTER INSERT ON AcademicEvent
-FOR EACH ROW
-BEGIN
-    -- Verificar si el valor del proceso es igual a 1
-    IF NEW.process = 1 THEN
-        -- Insertar en la tabla SendedEmail
-        INSERT INTO SendedEmail (academicProcess, active) 
-        VALUES (NEW.id, FALSE);
-    END IF;
-END //
-
-/*------------------------------------------------------------------------EVENTS--------------------------------------------------------------------------------*/
--- Set the event scheduler ON
-SET GLOBAL event_scheduler = ON;
-
--- Create the scheduled event
-CREATE EVENT statusVerification
-ON SCHEDULE EVERY 1 DAY
-STARTS '2024-11-25 00:00:00'
-DO
-BEGIN
-    -- Activate events within date range
-    UPDATE AcademicEvent
-    SET active = 1
-    WHERE startDate <= CURDATE() AND CURDATE() <= finalDate;
-
-    -- Deactivate events outside date range
-    UPDATE AcademicEvent
-    SET active = 0
-    WHERE CURDATE() < startDate OR CURDATE() > finalDate;
-END;
-
-/**
-    author: dorian.contreras@unah.hn
-    version: 0.1.0
-    date: 24/11/24
-
-    Evento para poner los limites inferiores y las metas del dia para los revisadores
-**/
--- Evento para definir la cantidad de inscripciones a revisar por dia y los rangos de los revisores
-CREATE EVENT reviewersEvent
-ON SCHEDULE EVERY 1 DAY
-STARTS '2024-11-25 00:00:00'
-DO
-BEGIN
-   CALL reviewersEvent; 
-END;
 
 /*------------------------------------------------------------------INSERTS-------------------------------------------------------------------------------------*/
 INSERT INTO RegionalCenter(description, location, acronym) VALUES
@@ -1451,3 +760,520 @@ INSERT INTO Results(application, admissionTest, grade) VALUES
     (44,1,1236),
     (45,1,1458)
 ;
+INSERT INTO Department (description) VALUES ('Economía');
+INSERT INTO Department (description) VALUES ('Administración de Empresas');
+INSERT INTO Department (description) VALUES ('Contaduría Pública y Finanzas');
+INSERT INTO Department (description) VALUES ('Informática Administrativa');
+INSERT INTO Department (description) VALUES ('Comercio Internacional');
+INSERT INTO Department (description) VALUES ('Administración Aduanera');
+INSERT INTO Department (description) VALUES ('Admon. Banca y Finanzas');
+INSERT INTO Department (description) VALUES ('Mercadotecnia');
+INSERT INTO Department (description) VALUES ('Métodos Cuantitativos');
+INSERT INTO Department (description) VALUES ('Administración Pública');
+INSERT INTO Department (description) VALUES ('Control Químico Farmacéutico');
+INSERT INTO Department (description) VALUES ('Química');
+INSERT INTO Department (description) VALUES ('Tecnología Farmacéutica');
+INSERT INTO Department (description) VALUES ('Astronomía y Astrofísica');
+INSERT INTO Department (description) VALUES ('Ciencia y Tecnologías de la Información Geográfica');
+INSERT INTO Department (description) VALUES ('Arqueoastronomía y Astronomía Cultural');
+INSERT INTO Department (description) VALUES ('Ciencias Aeronáuticas');
+INSERT INTO Department (description) VALUES ('Psicología');
+INSERT INTO Department (description) VALUES ('Historia');
+INSERT INTO Department (description) VALUES ('Sociología');
+INSERT INTO Department (description) VALUES ('Periodismo');
+INSERT INTO Department (description) VALUES ('Trabajo Social');
+INSERT INTO Department (description) VALUES ('Ciencias Políticas');
+INSERT INTO Department (description) VALUES ('Antropología');
+INSERT INTO Department (description) VALUES ('Arquitectura');
+INSERT INTO Department (description) VALUES ('Arte');
+INSERT INTO Department (description) VALUES ('Ciencias de la Cultura Física y Deportes');
+INSERT INTO Department (description) VALUES ('Filosofía');
+INSERT INTO Department (description) VALUES ('Lenguas Extranjeras');
+INSERT INTO Department (description) VALUES ('Letras');
+INSERT INTO Department (description) VALUES ('Pedagogía y Ciencias de la Educación');
+INSERT INTO Department (description) VALUES ('Prótesis Bucal y Maxilofacial');
+INSERT INTO Department (description) VALUES ('Odontología Preventiva y Social');
+INSERT INTO Department (description) VALUES ('Odontología Restauradora');
+INSERT INTO Department (description) VALUES ('Estomatología');
+INSERT INTO Department (description) VALUES ('Ingeniería Eléctrica');
+INSERT INTO Department (description) VALUES ('Ingeniería Química');
+INSERT INTO Department (description) VALUES ('Ingeniería Mecánica');
+INSERT INTO Department (description) VALUES ('Ingeniería Civil');
+INSERT INTO Department (description) VALUES ('Ingeniería en Sistemas');
+INSERT INTO Department (description) VALUES ('Ingeniería Industrial');
+INSERT INTO Department (description) VALUES ('Biología');
+INSERT INTO Department (description) VALUES ('Ecología y Recursos Naturales');
+INSERT INTO Department (description) VALUES ('Biología Celular y Genética');
+INSERT INTO Department (description) VALUES ('Física de la Tierra');
+INSERT INTO Department (description) VALUES ('Materia Condensada');
+INSERT INTO Department (description) VALUES ('Gravitación, Altas Energías y Radiaciones');
+INSERT INTO Department (description) VALUES ('Estadística');
+INSERT INTO Department (description) VALUES ('Matemática Aplicada');
+INSERT INTO Department (description) VALUES ('Matemática Pura');
+INSERT INTO Department (description) VALUES ('Bioanálisis e Inmunología');
+INSERT INTO Department (description) VALUES ('Parasitología');
+
+INSERT INTO Subject(id, description, department, uv) VALUES('MM110', 'MATEMATICA I', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM111', 'GEOMETRIA Y TRIGONOMETRIA', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM211', 'VECTORES Y MATRICES', 89, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM201', 'CALCULO I', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM420', 'MATEMATICA DISCRETA', 89, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM202', 'CALCULO II', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM411', 'ECUACIONES DIFERENCIALES', 89, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM314', 'PROGRAMACION I', 88, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('FS100', 'FISICA GENERAL I', 85, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('FS200', 'FISICA GENERAL II', 85, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('RR100', 'JUEGOS ORGANIZADOS', 66, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN101', 'INGLES I', 68, 4);
+
+INSERT INTO Subject(id, description, department, uv) VALUES('IN102', 'INGLES II', 68, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN103', 'INGLES III', 68, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('EG011', 'ESPAÑOL GENERAL', 69, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('FF101', 'FILOSOFIA', 67, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM401', 'ESTADISTICA I', 87, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('DQ101', 'DIBUJO I', 64, 2);
+INSERT INTO Subject(id, description, department, uv) VALUES('DQ102', 'DIBUJO II', 64, 2);
+INSERT INTO Subject(id, description, department, uv) VALUES('HH101', 'HISTORIA DE HONDURAS', 58, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('EO025', 'REDACCION GENERAL', 69, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS110', 'INTRO. A LA INGENIERIA EN SISTEMAS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS210', 'PROGRAMACION II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS311', 'CIRCUITOS ELECTRICOS PARA IS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS310', 'ALGORITMOS Y ESTRUCTURA DE DATOS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS410', 'PROGRAMACION ORIENTADA A OBJETOS', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS411', 'ELECTRONICA PARA IS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS501', 'BASE DE DATOS I', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS510', 'INSTALACIONES ELECTRICAS PARA IS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS412', 'SISTEMAS OPERATIVOS I', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS511', 'REDES DE DATOS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS512', 'SISTEMAS OPERATIVOS II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS601', 'BASE DE DATOS II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS603', 'ARQUITECTURA DE COMPUTADORES', 1, 4);
+
+INSERT INTO Subject(id, description, department, uv) VALUES('IS513', 'LENGUAJES DE PROGRAMACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS611', 'REDES DE DATOS II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS711', 'DISEÑO DIGITAL', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS602', 'SISTEMA DE INFORMACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS811', 'SEGURIDAD INFORMATICA', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS720', 'ADMINISTRACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS702', 'ANALISIS Y DISEÑO DE SISTEMAS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS721', 'CONTABILIDAD', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS903', 'AUDITORIA INFORMATICA', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS701', 'INTELIGENCIA ARTIFICIAL', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS802', 'INGENIERIA DEL SOFTWARE', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS820', 'FINANZAS ADMINISTRATIVAS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS902', 'INDUSTRIA DEL SOFTWARE', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS904', 'GERENCIA INFORMATICA', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS906', 'TOPICOS ESPECIALES Y AVANZADOS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS905', 'ECONOMIA DIGITAL', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS115', 'SEMINARIO DE INVESTIGACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS910', 'TEORIA DE LA SIMULACION', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS911', 'MICROPROCESADORES', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS914', 'LIDERAZGO PARA EL CAMBIO INFORMATICO', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS912', 'SISTEMAS EXPERTOS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS913', 'DISEÑO DE COMPILADORES', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('SC101', 'SOCIOLOGIA', 58, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('BL130', 'EDUCACION AMBIENTAL OPTATIVA', 81, 4);
+
+
+
+
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM110', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM111', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS110', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('SC101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM211', 19, 'MM110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IN101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM201', 19, 'MM110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM201', 19, 'MM111');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('RR100', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM202', 19, 'MM201');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IN102', 19, 'IN101');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM314', 19, 'MM110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM314', 19, 'IS110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('EG011', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FS100', 19, 'MM201');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FS100', 19, 'MM211');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM411', 19, 'MM202');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS210', 19, 'MM314');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FF101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IN103', 19, 'IN102');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('DQ101', 19, 'MM211');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FS200', 19, 'FS100');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS311', 19, 'MM411');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS311', 19, 'FS100');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM420', 19, 'MM314');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM420', 19, 'FF101');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('DQ102', 19, 'DQ101');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM401', 19, 'MM202');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS310', 19, 'IS210');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS410', 19, 'IS310');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS411', 19, 'IS311');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS412', 19, 'IS310');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS412', 19, 'MM420');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('BL130', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS501', 19, 'MM401');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS501', 19, 'IS410');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('HH101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS510', 19, 'IS311');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS511', 19, 'IS411');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS512', 19, 'IS412');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS601', 19, 'IS501');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS603', 19, 'IS511');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS513', 19, 'IS410');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS611', 19, 'IS511');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS711', 19, 'IS603');
+
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS602', 19, 'IS513');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('EO025', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS811', 19, 'IS711');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS811', 19, 'IS512');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS720', 19, 'MM420');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS702', 19, 'IS602');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS910', 19, 'IS904');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS914', 19, 'IS820');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS912', 19, 'IS701');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS911', 19, 'IS603');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS914', 19, 'IS820');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS912', 19, 'IS701');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS913', 19, 'IS603');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS721', 19, 'IS720');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS903', 19, 'IS811');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS701', 19, 'IS601');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS701', 19, 'IS602');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS802', 19, 'IS702');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS811', 19, 'IS711');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS820', 19, 'IS721');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS902', 19, 'IS802');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS904', 19, 'IS811');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS906', 19, 'IS904');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS905', 19, 'IS820');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS115', 19, 'IS906');
+
+
+INSERT INTO Building (description, regionalCenter) VALUES
+('A1', 19),
+('A2', 19),
+('B1', 19),
+('B2', 19),
+('C1', 19),
+('Anexo C1', 19),
+('C2', 19),
+('C3', 19),
+('D1', 19),
+('E1', 19),
+('F1', 19),
+('G1', 19),
+('H1', 19),
+('I1', 19),
+('J1', 19),
+('K1', 19),
+('K2', 19),
+('1847', 19),
+('PUD', 19);
+
+
+
+
+INSERT INTO Classroom (description, building) values
+(101, 2), 
+(102, 2), 
+(103, 2), 
+(104, 2), 
+(105, 2), 
+(201, 2), 
+(202, 2), 
+(301, 2), 
+(302, 2), 
+(303, 2), 
+(304, 2), 
+(305, 2), 
+(306, 2), 
+(401, 2), 
+(402, 2), 
+(403, 2), 
+(404, 2), 
+(405, 2), 
+(406, 2), 
+(407, 2), 
+(201, 3), 
+(202, 3), 
+(203, 3), 
+(204, 3), 
+(205, 3),
+(201, 4), 
+(202, 4), 
+(203, 4), 
+(301, 4), 
+(302, 4), 
+(303, 4), 
+(304, 4), 
+(305, 4), 
+(306, 4), 
+(307, 4), 
+(308, 4), 
+(309, 4), 
+(310, 4), 
+(311, 4), 
+(312, 4), 
+(313, 4), 
+(401, 4), 
+(402, 4), 
+(403, 4), 
+(404, 4), 
+(405, 4), 
+(406, 4), 
+(407, 4), 
+(101, 5), 
+(102, 5), 
+(103, 5), 
+(104, 5), 
+(105, 5), 
+(106, 5), 
+(107, 5), 
+(201, 5), 
+(202, 5), 
+(203, 5), 
+(204, 5), 
+(205, 5), 
+(301, 5), 
+(302, 5), 
+(303, 5), 
+(304, 5), 
+(305, 5), 
+(306, 5), 
+(307, 5), 
+(501, 5), 
+(502, 5), 
+(503, 5), 
+(504, 5), 
+(505, 5), 
+(506, 5), 
+(507, 5), 
+(508, 5), 
+(101, 6), 
+(102, 6), 
+(103, 6), 
+(104, 6), 
+(201, 6), 
+(202, 6), 
+(203, 6), 
+(204, 6), 
+(301, 6), 
+(302, 6), 
+(303, 6), 
+(304, 6), 
+(401, 6), 
+(402, 6), 
+(403, 6), 
+(404, 6), 
+(101, 7), 
+(102, 7), 
+(103, 7), 
+(201, 7), 
+(202, 7), 
+(203, 7), 
+(204, 7), 
+(205, 7), 
+(206, 7), 
+(207, 7), 
+(208, 7), 
+(209, 7), 
+(210, 7), 
+(211, 7), 
+(212, 7), 
+(213, 7), 
+(214, 7), 
+(301, 7), 
+(302, 7), 
+(303, 7), 
+(304, 7), 
+(305, 7), 
+(306, 7), 
+(307, 7), 
+(401, 7), 
+(402, 7), 
+(403, 7), 
+(404, 7), 
+(405, 7), 
+(406, 7), 
+(407, 7), 
+(101, 8), 
+(102, 8), 
+(103, 8), 
+(104, 8), 
+(105, 8), 
+(106, 8), 
+(107, 8), 
+(108, 8), 
+(109, 8), 
+(110, 8), 
+(111, 8), 
+(112, 8), 
+(113, 8), 
+(114, 8), 
+(115, 8), 
+(116, 8), 
+(117, 8), 
+(118, 8), 
+(119, 8), 
+(120, 8), 
+(301, 8), 
+(302, 8), 
+(303, 8), 
+(304, 8), 
+(305, 8), 
+(306, 8), 
+(307, 8), 
+(308, 8), 
+(309, 8), 
+(310, 8), 
+(311, 8), 
+(312, 8), 
+(313, 8), 
+(401, 8), 
+(402, 8), 
+(403, 8), 
+(404, 8), 
+(501, 8), 
+(502, 8), 
+(101, 9), 
+(102, 9), 
+(103, 9), 
+(104, 9), 
+(105, 9), 
+(106, 9), 
+(107, 9), 
+(108, 9), 
+(109, 9), 
+(110, 9), 
+(111, 9), 
+(112, 9), 
+(113, 9), 
+(201, 9), 
+(202, 9), 
+(203, 9), 
+(204, 9), 
+(205, 9), 
+(301, 9), 
+(302, 9), 
+(303, 9), 
+(304, 9), 
+(305, 9), 
+(306, 9), 
+(307, 9), 
+(401, 9), 
+(402, 9), 
+(403, 9), 
+(404, 9), 
+(405, 9), 
+(406, 9), 
+(407, 9), 
+(101, 10), 
+(102, 10), 
+(201, 10), 
+(202, 10), 
+(203, 10), 
+(301, 10), 
+(302, 10), 
+(101, 11), 
+(102, 11), 
+(103, 11), 
+(104, 11), 
+(105, 11), 
+(106, 11), 
+(107, 11), 
+(108, 11), 
+(109, 11), 
+(201, 11), 
+(202, 11), 
+(301, 11), 
+(302, 11), 
+(303, 11), 
+(304, 11), 
+(305, 11), 
+(306, 11), 
+(307, 11), 
+(401, 11), 
+(402, 11), 
+(403, 11), 
+(404, 11), 
+(405, 11), 
+(101, 12), 
+(102, 12), 
+(103, 12), 
+(104, 12), 
+(105, 12), 
+(106, 12), 
+(201, 12), 
+(202, 12), 
+(301, 12), 
+(302, 12), 
+(101, 13), 
+(102, 13), 
+(103, 13), 
+(201, 13), 
+(202, 13), 
+(203, 13), 
+(204, 13), 
+(301, 13), 
+(302, 13), 
+(303, 13), 
+(401, 13), 
+(402, 13), 
+(403, 13), 
+(404, 13), 
+(101, 14), 
+(102, 14), 
+(103, 14), 
+(201, 14), 
+(202, 14), 
+(301, 14), 
+(302, 14), 
+(303, 14), 
+(401, 14), 
+(402, 14), 
+(101, 15), 
+(102, 15), 
+(103, 15), 
+(104, 15), 
+(105, 15), 
+(201, 15), 
+(202, 15), 
+(301, 15), 
+(302, 15), 
+(401, 15), 
+(402, 15), 
+(101, 16), 
+(102, 16), 
+(103, 16), 
+(201, 16), 
+(202, 16), 
+(301, 16), 
+(302, 16), 
+(401, 16), 
+(402, 16), 
+(301, 17), 
+(302, 17), 
+(303, 17), 
+(304, 17), 
+(305, 17), 
+(306, 17), 
+(307, 17), 
+(401, 17), 
+(402, 17),
+(301, 18), 
+(302, 18), 
+(303, 18), 
+(304, 18), 
+(401, 18), 
+(402, 18);
+
+INSERT INTO Days(description, uv) VALUES
+("LuMaMiJuVi",5),
+("LuMaMiJi",4),
+("LuMaMi",3),
+("LuMi",2),
+("Vi",3),
+("Vi",4),
+("Sa",5),
+("Sa",4);
