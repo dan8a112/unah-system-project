@@ -15,7 +15,7 @@
                 <a class="nav-link" href="#">Estudiantes</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Docentes</a>
+                <a class="nav-link" href="/assets/views/logins/login_professors.php">Docentes</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
