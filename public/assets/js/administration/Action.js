@@ -95,14 +95,14 @@ class Action{
             "table-body",
             10, // Límite de filas por página
             professorsAmount, // Total de registros
-            "../../../api/get/pagination/professors/", // URL del API (debe ser reemplazada con la real)
+            "../../../api/get/pagination/professors/?", // URL del API (debe ser reemplazada con la real)
             false,
-            true // Activar renderización como HTML en las celdas
+            true,
+            rows // Activar renderización como HTML en las celdas
         );
     }
     
     // Modifica la función `createTableWithData` para procesar contenido HTML.
-    
     
 
     /**
@@ -307,12 +307,14 @@ class Action{
      * @param {Array} rows - Filas de datos.
      * @param {HTMLElement} container - Contenedor de la tabla.
      * @param {string} tableId - ID único para la tabla.
+     * @param {Function} transformFunc - Función de transformación de contenido de celdas.
      */
-    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml) {
-        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml);
-        section.style.marginTop = '0px'
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, transformFunc) {
+        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, transformFunc);
+        section.style.marginTop = '0px';
         container.appendChild(section);
-    }
+}
+
 }
 
 export {Action}
