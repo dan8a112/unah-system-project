@@ -15,7 +15,7 @@ class Action {
         const { idAcademicEvent, infoProcess, amountInscription, regionalCenters, reviewers, amountReviewers, admissionTests, approvedStudents, inscriptions, sendedEmail, applications } = data;
 
         const higherScoress = [[29,"Carlos Eduardo P\u00e9rez","Filosof\u00eda",1547]];
-        const apprvedStudentsUrl = `../../../api/get/pagination/approvedApplicants/?idProcess=${idAcademicEvent}`;
+        const apprvedStudentsUrl = `../../../api/get/pagination/approvedApplicants/?idProcess=${idAcademicEvent}&`;
         this.updateTextContent("h1#processName", infoProcess.processState);
         this.updateTextContent("p#startDate", infoProcess.start);
         this.updateTextContent("p#finishDate", infoProcess.end);
@@ -24,11 +24,11 @@ class Action {
 
         switch (infoProcess.idProcessState) {
             case 3:
-                const url = `../../../api/get/pagination/allInscriptions/?idProcess=${idAcademicEvent}`;
+                const url = `../../../api/get/pagination/allInscriptions/?idProcess=${idAcademicEvent}&`;
                 this.renderLastesInscriptions(inscriptions, 10, amountInscription.amountInscriptions, url);
                 break;
             case 4:
-                const urlReviewers = `../../../api/get/pagination/reviewers/?idProcess=${idAcademicEvent}`
+                const urlReviewers = `../../../api/get/pagination/reviewers/?idProcess=${idAcademicEvent}&`
                 this.renderRevisionProcess(reviewers, amountInscription.amountInscriptions, amountInscription.approvedInscriptions, amountInscription.missingReviewInscriptions, 10, amountReviewers, urlReviewers);
                 break;
             case 5:
