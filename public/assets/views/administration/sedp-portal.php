@@ -47,20 +47,7 @@
         </div>
         <hr>
         <div id="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Usuario</th>
-                <th scope="col">Roles</th>
-                <th scope="col">DNI</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="table-body">
-              
-            </tbody>
-          </div>
+        </div>
       </div>
 
       
@@ -81,22 +68,14 @@
                 </div>
                 <div class="row my-2">
                   <div class="col">
-                  <label class="form-label">Primer Nombre</label>
-                    <input type="text" class="form-control uppercase" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" pattern="^\w+$" required>
-                  </div>
-                  <div class="col">
-                    <label class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control uppercase" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName" pattern="^\w+(\s\w+)?$">
+                  <label class="form-label">Nombres</label>
+                    <input type="text" class="form-control uppercase" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="names" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
-                  <label class="form-label">Primer Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" pattern="^\w+$" required>
-                  </div>
-                  <div class="col">
-                    <label class="form-label">Segundo Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName" pattern="^\w+$">
+                  <label class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="lastNames" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" required>
                   </div>
                 </div>
                 <div class="row my-2">
@@ -157,22 +136,14 @@
                 </div>
                 <div class="row my-2">
                   <div class="col">
-                  <label class="form-label">Primer Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="firstName" pattern="^\w+$" required>
-                  </div>
-                  <div class="col">
-                    <label class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control" placeholder="e.g. Alberto" aria-label="Segundo Nombre" name="secondName" pattern="^\w+(\s\w+)?$">
+                  <label class="form-label">Nombres</label>
+                    <input type="text" class="form-control" placeholder="e.g. Carlos" aria-label="Primer Nombre" name="names" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" required>
                   </div>
                 </div>
                 <div class="row my-2">
                   <div class="col">
-                  <label class="form-label">Primer Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="firstLastName" pattern="^\w+$" required>
-                  </div>
-                  <div class="col">
-                    <label class="form-label">Segundo Apellido</label>
-                    <input type="text" class="form-control" placeholder="e.g. Flores" aria-label="Segundo Apellido"  name="secondLastName" pattern="^\w+$">
+                  <label class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" placeholder="e.g. Martinez" aria-label="Primer Apellido" name="lastNames" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑa-záéíóúñ]+)*" required>
                   </div>
                 </div>
                 <div class="row my-2">

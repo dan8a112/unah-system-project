@@ -18,17 +18,16 @@ class Action{
         .then(data => {
             if (data.status) {
                 console.log(data.data)
-                this.generateProfessorsWithTable(response.data);    
+                this.generateProfessorsWithTable(data.data);    
             }
         });
-    }
+    }   
 
     /**
-     * Este metodo genera la tabla con los profesores registrados en el sistema, su rol, y sus acciones correspondientes
-     * @author dochoao@unah.hn, afcastillof@unah.hn
-     * @version 0.1.1
-     * @date 30/11/24
-     * @param {object} data Informacion que contiene una lista de profesores y cantidad de profesores registrados 
+     * Abre modal para crear docente
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 18/11/24
      */
     static generateProfessorsWithTable(data) {
         const { professors, professorsAmount } = data;
@@ -56,11 +55,11 @@ class Action{
     
             const rolesCell = (() => {
                 const colorMap = {
-                    jefe: "#3472F8",
-                    coordinador: "#00C500",
-                    default: "#FFAA34",
+                    'Jefe de departamento': "#3472F8",
+                    'Coordinador': "#00C500",
+                    'default': "#FFAA34",
                 };
-                const colorTypeCard = colorMap[professor.professorType.toLowerCase()] || colorMap.default;
+                const colorTypeCard = colorMap[professor.professorType] || colorMap.default;
                 return `
                     <div class="d-flex gap-3">
                         <div style="border-radius: 5px; border: solid 1px ${colorTypeCard}; color: ${colorTypeCard}; padding: 0 5px;">
@@ -79,25 +78,60 @@ class Action{
             `;
     
             const actionsCell = `
-                <img src="../../img/icons/edit.svg" class="editBtn" alt="Editar" onclick="openEditForm(${professor.professorId})">
+                <img src="../../img/icons/edit.svg" class="editBtn" alt="Editar" data-professor-id=${idCell}">
             `;
     
             return [index + 1, userCell, rolesCell, dniCell, stateCell, actionsCell];
         });
     
+        const container = document.getElementById('table');
+    
         // Crear la tabla con el componente `createTable`
-        createTable(
-            "Lista de Profesores",
+        this.createTableWithData(
+            "",
             headers,
             rows,
+            container,
             "table-body",
             10, // Límite de filas por página
             professorsAmount, // Total de registros
-            "/api/professors", // URL del API (debe ser reemplazada con la real)
-            true // Activar paginación basada en API
+            "../../../api/get/pagination/professors/", // URL del API (debe ser reemplazada con la real)
+            false,
+            true // Activar renderización como HTML en las celdas
         );
     }
     
+    // Modifica la función `createTableWithData` para procesar contenido HTML.
+    
+    
+
+    /**
+     * Abre la modal para editar un docente
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 17/11/24
+     * @param {*} idProfessor id del docente que se necesita editar
+     */
+    static async openEditiForm(idProfessor){
+
+        //Se obtiene la data de los selects y se generan opciones
+        const selectData = await this.fetchFormProfessors();
+        this.generateSelectForm(selectData, true);
+        //Se obtiene la informacion del profesor
+        const professorResponse = await HttpRequest.get(`../../../api/get/professor/professor/?id=${idProfessor}`);
+        //Formulario de maestros
+        const professorForm = document.querySelector("#editProfessorForm");
+        //Se guarda el id del maestro en el dataset del formulario
+        professorForm.dataset.idProfessor = professorResponse.data.id;
+        //Se establece un rango de edad entre 18 y 90 años para validar fecha de nacimiento
+        const dateInput = professorForm.querySelector("input#bdInput");
+        Forms.setRangeDate(dateInput,18,90);
+        //Llena los campos del formulario
+        Forms.fillFieldsEdit(professorResponse.data, professorForm);
+        //Se abre la modal
+        const formModal = document.querySelector("#editModal");
+        Modal.openModal(formModal);
+    }
 
     /**
      * Abre modal para crear docente
@@ -118,41 +152,6 @@ class Action{
         Forms.setRangeDate(dateInput,18,90);
         
         //Se abre una modal
-        Modal.openModal(formModal);
-    }
-
-
-    /**
-     * Abre la modal para editar un docente
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 17/11/24
-     * @param {*} idProfessor id del docente que se necesita editar
-     */
-    static async openEditForm(idProfessor){
-
-        //Se obtiene la data de los selects y se generan opciones
-        const selectData = await this.fetchFormProfessors();
-        this.generateSelectForm(selectData, true);
-
-        //Se obtiene la informacion del profesor
-        const professorResponse = await HttpRequest.get(`../../../api/get/professor/professor/?id=${idProfessor}`);
-
-        //Formulario de maestros
-        const professorForm = document.querySelector("#editProfessorForm");
-
-        //Se guarda el id del maestro en el dataset del formulario
-        professorForm.dataset.idProfessor = professorResponse.data.id;
-
-        //Se establece un rango de edad entre 18 y 90 años para validar fecha de nacimiento
-        const dateInput = professorForm.querySelector("input#bdInput");
-        Forms.setRangeDate(dateInput,18,90);
-
-        //Llena los campos del formulario
-        Forms.fillFieldsEdit(professorResponse.data, professorForm);
-
-        //Se abre la modal
-        const formModal = document.querySelector("#editModal");
         Modal.openModal(formModal);
     }
 
@@ -186,6 +185,8 @@ class Action{
             `;
             Modal.openModal(modal,message,"Exito!");
             this.fetchProfessors();
+            const containerTable = document.getElementById('table');
+            containerTable.innerHTML = "";
             Forms.clearFields(document.querySelector("#createProfessorForm"))
         }else{
             //Muestra una modal de error
@@ -307,8 +308,8 @@ class Action{
      * @param {HTMLElement} container - Contenedor de la tabla.
      * @param {string} tableId - ID único para la tabla.
      */
-    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination) {
-        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination);
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml) {
+        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml);
         section.style.marginTop = '0px'
         container.appendChild(section);
     }
