@@ -21,17 +21,38 @@ class Modal {
         }
 
         Modal.modalInstance = new bootstrap.Modal(dom, options);
+        
+        // Asegurar eliminación del backdrop
+        Modal.cleanBackdrop();
+        
         Modal.modalInstance.show();
     }
 
     static closeModal() {
         if (Modal.modalInstance) {
             Modal.modalInstance.hide();
-            Modal.modalInstance = null;
+
+            // Asegurar eliminación del backdrop
+            Modal.cleanBackdrop();
+
         } else {
             console.warn("No se encontró una instancia activa del modal para cerrar.");
         }
     }
+
+    // Método para limpiar cualquier backdrop residual
+    static cleanBackdrop() {
+        const backdrops = document.querySelectorAll(".modal-backdrop");
+        backdrops.forEach((backdrop) => {
+            backdrop.parentNode.removeChild(backdrop);
+        });
+
+        // Restablecer overflow del body (por si acaso quedó alterado)
+        document.body.classList.remove("modal-open");
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+    }
+
 }
 
 export { Modal };
