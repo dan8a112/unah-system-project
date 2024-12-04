@@ -216,20 +216,30 @@ CREATE TABLE Classroom(
     CONSTRAINT fk_building_classroom FOREIGN KEY(building) REFERENCES Building(id)
 );
 
+CREATE TABLE Days(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(10),
+    uv INT
+);
+
+
 CREATE TABLE Section(
     id INT PRIMARY KEY AUTO_INCREMENT,
     subject VARCHAR(8),
     professor INT,
-    year INT,
-    period INT,
+    academicEvent INT,
     section INT,
-    building SMALLINT,
+    days INT,
+    startHour INT,
+    finishHour INT,
     classroom SMALLINT,
     maximumCapacity TINYINT,
     CONSTRAINT fk_subject_section FOREIGN KEY(subject) REFERENCES Subject(id),
     CONSTRAINT fk_subject_professor FOREIGN KEY(professor) REFERENCES Professor(id),
-    CONSTRAINT fk_building_section FOREIGN KEY(building) REFERENCES Building(id),
-    CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id));
+    CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id),
+    CONSTRAINT fk_section_academicEvent FOREIGN KEY(academicEvent) REFERENCES AcademicEvent(id),
+    CONSTRAINT fk_section_days FOREIGN KEY(days) REFERENCES Days(id)
+    );
 
 CREATE TABLE Observation(
     id TINYINT PRIMARY KEY,
@@ -737,3 +747,234 @@ INSERT INTO Results(application, admissionTest, grade) VALUES
     (44,1,1236),
     (45,1,1458)
 ;
+INSERT INTO Department (description) VALUES ('Economía');
+INSERT INTO Department (description) VALUES ('Administración de Empresas');
+INSERT INTO Department (description) VALUES ('Contaduría Pública y Finanzas');
+INSERT INTO Department (description) VALUES ('Informática Administrativa');
+INSERT INTO Department (description) VALUES ('Comercio Internacional');
+INSERT INTO Department (description) VALUES ('Administración Aduanera');
+INSERT INTO Department (description) VALUES ('Admon. Banca y Finanzas');
+INSERT INTO Department (description) VALUES ('Mercadotecnia');
+INSERT INTO Department (description) VALUES ('Métodos Cuantitativos');
+INSERT INTO Department (description) VALUES ('Administración Pública');
+INSERT INTO Department (description) VALUES ('Control Químico Farmacéutico');
+INSERT INTO Department (description) VALUES ('Química');
+INSERT INTO Department (description) VALUES ('Tecnología Farmacéutica');
+INSERT INTO Department (description) VALUES ('Astronomía y Astrofísica');
+INSERT INTO Department (description) VALUES ('Ciencia y Tecnologías de la Información Geográfica');
+INSERT INTO Department (description) VALUES ('Arqueoastronomía y Astronomía Cultural');
+INSERT INTO Department (description) VALUES ('Ciencias Aeronáuticas');
+INSERT INTO Department (description) VALUES ('Psicología');
+INSERT INTO Department (description) VALUES ('Historia');
+INSERT INTO Department (description) VALUES ('Sociología');
+INSERT INTO Department (description) VALUES ('Periodismo');
+INSERT INTO Department (description) VALUES ('Trabajo Social');
+INSERT INTO Department (description) VALUES ('Ciencias Políticas');
+INSERT INTO Department (description) VALUES ('Antropología');
+INSERT INTO Department (description) VALUES ('Arquitectura');
+INSERT INTO Department (description) VALUES ('Arte');
+INSERT INTO Department (description) VALUES ('Ciencias de la Cultura Física y Deportes');
+INSERT INTO Department (description) VALUES ('Filosofía');
+INSERT INTO Department (description) VALUES ('Lenguas Extranjeras');
+INSERT INTO Department (description) VALUES ('Letras');
+INSERT INTO Department (description) VALUES ('Pedagogía y Ciencias de la Educación');
+INSERT INTO Department (description) VALUES ('Prótesis Bucal y Maxilofacial');
+INSERT INTO Department (description) VALUES ('Odontología Preventiva y Social');
+INSERT INTO Department (description) VALUES ('Odontología Restauradora');
+INSERT INTO Department (description) VALUES ('Estomatología');
+INSERT INTO Department (description) VALUES ('Ingeniería Eléctrica');
+INSERT INTO Department (description) VALUES ('Ingeniería Química');
+INSERT INTO Department (description) VALUES ('Ingeniería Mecánica');
+INSERT INTO Department (description) VALUES ('Ingeniería Civil');
+INSERT INTO Department (description) VALUES ('Ingeniería en Sistemas');
+INSERT INTO Department (description) VALUES ('Ingeniería Industrial');
+INSERT INTO Department (description) VALUES ('Biología');
+INSERT INTO Department (description) VALUES ('Ecología y Recursos Naturales');
+INSERT INTO Department (description) VALUES ('Biología Celular y Genética');
+INSERT INTO Department (description) VALUES ('Física de la Tierra');
+INSERT INTO Department (description) VALUES ('Materia Condensada');
+INSERT INTO Department (description) VALUES ('Gravitación, Altas Energías y Radiaciones');
+INSERT INTO Department (description) VALUES ('Estadística');
+INSERT INTO Department (description) VALUES ('Matemática Aplicada');
+INSERT INTO Department (description) VALUES ('Matemática Pura');
+INSERT INTO Department (description) VALUES ('Bioanálisis e Inmunología');
+INSERT INTO Department (description) VALUES ('Parasitología');
+
+INSERT INTO Subject(id, description, department, uv) VALUES('MM110', 'MATEMATICA I', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM111', 'GEOMETRIA Y TRIGONOMETRIA', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM211', 'VECTORES Y MATRICES', 89, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM201', 'CALCULO I', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM420', 'MATEMATICA DISCRETA', 89, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM202', 'CALCULO II', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM411', 'ECUACIONES DIFERENCIALES', 89, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM314', 'PROGRAMACION I', 88, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('FS100', 'FISICA GENERAL I', 85, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('FS200', 'FISICA GENERAL II', 85, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('RR100', 'JUEGOS ORGANIZADOS', 66, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN101', 'INGLES I', 68, 4);
+
+INSERT INTO Subject(id, description, department, uv) VALUES('IN102', 'INGLES II', 68, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN103', 'INGLES III', 68, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('EG011', 'ESPAÑOL GENERAL', 69, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('FF101', 'FILOSOFIA', 67, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM401', 'ESTADISTICA I', 87, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('DQ101', 'DIBUJO I', 64, 2);
+INSERT INTO Subject(id, description, department, uv) VALUES('DQ102', 'DIBUJO II', 64, 2);
+INSERT INTO Subject(id, description, department, uv) VALUES('HH101', 'HISTORIA DE HONDURAS', 58, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('EO025', 'REDACCION GENERAL', 69, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS110', 'INTRO. A LA INGENIERIA EN SISTEMAS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS210', 'PROGRAMACION II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS311', 'CIRCUITOS ELECTRICOS PARA IS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS310', 'ALGORITMOS Y ESTRUCTURA DE DATOS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS410', 'PROGRAMACION ORIENTADA A OBJETOS', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS411', 'ELECTRONICA PARA IS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS501', 'BASE DE DATOS I', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS510', 'INSTALACIONES ELECTRICAS PARA IS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS412', 'SISTEMAS OPERATIVOS I', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS511', 'REDES DE DATOS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS512', 'SISTEMAS OPERATIVOS II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS601', 'BASE DE DATOS II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS603', 'ARQUITECTURA DE COMPUTADORES', 1, 4);
+
+INSERT INTO Subject(id, description, department, uv) VALUES('IS513', 'LENGUAJES DE PROGRAMACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS611', 'REDES DE DATOS II', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS711', 'DISEÑO DIGITAL', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS602', 'SISTEMA DE INFORMACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS811', 'SEGURIDAD INFORMATICA', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS720', 'ADMINISTRACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS702', 'ANALISIS Y DISEÑO DE SISTEMAS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS721', 'CONTABILIDAD', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS903', 'AUDITORIA INFORMATICA', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS701', 'INTELIGENCIA ARTIFICIAL', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS802', 'INGENIERIA DEL SOFTWARE', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS820', 'FINANZAS ADMINISTRATIVAS', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS902', 'INDUSTRIA DEL SOFTWARE', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS904', 'GERENCIA INFORMATICA', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS906', 'TOPICOS ESPECIALES Y AVANZADOS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS905', 'ECONOMIA DIGITAL', 1, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS115', 'SEMINARIO DE INVESTIGACION', 1, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS910', 'TEORIA DE LA SIMULACION', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS911', 'MICROPROCESADORES', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS914', 'LIDERAZGO PARA EL CAMBIO INFORMATICO', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS912', 'SISTEMAS EXPERTOS', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IS913', 'DISEÑO DE COMPILADORES', 1, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('SC101', 'SOCIOLOGIA', 58, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('BL130', 'EDUCACION AMBIENTAL OPTATIVA', 81, 4);
+
+
+
+
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM110', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM111', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS110', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('SC101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM211', 19, 'MM110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IN101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM201', 19, 'MM110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM201', 19, 'MM111');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('RR100', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM202', 19, 'MM201');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IN102', 19, 'IN101');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM314', 19, 'MM110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM314', 19, 'IS110');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('EG011', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FS100', 19, 'MM201');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FS100', 19, 'MM211');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM411', 19, 'MM202');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS210', 19, 'MM314');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FF101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IN103', 19, 'IN102');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('DQ101', 19, 'MM211');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('FS200', 19, 'FS100');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS311', 19, 'MM411');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS311', 19, 'FS100');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM420', 19, 'MM314');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM420', 19, 'FF101');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('DQ102', 19, 'DQ101');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('MM401', 19, 'MM202');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS310', 19, 'IS210');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS410', 19, 'IS310');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS411', 19, 'IS311');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS412', 19, 'IS310');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS412', 19, 'MM420');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('BL130', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS501', 19, 'MM401');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS501', 19, 'IS410');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('HH101', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS510', 19, 'IS311');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS511', 19, 'IS411');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS512', 19, 'IS412');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS601', 19, 'IS501');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS603', 19, 'IS511');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS513', 19, 'IS410');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS611', 19, 'IS511');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS711', 19, 'IS603');
+
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS602', 19, 'IS513');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('EO025', 19, NULL);
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS811', 19, 'IS711');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS811', 19, 'IS512');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS720', 19, 'MM420');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS702', 19, 'IS602');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS910', 19, 'IS904');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS914', 19, 'IS820');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS912', 19, 'IS701');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS911', 19, 'IS603');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS914', 19, 'IS820');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS912', 19, 'IS701');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS913', 19, 'IS603');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS721', 19, 'IS720');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS903', 19, 'IS811');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS701', 19, 'IS601');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS701', 19, 'IS602');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS802', 19, 'IS702');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS811', 19, 'IS711');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS820', 19, 'IS721');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS902', 19, 'IS802');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS904', 19, 'IS811');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS906', 19, 'IS904');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS905', 19, 'IS820');
+INSERT INTO SubjectDegree(subject, degreeProgram, requirement) VALUES ('IS115', 19, 'IS906');
+
+
+INSERT INTO Building (description, regionalCenter) VALUES
+('A1', 19),
+('A2', 19),
+('B1', 19),
+('B2', 19),
+('C1', 19),
+('Anexo C1', 19),
+('C2', 19),
+('C3', 19),
+('D1', 19),
+('E1', 19),
+('F1', 19),
+('G1', 19),
+('H1', 19),
+('I1', 19),
+('J1', 19),
+('K1', 19),
+('K2', 19),
+('1847', 19),
+('PUD', 19);
+
+
+
+
+INSERT INTO Classroom (description, building) values
+(101, 1),
+(102, 1),
+(103, 1),
+(104, 1),
+(105, 1),
+(106, 1),
+(107, 1),
+(201, 1),
+(201, 1),
+(301, 1),
+(302, 1),
+(303, 1),
+(304, 1),
+(305, 1),
+(306, 1),
+(101, 2);
