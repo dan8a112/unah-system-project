@@ -79,7 +79,22 @@
          */
         public static function isValidName($name) {
             return preg_match("/^([A-ZÁÉÍÓÚÑa-záéíóúñ]{1,50})(\s[A-ZÁÉÍÓÚÑa-záéíóúñ]{1,50}){0,2}$/", $name);
-        }               
+        }  
+        
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 03/12/24
+         * 
+         * Longitud mínima de 8 caracteres.
+         * Al menos una letra mayúscula.
+         * Al menos una letra minúscula.
+         * Al menos un número.
+         * Al menos un carácter especial.
+         */
+        public static function isPassword($password) {
+            return preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$#!%*?&])[A-Za-z\d@$!%*?&]{8,}$/", $password);
+        }    
         
     }  
 ?>
