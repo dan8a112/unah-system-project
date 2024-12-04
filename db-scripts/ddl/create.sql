@@ -135,7 +135,7 @@ CREATE TABLE Professor(
     department SMALLINT,
     CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES Employee(id),
     active BOOLEAN,
-    changePassword BOOLEAN,
+    changePassword BOOLEAN DEFAULT TRUE,
     CONSTRAINT fk_professorType FOREIGN KEY (professorType) REFERENCES ProfessorType(id),
     CONSTRAINT fk_department FOREIGN KEY (department) REFERENCES Department (id)
 );

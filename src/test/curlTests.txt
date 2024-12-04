@@ -19,6 +19,9 @@ curl -d "mail=maria.ramirez@unah.edu.hn" -d "password=1234" http://localhost:300
 --------------Curl para probar api/post/login/loginCRI-----------------------
 curl -d "mail=carlos.hernandez@gmail.com" -d "password=1234" http://localhost:3000/api/post/login/loginCRI| jq
 
+--------------Curl para probar api/post/login/loginProfessor-----------------------
+curl -d "mail=pedro.castillo@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginProfessor| jq
+
 --------------Curl para probar api/get/infoHomeSEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 
@@ -57,12 +60,15 @@ curl -d "identityNumber=0801-2004-03085" -d "names=Dorian" -d "lastNames=Samanth
 curl http://localhost:3000/api/get/professor/professor/?id=3 | jq
 
 -------------------Curl para actualizar docente----------------
-curl -d "identityNumber=0801-2004-03099" -d "names=Actualizado" -d "lastNames=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeId=1" -d "departmentId=3" -d "birthDate=2003-12-08" -d "active=false" http://localhost:3000/api/update/professor?id=8 | jq
+curl -d "identityNumber=0801-2004-03099" -d "names=Actualizado" -d "lastNames=Velasquez" -d "phoneNumber=3347-6290" -d "address=casita" -d "professorTypeId=1" -d "departmentId=3" -d "birthDate=2003-12-08" -d "active=false" http://localhost:3000/api/update/professor/professor?id=8 | jq
 
 ----------------------Curl para revision de inscripcion----------
 curl -d "idApplication=47" -d "idReviewer=3" -d "approved=0" -d "name=Samantha" -d "mail=dorian.contreras@unah.hn" http://localhost:3000/api/update/verifyApplication | jq
 
-------------------------PAGINACION--------------------------------
+----------------------Curl para hacer cambiar la contraseña de los docentes----------
+curl -d "newPassword=asdf" -d "currentPassword=1234" http://localhost:3000/api/update/professor/password?id=3 | jq
+
+---------------------------------------PAGINACION------------------------------------------------------
 
 ----------------------obtener todas las incripciones---------------
 curl "http://localhost:3000/api/get/pagination/allInscriptions/?idProcess=1&offset=0" | jq

@@ -4,6 +4,7 @@
 
     include_once "../../../../src/DbConnection/DbConnection.php";
     include_once "../../../../src/Professor/Professor.php";
+    include_once "../../../../src/Helper/Validator.php";
 
     $dao = null;
 
