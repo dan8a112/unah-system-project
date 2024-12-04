@@ -193,21 +193,7 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" tabindex="-1" id="fileModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Certificado de estudios</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Imagen o pdf con el certificado de estudio -->
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/logout/logout.js" type="module"></script>
     <script src="../../js/admission/portal_cri/main.js" type="module"></script>
