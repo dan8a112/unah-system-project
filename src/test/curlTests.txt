@@ -25,6 +25,8 @@ curl -d "mail=pedro.castillo@unah.edu.hn" -d "password=1234" http://localhost:30
 --------------Curl para probar el home de SEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 
+--------------Curl para probar el home de SEDP------------------------
+curl http://localhost:3000/api/get/professor/homeProfessor?id=1 | jq
 
 -------------Curl para probar api/get/professorTYpes-----------------------
 curl http://localhost:3000/api/get/professor/professorTypes | jq
