@@ -13,7 +13,7 @@
  * @param {boolean} isFetchPagination - Indica si la paginación se basa en datos locales o en un servicio externo.
  * @param {boolean} [renderAsHtml=false] - Indica si las celdas deben renderizarse como HTML (true) o como texto (false).
  */
-export function createTable(sectionTitle, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml = true) {
+export function createTable(sectionTitle, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml = true, tranformData) {
     // Crear la sección
     const section = document.createElement("section");
     section.className = "row";
@@ -85,7 +85,7 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
 
             pageButton.querySelector("a").addEventListener("click", (event) => {
                 event.preventDefault();
-                updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows, renderAsHtml);
+                updateTablePage(apiUrl, tbody, limit, i, isFetchPagination, rows, renderAsHtml, tranformData);
                 document.querySelectorAll(".pagination .page-item").forEach(item => item.classList.remove("active"));
                 pageButton.classList.add("active");
                 prevButton.classList.toggle("disabled", i === 1);
@@ -130,6 +130,9 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
 
 /**
  * Renderiza las filas en un tbody dado.
+ * @author afcastillof@unah.hn
+ * @version 0.5.1
+ * @date 05/12/24
  * @param {Array<Array<any>> || Array<Object>} rows - Matriz de datos para las filas. O un arreglo de objetos.
  * @param {HTMLElement} tbody - Elemento tbody donde se agregarán las filas.
  * @param {boolean} renderAsHtml - Indica si las celdas deben renderizarse como HTML (true) o como texto (false).
@@ -165,25 +168,30 @@ function renderRows(rows, tbody, renderAsHtml) {
 }
 
 /**
- * Actualiza la página actual de la tabla consumiendo datos de un servicio externo o paginando datos locales.
- * @param {string} apiUrl - URL del servicio que entrega los nuevos datos.
- * @param {HTMLElement} tbody - Elemento tbody de la tabla.
- * @param {number} limit - Número máximo de filas por página.
- * @param {number} page - Página a mostrar.
- * @param {boolean} isFetchPagination - Indica si la paginación se basa en datos locales o en un servicio externo.
- * @param {Array<Array<any>>} rows - Matriz de datos locales (si isFetchPagination es true).
+ * Funcion para actualizar los datos en la tabla a partir de la pajinacion
+ * @author afcastillof@unah.hn
+ * @version 0.5.1
+ * @date 05/12/24
+ * @param {string} apiUrl 
+ * @param {div} tbody 
+ * @param {int} limit 
+ * @param {int} page 
+ * @param {boolean} isFetchPagination 
+ * @param {Array} rows 
+ * @param {boolean} renderAsHtml 
+ * @param {function name(params) {}} tranformData 
  */
-async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, getRowsFunction, renderAsHtml) {
-    tbody.innerHTML = ""; // Limpia las filas existentes
+async function updateTablePage(
+    apiUrl, tbody, limit, page, isFetchPagination, rows, renderAsHtml, tranformData) {
+    tbody.innerHTML = ""; 
 
     if (isFetchPagination) {
-        // Paginación basada en datos locales
-        const rows = getRowsFunction(); // Llama a la función para obtener las filas
         const start = (page - 1) * limit;
         const currentRows = rows.slice(start, start + limit);
-        renderRows(currentRows, tbody, renderAsHtml);
+        const transformedRows = tranformData ? tranformData(currentRows) : currentRows;
+
+        renderRows(transformedRows, tbody, renderAsHtml);
     } else {
-        // Paginación basada en un servicio externo
         const offset = (page - 1) * limit;
         const url = `${apiUrl}offset=${offset}`;
 
@@ -194,11 +202,11 @@ async function updateTablePage(apiUrl, tbody, limit, page, isFetchPagination, ge
             }
 
             const data = await response.json();
-            const fetchedRows = data.data || []; // Suponiendo que el servicio devuelve un objeto con una propiedad "data"
+            const transformedData = tranformData ? tranformData(data.data) : data.data;
 
-            renderRows(fetchedRows, tbody, renderAsHtml);
+            renderRows(transformedData, tbody, renderAsHtml);
         } catch (error) {
-            console.error("Error al actualizar la tabla:", error);
+            console.error(error);
         }
     }
 }

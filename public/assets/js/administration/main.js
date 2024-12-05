@@ -1,5 +1,6 @@
 import { Action } from "./Action.js";
 import { Modal } from "../modules/Modal.js";
+import { createTable } from "../modules/table.js";
 
 //Se hace la petición de los maestros
 Action.fetchProfessors();
