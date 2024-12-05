@@ -1,28 +1,26 @@
 <?php
     header("Content-Type: application/json");
 
-
-    session_start();
-    //Se destruye la sesion
-    session_destroy();
-
-    //Si el estatus de la sesion es 2 significa que no se destruyó correctamente
-    if (session_status()==2) {
-
-        $json = [
-            "message"=> "No se pudo cerrar la sesion actual" ,
-            "status"=> false
-                
-        ];
-        
-    }else{
-
-        $json = [
-            "message"=> "Se cerró la sesion actual" ,
-            "status"=> true
-                
-        ];  
-    }
+    include_once "../../../../src/SessionValidation/SessionValidation.php";
     
+    if (isset($_GET["portal"])) {
+
+        if(SessionValidation::closeSession($_GET["portal"])){
+            $json = [
+                "message"=> "Se cerró la sesión exitosamente",
+                "status"=> true 
+            ];
+        }else{
+            $json = [
+                "message"=> "No se pudo cerrar las sesión, intente de nuevo",
+                "status"=> false,                
+            ];
+        }
+    }else{
+        $json = [
+            "message"=> "No se envio el parametro correcto. Debe enviarse un parametro 'Portal' indicando desde donde se hace el cierre de sesion",
+            "status"=> false,                
+        ];
+    }
     
     echo json_encode($json);

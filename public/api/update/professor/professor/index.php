@@ -2,8 +2,9 @@
 
     header("Content-Type: application/json");
 
-    include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Professor/Professor.php";
+    include_once "../../../../../src/DbConnection/DbConnection.php";
+    include_once "../../../../../src/Professor/Professor.php";
+    include_once "../../../../../src/Helper/Validator.php";
 
     $dao = null;
 
@@ -31,9 +32,7 @@
         $active = $_POST['active'];
 
         $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-        $result = $dao->updateProfessor($id, $dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $active);
-
-        $json = $result;
+        $json = $dao->updateProfessor($id, $dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $active);
         
     } else {
         $json = [

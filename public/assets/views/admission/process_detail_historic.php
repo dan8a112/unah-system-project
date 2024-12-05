@@ -21,6 +21,9 @@
 </head>
 <body>
     <?php 
+      $title = "Portal APA";
+      $description = "Administracion de sistema de admisiones de la UNAH";
+      $portal = "apa";
       $path = "../";
       include_once($path . "templates/headerAdmission.php");
     ?>
@@ -75,19 +78,8 @@
 
         <div class="row gap-5">
 
-          <div class="card-container col-8">
-                  <p class="fs-2">Calificaciones más altas</p>
-                  <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Nombre</th>
-                          <th scope="col">Carrera principal</th>
-                          <th scope="col">Puntaje</th>
-                        </tr>
-                      </thead>
-                      <tbody id="higherScoreTbl"></tbody>
-                  </table>
+          <div id="container" class="col-8">
+                  
           </div>
 
           <div class="card-container col" id="amountCentersContainer">

@@ -1,7 +1,8 @@
-import {Selects} from "../modules/Selects.js"
-import {Modal} from "../modules/Modal.js"
-import {Forms} from "../modules/Forms.js"
-import {HttpRequest} from "../modules/HttpRequest.js"
+import {Selects} from "../modules/Selects.js";
+import {Modal} from "../modules/Modal.js";
+import {Forms} from "../modules/Forms.js";
+import {HttpRequest} from "../modules/HttpRequest.js";
+import { createTable } from "../modules/table.js";
 
 class Action{
 
@@ -17,125 +18,119 @@ class Action{
         .then(data => {
             if (data.status) {
                 console.log(data.data)
-                this.generateProfessors(data.data);    
+                this.generateProfessorsWithTable(data.data);    
             }
         });
-    }
+    }   
 
     /**
-     * Este metodo genera la tabla con los profesores registrados en el sistema, su rol, y sus acciones correspondientes
+     * Abre modal para crear docente
      * @author dochoao@unah.hn
      * @version 0.1.0
-     * @date 05/11/24
-     * @param {object} data Informacion que contiene una lista de profesores y cantidad de profesores registrados 
+     * @date 18/11/24
      */
-    static generateProfessors(data){
-
-        const {professors, professorsAmount } = data;
-
-        //nodo donde se insertara la cantidad de maestros registrados 
+    static generateProfessorsWithTable(data) {
+        const { professors, professorsAmount } = data;
+    
+        // Nodo donde se insertará la cantidad de maestros registrados
         const amountProfessors = document.querySelector("span#amountProfessors");
         amountProfessors.innerText = professorsAmount;
-
-        const tableBody = document.querySelector("#table-body");
-        tableBody.innerHTML = "";
-
-        for (const professor of professors) {
-
-            const row = document.createElement("tr");
-            row.style.verticalAlign = "middle";
-            
-            //Se crea columna de id de maestro
-            const idCol = document.createElement("th");
-            idCol.setAttribute("scope","row");
-
-            //Se agrega el id del maestro
-            idCol.innerHTML = professor.professorId;
-
-            //Se agrega id a fila
-            row.appendChild(idCol);
-
-            //Se crea columna de nombre y correo (Usuario)
-            const userCol = document.createElement("td");
-            userCol.innerHTML = `
-            <div class="d-flex align-items-center">
-                        <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
-                        <div>
-                            <p class="mb-0 fw-bold">${professor.name}</p>
-                            <p class="mb-0">${professor.email}</p>
+    
+        // Encabezados de la tabla
+        const headers = ["#", "Usuario", "Roles", "DNI", "Estado", "Acciones"];
+    
+        // Filas iniciales para la tabla
+        const rows = professors.map((professor, index) => {
+            const idCell = professor.professorId;
+    
+            const userCell = `
+                <div class="d-flex align-items-center">
+                    <img src="../../img/icons/user.png" alt="" class="me-3" style="width: 50px;">
+                    <div>
+                        <p class="mb-0 fw-bold">${professor.name}</p>
+                        <p class="mb-0">${professor.email}</p>
+                    </div>
+                </div>
+            `;
+    
+            const rolesCell = (() => {
+                const colorMap = {
+                    'Jefe de departamento': "#3472F8",
+                    'Coordinador': "#00C500",
+                    'default': "#FFAA34",
+                };
+                const colorTypeCard = colorMap[professor.professorType] || colorMap.default;
+                return `
+                    <div class="d-flex gap-3">
+                        <div style="border-radius: 5px; border: solid 1px ${colorTypeCard}; color: ${colorTypeCard}; padding: 0 5px;">
+                            ${professor.professorType}
                         </div>
-            </div>
-            `
+                    </div>
+                `;
+            })();
+    
+            const dniCell = professor.dni;
+    
+            const stateCell = `
+                <span style="color: ${professor.active !== 1 ? '#ff5651' : 'inherit'};">
+                    ${professor.active === 1 ? "Activo" : "Inactivo"}
+                </span>
+            `;
+    
+            const actionsCell = `
+                <img src="../../img/icons/edit.svg" class="editBtn" alt="Editar" data-professor-id=${idCell}">
+            `;
+    
+            return [index + 1, userCell, rolesCell, dniCell, stateCell, actionsCell];
+        });
+    
+        const container = document.getElementById('table');
+    
+        // Crear la tabla con el componente `createTable`
+        this.createTableWithData(
+            "",
+            headers,
+            rows,
+            container,
+            "table-body",
+            10, // Límite de filas por página
+            professorsAmount, // Total de registros
+            "../../../api/get/pagination/professors/?", // URL del API (debe ser reemplazada con la real)
+            false,
+            true,
+            rows // Activar renderización como HTML en las celdas
+        );
+    }
+    
+    // Modifica la función `createTableWithData` para procesar contenido HTML.
+    
 
-            //Se agrega la columna usuario a la fila
-            row.appendChild(userCol);
+    /**
+     * Abre la modal para editar un docente
+     * @author dochoao@unah.hn
+     * @version 0.1.0
+     * @date 17/11/24
+     * @param {*} idProfessor id del docente que se necesita editar
+     */
+    static async openEditiForm(idProfessor){
 
-            //Columna de roles de maestro
-            const roleCol = document.createElement("td");
-
-            //Se crea un contenedor de roles
-            const roleContainer = document.createElement("div");
-            roleContainer.classList.add("d-flex", "gap-3");
-
-            //Se crea la card con el rol de maestros
-            const professorTypeCard = document.createElement("div");
-            professorTypeCard.classList.add("px-1");
-            professorTypeCard.style.borderRadius = "5px"
-
-            //Por defecto el color es anaranjado
-            let colorTypeCard = "#FFAA34";
-
-            //El maestro es un jefe
-            if (professor.professorType.match(/[jJ]efe(\s+)?(\w+)?/g)) {
-                //Se cambia el color de la card a azul
-                colorTypeCard = "#3472F8";
-                //El maestro es un coordinador
-            }else if(professor.professorType.match(/[Cc]oordinador(\s+)?(\w+)?/g)){
-                //Se cambia el color de la card a verde
-                colorTypeCard = "#00C500";
-            }
-
-            professorTypeCard.innerText = professor.professorType;
-            professorTypeCard.style.color = colorTypeCard;
-            professorTypeCard.style.border = `solid 1px ${colorTypeCard}`;
-
-            //Se inserta la card dentro del contenedor
-            roleContainer.appendChild(professorTypeCard);
-
-            //Se inserta el contenedor en la columna de rol
-            roleCol.appendChild(roleContainer)
-
-            row.appendChild(roleCol);
-
-            const dniCol = document.createElement("td");
-            dniCol.innerText = professor.dni;
-            
-            row.appendChild(dniCol);
-
-            const stateCol = document.createElement("td");
-            //Determina si esta activo o inactivo
-            stateCol.innerText = professor.active == 1 ? "Activo" : "Inactivo";
-            //Coloca color rojo si es inactivo
-            stateCol.style.color = professor.active != 1 && "#ff5651";
-
-            row.appendChild(stateCol);
-
-            //Se crean elementos acciones de editar
-            const actionsCol = document.createElement("td");
-
-            const editBtn = document.createElement("img");
-            editBtn.src = "../../img/icons/edit.svg";
-            editBtn.classList.add("editBtn");
-
-            editBtn.addEventListener("click",()=>this.openEditForm(professor.professorId));
-            
-            actionsCol.appendChild(editBtn);
-
-            row.appendChild(actionsCol);
-
-            tableBody.appendChild(row);
-        }
-
+        //Se obtiene la data de los selects y se generan opciones
+        const selectData = await this.fetchFormProfessors();
+        this.generateSelectForm(selectData, true);
+        //Se obtiene la informacion del profesor
+        const professorResponse = await HttpRequest.get(`../../../api/get/professor/professor/?id=${idProfessor}`);
+        //Formulario de maestros
+        const professorForm = document.querySelector("#editProfessorForm");
+        //Se guarda el id del maestro en el dataset del formulario
+        professorForm.dataset.idProfessor = professorResponse.data.id;
+        //Se establece un rango de edad entre 18 y 90 años para validar fecha de nacimiento
+        const dateInput = professorForm.querySelector("input#bdInput");
+        Forms.setRangeDate(dateInput,18,90);
+        //Llena los campos del formulario
+        Forms.fillFieldsEdit(professorResponse.data, professorForm);
+        //Se abre la modal
+        const formModal = document.querySelector("#editModal");
+        Modal.openModal(formModal);
     }
 
     /**
@@ -157,41 +152,6 @@ class Action{
         Forms.setRangeDate(dateInput,18,90);
         
         //Se abre una modal
-        Modal.openModal(formModal);
-    }
-
-
-    /**
-     * Abre la modal para editar un docente
-     * @author dochoao@unah.hn
-     * @version 0.1.0
-     * @date 17/11/24
-     * @param {*} idProfessor id del docente que se necesita editar
-     */
-    static async openEditForm(idProfessor){
-
-        //Se obtiene la data de los selects y se generan opciones
-        const selectData = await this.fetchFormProfessors();
-        this.generateSelectForm(selectData, true);
-
-        //Se obtiene la informacion del profesor
-        const professorResponse = await HttpRequest.get(`../../../api/get/professor/professor/?id=${idProfessor}`);
-
-        //Formulario de maestros
-        const professorForm = document.querySelector("#editProfessorForm");
-
-        //Se guarda el id del maestro en el dataset del formulario
-        professorForm.dataset.idProfessor = professorResponse.data.id;
-
-        //Se establece un rango de edad entre 18 y 90 años para validar fecha de nacimiento
-        const dateInput = professorForm.querySelector("input#bdInput");
-        Forms.setRangeDate(dateInput,18,90);
-
-        //Llena los campos del formulario
-        Forms.fillFieldsEdit(professorResponse.data, professorForm);
-
-        //Se abre la modal
-        const formModal = document.querySelector("#editModal");
         Modal.openModal(formModal);
     }
 
@@ -225,6 +185,8 @@ class Action{
             `;
             Modal.openModal(modal,message,"Exito!");
             this.fetchProfessors();
+            const containerTable = document.getElementById('table');
+            containerTable.innerHTML = "";
             Forms.clearFields(document.querySelector("#createProfessorForm"))
         }else{
             //Muestra una modal de error
@@ -336,6 +298,22 @@ class Action{
             window.location.href = "/"
         }
     }
+    
+
+    /**
+     * Crea una tabla con los datos especificados.
+     * @param {string} title - Título de la tabla.
+     * @param {Array} headers - Encabezados de la tabla.
+     * @param {Array} rows - Filas de datos.
+     * @param {HTMLElement} container - Contenedor de la tabla.
+     * @param {string} tableId - ID único para la tabla.
+     * @param {Function} transformFunc - Función de transformación de contenido de celdas.
+     */
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, transformFunc) {
+        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, transformFunc);
+        section.style.marginTop = '0px';
+        container.appendChild(section);
+}
 
 }
 

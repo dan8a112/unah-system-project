@@ -1,23 +1,36 @@
-import {Action} from "./Action.js";
+import { Action } from "./Action.js";
+import { Modal } from "../modules/Modal.js";
 
-//Se hace la peticion de los maestros
+//Se hace la petición de los maestros
 Action.fetchProfessors();
 
-//Se agrega accion de boton de crear maestro
+//Se agrega acción de botón de crear maestro
 const createButton = document.querySelector("#createBtn");
-createButton.addEventListener('click', ()=>Action.openCreateForm());
+createButton.addEventListener("click", () => Action.openCreateForm());
 
-//Se agrega accion al enviar el formulario de creacion de profesor
-createProfessorForm.addEventListener('submit', (event) => {
+//Se agrega acción al enviar el formulario de creación de profesor
+const createProfessorForm = document.querySelector("#createProfessorForm");
+createProfessorForm.addEventListener("submit", (event) => {
     Action.submitFormProfessor(createProfessorForm, event);
 });
 
+//Se agrega acción al enviar el formulario de editar un profesor
+const editProfessorForm = document.querySelector("#editProfessorForm");
+editProfessorForm.addEventListener("submit", (event) => {
+    Action.submitFormEditProfessor(editProfessorForm, event);
+});
 
-//Se agrega accion al enviar el formulario de editar un profesors
-const editProfessorForm = document.querySelector("#editProfessorForm")
-editProfessorForm.addEventListener('submit', Action.submitFormEditProfessor);
+// Supongamos que tus botones se están creando y agregando al contenedor con id 'table'
+const table = document.getElementById('table');
 
-//Se agrega accion de boton para cerrar sesion
-const logoutButton = document.querySelector("button#logoutBtn")
+// Agregar un event listener al contenedor
+table.addEventListener('click', function(event) {
+  // Verificar si el elemento que se hizo clic es un botón (o un elemento específico)
+  if (event.target.matches('.editBtn')) {
+    // Aquí va la lógica que quieres ejecutar cuando el botón es clickeado
+    console.log(event.target.dataset.professorId)
+    const buttonId = parseInt(event.target.dataset.professorId, 10);
+    Action.openEditiForm(buttonId);
+  }
+});
 
-logoutButton.addEventListener("click", Action.logout)
