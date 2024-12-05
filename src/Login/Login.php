@@ -131,9 +131,9 @@
         public function loginProfessor(string $user, string $password) : array{
 
             $query = "SELECT a.id, a.professorType, b.personalEmail, b.password, a.changePassword
-                    FROM Professor a
-                    INNER JOIN Employee b ON (a.id = b.id)
-                    WHERE b.personalEmail = ?;";
+                FROM Professor a
+                INNER JOIN Employee b ON (a.id = b.id)
+                WHERE b.personalEmail = ? AND a.active = true;";
             
             try{
                 $result = $this->mysqli->execute_query($query, [$user]);
@@ -145,7 +145,6 @@
                             "message"=> 'Usuario autenticado',
                             "data"=>[
                                 "id"=> $row['id'],
-                                "professorType"=> $row['professorType'],
                                 "changePassword"=> $row['changePassword']
                             ]
                         ];

@@ -1239,12 +1239,24 @@ INSERT INTO Employee (dni, names, lastNames, telephoneNumber, personalEmail, pas
     ('0801-2002-02222', 'Ana Maria', 'Lopez Fernandez', '91234567', 'ana.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Central #321', '2002-08-22'),
     ('0801-2003-03333', 'Luis Carlos', 'Hernandez Diaz', '98765432', 'luis.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Boulevard Principal #555', '2003-12-01'),
     ('0801-2004-04444', 'Sofia Isabel', 'Gomez Rodriguez', '91234567', 'sofia.gomez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Primavera #678', '2004-05-14'),
-    ('0801-2005-05555', 'Carlos Alberto', 'Martinez Lopez', '98765432', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25')
+    ('0801-2005-05555', 'Carlos Alberto', 'Martinez Lopez', '98765432', 'carlos.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Pinos #890', '2005-09-25'),
+    ('0801-2006-06666', 'Andrea Carolina', 'Reyes Mejia', '98887766', 'andrea.reyes@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Palmira #123', '2006-02-18'),
+    ('0801-2007-07777', 'Fernando Javier', 'Ortiz Gonzalez', '93334455', 'fernando.ortiz@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Barrio El Centro #456', '2007-07-29'),
+    ('0801-2008-08888', 'Valeria Susana', 'Castro Romero', '94445566', 'valeria.castro@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Urbanización Las Lomas #789', '2008-11-12'),
+    ('0801-2009-09999', 'Diego Alejandro', 'Mejia Cruz', '95556677', 'diego.mejia@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial San Ángel #321', '2009-03-05'),
+    ('0801-2010-10001', 'Isabella Sofia', 'Morales Jimenez', '96667788', 'isabella.morales@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia El Prado #654', '2010-08-22'),
+    ('0801-2011-11001', 'Sebastian Daniel', 'Hernandez Torres', '97778899', 'sebastian.hernandez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Urbanización El Bosque #987', '2011-01-14'),
+    ('0801-2012-12001', 'Camila Andrea', 'Lopez Martinez', '98889900', 'camila.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Santa Clara #123', '2012-04-03'),
+    ('0801-2013-13001', 'Mateo Antonio', 'Perez Gutierrez', '91112233', 'mateo.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Altamira #456', '2013-06-18'),
+    ('0801-2014-14001', 'Emma Victoria', 'Garcia Ruiz', '92223344', 'emma.garcia@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Los Almendros #789', '2014-09-25'),
+    ('0801-2015-15001', 'Lucas Gabriel', 'Ramirez Silva', '93334455', 'lucas.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Barrio Las Flores #321', '2015-12-10')
 ;
 
 INSERT INTO Administrative (id, administrativeType) VALUES
     (1,1),
-    (2,2)
+    (2,2),
+    (9,2),
+    (10,1)
 ;
 
 INSERT INTO Department (description) VALUES 
@@ -1292,7 +1304,10 @@ INSERT INTO Professor(id, professorType, department, active, changePassword) VAL
     (3, 3, 1, true, false),
     (4, 4, 1, true, false),
     (5, 1, 1, true, false),
-    (6, 2, 1, false, false)
+    (6, 2, 1, true, false),
+    (7, 3, 2, true, false),
+    (8, 4, 2, true, false),
+    (11, 1, 2, false, false)
 ;
 
 INSERT INTO AcademicProcess(description) VALUES 
