@@ -271,7 +271,7 @@
          * version: 0.1.0
          * date: 03/12/24
          * 
-         * Login para los diferentes tipos de docentes
+         * Cambiar contraseña de los profesores
          */
         public function setPassword(int $id, string $newPassword, string $currentPassword) {
             // Obtener la información del profesor
@@ -360,6 +360,78 @@
             ];
         }
         
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 03/12/24
+         * 
+         * Obtener informacion para el home de los docentes
+         */
+        public function homeProfessor(int $id){
+            //Obtener informacion sobre el periodo academico y su subproceso
+            $query = 'SELECT a.id as processId, CONCAT(d.description, " ", year(a.startDate)) as period, c.id as subprocessId, c.description, DATE(b.startDate) as startDate, DATE(b.finalDate) as finalDate
+                        FROM AcademicEvent a
+                        INNER JOIN AcademicEvent b ON (a.id = b.parentId)
+                        INNER JOIN AcademicProcess c ON (b.process = c.id)
+                        INNER JOIN AcademicProcess d ON (a.process = d.id)
+                        WHERE b.parentId = (SELECT actualAcademicPeriod())
+                        AND b.active=true;';
+
+            $result = $this->mysqli->execute_query($query);
+
+            if ($result) {
+                $processInfo = $result->fetch_assoc(); // Obtiene el único registro o null si no hay datos
+                if ($processInfo) {
+                    if($processInfo['subprocessId']==11){ // Planificacion acádemica
+                        return [
+                            "status"=> true,
+                            "message"=> "Petición relizada con exito.",
+                            "data"=> [
+                                "processInfo"=> $processInfo
+                            ]
+                        ];
+                    }else{ //  De prematricula en adelante
+                        //Obtener las clases que ya tiene asignadas el docente
+                        $query1 = 'SELECT a.id as idSection, a.section, b.description, b.id as idSubject 
+                                FROM Section a
+                                INNER JOIN Subject b ON (a.subject = b.id)
+                                WHERE academicEvent = (SELECT actualAcademicPeriod()) AND a.professor = ?;';
+                        $result1 = $this->mysqli->execute_query($query1, [$id]);
+
+                        $classes = [];
+                        if($result1){
+                            while ($row = $result1->fetch_assoc()) {
+                                $classes [] = $row;
+                            }
+                            return [
+                                "status"=> true,
+                                "message"=> "Petición relizada con exito.",
+                                "data"=> [
+                                    "processInfo"=> $processInfo,
+                                    "classes"=> $classes
+                                ]
+                            ];
+                        }else{
+                            return [
+                                "status"=> false,
+                                "message"=> "Error al traer las clases asignadas del docente."
+                            ];
+                        }
+
+                    }
+                } else {
+                    return [
+                        "status"=> true,
+                        "message"=> "No estamos en periodo academico."
+                    ];
+                }
+            } else {
+                return [
+                    "status"=> false,
+                    "message"=> "Ocurrió algun error al traer la información sobre el periodo."
+                ];
+            }
+        }
 
         // Método para cerrar la conexión
         public function closeConnection() {
