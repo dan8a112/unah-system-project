@@ -49,7 +49,7 @@ class Action{
             rows,
             container,
             "table-body",
-            true,
+            false,
             10, 
             professorsAmount, 
             "../../../api/get/pagination/professors/?", 

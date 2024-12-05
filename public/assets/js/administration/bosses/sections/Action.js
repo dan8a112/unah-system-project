@@ -36,12 +36,13 @@ class Action{
             "", 
             headers, 
             dataFormated, 
-            "table-body", 
+            "table-body",
+            false,
             10, 
             dataFormated.length, 
             "", 
             false, 
-            true, 
+            true,
             ""
         );
 
