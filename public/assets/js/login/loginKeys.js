@@ -1,0 +1,22 @@
+export const LOGIN_KEYS = {
+    'APA': {
+        apiUrl: "../../../api/post/login/loginAdmission/",
+        redirectUrl: "../admission/administrative_home.php"
+    },
+    'SEDP': {
+        apiUrl: "../../../api/post/login/loginSEDP/",
+        redirectUrl: "../administration/sedp-portal.php"
+    },
+    'PROFESSORS':{
+        apiUrl: "../../../api/post/login/loginProfessor/",
+        redirectUrl: "../professors/home_professors.php"
+    },
+    'CRI':{
+        apiUrl: "../../../api/post/login/loginCRI/",
+        redirectUrl: "../admission/cri_portal.php"
+    },
+    'BOSSES':{
+        apiUrl: "../../../api/post/login/loginProfessor/",
+        redirectUrl: "../administration/administrate_sections.php"
+    }
+}

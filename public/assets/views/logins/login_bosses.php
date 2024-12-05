@@ -3,8 +3,8 @@
   
   session_start();
 
-  if (SessionValidation::isValid($_SESSION, "professors")){
-    header("Location: /assets/views/professors/home_professors.php");
+  if (SessionValidation::isValid($_SESSION, "bosses")){
+    header("Location: /assets/views/administration/bosses/administrate_sections.php");
   }
   
 ?>
@@ -24,20 +24,20 @@
       include_once($path . "templates/headerPublic.php");
     ?>
       
-    <div class="container-fluid login-background d-flex align-items-center justify-content-center" style="background-image: url('../../img/login/professor-login-bg.png');">
+    <div class="container-fluid login-background d-flex align-items-center justify-content-center" style="background-image: url('../../img/login/bosses-login-bg.png');">
         <div class="row login-card-wrapper">
 
             <div class="col-lg-6 left-section d-flex flex-column align-items-center justify-content-center text-center">
                 <img src="../../img/login/logo-unah-white.png" alt="Imagen" class="img">
-                <h2 class="title">Docentes de carrera</h2>
+                <h2 class="title">Jefes de departamento</h2>
                 <p class="subtitle">Para acceder a este portal debes autenticarte</p>
             </div>
             
             <div class="col-lg-6 d-flex align-items-center justify-content-center">
                 <div class="card login-card p-4">
-                    <h4 class="card-title mb-2">Iniciar Sesión - Docentes</h4>
+                    <h4 class="card-title mb-2">Iniciar Sesión - Jefes</h4>
                     <p class="card-subtitle mb-3 text-muted">Administracion de clases y procesos academicos</p>
-                    <form id="loginForm" data-login-key="PROFESSORS">
+                    <form id="loginForm" data-login-key="BOSSES">
                         <div class="mb-4">
                             <input type="email" class="form-control" id="email" placeholder="Correo" name="mail" required>
                         </div>

@@ -1985,7 +1985,7 @@ INSERT INTO Days(description, amountDays) VALUES
     ("LuMaMiJuVi",5),
     ("LuMaMiJu",4),
     ("LuMaMi",3),
-    ("LuMaJu",3)
+    ("LuMaJu",3),
     ("LuMi",2),
     ("MaJu",2),
     ("Lu",1),
