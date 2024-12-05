@@ -170,7 +170,7 @@ CREATE TABLE Student(
     account VARCHAR(11) PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     lastName VARCHAR(30) NOT NULL,
-    DNI VARCHAR(13) NOT NULL,
+    dni VARCHAR(13) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
     degreeProgram SMALLINT NOT NULL,
@@ -253,6 +253,7 @@ CREATE TABLE StudentSection(
     section INT,
     grade TINYINT,
     observation TINYINT,
+    waiting BOOLEAN,
    CONSTRAINT fk_student_studentSection FOREIGN KEY(studentAccount) REFERENCES Student(account),
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
@@ -1311,12 +1312,10 @@ INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUE
     (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5),
     (8, '2024-01-15 00:00:00', '2024-05-31 00:00:00', false, NULL),
     (9, '2024-06-12 00:00:00', '2024-09-20 00:00:00', false, NULL),
-    (10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', true, NULL),
+    (10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', true, NULL)
 ;
 
-INSERT INTO Configuration(data) VALUES
-    ('{"maxAttemtps":2}')
-;
+INSERT INTO Configuration (data) VALUES ('{"maxAttemtps":2}');
 
 INSERT INTO Applicant (id, names, lastNames, schoolCertificate, telephoneNumber, personalEmail) VALUES
     ('0801-1990-01234', 'Juan Carlos', 'Martínez López', 'path1.pdf', '12345678', 'juan.carlos@gmail.com'),

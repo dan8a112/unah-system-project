@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg" style="background-color: #F4F7FB;">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
-        <img src="../../img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
+        <img src="/assets/img/landing/unah-logo.png" alt="Bootstrap" width="100px" class="ms-5">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -18,7 +18,7 @@
             style="background-color: #3472F8; color: #F4F7FB;" 
             id="logoutButton" 
             data-portal="<?php echo $portal?>">
-                <img src="../../img/icons/logout-icon.svg" alt="" class="me-2">
+                <img src="/assets/img/icons/logout-icon.svg" alt="" class="me-2">
                 Cerrar Sesión
             </button>
             </li>
@@ -27,4 +27,4 @@
     </div>
 </nav>
 <div style="height: 3px; background-color: #FFAA34; width: 100%;"></div>
-<script src="../../js/logout/logout.js" type="module"></script>
+<script src="/assets/js/logout/logout.js" type="module"></script>

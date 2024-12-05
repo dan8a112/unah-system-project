@@ -9,20 +9,20 @@ curl -d "identityNumber=0801-2004-03085" -d "firstName=Dorian" -d "idFirstDegree
 curl http://localhost:3000/api/get/admission/infoAdmission | jq
 
 
---------------Curl para probar api/post/login/loginSEDP-----------------------
+--------------Curl para probar el login de SEDP-----------------------
 curl -d "mail=juan.perez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginSEDP | jq
 
 
---------------Curl para probar api/post/login/loginAdmission-----------------------
+--------------Curl para probar el login de APA-----------------------
 curl -d "mail=maria.ramirez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginAdmission | jq
 
---------------Curl para probar api/post/login/loginCRI-----------------------
+--------------Curl para probar login de CRI-----------------------
 curl -d "mail=carlos.hernandez@gmail.com" -d "password=1234" http://localhost:3000/api/post/login/loginCRI| jq
 
---------------Curl para probar api/post/login/loginProfessor-----------------------
+--------------Curl para probar login de profesor-----------------------
 curl -d "mail=pedro.castillo@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginProfessor| jq
 
---------------Curl para probar api/get/infoHomeSEDP------------------------
+--------------Curl para probar el home de SEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 
 
@@ -79,7 +79,7 @@ curl "http://localhost:3000/api/get/pagination/reviewers/?idProcess=1&offset=0" 
 ----------obtener inscrpciones de los aplicantes que aprobaron el proceso---------------
 curl "http://localhost:3000/api/get/pagination/approvedApplicants/?idProcess=1&offset=0" | jq
 
--------------obtener inscrpciones de los aplicantes que les hace falta el resultado---------------
+-----------obtener inscrpciones de los aplicantes que les hace falta el resultado---------------
 curl "http://localhost:3000/api/get/pagination/missingResults/?offset=0&counter=1" | jq
 
 ----------------------------obtener profesores--------------------------------
