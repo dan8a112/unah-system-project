@@ -169,7 +169,7 @@ CREATE TABLE Student(
     account VARCHAR(11) PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     lastName VARCHAR(30) NOT NULL,
-    DNI VARCHAR(13) NOT NULL,
+    dni VARCHAR(13) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
     degreeProgram SMALLINT NOT NULL,
@@ -252,6 +252,7 @@ CREATE TABLE StudentSection(
     section INT,
     grade TINYINT,
     observation TINYINT,
+    waiting BOOLEAN,
    CONSTRAINT fk_student_studentSection FOREIGN KEY(studentAccount) REFERENCES Student(account),
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
