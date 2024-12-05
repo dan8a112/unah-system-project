@@ -14,8 +14,7 @@
         //set valores
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
-
-        $result = $dao->loginProfessor($mail, $password);
+        $result = $dao->loginCoordinator($mail, $password);
 
         if($result['status']){
             $json = [
