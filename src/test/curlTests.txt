@@ -25,6 +25,9 @@ curl -d "mail=luis.hernandez@unah.edu.hn" -d "password=1234" http://localhost:30
 --------------Curl para probar login de coordinador-----------------------
 curl -d "mail=carlos.martinez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginCoordinator| jq
 
+--------------Curl para probar login de jefes de departamentos-----------------------
+curl -d "mail=ana.lopez@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginDepartmentBoss| jq
+
 --------------Curl para probar el home de SEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 
