@@ -13,7 +13,7 @@
  * @param {boolean} isFetchPagination - Indica si la paginación se basa en datos locales o en un servicio externo.
  * @param {boolean} [renderAsHtml=false] - Indica si las celdas deben renderizarse como HTML (true) o como texto (false).
  */
-export function createTable(sectionTitle, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml = true, tranformData) {
+export function createTable(sectionTitle, headers, rows, tableId, border, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml = true, tranformData) {
     // Crear la sección
     const section = document.createElement("section");
     section.className = "row";
@@ -21,7 +21,10 @@ export function createTable(sectionTitle, headers, rows, tableId, limit, totalRe
 
     // Crear el contenedor de la tarjeta
     const cardContainer = document.createElement("div");
-    cardContainer.className = "card-container";
+    if(border){
+        cardContainer.className = "card-container"
+    }
+
 
     // Agregar el título de la sección
     const title = document.createElement("p");

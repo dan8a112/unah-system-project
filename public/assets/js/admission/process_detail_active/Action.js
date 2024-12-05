@@ -477,7 +477,7 @@ class Action {
      * @param {string} tableId - ID único para la tabla.
      */
     static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination) {
-        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination);
+        const section = createTable(title, headers, rows, tableId, true, limit, totalRecords, apiUrl, isFetchPagination);
         section.style.marginTop = '0px'
         container.appendChild(section);
     }

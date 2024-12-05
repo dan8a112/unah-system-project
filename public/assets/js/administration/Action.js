@@ -49,6 +49,7 @@ class Action{
             rows,
             container,
             "table-body",
+            true,
             10, 
             professorsAmount, 
             "../../../api/get/pagination/professors/?", 
@@ -312,8 +313,8 @@ class Action{
      * @param {string} tableId - ID único para la tabla.
      * @param {Function} transformFunc - Función de transformación de contenido de celdas.
      */
-    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml) {
-        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, this.makeRows);
+    static createTableWithData(title, headers, rows, container, tableId, border, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml) {
+        const section = createTable(title, headers, rows, tableId, border, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, this.makeRows);
         section.style.marginTop = '0px';
         container.appendChild(section);
     }
