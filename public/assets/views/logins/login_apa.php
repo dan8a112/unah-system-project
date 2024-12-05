@@ -37,7 +37,7 @@
                 <div class="card login-card p-4">
                     <h4 class="card-title mb-2">Iniciar Sesión - APA</h4>
                     <p class="card-subtitle mb-3 text-muted">Administracion de procesos de admision</p>
-                    <form id="loginForm">
+                    <form id="loginForm" data-login-key="APA">
                         <div class="mb-4">
                             <input type="email" class="form-control" id="email" placeholder="Correo" name="mail" required>
                         </div>
@@ -54,6 +54,6 @@
     </div>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/login/loginAPA/main.js" type="module"></script>
+    <script src="../../js/login/login.js" type="module"></script>
 </body>
 </html>

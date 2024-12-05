@@ -14,17 +14,24 @@
               <li class="nav-item">
                 <a class="nav-link" href="#">Estudiantes</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/assets/views/logins/login_professors.php">Docentes</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Docentes
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/assets/views/logins/login_professors.php">Docentes</a></li>
+                  <li><a class="dropdown-item" href="/assets/views/logins/login_bosses.php">Jefes</a></li>
+                  <li><a class="dropdown-item" href="#">Coordinadores</a></li>
+                </ul>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Administracion
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/assets/views/logins/login_sedp.php">SEDP Login</a></li>
-                  <li><a class="dropdown-item" href="/assets/views/logins/login_apa.php">APA Login</a></li>
-                  <li><a class="dropdown-item" href="/assets/views/logins/login_cri.php">CRI Login</a></li>
+                  <li><a class="dropdown-item" href="/assets/views/logins/login_sedp.php">SEDP</a></li>
+                  <li><a class="dropdown-item" href="/assets/views/logins/login_apa.php">APA</a></li>
+                  <li><a class="dropdown-item" href="/assets/views/logins/login_cri.php">CRI</a></li>
                 </ul>
               </li>
             </ul>
