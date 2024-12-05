@@ -23,15 +23,14 @@
                 "data"=>  $result['data']               
             ];
             
-            /*session_start();
-            $_SESSION["portals"]["professors"] = [
-                "user" => $result['data']['id'],
-                "professorType" => $result['data']['professorType']
-            ];*/
+            session_start();
+            $_SESSION["portals"]["bosses"] = [
+                "user" => $result['data']['id']
+            ];
 
         }else{
             $json = [
-                "message"=> "No existe el usuario",
+                "message"=> "No existe el usuario o el usuario que intenta iniciar sesión no es un Jefe de departamento.",
                 "status"=> 2,                
             ];
         }

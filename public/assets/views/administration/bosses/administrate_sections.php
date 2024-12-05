@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +11,7 @@
 
 <body>
     <?php
+    $portal = "bosses";
     $title = "Portal Jefes de departamentos";
     $description = "Jefes de departamento, administra los procesos de matricula y mas";
     $path = "../../";

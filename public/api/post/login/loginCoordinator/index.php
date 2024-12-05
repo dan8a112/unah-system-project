@@ -24,14 +24,13 @@
             ];
             
             session_start();
-            $_SESSION["portals"]["professors"] = [
-                "user" => $result['data']['id'],
-                "professorType" => $result['data']['professorType']
+            $_SESSION["portals"]["coordinators"] = [
+                "user" => $result['data']['id']
             ];
 
         }else{
             $json = [
-                "message"=> "No existe el usuario",
+                "message"=> "No existe el usuario, el usuario que intenta iniciar sesión no es un Coordinador de carrera.",
                 "status"=> 2,                
             ];
         }
