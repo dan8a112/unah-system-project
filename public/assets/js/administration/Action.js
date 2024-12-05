@@ -32,15 +32,36 @@ class Action{
     static generateProfessorsWithTable(data) {
         const { professors, professorsAmount } = data;
     
-        // Nodo donde se insertará la cantidad de maestros registrados
         const amountProfessors = document.querySelector("span#amountProfessors");
         amountProfessors.innerText = professorsAmount;
     
-        // Encabezados de la tabla
         const headers = ["#", "Usuario", "Roles", "DNI", "Estado", "Acciones"];
+        const container = document.getElementById('table');
+        
+        // Limpia el contenido previo
+        container.innerHTML = "";
     
-        // Filas iniciales para la tabla
-        const rows = professors.map((professor, index) => {
+        const rows = this.makeRows(professors);
+    
+        this.createTableWithData(
+            "",
+            headers,
+            rows,
+            container,
+            "table-body",
+            false,
+            10, 
+            professorsAmount, 
+            "../../../api/get/pagination/professors/?", 
+            false,
+            true
+        );
+    }
+    
+    
+
+    static makeRows(professors) {
+        return professors.map((professor, index) => {
             const idCell = professor.professorId;
     
             const userCell = `
@@ -78,31 +99,14 @@ class Action{
             `;
     
             const actionsCell = `
-                <img src="../../img/icons/edit.svg" class="editBtn" alt="Editar" data-professor-id=${idCell}">
+                <img src="../../img/icons/edit.svg" class="editBtn" alt="Editar" data-professor-id="${idCell}">
             `;
     
             return [index + 1, userCell, rolesCell, dniCell, stateCell, actionsCell];
         });
-    
-        const container = document.getElementById('table');
-    
-        // Crear la tabla con el componente `createTable`
-        this.createTableWithData(
-            "",
-            headers,
-            rows,
-            container,
-            "table-body",
-            10, // Límite de filas por página
-            professorsAmount, // Total de registros
-            "../../../api/get/pagination/professors/?", // URL del API (debe ser reemplazada con la real)
-            false,
-            true,
-            rows // Activar renderización como HTML en las celdas
-        );
     }
     
-    // Modifica la función `createTableWithData` para procesar contenido HTML.
+
     
 
     /**
@@ -309,11 +313,11 @@ class Action{
      * @param {string} tableId - ID único para la tabla.
      * @param {Function} transformFunc - Función de transformación de contenido de celdas.
      */
-    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, transformFunc) {
-        const section = createTable(title, headers, rows, tableId, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, transformFunc);
+    static createTableWithData(title, headers, rows, container, tableId, border, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml) {
+        const section = createTable(title, headers, rows, tableId, border, limit, totalRecords, apiUrl, isFetchPagination, renderAsHtml, this.makeRows);
         section.style.marginTop = '0px';
         container.appendChild(section);
-}
+    }
 
 }
 

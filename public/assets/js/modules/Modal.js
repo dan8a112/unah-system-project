@@ -35,6 +35,8 @@ class Modal {
             // Asegurar eliminación del backdrop
             Modal.cleanBackdrop();
 
+            Modal.modalInstance = null;
+
         } else {
             console.warn("No se encontró una instancia activa del modal para cerrar.");
         }
