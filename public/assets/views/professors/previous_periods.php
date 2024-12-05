@@ -14,7 +14,7 @@
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId) || !SessionValidation::validateParam("type", $userType)) {
-        header("Location: /assets/views/professors/home_professors.php?id=".$userId."&type=".$userType);
+        header("Location: /assets/views/professors/previous_periods.php?id=".$userId."&type=".$userType);
         exit;
     }
   }
