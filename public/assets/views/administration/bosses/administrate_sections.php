@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secciones</title>
     <link rel="stylesheet" href="../../../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../../css/templates/professor.css">
     <link rel="stylesheet" href="../../../css/temas/cards.css">
+    <link rel="stylesheet" href="../../../css/templates/professor.css">
 </head>
 
 <body>
     <?php
+    $portal = "bosses";
     $title = "Portal Jefes de departamentos";
     $description = "Jefes de departamento, administra los procesos de matricula y mas";
     $path = "../../";
@@ -111,6 +111,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <button class="btn btn-outline-danger btn-sm" style="position: absolute; top:20px; right:20px;">Eliminar sección</button>
                     <form class="row g-3" id="addSectionForm" data-id-professor>
                         <div class="row my-2">
                             <span class="me-2">Sección</span>
@@ -126,8 +127,8 @@
                             <div class="col">
                                 <label class="form-label">Aumentar Cupos</label>
                                 <div style="position: relative;">
-                                    <input type="text" class="form-control" placeholder="e.g. 20" name="places" pattern="\d{2}" required>
-                                    <div class="btn" style="position: absolute; right: 0; top:0; background-color: #FFAA34;"><img src="/assets/img/icons/add-circle.svg" alt=""></div>
+                                    <input type="text" value="1" class="form-control" placeholder="e.g. 20" name="places" pattern="\d{2}" id="increaseInput" required>
+                                    <div class="btn" style="position: absolute; right: 0; top:0; background-color: #FFAA34;" id="increaseBtn" ><img src="/assets/img/icons/add-circle.svg" alt=""></div>
                                 </div>
                             </div>
                         </div>

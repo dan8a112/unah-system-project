@@ -131,9 +131,9 @@
         public function loginProfessor(string $user, string $password) : array{
 
             $query = "SELECT a.id, a.professorType, b.personalEmail, b.password, a.changePassword
-                    FROM Professor a
-                    INNER JOIN Employee b ON (a.id = b.id)
-                    WHERE b.personalEmail = ?;";
+                FROM Professor a
+                INNER JOIN Employee b ON (a.id = b.id)
+                WHERE b.personalEmail = ? AND a.active = true;";
             
             try{
                 $result = $this->mysqli->execute_query($query, [$user]);
@@ -145,7 +145,6 @@
                             "message"=> 'Usuario autenticado',
                             "data"=>[
                                 "id"=> $row['id'],
-                                "professorType"=> $row['professorType'],
                                 "changePassword"=> $row['changePassword']
                             ]
                         ];
@@ -165,6 +164,92 @@
             
         }
        
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 05/12/24
+         * 
+         * Login para coordinadores
+         */
+        public function loginCoordinator(string $user, string $password) : array{
+
+            $query = "SELECT a.id, a.professorType, b.personalEmail, b.password, a.changePassword
+                    FROM Professor a
+                    INNER JOIN Employee b ON (a.id = b.id)
+                    WHERE b.personalEmail = ? AND a.active = true AND a.professorType = 3;";
+            
+            try{
+                $result = $this->mysqli->execute_query($query, [$user]);
+                
+                foreach($result as $row){
+                    if(password_verify($password, $row["password"])){
+                        return [
+                            "status"=> true,
+                            "message"=> 'Usuario autenticado',
+                            "data"=>[
+                                "id"=> $row['id'],
+                                "changePassword"=> $row['changePassword']
+                            ]
+                        ];
+                    }
+                }
+                return [
+                    "status"=> false,
+                    "message"=> 'El correo o la contraseña es incorrecto, vuelva a intentarlo.'
+                ];
+                
+            }catch (Exception $e){
+                return [
+                    "status"=> false,
+                    "message"=> 'Ocurrio un error: ' . $e
+                ];
+            }
+            
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 05/12/24
+         * 
+         * Login para jefes de departamentos
+         */
+        public function loginDepartmentBoss(string $user, string $password) : array{
+
+            $query = "SELECT a.id, a.professorType, b.personalEmail, b.password, a.changePassword
+                    FROM Professor a
+                    INNER JOIN Employee b ON (a.id = b.id)
+                    WHERE b.personalEmail = ? AND a.active = true AND a.professorType =4 ;";
+            
+            try{
+                $result = $this->mysqli->execute_query($query, [$user]);
+                
+                foreach($result as $row){
+                    if(password_verify($password, $row["password"])){
+                        return [
+                            "status"=> true,
+                            "message"=> 'Usuario autenticado',
+                            "data"=>[
+                                "id"=> $row['id'],
+                                "changePassword"=> $row['changePassword']
+                            ]
+                        ];
+                    }
+                }
+                return [
+                    "status"=> false,
+                    "message"=> 'El correo o la contraseña es incorrecto, vuelva a intentarlo.'
+                ];
+                
+            }catch (Exception $e){
+                return [
+                    "status"=> false,
+                    "message"=> 'Ocurrio un error: ' . $e
+                ];
+            }
+            
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

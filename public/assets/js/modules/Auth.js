@@ -49,7 +49,7 @@ class Auth {
     * @date 2024-11-24 
     */
     static async logout(portal) {
-        const response = await HttpRequest.get(`../../../api/get/logout/?portal=${portal}`);
+        const response = await HttpRequest.get(`/api/get/logout/?portal=${portal}`);
         if (response.status) {
             window.location.href = "/"
         }
