@@ -1,6 +1,4 @@
 import { Action } from "./Action.js";
-import { Modal } from "../modules/Modal.js";
-import { createTable } from "../modules/table.js";
 
 //Se hace la petición de los maestros
 Action.fetchProfessors();
@@ -21,7 +19,6 @@ editProfessorForm.addEventListener("submit", (event) => {
     Action.submitFormEditProfessor(editProfessorForm, event);
 });
 
-// Supongamos que tus botones se están creando y agregando al contenedor con id 'table'
 const table = document.getElementById('table');
 
 // Agregar un event listener al contenedor

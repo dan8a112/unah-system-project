@@ -16,7 +16,11 @@ export const LOGIN_KEYS = {
         redirectUrl: "../admission/cri_portal.php"
     },
     'BOSSES':{
-        apiUrl: "../../../api/post/login/loginProfessor/",
-        redirectUrl: "../administration/administrate_sections.php"
+        apiUrl: "../../../api/post/login/loginDepartmentBoss/",
+        redirectUrl: "../administration/bosses/administrate_sections.php"
+    },
+    'COORDINATORS':{
+        apiUrl: "../../../api/post/login/loginCoordinator/",
+        redirectUrl: "../administration/bosses/administrate_sections.php"
     }
 }

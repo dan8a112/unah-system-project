@@ -21,7 +21,7 @@
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="/assets/views/logins/login_professors.php">Docentes</a></li>
                   <li><a class="dropdown-item" href="/assets/views/logins/login_bosses.php">Jefes</a></li>
-                  <li><a class="dropdown-item" href="#">Coordinadores</a></li>
+                  <li><a class="dropdown-item" href="/assets/views/logins/login_coordinators.php">Coordinadores</a></li>
                 </ul>
               </li>
               <li class="nav-item dropdown">
