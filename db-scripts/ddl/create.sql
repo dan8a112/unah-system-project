@@ -15,8 +15,7 @@ CREATE TABLE RegionalCenter(
 CREATE TABLE AdmissionTest(
 	id TINYINT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR(62) NOT NULL,
-    points INT
-    
+    points INT   
 );
 
 CREATE TABLE DegreeProgram(
@@ -113,7 +112,7 @@ CREATE TABLE Employee(
     names VARCHAR(60) NOT NULL,
     lastNames VARCHAR(60) NOT NULL,
     telephoneNumber VARCHAR(12) NOT NULL,
-    personalEmail VARCHAR(30) NOT NULL,
+    personalEmail VARCHAR(50) NOT NULL,
     password VARCHAR (60) NOT NULL,
     address VARCHAR(60) NOT NULL,
     dateOfBirth DATE
@@ -259,7 +258,7 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
 
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
-
+DELIMITER //
 /**
     author: dorian.contreras@unah.hn
     version: 0.1.0
@@ -267,15 +266,15 @@ CREATE TABLE StudentSection(
     Función para obtener el periodo academico activo
 **/
 CREATE FUNCTION actualAcademicPeriod ()
-RETURNS INT DETERMINISTIC
+RETURNS INT 
+DETERMINISTIC
 BEGIN
     DECLARE academic INT;
-    SET academic = (SELECT id FROM AcademicEvent WHERE process IN (8,9,10) AND active = true);
+    SET academic = (SELECT id FROM AcademicEvent WHERE process IN (8,9,10) AND active = true LIMIT 1);
     RETURN academic;
-END;
+END //
 
 /*--------------------------------------------------------------------PROCEDURES--------------------------------------------------------------------------------*/
-DELIMITER //
 
 /**
     author: dorian.contreras@unah.hn
@@ -1300,16 +1299,6 @@ INSERT INTO Department (description) VALUES
     ('Microbiología')
 ;
 
-INSERT INTO Professor(id, professorType, department, active, changePassword) VALUES
-    (3, 3, 1, true, false),
-    (4, 4, 1, true, false),
-    (5, 1, 1, true, false),
-    (6, 2, 1, true, false),
-    (7, 3, 2, true, false),
-    (8, 4, 2, true, false),
-    (11, 1, 2, false, false)
-;
-
 INSERT INTO AcademicProcess(description) VALUES 
     ('Proceso de Admisiones'),
     ('Proceso'),
@@ -1530,6 +1519,16 @@ INSERT INTO Department (description) VALUES ('Matemática Aplicada');
 INSERT INTO Department (description) VALUES ('Matemática Pura');
 INSERT INTO Department (description) VALUES ('Bioanálisis e Inmunología');
 INSERT INTO Department (description) VALUES ('Parasitología');
+
+INSERT INTO Professor(id, professorType, department, active, changePassword) VALUES
+    (3, 3, 1, true, false),
+    (4, 4, 1, true, false),
+    (5, 1, 1, true, false),
+    (6, 2, 1, true, false),
+    (7, 3, 89, true, false),
+    (8, 4, 89, true, false),
+    (11, 1, 89, false, false)
+;
 
 INSERT INTO Subject(id, description, department, uv) VALUES('MM110', 'MATEMATICA I', 89, 5);
 INSERT INTO Subject(id, description, department, uv) VALUES('MM111', 'GEOMETRIA Y TRIGONOMETRIA', 89, 5);
