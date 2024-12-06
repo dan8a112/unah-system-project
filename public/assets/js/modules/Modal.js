@@ -28,6 +28,20 @@ class Modal {
         Modal.modalInstance.show();
     }
 
+    static updateModal(dom, content, title){
+        if (content) {
+            const modalBody = dom.querySelector("div.modal-body");
+            modalBody.innerHTML = content;
+        }
+
+        if (title) {
+            const modalText = dom.querySelector("h5.modal-title");
+            modalText.innerHTML = title;
+        }
+        
+        Modal.modalInstance.show();
+    }
+
     static closeModal() {
         if (Modal.modalInstance) {
             Modal.modalInstance.hide();

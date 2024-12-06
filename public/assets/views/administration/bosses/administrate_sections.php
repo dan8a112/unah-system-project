@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,16 +27,25 @@
         include_once($path . "templates/professors/bossSidebar.php");
         ?>
 
-        <section class="col mx-4">
-            <div class="my-4">
-                <div class="d-flex align-items-center">
-                    <h1 class="display3 me-3" id="processName">Secciones</h1>
-                    <div class="status-card" style="background-color: #00C500;">2 PAC 2024</div>
+        <section class="col mx-5">
+
+            <div class="row align-items-center">
+
+                <div class="my-4 col-8">
+                    <div class="d-flex align-items-center ">
+                        <h1 class="display3 me-3" id="processName">Secciones</h1>
+                        <div class="status-card" style="background-color: #00C500;" id="periodName">2 PAC 2024</div>
+                    </div>
+                    <span>Administra las secciones de este periodo para tu departamento</span>
                 </div>
-                <p>Administra las secciones de este periodo para tu departamento</p>
+
+                <div class="card-container col d-flex" style="width:fit-content; height: fit-content;">
+                    <img src="/assets/img/icons/department.svg" alt="" class="me-3">
+                    <span id="departmentName" class="fs-6" style="font-weight: 500;"> Departamento de Ingenieria en sistemas</span>
+                </div>
             </div>
 
-            <div class="mt-5 d-flex-col card-container">
+            <div class="mt-2 d-flex-col card-container">
                 <div class="d-flex justify-content-between">
                     <div class="ms-2">
                         <span class="fs-4 me-2 fw-bold">Secciones de este periodo</span>
@@ -66,14 +76,28 @@
                     <form class="row g-3" id="addSectionForm" data-id-professor>
                         <div>
                             <label class="form-label">Selecciona una clase</label>
-                            <select class="form-select" aria-label="Default select example" name="class" id="professorTypeSelectEdit" required>
+                            <select class="form-select" aria-label="Default select example" name="class" id="classesSelect" required>
                                 <option selected>Clases</option>
                             </select>
                         </div>
                         <div class="row my-2">
                             <div class="col">
-                                <label class="form-label">Selecciona la hora</label>
-                                <select class="form-select" aria-label="Default select example" name="hour" id="departmentSelectEdit" required>
+                                <label class="form-label">Hora de inicio</label>
+                                <select class="form-select" aria-label="Default select example" name="hour" id="startHourSelect" required>
+                                    <option selected>Seleccione una opcion</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Hora final</label>
+                                <select class="form-select" aria-label="Default select example" name="hour" id="endHourSelect" required>
+                                    <option selected>Seleccione una opcion</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col">
+                                <label class="form-label">Dias</label>
+                                <select class="form-select" aria-label="Default select example" name="hour" id="daysSelect" required>
                                     <option selected>Seleccione una opcion</option>
                                 </select>
                             </div>
@@ -84,13 +108,13 @@
                         </div>
                         <div>
                             <label class="form-label">Asigna un Docente</label>
-                            <select class="form-select" aria-label="Default select example" name="professor" id="professorTypeSelectEdit" required>
+                            <select class="form-select" aria-label="Default select example" name="professor" id="professorsSelect" required>
                                 <option selected>Docentes</option>
                             </select>
                         </div>
                         <div>
                             <label class="form-label">Elije una aula</label>
-                            <select class="form-select" aria-label="Default select example" name="classroom" id="professorTypeSelectEdit" required>
+                            <select class="form-select" aria-label="Default select example" name="classroom" id="classroomSelect" required>
                                 <option selected>Aulas disponibles</option>
                             </select>
                         </div>
@@ -128,7 +152,7 @@
                                 <label class="form-label">Aumentar Cupos</label>
                                 <div style="position: relative;">
                                     <input type="text" value="1" class="form-control" placeholder="e.g. 20" name="places" pattern="\d{2}" id="increaseInput" required>
-                                    <div class="btn" style="position: absolute; right: 0; top:0; background-color: #FFAA34;" id="increaseBtn" ><img src="/assets/img/icons/add-circle.svg" alt=""></div>
+                                    <div class="btn" style="position: absolute; right: 0; top:0; background-color: #FFAA34;" id="increaseBtn"><img src="/assets/img/icons/add-circle.svg" alt=""></div>
                                 </div>
                             </div>
                         </div>
