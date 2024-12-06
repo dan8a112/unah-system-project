@@ -82,6 +82,12 @@ curl http://localhost:3000/api/get/departmentBoss/ratingsInfo/?id=4 | jq
 ----------- Curl para ver las calificaciones de los estudiantes de una seccion--------------------------------
 curl http://localhost:3000/api/get/section/sectionGrades/?id=1 | jq
 
+----------- Curl para administrar una seccion (jefe de departamento)--------------------------------
+curl http://localhost:3000/api/get/departmentBoss/sectionsAdministration/?id=4 | jq
+
+----------- Curl para obtener el detalle de una seccion (jefe de departamento)--------------------------------
+curl http://localhost:3000/api/get/departmentBoss/sectionWaitingStudents/?id=4 | jq
+
 
 ---------------------------------------PAGINACION------------------------------------------------------
 
