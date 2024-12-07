@@ -1,0 +1,18 @@
+.editBtn{
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.editBtn:hover{
+    background-color: bisque;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+input::placeholder {
+    text-transform: none;
+}
