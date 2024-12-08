@@ -13,7 +13,7 @@
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/administration/bosses/administrate_sections.php?id=".$userId);
+        header("Location: /assets/views/administration/bosses/section_grades.php?id=".$userId);
         exit;
     }
   }
@@ -47,6 +47,16 @@
         ?>
 
         <section class="col mx-4">
+        <?php 
+            $path = "../../";
+            $links = [
+                ['title' => 'Calificaciones', 'url' => '/assets/views/administration/bosses/period_grades.php'],
+                ['title' => 'Seccion', 'url' => '/calificaciones']
+              ];
+
+            include_once($path . "templates/breadCrumb.php");
+        ?>
+
             <div class="my-4">
                 <div class="d-flex align-items-center">
                     <h1 class="display3 me-3" id="className"></h1>

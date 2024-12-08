@@ -7,6 +7,7 @@ const currentPeriod = document.getElementById("currentPeriod");
 const professorTypeSelectEdit = document.getElementById("professorTypeSelectEdit");
 const userId = new URLSearchParams(window.location.search).get("id");
 const url = `../../../../api/get/departmentBoss/ratingsInfo/?id=${userId}`;
+const container = document.querySelector("#section-table");
 
 
 const dataa = {
@@ -53,10 +54,11 @@ async function loadData() {
     // Realizar la solicitud GET usando HttpRequest
     const respose = await HttpRequest.get(url);
     const data = respose;
+    const paginationUrl = `../../../../api/get/pagination/sections/?idProcess=${data.currentPeriod.id}&idBoss=${userId}&`;
     console.log(data)
   
     if (data) {
-      Action.renderSections(data.sections.sectionList, data.sections.amountSections);
+      Action.renderSections(data.sections.sectionList, data.sections.amountSections, paginationUrl, container);
       Action.renderSelects(data.periods, selectPeriod);
       currentPeriod.innerText = `${data.currentPeriod.description}`
     } else {
@@ -64,17 +66,16 @@ async function loadData() {
     }
   }
   
-  // Llamar a la función para cargar los datos al iniciar el módulo
+  // Llama a la función para cargar los datos al iniciar el módulo
   loadData();
 
 const table = document.getElementById('section-table');
 
-// Agregar un event listener al contenedor
+// Agrega un event listener al contenedor
 table.addEventListener('click', function(event) {
-// Verificar si el elemento que se hizo clic es un botón (o un elemento específico)
-if (event.target.matches('.editBtn')) {
-    // Aquí va la lógica que quieres ejecutar cuando el botón es clickeado
-    console.log(event.target.dataset.professorId)
+if (event.target.matches('.btn')) {
+    console.log(event.target.id);
+    window.location.href = `/assets/views/administration/bosses/section_grades.php?id=${userId}&section=${event.target.id}`;
     const buttonId = parseInt(event.target.dataset.professorId, 10);
     Action.openEditiForm(buttonId);
 }
@@ -82,17 +83,19 @@ if (event.target.matches('.editBtn')) {
 
 selectPeriod.addEventListener('change', async (event) => {
     try {
-        const url2 = `http://localhost:3000/api/get/pagination/sections/?iProcess=${event.target.value}&offset=0&idBoss=${userId}`;
-        console.log(`Valor cambiado a: ${event.target.value}`);
+        const url2 = `http://localhost:3000/api/get/pagination/sections/?idProcess=${event.target.value}&offset=0&idBoss=${userId}`;
+        const selectedOption = event.target.options[event.target.selectedIndex];
+        const selectedText = selectedOption.innerText;
 
         const response = await HttpRequest.get(url2); 
         const data = response.data;
+        const paginationUrl = `../../../../api/get/pagination/sections/?idProcess=${event.target.value}&idBoss=${userId}&`;
 
-        console.log(data);
 
         if (data) {
-            Action.renderSections(data.sections.sectionList, data.sections.amountSections);
-            currentPeriod.innerText = `${data.currentPeriod.description}`;
+            container.innerHTML = "";
+            Action.renderSections(data, 11, paginationUrl, container);
+            currentPeriod.innerText = `${selectedText}`;
         } else {
             console.error("No se pudo cargar la información desde la API.");
         }

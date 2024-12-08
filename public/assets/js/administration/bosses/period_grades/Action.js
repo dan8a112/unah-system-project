@@ -4,13 +4,12 @@ import { Selects } from "../../../modules/Selects.js";
 
 class Action{
 
-    static renderSections(data, amountSections){
+    static renderSections(data, amountSections, paginationUrl, container){
 
-        const headers = ["#", "Clase", "Hora", "Denominación", "Cupos", "Acciones"];
+        const headers = ["id", "Seccion", "Clase", "Cupos", "Hora", "Acciones"];
 
-        const dataFormated = data.map(row=>this.formatRows(row));
+        const dataFormated = this.formatRows(data);
 
-        const container = document.querySelector("#section-table");
 
         const section = createTable(
             "", 
@@ -19,8 +18,8 @@ class Action{
             "table-body",
             false,
             10, 
-            amountSections, 
-            "", 
+            amountSections,
+            paginationUrl, 
             false, 
             true,
             this.formatRows
@@ -35,15 +34,15 @@ class Action{
      * 
      * @param {Object} rows 
      */
-    static formatRows(row){
+    static formatRows(rows){
+        return rows.map((row)=>{
+            const formatedData = Object.values(row);
+            const button = `<a id=${row.id} class="btn btn-outline-success btn-sm actionsBtn">Ver</a>`
+            formatedData.push(button);
 
-        const formatedData = Object.values(row);
+            return formatedData;
+        })
 
-        const button = `<button data-id-section=${row.id} class="btn btn-outline-success btn-sm actionsBtn">Ver</button>`
-
-        formatedData.push(button);
-
-        return formatedData;
     }
 
     static renderSelects(data, select) {

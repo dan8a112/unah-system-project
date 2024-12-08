@@ -1,0 +1,28 @@
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+.breadcrumb-item {
+    text-decoration: none;
+    color: #A1A1A1;
+    margin-right: 5px;
+    transition: color 0.3s;
+}
+
+.breadcrumb-item:hover {
+    color: #ad7e3d;
+}
+
+.breadcrumb-separator {
+    margin-right: 5px;
+    color: #6c757d;
+}
+
+.breadcrumb-item.active {
+    color: #495057;
+    font-weight: bold;
+    pointer-events: none;
+}
