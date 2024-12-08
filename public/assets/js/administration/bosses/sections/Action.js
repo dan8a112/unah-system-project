@@ -4,6 +4,10 @@ import { Selects } from "../../../modules/Selects.js";
 
 class Action{
 
+    static fetchProfessorSections(){
+        
+    }
+
     static renderAllPage(){
 
         const data = {

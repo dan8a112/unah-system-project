@@ -15,9 +15,10 @@
 
 .class-card{
     background-color: white;
-    border: #878787 1px solid;
+    border: #d9d9d9 2px solid;
     border-radius: 20px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .class-card-header{
