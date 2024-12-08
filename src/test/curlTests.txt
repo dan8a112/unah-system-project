@@ -115,4 +115,8 @@ curl "http://localhost:3000/api/get/pagination/sections/?idProcess=13&offset=0&i
 ----------obtener calificaciones de los estudiantes de una seccion--------------
 curl "http://localhost:3000/api/get/pagination/studentGrades/?id=7&offset=0" | jq
 
+----------obtener estudiantes en lista de espera de una seccion--------------
+curl "http://localhost:3000/api/get/pagination/waitingStudents/?id=1&offset=0" | jq
+
+
 
