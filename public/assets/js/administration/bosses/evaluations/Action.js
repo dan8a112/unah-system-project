@@ -9,7 +9,9 @@ class Action{
      */
         static renderSections(rows){
 
-            const data = [
+        const data = {
+            amountProfessors: 12,
+            professors:[
                 {
                     id: 1,
                     name: "Juan Alberto Martinez",
@@ -23,10 +25,11 @@ class Action{
                     amountSections: 2
                 }
             ]
+        }
     
             const headers = ["#", "Docente", "Correo", "Secciones", "Acciones"];
     
-            const dataFormated = data.map(row=>this.formatRows(row,"section-id", "Ver Secciones"));
+            const dataFormated = data.professors.map(row=>this.formatRows(row,"section-id", "Ver Secciones"));
     
             const container = document.querySelector("#section-table");
     
@@ -136,8 +139,6 @@ class Action{
 
             if (card) {
 
-                Modal.closeModal();
-
                 const sectionId = card.dataset.sectionId;
                 //Con el ID se llama a la API
 
@@ -183,7 +184,7 @@ class Action{
                 </div>
                 `
 
-                Modal.openModal(evaluationModal, content, "Selecciona la Evaluacion");
+                Modal.updateModal(evaluationModal, content, "Selecciona la Evaluacion");
                 
                 const dataFormated = data.evaluations.map(row=>this.formatRows(row,"evaluation-id", "Detalle"));
 

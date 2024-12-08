@@ -76,6 +76,19 @@ curl -d "idApplication=47" -d "idReviewer=3" -d "approved=0" -d "name=Samantha" 
 ----------------------Curl para hacer cambiar la contraseña de los docentes----------
 curl -d "newPassword=asdf" -d "currentPassword=1234" http://localhost:3000/api/update/professor/password?id=3 | jq
 
+-----------Curl para obtener las secciones para el historico de las planificaciones academicas-----------------
+curl http://localhost:3000/api/get/departmentBoss/ratingsInfo/?id=4 | jq
+
+----------- Curl para ver las calificaciones de los estudiantes de una seccion--------------------------------
+curl http://localhost:3000/api/get/section/sectionGrades/?id=1 | jq
+
+----------- Curl para administrar una seccion (jefe de departamento)--------------------------------
+curl http://localhost:3000/api/get/departmentBoss/sectionsAdministration/?id=4 | jq
+
+----------- Curl para obtener el detalle de una seccion (jefe de departamento)--------------------------------
+curl http://localhost:3000/api/get/departmentBoss/sectionWaitingStudents/?id=4 | jq
+
+
 ---------------------------------------PAGINACION------------------------------------------------------
 
 ----------------------obtener todas las incripciones---------------
@@ -95,3 +108,11 @@ curl "http://localhost:3000/api/get/pagination/professors/?offset=0" | jq
 
 ------------------------obtener aplicaciones revisadas por revisor----------------------
 curl "http://localhost:3000/api/get/pagination/reviewedInscriptions/?idReviewer=1&offset=0" | jq
+
+----------obtener secciones de los periodos academicos---------------
+curl "http://localhost:3000/api/get/pagination/sections/?idProcess=13&offset=0&idBoss=4" | jq
+
+----------obtener calificaciones de los estudiantes de una seccion--------------
+curl "http://localhost:3000/api/get/pagination/studentGrades/?id=7&offset=0" | jq
+
+

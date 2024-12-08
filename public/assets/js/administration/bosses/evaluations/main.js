@@ -1,6 +1,6 @@
 import { Action } from "./Action.js";
 
-Action.renderSections("Hola");
+Action.renderSections();
 
 //Accion al presionar un boton de la tabla (Acciones)
 const tableBody = document.querySelector("tbody#table-body");

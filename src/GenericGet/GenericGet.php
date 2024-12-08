@@ -173,11 +173,6 @@
             return $process;  
         }
 
-        // Método para cerrar la conexión
-        public function closeConnection() {
-            $this->mysqli->close();
-        }
-
         /**
          * author: afcastillof@unah.hn
          * version: 0.1.1
@@ -215,8 +210,6 @@
             
             return null;
         }
-        
-        
 
         /**
          * author: afcastillof@unah.hn
@@ -313,6 +306,20 @@
             $allProcess = array_values($organizedData);
             
             return $allProcess;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 08/12/24
+         * 
+         * Funcion de paginacion para obtener los estudiantes que estan en seccion
+         */
+
+
+        // Método para cerrar la conexión
+        public function closeConnection() {
+            $this->mysqli->close();
         }
         
     }
