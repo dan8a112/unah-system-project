@@ -4,6 +4,7 @@ import { HttpRequest } from "../../../modules/HttpRequest.js";
 
 const selectPeriod = document.getElementById("period");
 const currentPeriod = document.getElementById("currentPeriod");
+const professorTypeSelectEdit = document.getElementById("professorTypeSelectEdit");
 const url = "";
 
 
@@ -54,8 +55,8 @@ async function loadData() {
     console.log(data)
   
     if (data) {
-      Action.renderSections(data.sections);
-      Action.renderSelects(data.periods, selectPeriod);
+      Action.renderSections(data.sections.sectionList, data.sections.amountSections);
+      Action.renderSelects(data.periods, professorTypeSelectEdit);
       currentPeriod.innerText = `${data.currentPeriod.name}`
     } else {
       console.error("No se pudo cargar la información desde la API.");
