@@ -1,4 +1,4 @@
-<section class="side-bar" id="sideBar" class="col-3" data-selected-index="<?php echo $selected;?>">
+<section class="side-bar col-3" id="sideBar" data-selected-index="<?php echo $selected;?>">
     <a class="menu-item" href="/assets/views/professors/home_professors.php">
         <img src="/assets/img/icons/Classes.svg" alt="" class="icon">
         <span class="menu-item-text">Tus Clases</span>

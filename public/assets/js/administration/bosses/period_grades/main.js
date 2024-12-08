@@ -4,10 +4,11 @@ import { HttpRequest } from "../../../modules/HttpRequest.js";
 
 const selectPeriod = document.getElementById("period");
 const currentPeriod = document.getElementById("currentPeriod");
-const url = "";
+const professorTypeSelectEdit = document.getElementById("professorTypeSelectEdit");
+const url = "../../../../api/get/departmentBoss/ratingsInfo/?id=4";
 
 
-const data = {
+const dataa = {
     "periods" : [
         {
             "id": 3,
@@ -49,14 +50,14 @@ const data = {
 
 async function loadData() {
     // Realizar la solicitud GET usando HttpRequest
-    //const respose = await HttpRequest.get(url);
-    //const dataa = respose.data;
+    const respose = await HttpRequest.get(url);
+    const data = respose;
     console.log(data)
   
     if (data) {
-      Action.renderSections(data.sections);
+      Action.renderSections(data.sections.sectionList, data.sections.amountSections);
       Action.renderSelects(data.periods, selectPeriod);
-      currentPeriod.innerText = `${data.currentPeriod.name}`
+      currentPeriod.innerText = `${data.currentPeriod.description}`
     } else {
       console.error("No se pudo cargar la información desde la API.");
     }

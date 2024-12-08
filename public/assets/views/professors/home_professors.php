@@ -10,11 +10,10 @@
   }else{
 
     $userId = $_SESSION['portals'][$portal]['user'];
-    $userType = $_SESSION['portals'][$portal]['user'];
 
     //Si los parametros no coinciden con los de la sesion se corrigen
-    if (!SessionValidation::validateParam("id", $userId) || !SessionValidation::validateParam("type", $userType)) {
-        header("Location: /assets/views/professors/home_professors.php?id=".$userId."&type=".$userType);
+    if (!SessionValidation::validateParam("id", $userId)) {
+        header("Location: /assets/views/professors/home_professors.php?id=".$userId);
         exit;
     }
   }
@@ -49,46 +48,24 @@
         <section class="col ms-4">
             <div class="my-4">
                 <div class="d-flex align-items-center">
-                    <h1 class="display3 me-3" id="processName">Tus clases</h1>
-                    <div class="status-card" style="background-color: #00C500;">2 PAC 2024</div>
+                    <h1 class="display3 me-3">Tus clases</h1>
+                    <div class="status-card" style="background-color: #00C500;" id="periodName"></div>
                 </div>
                 <p>Las siguiente sección  muestra las clases a las que fuiste asignado este periodo.</p>
             </div>
 
-            <section class="d-flex gap-5" style="flex-wrap: wrap;">
-                <div class="class-card">
-                    <div class="class-card-header">
-                        <span>Seccion 1100</span>
-                    </div>
-                    <div class="ps-3 pe-5 pb-3 pt-2">
-                        <span class="fs-4" style="display:block" >Ingenieria de Software</span>
-                        <span style="color: #A1A1A1">IS-802</span>
-                    </div>
-                </div>
-                <div class="class-card">
-                    <div class="class-card-header">
-                        <span>Seccion 1100</span>
-                    </div>
-                    <div class="ps-3 pe-5 pb-3 pt-2">
-                        <span class="fs-4" style="display:block" >Ingenieria de Software</span>
-                        <span style="color: #A1A1A1">IS-802</span>
-                    </div>
-                </div>
-                <div class="class-card">
-                    <div class="class-card-header">
-                        <span>Seccion 1100</span>
-                    </div>
-                    <div class="ps-3 pe-5 pb-3 pt-2">
-                        <span class="fs-4" style="display:block" >Ingenieria de Software</span>
-                        <span style="color: #A1A1A1">IS-802</span>
-                    </div>
-                </div>
+            <section id="alertSection" style="width: 90%;"></section>
+
+            <section id="processSection" class="mb-4"></section>
+
+            <section class="d-flex gap-5" style="flex-wrap: wrap;" id="sectionsContainer">
             </section>
             
         </section>
     </main>
-
+    
     <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/professors/home-professors/main.js" type="module"></script>
     <script src="../../js/behaviorTemplates/professors/sidebar.js"></script>
 </body>
 

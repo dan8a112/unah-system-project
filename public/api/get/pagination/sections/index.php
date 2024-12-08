@@ -13,7 +13,7 @@
         $json = [
             "status"=> true,
             "message"=> "Array obtenido.",
-            "data"=> $result
+            "data"=> $result['sectionList']
         ];
     }else{
         $json = [

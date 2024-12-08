@@ -2,10 +2,6 @@ import { Action } from "./Action.js";
 
 Action.renderAllPage();
 
-//Accion al presionar un boton de la tabla (Acciones)
-const tableBody = document.querySelector("tbody#table-body");
-tableBody.addEventListener("click", Action.openSectionActions);
-
 //Accion del boton de agregar seccion
 const buttonAdd = document.querySelector("#createBtn");
 buttonAdd.addEventListener("click", Action.openCreateSection.bind(Action));

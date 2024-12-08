@@ -149,6 +149,7 @@ class Action{
                     classCode: "IS-804",
                     professorName: "Juan Alberto Martinez",
                     email: "juan.martinez@unah.edu.hn",
+                    amountEvaluations: 25,
                     evaluations: [
                         {
                             id: 1,
