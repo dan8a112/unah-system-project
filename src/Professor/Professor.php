@@ -422,7 +422,7 @@
                 } else {
                     return [
                         "status"=> true,
-                        "message"=> "No estamos en periodo academico."
+                        "message"=> "Actualmente no estamos en un periodo académico. Tus clases se mostrarán cuando empiece el próximo periodo."
                     ];
                 }
             } else {

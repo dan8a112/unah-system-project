@@ -1,6 +1,25 @@
+<?php
+  include_once("../../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  $portal = "bosses";
+
+  if (!SessionValidation::isValid($_SESSION, $portal)){
+    header("Location: /assets/views/logins/login_professors.php");
+  }else{
+
+    $userId = $_SESSION['portals'][$portal]['user'];
+
+    //Si los parametros no coinciden con los de la sesion se corrigen
+    if (!SessionValidation::validateParam("id", $userId)) {
+        header("Location: /assets/views/administration/bosses/administrate_sections.php?id=".$userId);
+        exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,14 +53,14 @@
                 <div class="my-4 col-8">
                     <div class="d-flex align-items-center ">
                         <h1 class="display3 me-3" id="processName">Secciones</h1>
-                        <div class="status-card" style="background-color: #00C500;" id="periodName">2 PAC 2024</div>
+                        <div class="status-card" style="background-color: #00C500;" id="periodName"></div>
                     </div>
                     <span>Administra las secciones de este periodo para tu departamento</span>
                 </div>
 
-                <div class="card-container col d-flex" style="width:fit-content; height: fit-content;">
+                <div class="card-container d-flex align-items-center" style="width:fit-content; height: fit-content;">
                     <img src="/assets/img/icons/department.svg" alt="" class="me-3">
-                    <span id="departmentName" class="fs-6" style="font-weight: 500;"> Departamento de Ingenieria en sistemas</span>
+                    <span id="departmentName" class="fs-6" style="font-weight: 500;"></span>
                 </div>
             </div>
 
