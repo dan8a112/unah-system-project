@@ -1,70 +1,58 @@
 import { createTable } from "../../../modules/table.js";
 import { Modal } from "../../../modules/Modal.js";
 import { Selects } from "../../../modules/Selects.js";
+import {HttpRequest} from "../../../modules/HttpRequest.js" 
 
 class Action{
 
-    static fetchProfessorSections(){
-        
-    }
+    static renderAllPage = async()=>{
 
-    static renderAllPage(){
+        const userId = new URLSearchParams(window.location.search).get("id");
 
-        const data = {
-            period: "2 PAC 2024",
-            department: "Departamento de Ingenieria en sistemas",
-            amountSections: 34,
-            sections: [
-            {
-                id: 1,
-                class: "Ingenieria de Software",
-                hour: "11:00",
-                denomination: "1100",
-                places: 12
-            },
-            {
-                id: 2,
-                class: "Algoritmos y Estructuras de datos",
-                hour: "13:00",
-                denomination: "1301",
-                places: 24
-            }]
-        }
+        const response = await HttpRequest.get(`/api/get/departmentBoss/sectionsAdministration/?id=${userId}`);
+
+        const data = response.data;
 
         const periodSection = document.querySelector("#periodName");
-        periodSection.innerText = data.period;
+        periodSection.innerText = data.period.description;
 
         const departmentSection = document.querySelector("#departmentName");
         departmentSection.innerText = data.department;
 
-        this.renderSections(data.sections)
+        this.renderSections(data.sections, data.period.id, userId, data.amountSections);
+
+        //Accion al presionar un boton de la tabla (Acciones)
+        const tableBody = document.querySelector("tbody#table-body");
+        tableBody.addEventListener("click", this.openSectionActions);
     }
 
     /**
      * Se encarga de renderizar la tabla con las secciones en la pagina.
-     * @param {*} data 
+     * @param {Array<Object>} rows 
      */
-    static renderSections(data){
+    static renderSections(rows, periodId, userId, amountSections){
 
 
-        const headers = ["#", "Clase", "Hora", "Denominación", "Cupos", "Acciones"];
+        const headers = ["#", "Codigo","Clase", "Cupos","Hora", "Acciones"];
 
-        const dataFormated = data.map(row=>this.formatRows(row));
+        const dataFormated = this.formatRows(rows)
 
         const container = document.querySelector("#section-table");
+
+        const apiPagination =  `/api/get/pagination/sections/?idProcess=${periodId}&idBoss=${userId}&`
 
         const section = createTable(
             "", 
             headers, 
-            dataFormated, 
+            dataFormated,
             "table-body",
             false,
-            10, 
-            dataFormated.length, 
-            "", 
-            false, 
+            10,
+            amountSections,
+            apiPagination,
+            false,
             true,
-            ""
+            this.formatRows
         );
 
         section.style.marginTop = '0px';
@@ -75,21 +63,27 @@ class Action{
 
     /**
      * Funcion que se encarga de formatear cada fila de la tabla, este retorna un arreglo con los resultados.
-     * @param {Object} row 
-     * @returns {Array} retorna un array con los elementos de la fila formateados
+     * @param {Array<Object>} row 
+     * @returns {Array<Array<any>>} retorna un array con los elementos de la fila formateados
      */
-    static formatRows(row){
+    static formatRows(rows){
 
-        //Se obtienen todos los valores del objeto como array
-        const formatedData = Object.values(row);
+        const formatedTable = []
 
-        //Se crea el elemento button con el dataset del id de la seccion
-        const button = `<button data-id-section=${row.id} class="btn btn-outline-warning btn-sm actionsBtn">Acciones</button>`
+        rows.forEach(row=>{
+            //Se obtienen todos los valores del objeto como array
+            const formatedRow = Object.values(row);
 
-        //Se agrega el boton al array (fila de la tabla)
-        formatedData.push(button);
+            //Se crea el elemento button con el dataset del id de la seccion
+            const button = `<button data-id-section=${row.id} class="btn btn-outline-warning btn-sm actionsBtn">Acciones</button>`
 
-        return formatedData;
+            //Se agrega el boton al array (fila de la tabla)
+            formatedRow.push(button);
+
+            formatedTable.push(formatedRow)
+        })
+        
+        return formatedTable;
     }
 
     /**
