@@ -6,10 +6,12 @@ const currentPeriod = document.getElementById("currentPeriod");
 const professor = document.getElementById("professor");
 const denomination = document.getElementById("denomination");
 const className = document.getElementById("className");
-const url = "";
+const section = new URLSearchParams(window.location.search).get("section");
+const url = `../../../../api/get/section/sectionGrades/?id=${section}`;
 
 
-const data = {
+
+const dataa = {
     "sectionInfo" : {
         "name" : "Ingenieria de Software",
         "professor": "Jose Manuel Inestroza",
@@ -40,16 +42,17 @@ const data = {
 
 async function loadData() {
     // Realizar la solicitud GET usando HttpRequest;
-    //const respose = await HttpRequest.get(url);
-    //const dataa = respose.data;
-    console.log(data)
+    const respose = await HttpRequest.get(url);
+    const data = respose.data;
+    const breadCrumbTitle = document.querySelector(".active")
 
     if (data) {
       Action.renderStudents(data.students.studentsList, data.students.amountStudents);
-      currentPeriod.innerText = `${data.Period.name}`;
+      currentPeriod.innerText = `${data.period.name}`;
       professor.innerText = `${data.sectionInfo.professor}`;
       denomination.innerText = `${data.sectionInfo.denomination}`;
       className.innerHTML = `${data.sectionInfo.name}`;
+      breadCrumbTitle.innerText = `${data.sectionInfo.name}`;
     } else {
       console.error("No se pudo cargar la información desde la API.");
     }

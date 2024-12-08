@@ -165,6 +165,7 @@ function renderRows(rows, tbody, renderAsHtml) {
             });
         } else {
             console.error("El Formato de rows no es el correcto");
+            console.error(rows)
         }
         tbody.appendChild(row);
     });
