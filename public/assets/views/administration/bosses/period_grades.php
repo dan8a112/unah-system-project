@@ -1,3 +1,23 @@
+<?php
+  include_once("../../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
+
+  $portal = "bosses";
+
+  if (!SessionValidation::isValid($_SESSION, $portal)){
+    header("Location: /assets/views/logins/login_professors.php");
+  }else{
+
+    $userId = $_SESSION['portals'][$portal]['user'];
+
+    //Si los parametros no coinciden con los de la sesion se corrigen
+    if (!SessionValidation::validateParam("id", $userId)) {
+        header("Location: /assets/views/administration/bosses/period_grades.php?id=".$userId);
+        exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
