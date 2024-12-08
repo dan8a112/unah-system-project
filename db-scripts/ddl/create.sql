@@ -169,7 +169,7 @@ CREATE TABLE Student(
     account VARCHAR(11) PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     lastName VARCHAR(30) NOT NULL,
-    dni VARCHAR(15) NOT NULL,
+    dni VARCHAR(13) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
     degreeProgram SMALLINT NOT NULL,
@@ -1248,22 +1248,8 @@ INSERT INTO Employee (dni, names, lastNames, telephoneNumber, personalEmail, pas
     ('0801-2012-12001', 'Camila Andrea', 'Lopez Martinez', '98889900', 'camila.lopez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Santa Clara #123', '2012-04-03'),
     ('0801-2013-13001', 'Mateo Antonio', 'Perez Gutierrez', '91112233', 'mateo.perez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Altamira #456', '2013-06-18'),
     ('0801-2014-14001', 'Emma Victoria', 'Garcia Ruiz', '92223344', 'emma.garcia@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Los Almendros #789', '2014-09-25'),
-    ('0801-2015-15001', 'Lucas Gabriel', 'Ramirez Silva', '93334455', 'lucas.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Barrio Las Flores #321', '2015-12-10'),
-    ('0801-1985-16001', 'Valentina Carolina', 'Vasquez Pineda', '93445566', 'valentina.vasquez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia El Mirador #654', '1985-02-19'),
-    ('0801-1986-17001', 'Felipe Andres', 'Morales Lopez', '94556677', 'felipe.morales@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Luna #987', '1986-04-03'),
-    ('0801-1987-18001', 'Lina Gabriela', 'Alvarado Castro', '95667788', 'lina.alvarado@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Vista Bella #321', '1987-05-14'),
-    ('0801-1988-19001', 'Oscar Leonardo', 'Vega Mejia', '96778899', 'oscar.vega@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle Roble #456', '1988-07-27'),
-    ('0801-1989-20001', 'Natalia Isabel', 'Mendoza Ruiz', '97889900', 'natalia.mendoza@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia Los Pinos #123', '1989-08-16'),
-    ('0801-1990-21001', 'Raul Eduardo', 'Herrera Soto', '98990011', 'raul.herrera@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Sol #654', '1990-11-05'),
-    ('0801-1991-22001', 'Martina Isabel', 'Castro Torres', '90001122', 'martina.castro@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Bella Vista #321', '1991-02-08'),
-    ('0801-1992-23001', 'Sergio Ramon', 'Martinez Velasquez', '91112233', 'sergio.martinez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia La Paz #789', '1992-03-22'),
-    ('0801-1993-24001', 'Marcos Elias', 'Diaz Morales', '92223344', 'marcos.diaz@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Hidalgo #321', '1993-04-30'),
-    ('0801-1994-25001', 'Patricia Valeria', 'Sanchez Castro', '93334455', 'patricia.sanchez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle San Jose #123', '1994-07-12'),
-    ('0801-1995-26001', 'Carlos Enrique', 'Ramirez Cruz', '94445566', 'carlos.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Robles #456', '1995-08-20'),
-    ('0801-1996-27001', 'Diana Carolina', 'Morales Rivera', '95556677', 'diana.morales@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia La Esperanza #789', '1996-01-03'),
-    ('0801-1997-28001', 'Manuel Alfonso', 'Gonzalez Rios', '96667788', 'manuel.gonzalez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Independencia #123', '1997-02-17'),
-    ('0801-1998-29001', 'Elena Patricia', 'Vega Gutierrez', '97778899', 'elena.vega@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle El Sol #654', '1998-05-14');
-
+    ('0801-2015-15001', 'Lucas Gabriel', 'Ramirez Silva', '93334455', 'lucas.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Barrio Las Flores #321', '2015-12-10')
+;
 
 INSERT INTO Administrative (id, administrativeType) VALUES
     (1,1),
@@ -1333,44 +1319,21 @@ INSERT INTO AcademicProcess(description) VALUES
     ('Ingreso de notas y evaluaciones de docentes')
 ;
 
-INSERT INTO AcademicEvent (process, startDate, finalDate, active, parentId) VALUES
-(8, '2015-01-15 00:00:00', '2015-05-31 00:00:00', 0, NULL),
-(9, '2015-06-12 00:00:00', '2015-09-20 00:00:00', 0, NULL),
-(10, '2015-09-25 00:00:00', '2015-12-20 00:00:00', 0, NULL),
-(8, '2016-01-15 00:00:00', '2016-05-31 00:00:00', 0, NULL),
-(9, '2016-06-12 00:00:00', '2016-09-20 00:00:00', 0, NULL),
-(10, '2016-09-25 00:00:00', '2016-12-20 00:00:00', 0, NULL),
-(8, '2017-01-15 00:00:00', '2017-05-31 00:00:00', 0, NULL),
-(9, '2017-06-12 00:00:00', '2017-09-20 00:00:00', 0, NULL),
-(10, '2017-09-25 00:00:00', '2017-12-20 00:00:00', 0, NULL),
-(8, '2018-01-15 00:00:00', '2018-05-31 00:00:00', 0, NULL),
-(9, '2018-06-12 00:00:00', '2018-09-20 00:00:00', 0, NULL),
-(10, '2018-09-25 00:00:00', '2018-12-20 00:00:00', 0, NULL),
-(8, '2019-01-15 00:00:00', '2019-05-31 00:00:00', 0, NULL),
-(9, '2019-06-12 00:00:00', '2019-09-20 00:00:00', 0, NULL),
-(10, '2019-09-25 00:00:00', '2019-12-20 00:00:00', 0, NULL),
-(8, '2020-01-15 00:00:00', '2020-05-31 00:00:00', 0, NULL),
-(9, '2020-06-12 00:00:00', '2020-09-20 00:00:00', 0, NULL),
-(10, '2020-09-25 00:00:00', '2020-12-20 00:00:00', 0, NULL),
-(8, '2021-01-15 00:00:00', '2021-05-31 00:00:00', 0, NULL),
-(9, '2021-06-12 00:00:00', '2021-09-20 00:00:00', 0, NULL),
-(10, '2021-09-25 00:00:00', '2021-12-20 00:00:00', 0, NULL),
-(8, '2022-01-15 00:00:00', '2022-05-31 00:00:00', 0, NULL),
-(9, '2022-06-12 00:00:00', '2022-09-20 00:00:00', 0, NULL),
-(10, '2022-09-25 00:00:00', '2022-12-20 00:00:00', 0, NULL),
-(8, '2023-01-15 00:00:00', '2023-05-31 00:00:00', 0, NULL),
-(9, '2023-06-12 00:00:00', '2023-09-20 00:00:00', 0, NULL),
-(10, '2023-09-25 00:00:00', '2023-12-20 00:00:00', 0, NULL),
-(1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', 1, NULL),
-(3, '2024-11-23 00:00:00', '2024-11-25 00:00:00', 1, 28),
-(4, '2024-11-27 00:00:00', '2024-12-08 00:00:00', 0, 28),
-(5, '2024-12-08 00:00:00', '2024-12-09 00:00:00', 0, 28),
-(6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', 0, 28),
-(7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', 0, 28),
-(8, '2024-01-15 00:00:00', '2024-05-31 00:00:00', 0, NULL),
-(9, '2024-06-12 00:00:00', '2024-09-20 00:00:00', 0, NULL),
-(10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', 1, NULL);
-
+INSERT INTO AcademicEvent(process, startDate, finalDate, active, parentId) VALUES
+    (1,'2022-01-13 00:00:00', '2022-01-12 00:00:00', false, NULL),
+    (1,'2022-05-20 00:00:00', '2022-06-12 00:00:00', false, NULL),
+    (1,'2023-01-20 00:00:00', '2023-02-12 00:00:00', false, NULL),
+    (1,'2023-08-20 00:00:00', '2023-09-12 00:00:00', false, NULL),
+    (1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', true, NULL),
+    (3, '2024-11-23 00:00:00', '2024-11-25 00:00:00', true, 5),
+    (4, '2024-11-27 00:00:00', '2024-12-08 00:00:00', false, 5),
+    (5, '2024-12-08 00:00:00', '2024-12-09 00:00:00', false, 5),
+    (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', false, 5),
+    (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', false, 5),
+    (8, '2024-01-15 00:00:00', '2024-05-31 00:00:00', false, NULL),
+    (9, '2024-06-12 00:00:00', '2024-09-20 00:00:00', false, NULL),
+    (10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', true, NULL)
+;
 
 INSERT INTO Configuration (data) VALUES ('{"maxAttemtps":2}');
 
@@ -1562,55 +1525,33 @@ INSERT INTO Professor(id, professorType, department, active, changePassword) VAL
     (4, 4, 1, true, false),
     (5, 1, 1, true, false),
     (6, 2, 1, true, false),
-    (7, 3, 88, true, false),
-    (8, 4, 88, true, false),
-    (9, 3, 87, true, false),
-    (10, 4, 86, true, false),
-    (11, 1, 63, true, false),
-    (12, 2, 1, true, false),
-    (13, 3, 1, true, false),
-    (14, 4, 84, true, false),
-    (15, 1, 57, true, false),
-    (16, 2, 67, true, false),
-    (17, 3, 88, true, false),
-    (18, 4, 58, true, false),
-    (19, 1, 1, true, false),
-    (20, 4, 67, true, false),
-    (21, 1, 81, true, false),
-    (22, 2, 68, true, false),
-    (23, 3, 66, true, false),
-    (24, 4, 65, true, false),
-    (25, 1, 1, true, false),
-    (26, 4, 1, true, false),
-    (27, 1, 1, true, false),
-    (28, 4, 1, true, false),
-    (29, 3, 1, true, false),
-    (30, 4, 1, true, false),
-    (31, 4, 1, true, false);
+    (7, 3, 89, true, false),
+    (8, 4, 89, true, false),
+    (11, 1, 89, false, false)
+;
 
+INSERT INTO Subject(id, description, department, uv) VALUES('MM110', 'MATEMATICA I', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM111', 'GEOMETRIA Y TRIGONOMETRIA', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM211', 'VECTORES Y MATRICES', 89, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM201', 'CALCULO I', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM420', 'MATEMATICA DISCRETA', 89, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM202', 'CALCULO II', 89, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM411', 'ECUACIONES DIFERENCIALES', 89, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM314', 'PROGRAMACION I', 88, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('FS100', 'FISICA GENERAL I', 85, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('FS200', 'FISICA GENERAL II', 85, 5);
+INSERT INTO Subject(id, description, department, uv) VALUES('RR100', 'JUEGOS ORGANIZADOS', 66, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN101', 'INGLES I', 68, 4);
 
-INSERT INTO Subject(id, description, department, uv) VALUES('MM110', 'MATEMATICA I', 88, 5);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM111', 'GEOMETRIA Y TRIGONOMETRIA', 88, 5);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM211', 'VECTORES Y MATRICES', 88, 3);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM201', 'CALCULO I', 88, 5);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM420', 'MATEMATICA DISCRETA', 88, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM202', 'CALCULO II', 88, 5);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM411', 'ECUACIONES DIFERENCIALES', 88, 3);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM314', 'PROGRAMACION I', 87, 3);
-INSERT INTO Subject(id, description, department, uv) VALUES('FS100', 'FISICA GENERAL I', 84, 5);
-INSERT INTO Subject(id, description, department, uv) VALUES('FS200', 'FISICA GENERAL II', 84, 5);
-INSERT INTO Subject(id, description, department, uv) VALUES('RR100', 'JUEGOS ORGANIZADOS', 65, 3);
-INSERT INTO Subject(id, description, department, uv) VALUES('IN101', 'INGLES I', 67, 4);
-
-INSERT INTO Subject(id, description, department, uv) VALUES('IN102', 'INGLES II', 67, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('IN103', 'INGLES III', 67, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('EG011', 'ESPAÑOL GENERAL', 68, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('FF101', 'FILOSOFIA', 66, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('MM401', 'ESTADISTICA I', 86, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('DQ101', 'DIBUJO I', 63, 2);
-INSERT INTO Subject(id, description, department, uv) VALUES('DQ102', 'DIBUJO II', 63, 2);
-INSERT INTO Subject(id, description, department, uv) VALUES('HH101', 'HISTORIA DE HONDURAS', 57, 4);
-INSERT INTO Subject(id, description, department, uv) VALUES('EO025', 'REDACCION GENERAL', 68, 3);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN102', 'INGLES II', 68, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('IN103', 'INGLES III', 68, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('EG011', 'ESPAÑOL GENERAL', 69, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('FF101', 'FILOSOFIA', 67, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('MM401', 'ESTADISTICA I', 87, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('DQ101', 'DIBUJO I', 64, 2);
+INSERT INTO Subject(id, description, department, uv) VALUES('DQ102', 'DIBUJO II', 64, 2);
+INSERT INTO Subject(id, description, department, uv) VALUES('HH101', 'HISTORIA DE HONDURAS', 58, 4);
+INSERT INTO Subject(id, description, department, uv) VALUES('EO025', 'REDACCION GENERAL', 69, 3);
 INSERT INTO Subject(id, description, department, uv) VALUES('IS110', 'INTRO. A LA INGENIERIA EN SISTEMAS', 1, 3);
 INSERT INTO Subject(id, description, department, uv) VALUES('IS210', 'PROGRAMACION II', 1, 4);
 INSERT INTO Subject(id, description, department, uv) VALUES('IS311', 'CIRCUITOS ELECTRICOS PARA IS', 1, 3);
@@ -2328,4 +2269,3 @@ VALUES
 
 
 
- 
