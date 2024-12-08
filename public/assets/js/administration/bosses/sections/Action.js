@@ -23,12 +23,15 @@ class Action{
 
         //Accion al presionar un boton de la tabla (Acciones)
         const tableBody = document.querySelector("tbody#table-body");
-        tableBody.addEventListener("click", this.openSectionActions);
+        tableBody.addEventListener("click", (e)=>{this.openSectionActions(e)});
     }
 
     /**
      * Se encarga de renderizar la tabla con las secciones en la pagina.
-     * @param {Array<Object>} rows 
+     * @param {Array<Object>} rows
+     * @param {int} periodId 
+     * @param {int} userId 
+     * @param {int} amountSections 
      */
     static renderSections(rows, periodId, userId, amountSections){
 
@@ -93,7 +96,11 @@ class Action{
     static openSectionActions(event){
 
         const data = {
-            code: "1100",
+            code: "1500",
+            days: "LuMaMiJuVi",
+            className: "Intro. a la ingenieria en sistemas",
+            uv: 3,
+            startHour: '07:00',
             professor: {
                 id: 2,
                 name: "Jose Manuel Inestroza"
@@ -115,6 +122,24 @@ class Action{
                     name: "Daniel Alexander Ochoa",
                     date: "12/12/2024"
                 }
+            ],
+            amountEnrolledStudents: 24,
+            enrolledStudentList: [
+                {
+                    account: "20191003421",
+                    name: "Angel Fernando Castillo",
+                    date: "12/12/2024"
+                },
+                {
+                    account: "20201003421",
+                    name: "Daniel Alexander Ochoa",
+                    date: "12/12/2024"
+                },
+                {
+                    account: "20201003421",
+                    name: "Marcos Alexander Ochoa",
+                    date: "12/12/2024"
+                }
             ]
         }
 
@@ -125,10 +150,78 @@ class Action{
         if (button.matches('.actionsBtn')) {
 
             const actionsModal = document.querySelector("#actionsModal");
+
+            document.querySelector("#sectionCode").innerText = data.code;
+            document.querySelector("#sectionUV").innerText = data.uv;
+            document.querySelector("#sectionDays").innerText = data.days;
+            document.querySelector("#sectionHour").innerText = data.startHour;
+
+            const inputValue = document.querySelector("input#increaseInput");
+            inputValue.value = data.places;
+
+            //Se crea tabla de estudiantes matriculados
+            const enrolledSectionTbl = document.querySelector("#enrolledStudentsTable");
+            enrolledSectionTbl.innerHTML = ""
+
+            const enrolledPaginationUrl =  ``
+
+            const enrolledHeadersTbl = ['Cuenta', 'Nombre', 'Fecha de matricula']
+
+            this.generatePaginationTable(
+                enrolledSectionTbl, 
+                enrolledHeadersTbl,
+                data.enrolledStudentList,
+                'enrolled-body',
+                data.amountEnrolledStudents,
+                enrolledPaginationUrl,
+                "",
+                false);
+
+            //Se genera la tabla de estudiantes en espera
+            const waitingSectionTbl = document.querySelector("#studentsWaitingTable");
+            waitingSectionTbl.innerHTML = ""
+
+            const  waitingPaginationUrl =  ``
+
+            const  waitingHeadersTbl = ['Cuenta', 'Nombre', 'Fecha de matricula']
+
+            this.generatePaginationTable(
+                waitingSectionTbl, 
+                waitingHeadersTbl,
+                data.waitingStudentList,
+                'waiting-body',
+                data.amountWaitingStudents,
+                waitingPaginationUrl,
+                "",
+                false);
+
+            //formato para nombre de la clase
+            const className = `Clase: ${data.className}`
+
             //Se modifican los valores de la modal del resultado de la peticion
-            Modal.openModal(actionsModal,"", "Ingenieria de software")
+            Modal.openModal(actionsModal,"", className)
         }
 
+    }
+
+    static generatePaginationTable(section, headers, rows, id, amountRows, url, title, border){
+
+        const table = createTable(
+            title, 
+            headers, 
+            rows,
+            id,
+            border,
+            10,
+            amountRows,
+            url,
+            false,
+            true,
+            null
+        );
+
+        section.style.marginTop = '0px';
+        section.appendChild(table);
     }
 
     /**
