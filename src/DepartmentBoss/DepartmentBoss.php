@@ -15,7 +15,7 @@
          */
         public function getSections(int $idProcess, int $offset, int $idBoss){
             $query = 'SELECT a.id as id, LPAD(CAST(a.section AS CHAR), 4, "0") as denomination, b.description as class, a.maximumCapacity as places, 
-                    a.startHour as hour
+                    CONCAT(a.startHour, ":00") as hour
                 FROM Section a
                 INNER JOIN Subject b ON (a.subject = b.id) 
                 INNER JOIN Professor c ON (c.department = b.department)
