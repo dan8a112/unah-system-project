@@ -195,10 +195,9 @@
                     };
 
                     //Obtener aulas
-                    $query2 = 'SELECT DISTINCT a.id as classroomId, CONCAT(a.description, " ", d.description) as name
+                    $query2 = 'SELECT DISTINCT a.id as classroomId, a.description as name, a.building as idBuilding
                             FROM Classroom a
                             LEFT JOIN Section b ON (b.classroom = a.id)
-                            LEFT JOIN Building d ON (a.building = d.id)
                             WHERE a.id NOT IN (
                                 SELECT b.classroom
                                 FROM Section b
@@ -214,14 +213,32 @@
                             $classrooms [] = $row;
                         };
 
-                        return[
-                            "status"=> true,
-                            "message"=> 'Petición realizada correctamente.',
-                            "data"=>[
-                                'professors'=> $professors,
-                                'classrooms'=> $classrooms
-                            ]
-                        ];
+                        //obtener edificios
+                        $query3 = "SELECT id, description  as building FROM Building;";
+                        $result3 = $this->mysqli->execute_query($query3);
+
+                        if($result3){
+                            $buildings = [];
+                            while($row = $result3->fetch_assoc()){
+                                $buildings[] = $row;
+                            }
+
+                            return[
+                                "status"=> true,
+                                "message"=> 'Petición realizada correctamente.',
+                                "data"=>[
+                                    'professors'=> $professors,
+                                    'buildings'=> $buildings,
+                                    'classrooms'=> $classrooms
+                                ]
+                            ];
+
+                        }else{
+                            return [
+                                "status"=> false,
+                                "message"=> "Error al consultar los edificios."
+                            ];
+                        }
 
                     }else{
                         return [
