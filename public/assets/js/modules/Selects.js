@@ -17,14 +17,15 @@ class Selects {
      * @param {String} valueKey la llave correspondiente al value 
      * @param {String} labelKey la llave correspondiente al label
      * @param {Boolean} firstTime valor que indica si es primera vez que se renderiza o es una actualizacion.
+     * @param {String} defaultSelect El texto de la opcion por defecto que se muestra en el select
      * e.g. [{productId: 1, name: "box"}] el valueKey es "productId" y el labelKey es "name"
      */
-    static renderSelect(selectDom,data,valueKey,labelKey, first){
+    static renderSelect(selectDom,data,valueKey,labelKey, first, defaultSelect){
 
         //Si no es primera renderizacion (actualizacion de select)
         if (!first) {
             //Se limpia el select con el option por defecto
-            selectDom.innerHTML = "<option selected>Seleccione una opcion</option>";
+            selectDom.innerHTML = `<option selected>${defaultSelect!=null ? defaultSelect : "Seleccione una opcion"}</option>`;
         }
 
         data.forEach(element => {
