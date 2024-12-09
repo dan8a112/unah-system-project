@@ -13,9 +13,9 @@
          * version: 0.1.0
          * date: 6/12/24
          * 
-         * Funcion para obtener los primeros 10 estudiantes para ver sus calificaciones
+         * Funcion para obtener los primeros 10 estudiantes de una seccion
          */
-        public function getStudentsGrades(int $id, int $offset){
+        public function getStudentsSection(int $id, int $offset){
             $query = 'SELECT b.account, CONCAT(b.name, " ", b.lastName) as name, a.grade as calification, c.observation
                         FROM StudentSection a
                         INNER JOIN Student b ON (a.studentAccount = b.account)
@@ -106,7 +106,7 @@
             
             if($result){
                 $info = $result->fetch_assoc();
-                $students = $this->getStudentsGrades($id, 0);
+                $students = $this->getStudentsSection($id, 0);
                 return [
                     "status"=> true,
                     "message"=> "Petición realizada con exito",
@@ -158,7 +158,8 @@
             if($result){
                 $info = $result->fetch_assoc();
                 //obtener estudiantes en lista de espera
-                $students = $this->getWaitingStudents($id, 0);
+                $waiting = $this->getWaitingStudents($id, 0);
+                $students = $this ->getStudentsSection($id, 0);
                 return [
                     "status"=> true,
                     "message"=> "Petición realizada con exito",
@@ -173,8 +174,10 @@
                             "id"=>$info['classroomId'],
                             "name"=> $info['classroom']
                         ],
-                        "amountWaitingStudents"=>$students['amountWaitingStudents'],
-                        "waitingStudentList"=> $students['waitingStudentList'],
+                        "amountWaitingStudents"=>$waiting['amountWaitingStudents'],
+                        "waitingStudentList"=> $waiting['waitingStudentList'],
+                        'amountStudents'=> $students['amountStudents'],
+                        "studentsList"=> $students['studentsList'],
                         "days"=> $info['days'],
                         "className"=> $info['subjectName'],
                         "uv"=> $info['uv'],

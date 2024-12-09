@@ -9,11 +9,12 @@
     $dao = new SectionDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
     if(isset($_GET["id"]) && isset($_GET["offset"])){
-        $result = $dao->getStudentsGrades((int) $_GET["id"], (int) $_GET["offset"]);
+        $result = $dao->getStudentsSection((int) $_GET["id"], (int) $_GET["offset"]);
         $json = [
             "status"=> true,
             "message"=> "Array obtenido.",
-            "data"=> $result
+            "data"=> $result['studentsList'],
+            "amountStudents"=> $result['amountStudents']
         ];
     }else{
         $json = [
