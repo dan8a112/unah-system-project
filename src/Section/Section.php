@@ -192,7 +192,58 @@
                 ];
             }
         }
-        
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 9/12/24
+         * 
+         * Funcion para obtener la informacion de una sección
+         */
+
+        public function setSection($class, $professor, $days, $startHour, $finishHour, $classroom, $places){
+            //obtener el horario para formatearlo => '%Lu%Ju%'
+            $query= 'SELECT description FROM Days WHERE id=?;';
+            $result= $this->mysqli->execute_query($query, [$days]);
+
+            if($result){
+                $stringDays = $result->fetch_assoc();
+                $output = preg_replace('/([A-Z][a-z]*)/', '%$1', $stringDays['description']) . '%';
+                
+                //Llamar al procedimiento almacenado de las query
+                $query1 = 'CALL insertSection(?, ?, ?, ?, ?, ?, ?, ?);';
+                $result1 = $this->mysqli->execute_query($query1, [$class, $professor, $days, $startHour, $finishHour, $classroom, $places, $output]);
+                if($result1){
+                    $row = $result1->fetch_assoc();
+
+                    $resultJson = $row['resultJson'];
+
+                    $resultArray = json_decode($resultJson, true);
+
+                    if ($resultArray !== null) {
+                        return $resultArray;
+                    } else {
+                        return [
+                            "status" => false,
+                            "message" => "Error al decodificar el JSON."
+                        ];
+                    }
+                    
+
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Error al chacer el insert de la sección."
+                    ];
+                }
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar el horario seleccionado."
+                ];
+            }
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

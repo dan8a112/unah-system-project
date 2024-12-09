@@ -239,7 +239,7 @@ CREATE TABLE Section(
     CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id),
     CONSTRAINT fk_section_academicEvent FOREIGN KEY(academicEvent) REFERENCES AcademicEvent(id),
     CONSTRAINT fk_section_days FOREIGN KEY(days) REFERENCES Days(id)
-    );
+);
 
 CREATE TABLE Observation(
     id TINYINT PRIMARY KEY,
@@ -857,6 +857,105 @@ BEGIN
         SELECT * FROM TempTableApplication
         LIMIT goal
         OFFSET lim;
+    END IF;
+END//
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 9/12/24
+    Procedimiento para Insertar una seccion
+**/
+CREATE PROCEDURE insertSection(
+    IN p_subject VARCHAR(8), 
+    IN p_professor INT,
+    IN p_days INT, 
+    IN p_startHour INT, 
+    IN p_finishHour INT, 
+    IN p_classroom INT, 
+    IN p_maximumCapacity INT,
+    IN p_stringDays VARCHAR(25)
+)
+BEGIN
+    DECLARE v_amountDays INT;
+    DECLARE v_uv SMALLINT;
+    DECLARE denomination INT;
+    DECLARE v_academicEvent INT;
+
+    SET v_amountDays = (SELECT amountDays FROM Days WHERE id = p_days);
+    SET v_uv = (SELECT uv FROM Subject WHERE id = p_subject);
+    SET denomination= p_startHour*100;
+    SET v_academicEvent= (SELECT actualAcademicPeriod());
+
+    -- validar docente
+    IF EXISTS(SELECT 1 FROM Professor a
+            LEFT JOIN Section b ON (b.professor = a.id)
+            LEFT JOIN Employee d ON (a.id = d.id)
+            LEFT JOIN Days e ON (b.days = e.id)
+            WHERE e.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.active = true AND a.id=p_professor LIMIT 1) THEN
+
+        -- Enviar mensaje de que el docente ya tiene clase a esa hora
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El docente ya tiene clases en el horario escogido.'
+        ) AS resultJson;
+    -- Validar aula
+    ELSEIF EXISTS(SELECT 1 FROM Classroom a
+            LEFT JOIN Section b ON (b.classroom = a.id)
+            LEFT JOIN Days d ON (b.days = d.id)
+            WHERE d.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.id=p_days LIMIT 1) THEN
+        
+        -- Enviar mensaje de que el aula ya esta ocupada
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El aula ya esta ocupada en el horario elegido.'
+        ) AS resultJson;
+    -- Validar congruencia de uv con los dias y la hora
+    ELSEIF v_uv IS NULL OR v_amountDays IS NULL OR p_startHour IS NULL OR p_finishHour IS NULL THEN
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Valores nulos detectados en los datos proporcionados.','uv', uv, 'amountdays', amountDays
+        ) AS resultJson;
+    ELSEIF (v_uv != v_amountDays * (p_finishHour - p_startHour)) THEN
+
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El horario no concuerda con las unidades valorativas de la clase.'
+        ) AS resultJson;
+    ELSE
+        -- Verificar que la seccion (1000) no exista
+        WHILE EXISTS (SELECT section FROM Section WHERE subject = p_subject AND days = p_days AND startHour=p_startHour AND section=denomination) DO
+            SET denomination = denomination + 1;
+        END WHILE;
+
+        -- Hacer el INSERT
+        INSERT INTO Section (
+            subject, 
+            professor, 
+            academicEvent, 
+            section, 
+            days, 
+            startHour, 
+            finishHour, 
+            classroom, 
+            maximumCapacity
+        ) VALUES (
+            p_subject, 
+            p_professor, 
+            v_academicEvent, 
+            denomination, 
+            p_days, 
+            p_startHour, 
+            p_finishHour, 
+            p_classroom, 
+            p_maximumCapacity 
+        );
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Seccion insertada correctamente.'
+        ) AS resultJson;
+
     END IF;
 END//
 

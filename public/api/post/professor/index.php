@@ -28,14 +28,8 @@
         $department = $_POST['departmentId'];
 
         $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-        $result = $dao->setProfessor($dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department);
+        $json = $dao->setProfessor($dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department);
 
-        $json = [
-            "message" => $result["message"],
-            "status" => $result["status"],
-            "data" => $result["data"]
-        ];
-        
     } else {
         $json = [
             "status" => false,
