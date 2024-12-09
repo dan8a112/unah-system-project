@@ -11,4 +11,8 @@
         <img src="/assets/img/icons/percent.svg" alt="" class="icon">
         <span class="menu-item-text">Calificaciones</span>
     </a>
+    <a class="menu-item" href="/assets/views/administration/bosses/students.php">
+        <img src="/assets/img/icons/student.svg" alt="" class="icon">
+        <span class="menu-item-text">Estudiantes</span>
+    </a>
 </section>

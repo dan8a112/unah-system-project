@@ -3,7 +3,7 @@
   
   session_start();
 
-  $portal = "bosses";
+  $portal = "coordinators";
 
   if (!SessionValidation::isValid($_SESSION, $portal)){
     header("Location: /assets/views/logins/login_coordinators.php");

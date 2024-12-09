@@ -39,6 +39,7 @@ class Action{
             const formatedData = Object.values(row);
             const button = `<a id=${row.id} class="btn btn-outline-success btn-sm actionsBtn">Ver Historial</a>`
             formatedData.push(button);
+            formatedData.shift();
             return formatedData;
         })
 
