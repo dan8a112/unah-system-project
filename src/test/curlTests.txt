@@ -88,6 +88,11 @@ curl http://localhost:3000/api/get/departmentBoss/sectionsAdministration/?id=4 |
 ----------- Curl para obtener el detalle de una seccion (jefe de departamento)--------------------------------
 curl http://localhost:3000/api/get/departmentBoss/sectionWaitingStudents/?id=4 | jq
 
+---------- Curl para obtener las clases y dias para la creacion de una seccion ----------------------------
+curl http://localhost:3000/api/get/departmentBoss/subjectsAndDays/?id=4 | jq
+
+---------- Curl para obtener los docentes y clases diponibles dependiendo el horario escogido
+curl "http://localhost:3000/api/get/departmentBoss/professorsAndClassrooms/?idDays=1&startHour=700&finishHour=800" | jq
 
 ---------------------------------------PAGINACION------------------------------------------------------
 
