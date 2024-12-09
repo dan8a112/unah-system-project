@@ -6,14 +6,14 @@
   $portal = "bosses";
 
   if (!SessionValidation::isValid($_SESSION, $portal)){
-    header("Location: /assets/views/logins/login_professors.php");
+    header("Location: /assets/views/logins/login_coordinators.php");
   }else{
 
     $userId = $_SESSION['portals'][$portal]['user'];
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/administration/bosses/period_grades.php?id=".$userId);
+        header("Location: /assets/views/administration/coordinators/academic_historic.php?id=".$userId);
         exit;
     }
   }
@@ -32,9 +32,10 @@
 </head>
 
 <body>
-    <?php
-    $title = "Portal Jefes de departamentos";
-    $description = "Jefes de departamento, administra los procesos de matricula y mas";
+<?php
+    $portal = "coordinators";
+    $title = "Portal Coordinadores de carrera";
+    $description = "Coordinadores de carrera, administra los procesos estudiantiles.";
     $path = "../../";
     include_once($path . "templates/headerAdmission.php");
     ?>
@@ -44,7 +45,7 @@
         <?php
         $path = "../../";
         $selected = 3;
-        include_once($path . "templates/professors/bossSidebar.php");
+        include_once($path . "templates/professors/coordinatorsSidebar.php");
         ?>
 
         <section class="col mx-4 big-container">

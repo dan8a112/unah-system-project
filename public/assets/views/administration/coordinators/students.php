@@ -13,7 +13,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/administration/coordinators/academic_load.php?id=" . $userId);
+        header("Location: /assets/views/administration/coordinators/students.php?id=" . $userId);
         exit;
     }
 }
@@ -32,7 +32,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
 <body>
     <?php
-    $portal = "bosses";
+    $portal = "coordinators";
     $title = "Portal Coordinadores de carrera";
     $description = "Coordinadores de carrera, administra los procesos estudiantiles.";
     $path = "../../";
@@ -43,7 +43,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
         <?php
         $path = "../../";
-        $selected = 1;
+        $selected = 3;
         include_once($path . "templates/professors/coordinatorsSidebar.php");
         ?>
 
@@ -53,45 +53,36 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
                 <div class="my-4 col-7">
                     <div class="d-flex align-items-center ">
-                        <h1 class="display3 me-3" id="processName">Carga Academica</h1>
+                        <h1 class="display3 me-3" id="processName">Estudiantes</h1>
                         <div class="status-card" style="background-color: #00C500;" id="periodName"></div>
                     </div>
-                    <span>Visualiza y obtiene una copia de la carga academica para este periodo</span>
-                </div>
-
-                <div class="card-container d-flex align-items-center" style="width:fit-content; height: fit-content;">
-                    <img src="/assets/img/icons/department.svg" alt="" class="me-3">
-                    <span id="careertName" class="fs-6" style="font-weight: 500;"></span>
+                    <span>En esta pantalla podras buscar a caulquier estudiante matriculado en la Universidad</span>
                 </div>
             </div>
-            <div class="btn" style="background-color: #304987;">
-                <img src="/assets/img/icons/downloadWhite.svg" alt="" class="me-2">
-                <span style="color: #fff">Descargar carga</span>
-            </div>
-            
 
-            <div class="mt-2 d-flex-col card-container">
-                <div class="d-flex justify-content-between">
-                    <div class="ms-2">
-                        <span class="fs-4 me-2 fw-bold">Secciones de este periodo</span>
-                    </div>
-                    <div class="d-flex me-2 align-items-sm-center gap-2">
-                        <h6>Periodo</h6>
-                        <select class="form-select" aria-label="Default select example" id="period" name="period">
-                            <option selected>Periodo Actual</option>
-                        </select>
-                    </div>
-                </div>
-                <hr>
+            <div id="content" class="mt-2 d-flex-row">
+            <div class="mt-2 d-flex align-items-center justify-content-end">
+                <span class="me-3">Busca a un estudiante por su número de cuenta:</span>
+                <form id="search-form" class="input-group w-50">
+                    <input type="text" name="acount" class="form-control" id="search-input" placeholder="Buscar por nombre o número de cuenta">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
+            </div>
+            <hr class="w-20 mt-5">
+            <span style="font-weight: bold;" >Resultados:</span>
                 <div id="section-table">
                 </div>
+            </div>
+            <div id="no-search-message" class="alert alert-info mt-3 w-100 text-center">
+                Aún no ha realizado una búsqueda.
             </div>
 
         </section>
     </main>
 
+
     <script src="../../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../../js/administration/coordinators/academic_load/main.js" type="module"></script>
+    <script src="../../../js/administration/coordinators/academic_historic/main.js" type="module"></script>
     <script src="../../../js/behaviorTemplates/professors/sidebar.js"></script>
 </body>
 

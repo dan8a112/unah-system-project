@@ -4,9 +4,9 @@ import { Selects} from "../../../modules/Selects.js";
 
 class Action{
 
-    static renderSections(data, amountSections, paginationUrl, container){
+    static renderSections(data, amountSections, container){
 
-        const headers = ["Codigo", "Clase", "Seccion", "Docente", "id Docente", "Matricula", "Cupos", "Edificio", "Aula"];
+        const headers = ["Cuenta", "Nombre", "Carrera", "Centro", "Acciones"];
 
         const dataFormated = this.formatRows(data);
 
@@ -19,8 +19,8 @@ class Action{
             false,
             10, 
             amountSections,
-            paginationUrl, 
-            false, 
+            "",
+            true, 
             true,
             this.formatRows
         );
@@ -37,6 +37,8 @@ class Action{
     static formatRows(rows){
         return rows.map((row)=>{
             const formatedData = Object.values(row);
+            const button = `<a id=${row.id} class="btn btn-outline-success btn-sm actionsBtn">Ver Historial</a>`
+            formatedData.push(button);
             return formatedData;
         })
 
