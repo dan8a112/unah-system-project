@@ -311,11 +311,53 @@
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
-         * date: 08/12/24
+         * date: 09/12/24
          * 
-         * Funcion de paginacion para obtener los estudiantes que estan en seccion
+         * Funcion de para obtener los dias
          */
+        public function getDays(){
+            $days = [];
+            $query = 'SELECT * FROM Days';
 
+            $result = $this->mysqli->execute_query($query);
+
+            foreach($result as $row){
+                $days[] = [
+                    "id"=>$row["id"],
+                    "name"=>$row["description"],
+                    "amountDays"=> $row['amountDays']
+                ];
+            }
+
+            return $days;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 09/12/24
+         * 
+         * Funcion de para obtener las clases de un departamento, se envia el id del jefe de departamento o cualquier profesor que pertenezca a ese departamentp
+         */
+        public function getSubjectsDepartment($id){
+            $classes = [];
+            $query = 'SELECT a.id, a.description, a.uv
+                    FROM Subject a
+                    INNER JOIN Professor b ON (a.department = b.department)
+                    WHERE b.id = ?;';
+
+            $result = $this->mysqli->execute_query($query, [$id]);
+
+            foreach($result as $row){
+                $classes[] = [
+                    "id"=>$row["id"],
+                    "class"=>$row["description"],
+                    "uv"=>$row['uv']
+                ];
+            }
+
+            return $classes;
+        }
 
         // Método para cerrar la conexión
         public function closeConnection() {
