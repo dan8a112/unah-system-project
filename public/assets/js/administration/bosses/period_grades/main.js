@@ -94,7 +94,7 @@ selectPeriod.addEventListener('change', async (event) => {
 
         if (data) {
             container.innerHTML = "";
-            Action.renderSections(data, 11, paginationUrl, container);
+            Action.renderSections(data, response.amountSections, paginationUrl, container);
             currentPeriod.innerText = `${selectedText}`;
         } else {
             console.error("No se pudo cargar la información desde la API.");
