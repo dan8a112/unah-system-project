@@ -172,6 +172,7 @@ CREATE TABLE Student(
     dni VARCHAR(15) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
+    description VARCHAR(20),
     degreeProgram SMALLINT NOT NULL,
     regionalCenter TINYINT NOT NULL,
     globalAverage TINYINT,

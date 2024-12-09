@@ -9,8 +9,7 @@
 
             public function getStudentAcademicHistory(string $studentId, int $offset = 0, int $limit = 10) {
                 // Consulta principal para obtener información del estudiante
-                $queryStudentInfo = '
-                    SELECT 
+                $queryStudentInfo = 'SELECT 
                         CONCAT(s.name, " ", s.lastName) AS studentName,
                         d.description AS studentCareer,
                         s.account AS studentAccount,
@@ -22,9 +21,7 @@
                     FROM Student s 
                     INNER JOIN DegreeProgram d ON s.degreeProgram=d.id
                     INNER JOIN RegionalCenter r ON s.regionalCenter=r.id
-                    WHERE s.account = ?;
-
-                ';
+                    WHERE s.account = ?;';
                 $resultStudentInfo = $this->mysqli->execute_query($queryStudentInfo, [$studentId]);
                 
                 if (!$resultStudentInfo) {
@@ -37,9 +34,7 @@
                 $studentInfo = $resultStudentInfo->fetch_assoc();
             
                 // Consulta para obtener el historial académico (clases) con paginación
-                $queryClasses = '
-
-                SELECT Section.id, 
+                $queryClasses = 'SELECT Section.id, 
                 Subject.id code, 
                 Subject.description class,
                 Subject.uv,
@@ -67,8 +62,7 @@
                 }
             
                 // Consulta para contar el total de clases cursadas
-                $queryTotalClasses = '
-                    SELECT COUNT(*) AS amountClasses
+                $queryTotalClasses = 'SELECT COUNT(*) AS amountClasses
                     FROM StudentSection
                     WHERE studentAccount = ?;
                 ';
