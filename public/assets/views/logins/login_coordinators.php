@@ -4,7 +4,7 @@
   session_start();
 
   if (SessionValidation::isValid($_SESSION, "coordinators")){
-    header("Location: /assets/views/administration/bosses/administrate_sections.php");
+    header("Location: /assets/views/administration/coordinators/academic_load.php");
   }
   
 ?>
@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/logins/login.css">
-    <title>Login Docentes</title>
+    <title>Login Coordinadores</title>
 </head>
 <body>
 

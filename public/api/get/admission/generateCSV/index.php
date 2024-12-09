@@ -18,7 +18,7 @@ try {
 
     $sql = "SELECT 
                 a.id AS idApplication,
-                CONCAT(b.firstName, ' ', b.secondName, ' ', b.firstLastName, ' ', b.secondLastName) AS name,
+                CONCAT(b.names, ' ', b.lastNames, ' ') AS name,
                 b.personalEmail,
                 CASE 
                     WHEN a.approvedFirstChoice = 1 THEN c.description
