@@ -1,6 +1,6 @@
 /**
  * author: afcastillof@unah.hn
- * version: 0.2.0
+ * version: 0.1.5
  * date: 9/11/24
  */
 import { loadSelectOptions, enableCareerSelects } from './Action.js';
@@ -112,14 +112,6 @@ selectRegionalCenters.addEventListener('change', () => {
 // Validación y envío del formulario
 document.getElementById('form-inscription').addEventListener('submit', async (event) => {
   event.preventDefault();
-  const form = event.target; 
-  const formData = new FormData(form);
-  for (const [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-  }
-
-  // Opcional: Imprimir solo los valores de los datos
-  console.log("Datos del formulario:", Object.fromEntries(formData.entries()));
 
     HttpRequest.submitForm(event, '../../../api/post/application')
       .then(result => {

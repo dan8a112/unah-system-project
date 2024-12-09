@@ -28,3 +28,7 @@
     font-weight: 500;
     color: #fff;
 }
+
+.selected-card{
+    border: #3472F8 2px solid;
+}

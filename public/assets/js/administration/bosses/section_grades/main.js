@@ -44,10 +44,11 @@ async function loadData() {
     // Realizar la solicitud GET usando HttpRequest;
     const respose = await HttpRequest.get(url);
     const data = respose.data;
-    const breadCrumbTitle = document.querySelector(".active")
+    const breadCrumbTitle = document.querySelector(".active");
+    const urlPaginacion = `../../../../api/get/pagination/studentsSection/?id=${section}&`;
 
     if (data) {
-      Action.renderStudents(data.students.studentsList, data.students.amountStudents);
+      Action.renderStudents(data.students.studentsList, data.students.amountStudents, urlPaginacion);
       currentPeriod.innerText = `${data.period.name}`;
       professor.innerText = `${data.sectionInfo.professor}`;
       denomination.innerText = `${data.sectionInfo.denomination}`;

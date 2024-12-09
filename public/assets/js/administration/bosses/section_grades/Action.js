@@ -3,7 +3,7 @@ import { Modal } from "../../../modules/Modal.js";
 
 class Action{
 
-    static renderStudents(data, amountStudents){
+    static renderStudents(data, amountStudents, urlPaginacion){
 
         const headers = ["#Cuenta", "Nombre del estudiante", "Calificacion", "Observacion"];
 
@@ -19,7 +19,7 @@ class Action{
             false,
             10, 
             amountStudents,
-            "", 
+            urlPaginacion, 
             false, 
             true,
             this.formatRows
