@@ -16,7 +16,7 @@ INSERT INTO AdministrativeType(description) VALUES
 
 INSERT INTO DegreeProgram (description) VALUES 
     ('Derecho'),
-    ('Antropología'),
+    ('Antropología'),git
     ('Periodismo'),
     ('Psicología'),
     ('Pedagogía'),
