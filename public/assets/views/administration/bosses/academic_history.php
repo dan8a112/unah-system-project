@@ -43,7 +43,7 @@
 
         <?php
         $path = "../../";
-        $selected = 3;
+        $selected = 4;
         include_once($path . "templates/professors/bossSidebar.php");
         ?>
 
