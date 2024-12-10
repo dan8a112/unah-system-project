@@ -557,7 +557,7 @@
                     $query1 = "SELECT b.account, b.name FROM StudentSection a
                         INNER JOIN Student b ON (a.studentAccount = b.account) 
                         WHERE section=? AND (grade IS NULL OR observation IS NULL);";
-                    $result1 = $this->mysqli->execute_query($query1, $idSection);
+                    $result1 = $this->mysqli->execute_query($query1, [$idSection]);
                     $missingData = [];
                     if ($result1) {
                         while ($row = $result1->fetch_assoc()){
