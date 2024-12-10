@@ -258,10 +258,27 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
 
-CREATE TABLE ProfessorEvaluation(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Question(
+    id TINYINT PRIMARY KEY AUTO_INCREMENT,
     question VARCHAR(70)
 );
+
+CREATE TABLE AnswerSelection(
+    id TINYINT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(20)
+);
+
+CREATE TABLE StudentProfessorEvaluation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    studentSection INT,
+    question TINYINT,
+    answerText VARCHAR(20),
+    answerSelection TINYINT,
+    CONSTRAINT fk_evaluation_studentSection FOREIGN KEY(studentSection) REFERENCES StudentSection(id),
+    CONSTRAINT fk_question FOREIGN KEY(question) REFERENCES Question(id),
+    CONSTRAINT fk_answerSelection FOREIGN KEY(AnswerSelection) REFERENCES AnswerSelection(id));
+
+
 
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
 DELIMITER //
@@ -959,7 +976,8 @@ BEGIN
 
         SELECT JSON_OBJECT(
             'status', true,
-            'message', 'Seccion insertada correctamente.'
+            'message', 'Seccion insertada correctamente.',
+            'id', LAST_INSERT_ID()
         ) AS resultJson;
 
     END IF;
@@ -1005,7 +1023,7 @@ BEGIN
             LEFT JOIN Section b ON (b.professor = a.id)
             LEFT JOIN Employee d ON (a.id = d.id)
             LEFT JOIN Days e ON (b.days = e.id)
-            WHERE e.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.active = true AND a.id=p_professor LIMIT 1) THEN
+            WHERE e.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.active = true AND a.id=p_professor AND b.id != p_id LIMIT 1) THEN
 
         -- Enviar mensaje de que el docente ya tiene clase a esa hora
         SELECT JSON_OBJECT(
@@ -1016,7 +1034,7 @@ BEGIN
     ELSEIF EXISTS(SELECT 1 FROM Classroom a
             LEFT JOIN Section b ON (b.classroom = a.id)
             LEFT JOIN Days d ON (b.days = d.id)
-            WHERE d.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.id=p_days LIMIT 1) THEN
+            WHERE d.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.id=p_days AND b.id != p_id LIMIT 1) THEN
         
         -- Enviar mensaje de que el aula ya esta ocupada
         SELECT JSON_OBJECT(
@@ -1046,7 +1064,6 @@ BEGIN
         SET 
             subject = p_subject, 
             professor = p_professor, 
-            academicEvent = v_academicEvent, 
             section = denomination, 
             days = p_days, 
             startHour = p_startHour, 

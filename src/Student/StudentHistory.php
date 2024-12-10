@@ -7,6 +7,13 @@ Class StudentDAO {
         $this->mysqli = new mysqli($server, $user, $pass, $dbName);
     }
 
+             /**
+             * author: wamoralesunah.hn
+             * version: 0.1.0
+             * date: 09/12/24
+             * 
+             * Funcion de para obtener el historial academico de un estudiante dado su numero de cuenta y un parametro de paginacion
+             */
             public function getStudentAcademicHistory(string $studentId, int $offset = 0, int $limit = 10) {
 
                 $queryStudentInfo = '

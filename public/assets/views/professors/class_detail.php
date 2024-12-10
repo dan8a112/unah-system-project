@@ -13,7 +13,7 @@
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/professors/home_professors.php?id=".$userId);
+        header("Location: /assets/views/professors/class_detail.php?id=".$userId);
         exit;
     }
   }
