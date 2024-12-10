@@ -152,10 +152,13 @@
                             b.uv, 
                             a.startHour, 
                             a.finishHour, d.id as classroomId, 
-                            CONCAT(d.description, " ", e.description ) as classroom, 
+                            d.description as classroom, 
+                            d.building as classroomBuilding,
                             CONCAT(f.names, " ", f.lastNames) as professorName, 
                             f.id as professorId,
-                            a.maximumCapacity
+                            a.maximumCapacity,
+                            e.id as idBuilding,
+                            e.description as building
                     FROM Section a
                     INNER JOIN Subject b ON (a.subject = b.id)
                     INNER JOIN Days c ON (a.days = c.id)
@@ -182,7 +185,12 @@
                         "places"=>$info['maximumCapacity'],
                         "classrom"=>[
                             "id"=>$info['classroomId'],
-                            "name"=> $info['classroom']
+                            "name"=> $info['classroom'],
+                            "idBuilding"=> $info['classroomBuilding']
+                        ],
+                        "building"=>[
+                            "id"=>$info['idBuilding'],
+                            "name"=> $info['building']
                         ],
                         "amountWaitingStudents"=>$waiting['amountWaitingStudents'],
                         "waitingStudentList"=> $waiting['waitingStudentList'],
