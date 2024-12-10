@@ -145,7 +145,8 @@
             //Obtener detalle de la seccion
             $query= 'SELECT a.id as sectionId, 
                             LPAD(CAST(a.section AS CHAR), 4, "0") as code, 
-                            b.description as subjectName, 
+                            b.description as subjectName,
+                            b.id as subjectId,
                             a.section, 
                             c.description as days, 
                             c.id as idDays,
@@ -200,7 +201,10 @@
                             "id" => $info['idDays'],
                             "name" => $info['days']
                         ],
-                        "className"=> $info['subjectName'],
+                        "class"=> [
+                            "id" => $info['subjectId'],
+                            "name" =>$info['subjectName']
+                        ],
                         "uv"=> $info['uv'],
                         "startHour"=> $info['startHour'],
                         "finishHour"=> $info['finishHour'],

@@ -44,6 +44,40 @@ class Selects {
 
     }
 
+
+    /**
+     * @author dochoao@unah.hn
+     * @date 6/11/24
+     * Este método se encarga de agregarles un dataset a cada option del select, excepto al que tiene el parámetro default.
+     * @param {Element} selectDom El nodo "select" del DOM.
+     * @param {Array} data El array de objetos con los datos a asociar.
+     * @param {String} valueKey La llave correspondiente al value del option.
+     * @param {String} datasetName El nombre del dataset.
+     */
+    static addDataset(selectDom, data, matchingKey, valueKey, datasetName) {
+
+        if (!selectDom || !data || !valueKey || !datasetName || !matchingKey) {
+            console.error("No se envian todos los parametros para ejecutar el método.");
+            return;
+        }
+
+        // Iterar sobre las opciones del select
+        Array.from(selectDom.options).forEach(option => {
+            const value = option.value;
+
+            // Buscar en la data el objeto correspondiente al value del option
+            const matchingItem = data.find(item => String(item[matchingKey]) === value);
+
+            if (matchingItem) {
+                // Agregar el dataset correspondiente
+                option.dataset[datasetName] = matchingItem[valueKey];
+            } else {
+                // Eliminar el dataset si no hay match
+                delete option.dataset[datasetName];
+            }
+        });
+    }
+
 }
 
 export{Selects}
