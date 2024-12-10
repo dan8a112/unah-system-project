@@ -109,6 +109,9 @@ curl http://localhost:3000/api/get/section/generateCsvStudentsSection/?id=102
 ----------------------Curl para generar CSV de la carga academica----------
 curl http://localhost:3000/api/get/coordinator/generateCsvAcademicLoad/?idCoordinator=3&idPeriod=36
 
+----------------------Curl para obtener el detalle de una seccion para un docente----------
+curl http://localhost:3000/api/get/professor/section/?id=24 | jq
+
 
 ---------------------------------------PAGINACION------------------------------------------------------
 

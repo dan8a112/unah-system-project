@@ -271,7 +271,7 @@
             }
         }
 
-          /**
+        /**
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 9/12/24
@@ -350,6 +350,85 @@
                 ];
             }
 
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 10/12/24
+         * 
+         * Funcion para obtener detalle de una seccion para un docente
+         */
+        public function getSectionProfessor(int $id){
+
+            //Obtener detalle de la seccion
+            $query= 'SELECT a.id as sectionId,  
+                            LPAD(CAST(a.section AS CHAR), 4, "0") as code,  
+                            b.description as subjectName, 
+                            b.id as subjectId, 
+                            a.section,  
+                            c.description as days, 
+                            b.uv,  
+                            a.startHour,  
+                            a.finishHour, d.id as classroomId,  
+                            CONCAT(d.description, " ", e.description ) as classroom 
+                    FROM Section a 
+                    INNER JOIN Subject b ON (a.subject = b.id) 
+                    INNER JOIN Days c ON (a.days = c.id) 
+                    INNER JOIN Classroom d ON (a.classroom = d.id) 
+                    INNER JOIN Building e ON (d.building = e.id) 
+                    WHERE a.id = ?;';
+            $result = $this->mysqli->execute_query($query, [$id]);
+            
+            if($result){
+                $section = $result->fetch_assoc();
+                $students = $this ->getStudentsSection($id, 0);
+                
+                //obtener informacion del subproceso
+                $query1 = 'SELECT a.id as processId, CONCAT(d.description, " ", year(a.startDate)) as period, c.id as subprocessId, c.description, DATE(b.startDate) as startDate, DATE(b.finalDate) as finalDate
+                        FROM AcademicEvent a
+                        INNER JOIN AcademicEvent b ON (a.id = b.parentId)
+                        INNER JOIN AcademicProcess c ON (b.process = c.id)
+                        INNER JOIN AcademicProcess d ON (a.process = d.id)
+                        WHERE b.parentId = (SELECT actualAcademicPeriod())
+                        AND b.active=true;';
+                $result1 = $this->mysqli->execute_query($query1);
+                if($result1){
+                    $period = $result1->fetch_assoc();
+                    return [
+                        "status"=> true,
+                        "message"=> "Petición realizada con exito",
+                        "data"=> [
+                            "stateProcess"=> $period['subprocessId'],
+                            "processName"=> $period['description'],
+                            "sectionSection"=> [
+                                "id"=> $section['sectionId'],
+                                "name" =>$section['subjectName'],
+                                "denomination"=> $section['section'],
+                                "code"=> $section['code'],
+                                "valueUnits"=> $section['uv'],
+                                "start"=> $section['startHour'],
+                                "end"=> $section['finishHour'],
+                                "days" => $section['days'],
+                                "classroom"=> $section['classroom'],
+                            ],
+                            "students"=> $students
+                        ]
+                    ];
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Error al consultar la información sobre el periodo academico."
+                    ];
+                }
+                
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar la información de la sección."
+                ];
+            }
         }
 
         // Método para cerrar la conexión
