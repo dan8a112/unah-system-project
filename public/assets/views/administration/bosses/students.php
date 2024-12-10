@@ -63,7 +63,7 @@
             <div class="mt-2 d-flex align-items-center justify-content-end">
                 <span class="me-3">Busca a un estudiante por su número de cuenta:</span>
                 <form id="search-form" class="input-group w-50">
-                    <input type="text" name="acount" class="form-control" id="search-input" placeholder="Buscar por nombre o número de cuenta">
+                    <input type="text" name="searchIndex" class="form-control" id="search-input" placeholder="Buscar por número de cuenta">
                     <button type="submit" class="btn btn-primary">Buscar</button>
                 </form>
             </div>
