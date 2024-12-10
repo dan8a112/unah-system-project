@@ -45,7 +45,7 @@
             include_once($path . "templates/professors/professorSidebar.php");
         ?>
 
-        <section class="col ms-4">
+        <section class="col ms-4 mb-5">
             <div class="my-4">
                 <div class="d-flex align-items-center">
                     <h1 class="display3 me-3">Tus clases</h1>

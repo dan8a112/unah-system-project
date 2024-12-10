@@ -258,10 +258,27 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
 
-CREATE TABLE ProfessorEvaluation(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Question(
+    id TINYINT PRIMARY KEY AUTO_INCREMENT,
     question VARCHAR(70)
 );
+
+CREATE TABLE AnswerSelection(
+    id TINYINT PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(20)
+);
+
+CREATE TABLE StudentProfessorEvaluation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    studentSection INT,
+    question TINYINT,
+    answerText VARCHAR(20),
+    answerSelection TINYINT,
+    CONSTRAINT fk_evaluation_studentSection FOREIGN KEY(studentSection) REFERENCES StudentSection(id),
+    CONSTRAINT fk_question FOREIGN KEY(question) REFERENCES Question(id),
+    CONSTRAINT fk_answerSelection FOREIGN KEY(AnswerSelection) REFERENCES AnswerSelection(id));
+
+
 
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
 DELIMITER //

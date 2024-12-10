@@ -48,6 +48,7 @@ a{
         flex-direction: row;
         width: 100vw;
         height: auto;
+        border-bottom: 1px solid #D9D9D9;
     }
     .menu-item{
         width: fit-content;
