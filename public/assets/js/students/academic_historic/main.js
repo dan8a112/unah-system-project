@@ -1,6 +1,5 @@
 import { Action } from "./Action.js";
-import { HttpRequest } from "../../modules/HttpRequest.js"
-
+import { HttpRequest } from "../../modules/HttpRequest.js";
 
 const studentName = document.getElementById("studentName");
 const studentCareer = document.getElementById("studentCareer");
@@ -11,11 +10,11 @@ const studentPeriodIndex = document.getElementById("studentPeriodIndex");
 const studentCenter = document.getElementById("studentCenter");
 
 const userId = new URLSearchParams(window.location.search).get("id");
-const url = `../../../../api/get/departmentBoss/ratingsInfo/?id=${userId}`;
+const acountStudent = new URLSearchParams(window.location.search).get("student");
+const url = `../../../../api/get/pagination/studentHistory/index.php?id=${acountStudent}&offset=0/`;
 const container = document.querySelector("#section-table");
 
-
-const data = {
+const dataa = {
     "studentInfo" : {
         name : "Dorian Samantha Velasquez",
         career: "Ingenieria en sistemas",
@@ -56,29 +55,35 @@ const data = {
     }
 }
 
+// Función para verificar nulos y devolver un guion
+function checkNull(value) {
+    return value ?? "-";
+}
+
 async function loadData() {
-    // Realizar la solicitud GET usando HttpRequest
-    //const respose = await HttpRequest.get(url);
-    //const data = respose;
-    const paginationUrl = `../../../../api/get/pagination/sections/?idProcess=${data}&idBoss=${userId}&`;
-    console.log(data)
-  
-    if (data) {
-      Action.renderSections(data.classes.classesList, data.classes.amountClasses, paginationUrl, container);
-      studentName.innerText = `${data.studentInfo.name}`;
-      studentCareer.innerText = `${data.studentInfo.career}`;
-      studentAcount.innerText = `${data.studentInfo.acount}`;
-      studentDescription.innerText = `${data.studentInfo.description}`;
-      studentGlobalIndex.innerText = `${data.studentInfo.globalIndex}`;
-      studentPeriodIndex.innerText = `${data.studentInfo.periodIndex}`;
-      studentCenter.innerText = `${data.studentInfo.center}`;
-    } else {
-      console.error("No se pudo cargar la información desde la API.");
+    try {
+        // Realizar la solicitud GET usando HttpRequest
+        const response = await HttpRequest.get(url);
+        const data = response;
+        const paginationUrl = `../../../../api/get/pagination/studentHistory/index.php?id=${acountStudent}&`;
+        
+        if (data) {
+            Action.renderSections(data.data, data.amountClasses, paginationUrl, container);
+
+            studentName.innerText = checkNull(data.studentInfo.studentName);
+            studentCareer.innerText = checkNull(data.studentInfo.studentCareer);
+            studentAcount.innerText = checkNull(data.studentInfo.studentAccount);
+            studentDescription.innerText = checkNull(data.studentInfo.studentDescription);
+            studentGlobalIndex.innerText = checkNull(data.studentInfo.studentGlobalIndex);
+            studentPeriodIndex.innerText = checkNull(data.studentInfo.studentPeriodIndex);
+            studentCenter.innerText = checkNull(Action.getInitials(data.studentInfo.studentCenter));
+        } else {
+            console.error("No se pudo cargar la información desde la API.");
+        }
+    } catch (error) {
+        console.error("Error al cargar los datos:", error);
     }
-  }
-  
-  // Llama a la función para cargar los datos al iniciar el módulo
-  loadData();
+}
 
-const table = document.getElementById('section-table');
-
+// Llama a la función para cargar los datos al iniciar el módulo
+loadData();

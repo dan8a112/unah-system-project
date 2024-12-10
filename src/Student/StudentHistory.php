@@ -101,6 +101,40 @@ Class StudentDAO {
                     ]
                 ];
             }
+
+
+            /**
+             * author: dorian.contreras@unah.hn
+             * version: 0.1.0
+             * date: 09/12/24
+             * 
+             * Funcion de para obtener los estudiantes registrados en la base de datos
+             * cuyo numero de cuenta comience con el indice enviado por parametro.
+             */
+            public function searchStudents(string $searchIndex){
+                $searchResults = [];
+                
+                $query = "
+                    SELECT a.account, 
+                           a.name, 
+                           b.acronym as center, 
+                           c.description as career
+                    FROM Student a
+                    INNER JOIN RegionalCenter b ON ( a.regionalCenter = b.id )
+                    INNER JOIN DegreeProgram c ON ( a.degreeProgram = c.id)
+                    WHERE account LIKE ?
+                ";
+                $result = $this->mysqli->execute_query($query, [$searchIndex.'%']);
+                
+                if($result){
+                    while($row = $result->fetch_assoc()){
+                        $searchResults[] = $row;
+                    }
+                }
+                return $searchResults;
+            }
+
+
             public function closeConnection() {
                 $this->mysqli->close();
             }
