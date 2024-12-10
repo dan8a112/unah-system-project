@@ -5,11 +5,21 @@ class Action{
 
     static renderStudents(data, urlPaginacion){
 
-        const { stateProcess, students } = data;
+        const { stateProces, infoSection } = data;
+        let stateProcess = 17;
+
+        const testData = [
+            { id: 1, name: "Asistencia", points: 10 },
+            { id: 2, name: "Proyecto Final", points: 40 },
+            { id: 3, name: "Examen Parcial", points: 25 },
+            { id: 4, name: "Tareas", points: 15 },
+            { id: 5, name: "Examen Final", points: 30 },
+        ];
 
         switch (true) {
             case stateProcess === 17:
                 this.renderUploadCSVSection(stateProcess);
+                this.provideUploadInfo(testData);
                 break;
             case stateProcess >= 12 && stateProcess <= 16:
                 this.renderUploadCSVSection(stateProcess);
@@ -19,7 +29,7 @@ class Action{
 
         const headers = ["Cuenta", "Nombre del estudiante", "Carrera", "Fecha de matricula"];
 
-        const student = data.students.studentsList;
+        const student = infoSection.students.studentsList;
         const dataFormated = student.map(row=>this.formatRows(row));
 
         const container = document.querySelector("#section-table");
@@ -31,7 +41,7 @@ class Action{
             "table-body",
             true,
             10, 
-            students.amountStudents,
+            infoSection.students.amountStudents,
             urlPaginacion, 
             false, 
             true,
@@ -41,6 +51,14 @@ class Action{
         section.style.marginTop = '0px';
         container.appendChild(section);
 
+    }
+
+    /**
+     * Esta funcion se se encarga de abrir una modal para subir un archivo
+     */
+    static openUploadModal() {
+        const uploadCSVModal = document.querySelector("div#uploadVideoModal");
+        Modal.openModal(uploadCSVModal);
     }
 
     /**
@@ -194,6 +212,7 @@ class Action{
         const downloadButton = document.createElement("button");
         downloadButton.classList.add("btn", "btn-template-download"); 
         downloadButton.style.backgroundColor = '#FFAA34';
+        downloadButton.style.marginBottom = '10px';
         downloadButton.textContent = "Descargar plantilla";
         downloadButton.addEventListener("click", () => {
             // Código para descargar la plantilla

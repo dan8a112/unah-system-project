@@ -415,30 +415,31 @@
                     $period = $result1->fetch_assoc();
 
                     $response = [
-                        "status"=> true,
-                        "message"=> "Petición realizada con exito",
-                        "data"=> [
-                            "stateProcess"=> $period['subprocessId'],
-                            "processName"=> $period['description'],
-                            "infoSection"=> [
-                            "start"=> $period['startDate'],
-                            "end"=> $period['finalDate'],
-                            "infoSection"=> [
-                                "id"=> $section['sectionId'],
-                                "name" =>$section['subjectName'],
-                                "denomination"=> $section['section'],
-                                "code"=> $section['subjectId'],
-                                "valueUnits"=> $section['uv'],
-                                "start"=> $section['startHour'],
-                                "end"=> $section['finishHour'],
-                                "days" => $section['days'],
-                                "classroom"=> $section['classroom'],
-                                "period"=>$section['period']
-                            ],
-                            "students"=> $students,
-                            "video"=> $video
+                        "status" => true,
+                        "message" => "Petición realizada con éxito",
+                        "data" => [
+                            "stateProcess" => $period['subprocessId'],
+                            "processName" => $period['description'],
+                            "infoSection" => [
+                                "start" => $period['startDate'],
+                                "end" => $period['finalDate'],
+                                "sectionDetails" => [
+                                    "id" => $section['sectionId'],
+                                    "name" => $section['subjectName'],
+                                    "denomination" => $section['section'],
+                                    "code" => $section['subjectId'],
+                                    "valueUnits" => $section['uv'],
+                                    "start" => $section['startHour'],
+                                    "end" => $section['finishHour'],
+                                    "days" => $section['days'],
+                                    "classroom" => $section['classroom'],
+                                    "period" => $section['period']
+                                ],
+                                "students" => $students,
+                                "video" => $video
+                            ]
                         ]
-                    ];
+                    ];                    
 
                     if($period['subprocessId']==17){
                         //Obtener la informacion de la tabla de observaciones

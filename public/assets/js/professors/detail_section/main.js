@@ -57,15 +57,15 @@ async function loadData() {
 
     if (data) {
       Action.renderStudents(data, urlPaginacion);
-      currentPeriod.innerText = `${data.infoSection.period}`;
-      startHour.innerText = `${data.infoSection.start}:00`;
-      finishHour.innerText = `${data.infoSection.end}:00`;
-      denomination.innerText = `${data.infoSection.denomination} | ${data.infoSection.code}`;
-      className.innerText = `${data.infoSection.name}`;
-      breadCrumbTitle.innerText = `${data.infoSection.name}`;
-      amountStudents.innerText = `${data.students.amountStudents}`;
-      valueUnits.innerText = `${data.infoSection.valueUnits} UV`;
-      days.innerText = `${data.infoSection.days}`
+      currentPeriod.innerText = `${data.infoSection.sectionDetails.period}`;
+      startHour.innerText = `${data.infoSection.sectionDetails.start}:00`;
+      finishHour.innerText = `${data.infoSection.sectionDetails.end}:00`;
+      denomination.innerText = `${data.infoSection.sectionDetails.denomination} | ${data.infoSection.sectionDetails.code}`;
+      className.innerText = `${data.infoSection.sectionDetails.name}`;
+      breadCrumbTitle.innerText = `${data.infoSection.sectionDetails.name}`;
+      amountStudents.innerText = `${data.infoSection.students.amountStudents}`;
+      valueUnits.innerText = `${data.infoSection.sectionDetails.valueUnits} UV`;
+      days.innerText = `${data.infoSection.sectionDetails.days}`
     } else {
       console.error("No se pudo cargar la información desde la API.");
     }

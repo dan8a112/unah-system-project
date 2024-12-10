@@ -104,11 +104,42 @@
             </section>
             <section id="upload_csv" class="mb-4 row">
             </section>
+            <div id="contentt"></div>
 
             <div id="section-table"></div>
             
         </section>
     </main>
+
+    <div class="modal fade" id="uploadVideoModal" tabindex="-1" aria-labelledby="formModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="formModal">Subir Video</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formCsv">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="mb-3">
+                            <p class="fs-5">Subir Video de presentacion</p>
+                            <p>A continuacion puedes subir un video de presentacion para tus estudiantes</p>
+                        </div>
+                        <input class="form-control mb-3" type="file" name="pathCsvGrades" required>
+                       
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
+                    <button class="button-upload btn me-3" id="uploadCsv" style="height: 40px;" type="submit">
+                            <img src="../../img/icons/upload.svg" alt="" class="me-2">
+                            <span>Subir</span>
+                    </button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
     
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/professors/detail_section/main.js" type="module"></script>
