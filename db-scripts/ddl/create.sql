@@ -959,6 +959,139 @@ BEGIN
     END IF;
 END//
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 9/12/24
+    Procedimiento para hacer update de una seccion
+**/
+CREATE PROCEDURE updateSection(
+    IN p_id INT,
+    IN p_subject VARCHAR(8), 
+    IN p_professor INT,
+    IN p_days INT, 
+    IN p_startHour INT, 
+    IN p_finishHour INT, 
+    IN p_classroom INT, 
+    IN p_maximumCapacity INT,
+    IN p_stringDays VARCHAR(25)
+)
+BEGIN
+    DECLARE v_amountDays INT;
+    DECLARE v_uv SMALLINT;
+    DECLARE denomination INT;
+    DECLARE v_academicEvent INT;
+    DECLARE v_amountStudents INT;
+    DECLARE v_amountWaitingStudents INT;
+    DECLARE v_limit INT;
+
+    SET v_amountDays = (SELECT amountDays FROM Days WHERE id = p_days);
+    SET v_uv = (SELECT uv FROM Subject WHERE id = p_subject);
+    SET denomination= p_startHour*100;
+
+    -- validar que exista la seccion
+    IF NOT EXISTS (SELECT 1 FROM Section WHERE id = p_id) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No existe la sesión.'
+            ) AS resultJson;
+    ELSEIF EXISTS(SELECT 1 FROM Professor a
+            LEFT JOIN Section b ON (b.professor = a.id)
+            LEFT JOIN Employee d ON (a.id = d.id)
+            LEFT JOIN Days e ON (b.days = e.id)
+            WHERE e.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.active = true AND a.id=p_professor LIMIT 1) THEN
+
+        -- Enviar mensaje de que el docente ya tiene clase a esa hora
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El docente ya tiene clases en el horario escogido.'
+        ) AS resultJson;
+    -- Validar aula
+    ELSEIF EXISTS(SELECT 1 FROM Classroom a
+            LEFT JOIN Section b ON (b.classroom = a.id)
+            LEFT JOIN Days d ON (b.days = d.id)
+            WHERE d.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.id=p_days LIMIT 1) THEN
+        
+        -- Enviar mensaje de que el aula ya esta ocupada
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El aula ya esta ocupada en el horario elegido.'
+        ) AS resultJson;
+    -- Validar congruencia de uv con los dias y la hora
+    ELSEIF v_uv IS NULL OR v_amountDays IS NULL OR p_startHour IS NULL OR p_finishHour IS NULL THEN
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Valores nulos detectados en los datos proporcionados.','uv', uv, 'amountdays', amountDays
+        ) AS resultJson;
+    ELSEIF (v_uv != v_amountDays * (p_finishHour - p_startHour)) THEN
+
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El horario no concuerda con las unidades valorativas de la clase.'
+        ) AS resultJson;
+    ELSE
+        -- Verificar que la seccion (1000) no exista
+        WHILE EXISTS (SELECT section FROM Section WHERE subject = p_subject AND days = p_days AND startHour=p_startHour AND section=denomination) DO
+            SET denomination = denomination + 1;
+        END WHILE;
+
+        -- Hacer el update de la seccion
+        UPDATE Section
+        SET 
+            subject = p_subject, 
+            professor = p_professor, 
+            academicEvent = v_academicEvent, 
+            section = denomination, 
+            days = p_days, 
+            startHour = p_startHour, 
+            finishHour = p_finishHour, 
+            classroom = p_classroom, 
+            maximumCapacity = p_maximumCapacity
+        WHERE id = p_id;
+
+        -- Validar los cupos de la seccion
+        SET v_amountStudents = (SELECT COUNT(*) as amount FROM StudentSection WHERE section = p_id AND waiting = false);
+        SET v_amountWaitingStudents = (SELECT COUNT(*) as amount FROM StudentSection WHERE section = p_id AND waiting = true);
+
+        IF(v_amountStudents>p_maximumCapacity)THEN
+            SET v_limit = v_amountStudents - p_maximumCapacity;
+            UPDATE StudentSection
+            SET waiting = true
+            WHERE section = p_id AND id IN (
+                SELECT id 
+                FROM (
+                    SELECT id 
+                    FROM StudentSection 
+                    WHERE waiting = false AND section = p_id
+                    ORDER BY RAND() 
+                    LIMIT v_limit
+                ) AS a
+            ); 
+        ELSEIF (v_amountStudents<p_maximumCapacity AND v_amountWaitingStudents>0) THEN
+            SET v_limit = p_maximumCapacity - v_amountStudents;
+            UPDATE StudentSection
+            SET waiting = false
+            WHERE section = p_id AND id IN (
+                SELECT id 
+                FROM (
+                    SELECT id 
+                    FROM StudentSection 
+                    WHERE waiting = true AND section = p_id
+                    ORDER BY RAND() 
+                    LIMIT v_limit
+                ) AS a
+            ); 
+        END IF;
+
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Seccion actualizada correctamente.'
+        ) AS resultJson;
+
+    END IF;
+END//
+
 /*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
  * author: afcastillof@unah.hn
