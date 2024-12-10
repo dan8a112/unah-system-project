@@ -106,6 +106,9 @@ curl http://localhost:3000/api/update/canceledSection/?id=1 | jq
 ----------------------Curl para generar CSV de estudiantes matriculados----------
 curl http://localhost:3000/api/get/section/generateCsvStudentsSection/?id=102
 
+----------------------Curl para generar CSV de la carga academica----------
+curl http://localhost:3000/api/get/coordinator/generateCsvAcademicLoad/?idCoordinator=3&idPeriod=36
+
 
 ---------------------------------------PAGINACION------------------------------------------------------
 

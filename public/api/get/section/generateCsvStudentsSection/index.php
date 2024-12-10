@@ -18,12 +18,12 @@
             $sql = 'SELECT b.account, CONCAT(b.name, " ", b.lastName) as name, b.email
                 FROM StudentSection a
                 INNER JOIN Student b ON (a.studentAccount = b.account)
-                WHERE a.section ='. $_GET['id']. ' AND a.waiting = false
+                WHERE a.section = ? AND a.waiting = false
                 ORDER BY b.account ASC;'; 
 
             $filename = 'estudiantes_matriculados_' . time() . '.csv';
 
-            $exporter->exportToCSV($sql, $filename);
+            $exporter->exportToCSV($sql, [$_GET['id']], $filename);
 
             $exporter->closeConnection();
 

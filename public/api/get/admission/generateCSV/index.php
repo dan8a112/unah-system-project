@@ -49,7 +49,9 @@ try {
     header('Content-Type: text/csv');
     header("Content-Disposition: attachment; filename=\"$filename\"");
 
-    $exporter->exportToCSV($sql);
+    $params = [];
+
+    $exporter->exportToCSV($sql, $params);
 
     $exporter->closeConnection();
 

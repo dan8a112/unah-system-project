@@ -8,20 +8,20 @@ class CSVExporter {
     private $mysqli;
     public function __construct(string $server, string $user, string $pass, string $dbName) {
         $this->mysqli = new mysqli($server, $user, $pass, $dbName);
-
-        if ($this->mysqli->connect_error) {
-            die("Error en la conexión: " . $this->mysqli->connect_error);
-        }
     }
 
     // Método para exportar el resultado de una consulta a un archivo CSV
-    public function exportToCSV(string $sql, string $filename = "exported_data.csv") {
+    public function exportToCSV(string $sql, $params=[], string $filename = "exported_data.csv") {
         // Configurar los encabezados para descargar el archivo
         header('Content-Type: text/csv');
         header("Content-Disposition: attachment; filename=\"$filename\"");
 
         // Ejecutar la consulta SQL
-        $result = $this->mysqli->query($sql);
+        if(count($params)>0){
+            $result = $this->mysqli->execute_query($sql, $params);
+        }else{
+            $result = $this->mysqli->execute_query($sql); 
+        }
 
         // Verificar si hay resultados
         if ($result && $result->num_rows > 0) {
