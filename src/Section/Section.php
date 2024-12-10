@@ -323,6 +323,13 @@
             }
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 9/12/24
+         * 
+         * Funcion para cancelar seccion validando unicamente la cantidad de estudiantes
+         */
         public function canceledSection(int $id){
             $query = 'Call canceledSection(?);';
             $result = $this->mysqli->execute_query($query, [$id]);

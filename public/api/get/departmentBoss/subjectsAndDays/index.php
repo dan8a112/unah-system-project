@@ -1,5 +1,13 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: dic 2024
+     * 
+     * Servicio para obtener los dias y las clases para crear una seccion
+     */
+
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";

@@ -10,6 +10,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 6/11/24
+         * 
+         * Funcion para obtener los primero 10 profesores
          */
         public function getProfessors($offset) : array {
 
@@ -43,6 +45,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 6/11/24
+         * 
+         * Funcion para obtener la cantidad de profesores
          */
         public function getAmountProfessors() : int {
 
@@ -63,6 +67,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 16/11/24
+         * 
+         * Funcion para generar una contraseña aleatoria
          */
         public function generatePassword($length=10){
 
@@ -83,6 +89,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 16/11/24
+         * 
+         * Funcion para insertar profesores
          */
         public function setProfessor($dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department){
             $namesCapital = mb_convert_case($names, MB_CASE_TITLE, "UTF-8");
@@ -201,6 +209,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 16/11/24
+         * 
+         * Funcion para actualizar profesores
          */
         public function updateProfessor($id, $dni, $names, $lastNames, $telephoneNumber, $address, $dateOfBirth, $professorType, $department, $active){
             $names = mb_convert_case($names, MB_CASE_TITLE, "UTF-8");
@@ -362,10 +372,10 @@
         
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
+         * version: 0.1.1
          * date: 10/12/24
          * 
-         * Obtener informacion para el home de los docentes
+         * Obtener informacion de las clases asignadas a un docente en un periodo academico
          */
         public function getAssignedClasses(int $idProfessor, int $idAcademicProcess){
             //Obtener las clases que ya tiene asignadas el docente

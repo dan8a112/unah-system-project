@@ -1,5 +1,12 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: dic 2024
+     * 
+     * Servicio para obtener el detalle de una seccion para el jefe de departamento, muestra estudiantes en lista de espera y los matriculados
+     */
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";

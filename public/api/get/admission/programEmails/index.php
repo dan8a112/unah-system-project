@@ -1,5 +1,12 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: nov 2024
+     * 
+     * Servicio para programar el envio de correos para informar a los aplicantes sus resultados de examenes
+     */
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";

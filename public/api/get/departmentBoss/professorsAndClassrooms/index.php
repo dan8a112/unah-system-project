@@ -1,5 +1,13 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: dic 2024
+     * 
+     * Servicio para obtener los docentes y aulas disponibles dependiendo del horario
+     */
+
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";

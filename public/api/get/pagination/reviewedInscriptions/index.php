@@ -1,5 +1,13 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: nov 2024
+     * 
+     * Servicio para paginar las inscripciones que revisaron los usuarios del CRI
+     */
+
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";

@@ -11,6 +11,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 5/11/24
+         * 
+         * FUncion para obtener todas las carreras
          */
         public function getDegrees() : array {
 
@@ -34,6 +36,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 4/11/24
+         * 
+         * Funcion para obtener todos los tipos de profesores
          */
         public function getProfessorTypes() : array {
 
@@ -57,6 +61,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 4/11/24
+         * 
+         * Funcion para obtener todos los centros regionales
          */
         public function getCenters() : array {
 
@@ -80,6 +86,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 5/11/24
+         * 
+         * Funcion para obtener las carreras que estan en los distintos centrol regionales
          */
         public function getDegreesInCenter() : array {
 
@@ -106,6 +114,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 6/11/24
+         * 
+         * Funcion para obtener todos los departamentos
          */
         public function getDepartments() : array {
 
@@ -129,6 +139,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 11/11/24
+         * 
+         * Funcion para obtener todos los eventos academicos dependiendo del tipo de evento academico
          */
 
         public function getAllProcess(int $typeProcess) : array {
@@ -153,6 +165,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 11/11/24
+         * 
+         * Funcion para obtener solo un evento academico
          */
 
         public function getProcess(int $id) {
@@ -339,7 +353,7 @@
          * version: 0.1.0
          * date: 09/12/24
          * 
-         * Funcion de para obtener las clases de un departamento, se envia el id del jefe de departamento o cualquier profesor que pertenezca a ese departamentp
+         * Funcion de para obtener las clases de un departamento, se envia el id del jefe de departamento o cualquier profesor que pertenezca a ese departament0
          */
         public function getSubjectsDepartment($id){
             $classes = [];

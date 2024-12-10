@@ -1,5 +1,13 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date:  10/12/24
+     * 
+     * Servicio para obtener las secciones asignadas de un docente dependiendo del periodo
+     */
+
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";
