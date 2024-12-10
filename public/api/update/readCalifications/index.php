@@ -13,11 +13,11 @@
 
 
     // Abrir el archivo en modo lectura
-    if(isset($_FILES["pathCsvGrades"]) && isset($_POST["idSection"])){
+    if(isset($_FILES["pathCsvGrades"]) && isset($_GET["idSection"])){
         $pathCsvGrades = $_FILES['pathCsvGrades']['tmp_name'] ?? '';
         if(file_exists($pathCsvGrades) && !empty($pathCsvGrades)){
             $dao = new SectionDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-            $json = $dao->insertGrades($pathCsvGrades, $_POST["idSection"]);
+            $json = $dao->insertGrades($pathCsvGrades, $_GET["idSection"]);
             
         } else {
             $json = [
