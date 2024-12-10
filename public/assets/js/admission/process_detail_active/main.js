@@ -7,7 +7,7 @@ Action.fetchActiveData();
 
 // Selecciona el botón de enviar correos
 const sendEmailsButton = document.getElementById("sendEmailsButton");
-const container = document.getElementById("contentt")
+const container = document.getElementById("contentt");
 const url = "../../../api/get/admission/programEmails/";
 const headersLastInscriptionTable = ["#", "DNI", "Examen", "Puntaje", "Mensaje"];
 const headerMissingData = ["#", "DNI", "Examen"];
