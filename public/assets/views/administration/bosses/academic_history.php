@@ -6,14 +6,14 @@
   $portal = "bosses";
 
   if (!SessionValidation::isValid($_SESSION, $portal)){
-    header("Location: /assets/views/logins/login_professors.php");
+    header("Location: /assets/views/logins/login_bosses.php");
   }else{
 
     $userId = $_SESSION['portals'][$portal]['user'];
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/administration/bosses/period_grades.php?id=".$userId);
+        header("Location: /assets/views/administration/bosses/academic_history.php?id=".$userId);
         exit;
     }
   }
@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="../../../css/templates/professor.css">
     <link rel="stylesheet" href="../../../css/temas/cards.css">
     <link rel="stylesheet" href="../../../css/students/academic_history.css">
+    <link rel="stylesheet" href="../../../css/templates/breadCrumb.css">
 </head>
 
 <body>

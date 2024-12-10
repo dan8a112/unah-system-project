@@ -35,8 +35,8 @@ const data = {
 
 async function loadData() {
   // Realizar la solicitud GET usando HttpRequest
-  const respose = await HttpRequest.get(url);
-  const dataa = respose.data;
+  //const respose = await HttpRequest.get(url);
+  //const data = respose.data;
   console.log(data)
 
   if (data) {

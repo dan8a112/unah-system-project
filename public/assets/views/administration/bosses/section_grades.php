@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="../../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../css/templates/professor.css">
     <link rel="stylesheet" href="../../../css/temas/cards.css">
+    <link rel="stylesheet" href="../../../css/templates/breadCrumb.css">
 </head>
 
 <body>
