@@ -181,7 +181,8 @@
                         "days"=> $info['days'],
                         "className"=> $info['subjectName'],
                         "uv"=> $info['uv'],
-                        "startHour"=> $info['startHour']
+                        "startHour"=> $info['startHour'],
+                        "finishHour"=> $info['finishHour']
                     ]
                 ];
 
