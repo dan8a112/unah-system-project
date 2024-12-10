@@ -10,7 +10,7 @@ Class StudentDAO {
              /**
              * author: wamoralesunah.hn
              * version: 0.1.0
-             * date: 09/12/24
+             * date: 10/12/24
              * 
              * Funcion de para obtener el historial academico de un estudiante dado su numero de cuenta y un parametro de paginacion
              */
@@ -18,7 +18,7 @@ Class StudentDAO {
 
                 $queryStudentInfo = '
                     SELECT 
-                        CONCAT(s.name, " ", s.lastName) AS studentName,
+                        s.name AS studentName,
                         d.description AS studentCareer,
                         s.account AS studentAccount,
                         s.description AS studentDescription,
