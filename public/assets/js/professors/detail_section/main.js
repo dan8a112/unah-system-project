@@ -82,3 +82,30 @@ async function loadData() {
         Action.openEditiForm(buttonId);
     }
     });
+
+    /**
+     * Se manda el video para posteriormente guandarlo en la base de datos
+     * 
+     */
+    document.getElementById('formCsv').addEventListener('submit', async (event) => {
+      event.preventDefault(); 
+  
+      try {
+          const result = await HttpRequest.submitForm(event, `../../../api/update/readCalifations?idSection=${sectionId}/`);
+          console.log(result.message); 
+          console.log(result); 
+          container.innerHTML = "";
+          if(result.status == false) {
+              let message = document.createElement('p');
+              message.innerHTML = result.message;
+              container.style.color = 'red';
+              container.appendChild(message);
+          }
+          Action.createTableWithData("Registros invalidos", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable', 10, result.incorrectData.length, '', true)
+          Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
+          Modal.closeModal();
+          
+      } catch (error) {
+          console.error("Error al cargar el CSV:", error);
+      }
+  });
