@@ -152,10 +152,13 @@
                             b.uv, 
                             a.startHour, 
                             a.finishHour, d.id as classroomId, 
-                            CONCAT(d.description, " ", e.description ) as classroom, 
+                            d.description as classroom, 
+                            d.building as classroomBuilding,
                             CONCAT(f.names, " ", f.lastNames) as professorName, 
                             f.id as professorId,
-                            a.maximumCapacity
+                            a.maximumCapacity,
+                            e.id as idBuilding,
+                            e.description as building
                     FROM Section a
                     INNER JOIN Subject b ON (a.subject = b.id)
                     INNER JOIN Days c ON (a.days = c.id)
@@ -182,7 +185,12 @@
                         "places"=>$info['maximumCapacity'],
                         "classrom"=>[
                             "id"=>$info['classroomId'],
-                            "name"=> $info['classroom']
+                            "name"=> $info['classroom'],
+                            "idBuilding"=> $info['classroomBuilding']
+                        ],
+                        "building"=>[
+                            "id"=>$info['idBuilding'],
+                            "name"=> $info['building']
                         ],
                         "amountWaitingStudents"=>$waiting['amountWaitingStudents'],
                         "waitingStudentList"=> $waiting['waitingStudentList'],
@@ -309,6 +317,35 @@
                     "message"=> "Error al consultar el horario seleccionado."
                 ];
             }
+        }
+
+        public function canceledSection(int $id){
+            $query = 'Call canceledSection(?);';
+            $result = $this->mysqli->execute_query($query, [$id]);
+
+            if($result){
+                $row = $result->fetch_assoc();
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+                    return $resultArray;
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else{
+                return [
+                    'status'=> false,
+                    'message'=> "Error al hacer la consulta."
+                ];
+            }
+
         }
 
         // Método para cerrar la conexión

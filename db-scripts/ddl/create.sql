@@ -1098,6 +1098,43 @@ BEGIN
     END IF;
 END//
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 10/12/24
+    Procedimiento para cancelar una seccion
+**/
+CREATE PROCEDURE canceledSection(IN p_id INT)
+BEGIN 
+    DECLARE v_amountStudents INT;
+
+    -- validar que exista la seccion
+    IF NOT EXISTS (SELECT 1 FROM Section WHERE id = p_id) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No existe la sesión.'
+            ) AS resultJson;
+    ELSE
+        SET v_amountStudents = (SELECT COUNT(*) as amount FROM StudentSection WHERE section = p_id AND waiting = false);
+
+        IF (v_amountStudents>9) THEN
+            SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'Existen más de 9 estudiantes matriculados en esta sección.'
+            ) AS resultJson;
+        ELSE
+            UPDATE Section 
+            SET canceled = TRUE
+            WHERE id = p_id;
+
+            SELECT JSON_OBJECT(
+                'status', true,
+                'message', 'Sección cancelada correctamente.'
+            ) AS resultJson;
+        END IF; 
+    END IF;
+END//
+
 /*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
  * author: afcastillof@unah.hn
