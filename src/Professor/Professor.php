@@ -363,7 +363,31 @@
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
-         * date: 03/12/24
+         * date: 10/12/24
+         * 
+         * Obtener informacion para el home de los docentes
+         */
+        public function getAssignedClasses(int $idProfessor, int $idAcademicProcess){
+            //Obtener las clases que ya tiene asignadas el docente
+            $query1 = 'SELECT a.id as idSection, a.section, b.description, b.id as idSubject 
+            FROM Section a
+            INNER JOIN Subject b ON (a.subject = b.id)
+            WHERE academicEvent = ? AND a.professor = ?;';
+            $result1 = $this->mysqli->execute_query($query1, [$idAcademicProcess, $idProfessor]);
+
+            $classes = [];
+            if($result1){
+                while ($row = $result1->fetch_assoc()) {
+                    $classes [] = $row;
+                }
+            }
+            return $classes;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 07/12/24
          * 
          * Obtener informacion para el home de los docentes
          */
@@ -392,32 +416,16 @@
                         ];
                     }else{ //  De prematricula en adelante
                         //Obtener las clases que ya tiene asignadas el docente
-                        $query1 = 'SELECT a.id as idSection, a.section, b.description, b.id as idSubject 
-                                FROM Section a
-                                INNER JOIN Subject b ON (a.subject = b.id)
-                                WHERE academicEvent = (SELECT actualAcademicPeriod()) AND a.professor = ?;';
-                        $result1 = $this->mysqli->execute_query($query1, [$id]);
+                        $classes = $this->getAssignedClasses($id, $processInfo['processId']);
 
-                        $classes = [];
-                        if($result1){
-                            while ($row = $result1->fetch_assoc()) {
-                                $classes [] = $row;
-                            }
-                            return [
-                                "status"=> true,
-                                "message"=> "Petición relizada con exito.",
-                                "data"=> [
-                                    "processInfo"=> $processInfo,
-                                    "classes"=> $classes
-                                ]
-                            ];
-                        }else{
-                            return [
-                                "status"=> false,
-                                "message"=> "Error al traer las clases asignadas del docente."
-                            ];
-                        }
-
+                        return [
+                            "status"=> true,
+                            "message"=> "Petición relizada con exito.",
+                            "data"=> [
+                                "processInfo"=> $processInfo,
+                                "classes"=> $classes
+                            ]
+                        ];
                     }
                 } else {
                     return [

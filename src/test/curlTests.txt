@@ -31,7 +31,7 @@ curl -d "mail=ana.lopez@unah.edu.hn" -d "password=1234" http://localhost:3000/ap
 --------------Curl para probar el home de SEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 
---------------Curl para probar el home de SEDP------------------------
+--------------Curl para probar el home de profesores------------------------
 curl http://localhost:3000/api/get/professor/homeProfessor?id=1 | jq
 
 -------------Curl para probar api/get/professorTYpes-----------------------
@@ -112,6 +112,8 @@ curl http://localhost:3000/api/get/coordinator/generateCsvAcademicLoad/?idCoordi
 ----------------------Curl para obtener el detalle de una seccion para un docente----------
 curl http://localhost:3000/api/get/professor/section/?id=24 | jq
 
+----------------------Curl para obtener las clases que se le asignaron a un docente dependiendo del periodo academico---------
+curl "http://localhost:3000/api/get/professor/assignedSections?idProfessor=24&idProcess=30" | jq
 
 ---------------------------------------PAGINACION------------------------------------------------------
 
