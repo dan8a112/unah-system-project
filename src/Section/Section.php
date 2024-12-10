@@ -367,6 +367,7 @@
                             b.description as subjectName, 
                             b.id as subjectId, 
                             a.section,  
+                            CONCAT(g.description, " ", year(f.startDate)) as period,
                             c.description as days, 
                             b.uv,  
                             a.startHour,  
@@ -377,6 +378,9 @@
                     INNER JOIN Days c ON (a.days = c.id) 
                     INNER JOIN Classroom d ON (a.classroom = d.id) 
                     INNER JOIN Building e ON (d.building = e.id) 
+                    INNER JOIN academicevent f ON (a.academicEvent = f.id) 
+                    INNER JOIN academicprocess g ON (f.process = g.id) 
+
                     WHERE a.id = ?;';
             $result = $this->mysqli->execute_query($query, [$id]);
             
@@ -401,16 +405,17 @@
                         "data"=> [
                             "stateProcess"=> $period['subprocessId'],
                             "processName"=> $period['description'],
-                            "sectionSection"=> [
+                            "infoSection"=> [
                                 "id"=> $section['sectionId'],
                                 "name" =>$section['subjectName'],
                                 "denomination"=> $section['section'],
-                                "code"=> $section['code'],
+                                "code"=> $section['subjectId'],
                                 "valueUnits"=> $section['uv'],
                                 "start"=> $section['startHour'],
                                 "end"=> $section['finishHour'],
                                 "days" => $section['days'],
                                 "classroom"=> $section['classroom'],
+                                "period"=>$section['period']
                             ],
                             "students"=> $students
                         ]

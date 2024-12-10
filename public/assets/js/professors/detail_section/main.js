@@ -7,10 +7,11 @@ const denomination = document.getElementById("denomination");
 const className = document.getElementById("className");
 const startHour = document.getElementById("startHour");
 const finishHour = document.getElementById("finishHour")
-const section = new URLSearchParams(window.location.search).get("section");
+const sectionId = new URLSearchParams(window.location.search).get("sectionId");
 const amountStudents = document.getElementById("amountStudents");
 const valueUnits = document.getElementById("valueUnits");
-const url = ``;
+const days = document.getElementById("days");
+const url = `../../../api/get/professor/section/?id=${sectionId}`;
 
 
 
@@ -49,22 +50,22 @@ const data = {
 
 async function loadData() {
     // Realizar la solicitud GET usando HttpRequest;
-    //const respose = await HttpRequest.get(url);
-    //const data = respose.data;
+    const respose = await HttpRequest.get(url);
+    const data = respose.data;
     const breadCrumbTitle = document.querySelector(".active");
-    const urlPaginacion = `../../../../api/get/pagination/studentsSection/?id=${section}&`;
+    const urlPaginacion = `../../../api/get/pagination/studentsSection/?id=${sectionId}&`;
 
     if (data) {
-      //Action.renderStudents(data.students.studentsList, data.students.amountStudents, urlPaginacion);
-      currentPeriod.innerText = `${data.infoSection.name}`;
-      startHour.innerText = `${data.infoSection.start}`;
-      finishHour.innerText = `${data.infoSection.end}`;
+      Action.renderStudents(data, urlPaginacion);
+      currentPeriod.innerText = `${data.infoSection.period}`;
+      startHour.innerText = `${data.infoSection.start}:00`;
+      finishHour.innerText = `${data.infoSection.end}:00`;
       denomination.innerText = `${data.infoSection.denomination} | ${data.infoSection.code}`;
       className.innerText = `${data.infoSection.name}`;
       breadCrumbTitle.innerText = `${data.infoSection.name}`;
-      amountStudents.innerText = `${data.infoSection.amountStudents}`;
+      amountStudents.innerText = `${data.students.amountStudents}`;
       valueUnits.innerText = `${data.infoSection.valueUnits} UV`;
-      Action.renderStudents(data);
+      days.innerText = `${data.infoSection.days}`
     } else {
       console.error("No se pudo cargar la información desde la API.");
     }

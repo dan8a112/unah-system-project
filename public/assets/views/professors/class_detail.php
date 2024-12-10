@@ -98,7 +98,7 @@
                     </div>
                     <div class="d-flex justify-content-center align-items-center flex-column" style="height: 80%;">
                         <h1 class="display-6" style="font-weight: 400;" id="valueUnits"></h1>
-                        <h1 class="display-6" style="font-weight: 600; font-size:1.0rem" id="days">LuMaMiJu</h1>
+                        <h1 class="display-6" style="font-weight: 600; font-size:1.0rem" id="days"></h1>
                     </div>
                 </div>
             </section>
