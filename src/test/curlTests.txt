@@ -113,7 +113,10 @@ curl http://localhost:3000/api/get/coordinator/generateCsvAcademicLoad/?idCoordi
 curl http://localhost:3000/api/get/professor/section/?id=24 | jq
 
 ----------------------Curl para obtener las clases que se le asignaron a un docente dependiendo del periodo academico---------
-curl "http://localhost:3000/api/get/professor/assignedSections?idProfessor=24&idProcess=30" | jq
+curl "http://localhost:3000/api/get/professor/assignedSections/?idProfessor=24&idProcess=30" | jq
+
+----------------------Curl para obtener las clases que se le asignaron a un docente dependiendo del periodo academico---------
+curl "http://localhost:3000/api/get/professor/timeLinePeriods/?idProfessor=3" | jq
 
 ---------------------------------------PAGINACION------------------------------------------------------
 

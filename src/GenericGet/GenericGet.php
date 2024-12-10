@@ -388,6 +388,68 @@
             return $periods;
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 10/12/24
+         * 
+         * Funcion de para obtener todos los periodos academicos en orden de años.
+         */
+        public function getAllPeriodsInYears(int $idProfessor) {
+            $allProcess = [];
+            $query = "SELECT 
+                    main.id,
+                    YEAR(main.year) AS year,
+                    main.process_order,
+                    main.description
+                    FROM (
+                        SELECT 
+                            a.id,
+                            a.process,
+                            a.startDate AS year,
+                            ROW_NUMBER() OVER(PARTITION BY YEAR(a.startDate) ORDER BY a.startDate) AS process_order,
+                            a.active,
+                            b.description
+                        FROM 
+                            AcademicEvent a
+                            INNER JOIN AcademicProcess b ON (a.process = b.id)
+                        WHERE a.process IN (8,9,10)
+                    ) AS main
+                    INNER JOIN Section a  ON (main.id = a.academicEvent)
+                    INNER JOIN Professor b ON (a.professor = b.id)
+                    WHERE 
+                        main.active != 1 AND b.id = ?
+                    GROUP BY 
+                        main.id, year, main.process_order
+                    ORDER BY 
+                        year DESC;";
+        
+            $result = $this->mysqli->execute_query($query, [$idProfessor]);
+            $organizedData = [];
+        
+            foreach ($result as $row) {
+                $year = $row["year"];
+                $processOrder = $row["process_order"];
+                $processId = $row["id"];
+                
+                if (!isset($organizedData[$year])) {
+                    $organizedData[$year] = [
+                        "year" => $year,
+                        "processes" => []
+                    ];
+                }
+                
+                $organizedData[$year]["processes"][] = [
+                    "id" => $processId,
+                    "title" => sprintf("%s %s", $row['description'], $year)
+                ];
+            }
+        
+            $allProcess = array_values($organizedData);
+            
+            return $allProcess;
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

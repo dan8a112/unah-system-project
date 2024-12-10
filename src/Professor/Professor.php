@@ -369,7 +369,7 @@
          */
         public function getAssignedClasses(int $idProfessor, int $idAcademicProcess){
             //Obtener las clases que ya tiene asignadas el docente
-            $query1 = 'SELECT a.id as idSection, a.section, b.description, b.id as idSubject 
+            $query1 = 'SELECT a.id as idSection, CONCAT(LPAD(CAST(a.section AS CHAR), 4, "0"))as denomination, b.description, b.id as idSubject 
             FROM Section a
             INNER JOIN Subject b ON (a.subject = b.id)
             WHERE academicEvent = ? AND a.professor = ?;';
