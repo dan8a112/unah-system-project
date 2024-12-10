@@ -167,8 +167,7 @@ CREATE TABLE Configuration(
 
 CREATE TABLE Student(
     account VARCHAR(11) PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
-    lastName VARCHAR(30) NOT NULL,
+    name VARCHAR(60) NOT NULL,
     dni VARCHAR(15) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
@@ -252,8 +251,8 @@ CREATE TABLE StudentSection(
     id INT PRIMARY KEY AUTO_INCREMENT,
     studentAccount VARCHAR(11),
     section INT,
-    grade TINYINT,
-    observation TINYINT,
+    grade TINYINT DEFAULT NULL,
+    observation TINYINT DEFAULT NULL,
     waiting BOOLEAN,
    CONSTRAINT fk_student_studentSection FOREIGN KEY(studentAccount) REFERENCES Student(account),
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
@@ -1181,6 +1180,61 @@ BEGIN
                 'message', 'Sección cancelada correctamente.'
             ) AS resultJson;
         END IF; 
+    END IF;
+END//
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 10/12/24
+    Procedimiento para actualizar las calificaciones de lo estudiantes en una clase
+**/
+CREATE PROCEDURE updateGradeStudent (IN p_account VARCHAR(11), IN p_grade FLOAT, IN p_obs INT, IN p_section INT)
+BEGIN 
+
+    IF NOT EXISTS (SELECT 1 FROM StudentSection WHERE section = p_section AND studentAccount = p_account) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No existe el estudiante es esta seccion.'
+            ) AS resultJson;
+    ELSEIF (p_grade<0) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No se pueden poner notas negativas a los estudiantes.'
+            ) AS resultJson;
+    ELSEIF NOT EXISTS (SELECT 1 FROM Observation WHERE id = p_obs AND id != 5) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No existe el id de la observación.'
+            ) AS resultJson;
+    ELSEIF (p_obs = 1 AND p_grade<65) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No se puede aprobar a un estudiante con una nota menor a 65.'
+            ) AS resultJson;
+    ELSEIF (p_obs = 2 AND p_grade>=65) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No se puede reprobar a un estudiante con una nota mayor o igual a 65.'
+            ) AS resultJson;
+    ELSEIF (p_obs = 3 AND p_grade>=65) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No se puede poner que un estudiante abandonó la clase con una nota mayor o igual a 65.'
+            ) AS resultJson;
+    ELSEIF (p_obs = 4 AND p_grade!=0) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No se puede poner que un estudiante no se presento a clase si su nota no es 0.'
+            ) AS resultJson;
+    ELSE
+        UPDATE StudentSection
+        SET grade = p_grade, observation = p_obs
+        WHERE section = p_section AND studentAccount = p_account;
+        SELECT JSON_OBJECT(
+                'status', true,
+                'message', 'Nota ingresada correctamente.'
+            ) AS resultJson;
     END IF;
 END//
 
@@ -2699,14 +2753,14 @@ END;
 
 CALL InsertSectionsIteratively;
 
-INSERT INTO Student (account, name, lastName, dni, address, email, degreeProgram, regionalCenter, globalAverage, periodAverage, photo1, photo2, photo3, password)
+INSERT INTO Student (account, name, dni, address, email, degreeProgram, regionalCenter, globalAverage, periodAverage, photo1, photo2, photo3, password)
 VALUES
-('20181000001', 'JUAN CARLOS', 'LOPEZ GARCÍA', '0801-1999-00001', 'CALLE 11, ZONA 11', 'juan.lopez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20201000001', 'MARÍA FERNANDA', 'PÉREZ MORALES', '0801-2001-10001', 'CALLE 21, ZONA 21', 'maria.perez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20211000001', 'PEDRO ALBERTO', 'RIVERA HERRERA', '0801-2002-10001', 'CALLE 31, ZONA 31', 'pedro.rivera@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20221000001', 'ANA PAOLA', 'SÁNCHEZ RAMÍREZ', '0801-2003-10001', 'CALLE 41, ZONA 41', 'ana.sanchez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20231000001', 'PEDRO ALBERTO', 'GÓMEZ FERNÁNDEZ', '0801-2004-10001', 'CALLE 51, ZONA 51', 'pedro.gomez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20241000001', 'LAURA BEATRIZ', 'FLORES CASTRO', '0801-2003-10001', 'CALLE 61, ZONA 61', 'laura.flores@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.');
+('20181000001', 'JUAN CARLOS LOPEZ GARCÍA', '0801-1999-00001', 'CALLE 11, ZONA 11', 'juan.lopez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20201000001', 'MARÍA FERNANDA PÉREZ MORALES', '0801-2001-10001', 'CALLE 21, ZONA 21', 'maria.perez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20211000001', 'PEDRO ALBERTO RIVERA HERRERA', '0801-2002-10001', 'CALLE 31, ZONA 31', 'pedro.rivera@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20221000001', 'ANA PAOLA SÁNCHEZ RAMÍREZ', '0801-2003-10001', 'CALLE 41, ZONA 41', 'ana.sanchez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20231000001', 'PEDRO ALBERTO GÓMEZ FERNÁNDEZ', '0801-2004-10001', 'CALLE 51, ZONA 51', 'pedro.gomez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20241000001', 'LAURA BEATRIZ FLORES CASTRO', '0801-2003-10001', 'CALLE 61, ZONA 61', 'laura.flores@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.');
 
 INSERT INTO Observation(id, observation) VALUES
 (1, 'APB'),

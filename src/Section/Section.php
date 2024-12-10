@@ -444,7 +444,7 @@
                     if($period['subprocessId']==17){
                         //Obtener la informacion de la tabla de observaciones
                         $observations = [];
-                        $query2 = "SELECT * FROM Observation;";
+                        $query2 = "SELECT * FROM Observation WHERE id!=5;";
                         $result2 = $this->mysqli->execute_query($query2);
                         if ($result2) {
                             while ($row = $result2->fetch_assoc()) {
@@ -470,6 +470,139 @@
                     "message"=> "Error al consultar la información de la sección."
                 ];
             }
+        }
+
+         /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 12/11/24
+         * 
+         * Funcion para leer el csv de las notas
+        */
+        public function insertGrades($path, int $idSection){
+            $expectedHeaders = ['account', 'grade', 'obs'];
+            $incorrectData = [];
+            $counter = 1;
+
+            if (($handle = fopen($path, 'r')) !== false) {
+                // Leer la primera línea (encabezados)
+                $headers = fgetcsv($handle, 1000, ',');
+                
+                if ($headers === $expectedHeaders) {
+                    // Leer cada línea del archivo
+                    while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                        // Mapear los datos a variables
+                        $account = $data[0];
+                        $grade = $data[1];
+                        $obs = $data[2];
+
+                        if (filter_var($grade, FILTER_VALIDATE_FLOAT) === false || filter_var($obs, FILTER_VALIDATE_INT) === false) {
+                            $incorrectData []= [
+                                $counter,
+                                $account,
+                                $grade,
+                                $obs,
+                                'Tipo de dato incorrecto en alguna columna.'
+                            ];
+                            $counter++;
+                            continue;
+                        }
+                
+                        // update los datos en la base de datos
+                        $query= "CALL updateGradeStudent(?, ?, ?, ?);";
+
+                        try{
+                            $result = $this->mysqli->execute_query($query, [$account, (float) $grade, (int) $obs, $idSection]);
+                            
+                            if ($row = $result->fetch_assoc()) {
+
+                                $resultJson = $row['resultJson'];
+
+                                $resultArray = json_decode($resultJson, true);
+
+                                if (!$resultArray['status']) {
+                                    $incorrectData []= [
+                                        $counter,
+                                        $account,
+                                        $grade,
+                                        $obs,
+                                        $resultArray['message']
+                                    ];
+                                }
+                            }else {
+                                $incorrectData []= [
+                                    $counter,
+                                    $account,
+                                    $grade,
+                                    $obs,
+                                    "Error al ejecutar el procedimiento: " . $conexion->error
+                                ];
+                            }
+                            
+                        }catch (Exception $e){
+                            $incorrectData []= [
+                                $counter,
+                                $account,
+                                $grade,
+                                $obs,
+                                "Error-> ". $e
+                            ];
+                        }
+
+                       $counter++;
+                    }
+                
+                    fclose($handle);
+
+                    $query1 = "SELECT b.account, b.name FROM StudentSection a
+                        INNER JOIN Student b ON (a.studentAccount = b.account) 
+                        WHERE section=? AND (grade IS NULL OR observation IS NULL);";
+                    $result1 = $this->mysqli->execute_query($query1, $idSection);
+                    $missingData = [];
+                    if ($result1) {
+                        while ($row = $result1->fetch_assoc()){
+                            $missingData[]= $row;
+                        }
+
+                        return [
+                            "status" => true,
+                            "message" => "CSV leido",
+                            "incorrectData"=> $incorrectData,
+                            "missingData"=> $missingData
+                        ];
+
+                    }else{
+                        return [
+                            "status" => true,
+                            "message" => "Error al obtener los estudiantes faltantes.",
+                            "incorrectData"=> $incorrectData,
+                            "missingData"=> $missingData
+                        ];
+                    }
+
+                    return [
+                        "status" => true,
+                        "message" => "CSV leido",
+                        "incorrectData"=> $incorrectData,
+                        "missingData"=> $missingData
+                    ];
+                } else {
+                    fclose($handle);
+                    return [
+                        'status' => false,
+                        'message' => 'El formato del archivo CSV no es válido. Encabezados esperados: ' 
+                                     . implode(', ', $expectedHeaders) 
+                                     . '. Encabezados recibidos: ' 
+                                     . implode(', ', $headers)
+                    ];
+                }
+            } else {
+                return [
+                    "status" => false,
+                    "message" => "Error al abrir CSV.",
+                ];
+            }
+            
         }
 
         // Método para cerrar la conexión
