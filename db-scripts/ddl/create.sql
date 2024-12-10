@@ -231,6 +231,7 @@ CREATE TABLE Section(
     section INT,
     days INT,
     startHour INT,
+    presentationVideo LONGBLOB,
     finishHour INT,
     classroom SMALLINT,
     maximumCapacity TINYINT,
@@ -260,7 +261,7 @@ CREATE TABLE StudentSection(
 
 CREATE TABLE Question(
     id TINYINT PRIMARY KEY AUTO_INCREMENT,
-    question VARCHAR(70)
+    question VARCHAR(150)
 );
 
 CREATE TABLE AnswerSelection(
@@ -272,12 +273,43 @@ CREATE TABLE StudentProfessorEvaluation(
     id INT PRIMARY KEY AUTO_INCREMENT,
     studentSection INT,
     question TINYINT,
-    answerText VARCHAR(20),
+    answerText VARCHAR(200),
     answerSelection TINYINT,
     CONSTRAINT fk_evaluation_studentSection FOREIGN KEY(studentSection) REFERENCES StudentSection(id),
     CONSTRAINT fk_question FOREIGN KEY(question) REFERENCES Question(id),
     CONSTRAINT fk_answerSelection FOREIGN KEY(AnswerSelection) REFERENCES AnswerSelection(id));
 
+CREATE TABLE RequestCenterChange(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    studentAccount VARCHAR(11),
+    currentCenter TINYINT,
+    newCenter TINYINT,
+    justification VARCHAR(200),
+    approved BOOLEAN,
+    CONSTRAINT fk_requestchangecenter_student FOREIGN KEY(studentAccount) REFERENCES Student(account),
+    CONSTRAINT fk_currentCenter FOREIGN KEY(currentCenter) REFERENCES RegionalCenter(id),
+    CONSTRAINT fk_newCenter FOREIGN KEY(newCenter) REFERENCES RegionalCenter(id)
+);
+
+CREATE TABLE RequestDegreeChange(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    studentAccount VARCHAR(11),
+    currentDegree SMALLINT,
+    newDegree SMALLINT,
+    justification VARCHAR(200),
+    approved BOOLEAN,
+    CONSTRAINT fk_requestdegreechange_student FOREIGN KEY(studentAccount) REFERENCES Student(account),
+    CONSTRAINT fk_currentDegree FOREIGN KEY(currentDegree) REFERENCES DegreeProgram(id),
+    CONSTRAINT fk_newDegree FOREIGN KEY(newDegree) REFERENCES DegreeProgram(id));
+
+CREATE TABLE RequestClassCancelation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    studentAccount VARCHAR(11),
+    studentSection INT,
+    justification VARCHAR(200),
+    approved BOOLEAN,
+    CONSTRAINT fk_requestclassCancelation_student FOREIGN KEY(studentAccount) REFERENCES Student(account),
+    CONSTRAINT fk_studentSection_cancellation FOREIGN KEY(studentSection) REFERENCES StudentSection(id));
 
 
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
@@ -1221,9 +1253,9 @@ END //
  * author: wamorales@unah.hn
  * version: 0.1.0
  * date: 17/11/24
- * Trigger que actualiza el indice academico global de un estudiante despues de la insercion de una calificacion
+ * Trigger que actualiza el indice academico global de un estudiante despues de la insercion de un registro en SectionStudent. (Para calculo en datos de prueba)
  */
-CREATE TRIGGER update_academic_index
+CREATE TRIGGER insert_academic_index
 AFTER INSERT ON StudentSection
 FOR EACH ROW
 BEGIN
@@ -1255,11 +1287,45 @@ END;
  * author: wamorales@unah.hn
  * version: 0.1.0
  * date: 17/11/24
- * Trigger que actualiza el indice academico de periodo de un estudiante despues de la insercion de una calificacion
+ * Trigger que actualiza el indice academico global de un estudiante despues de la actualizacion de un registro calificacion
+ */
+CREATE TRIGGER update_academic_index
+AFTER UPDATE ON StudentSection
+FOR EACH ROW
+BEGIN
+    DECLARE totalWeightedScore DECIMAL(10, 2);
+    DECLARE totalUV INT;
+
+    
+    SELECT SUM(ss.grade * sub.uv) INTO totalWeightedScore
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN Subject sub ON sec.subject = sub.id
+    WHERE ss.studentAccount = NEW.studentAccount;
+
+    SELECT SUM(sub.uv) INTO totalUV
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN Subject sub ON sec.subject = sub.id
+    WHERE ss.studentAccount = NEW.studentAccount;
+
+
+    IF totalUV > 0 THEN
+        UPDATE Student
+        SET globalAverage = totalWeightedScore / totalUV
+        WHERE account = NEW.studentAccount;
+    END IF;
+END;
+
+/**
+ * author: wamorales@unah.hn
+ * version: 0.1.0
+ * date: 17/11/24
+ * Trigger que actualiza el indice academico de periodo de un estudiante despues de la insercion de un registro en SectionStudent. (Para calculo en datos de prueba)
  */
 
 
-CREATE TRIGGER update_last_period_academic_index
+CREATE TRIGGER insert_last_period_academic_index
 AFTER INSERT ON StudentSection
 FOR EACH ROW
 BEGIN
@@ -1297,6 +1363,51 @@ BEGIN
     END IF;
 END;
 
+/**
+ * author: wamorales@unah.hn
+ * version: 0.1.0
+ * date: 17/11/24
+ * Trigger que actualiza el indice academico de periodo de un estudiante despues de la actualizacion de una calificacion
+ */
+
+
+CREATE TRIGGER update_last_period_academic_index
+AFTER UPDATE ON StudentSection
+FOR EACH ROW
+BEGIN
+    DECLARE totalGrades DECIMAL(10, 2);
+    DECLARE totalSubjects INT;
+    DECLARE lastPeriod INT;
+
+
+    SELECT MAX(academicEvent)-1 INTO lastPeriod
+    FROM StudentSection INNER JOIN Section ON StudentSection.section=Section.id 
+    INNER JOIN AcademicEvent ON Section.AcademicEvent=AcademicEvent.id 
+    WHERE process=8 OR process=9 OR process=10 AND StudentSection.studentAccount=NEW.studentAccount;
+
+
+    SELECT SUM(ss.grade) INTO totalGrades
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN AcademicEvent ON AcademicEvent.id=sec.academicEvent
+    WHERE ss.studentAccount = NEW.studentAccount
+    AND sec.academicEvent = lastPeriod;
+
+
+    SELECT COUNT(*) INTO totalSubjects
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN AcademicEvent ON AcademicEvent.id=sec.academicEvent
+    WHERE ss.studentAccount = NEW.studentAccount
+    AND sec.academicEvent = lastPeriod;
+
+
+    IF totalSubjects > 0 THEN
+        UPDATE Student
+        SET periodAverage = totalGrades / totalSubjects
+        WHERE account = NEW.studentAccount;
+    END IF;
+END;
 
 /*------------------------------------------------------------------------EVENTS--------------------------------------------------------------------------------*/
 -- Set the event scheduler ON
@@ -2668,3 +2779,31 @@ VALUES
     ('20241000001', 1223, NULL, NULL,0),
     ('20241000001', 1189, NULL, NULL,0),
     ('20241000001', 1232, NULL, NULL,0);
+
+
+INSERT INTO Question (question) VALUES 
+('¿Cómo evalúa la claridad de las explicaciones durante las clases?'),
+('¿Qué tan efectivo considera que es el material didáctico utilizado en el curso?'),
+('¿Qué tan útil ha sido la retroalimentación recibida en sus tareas y exámenes?'),
+('¿Cómo calificaría la organización del curso?'),
+('¿Qué tan accesible ha sido el profesor para responder sus dudas?'),
+('¿Cómo evalúa la calidad de los recursos en línea (videos, lecturas, foros)?'),
+('¿Qué tan bien considera que se cumplen los objetivos de aprendizaje del curso?'),
+('¿Cómo calificaría la metodología utilizada en el curso?'),
+('¿Qué tan eficiente considera que ha sido el uso del tiempo en las clases?'),
+('¿Cómo evalúa el nivel de dificultad de los contenidos del curso?');
+
+
+INSERT INTO Question (question) VALUES
+('¿Qué aspectos del curso considera que deberían mejorarse?'),
+('¿Qué parte del contenido del curso le resultó más útil para su aprendizaje?'),
+('¿Cómo calificaría la interacción entre los estudiantes y el profesor durante el curso?'),
+('¿Qué cambios sugeriría para hacer que el curso sea más efectivo?'),
+('¿Qué le motivó a tomar este curso y cómo ha satisfecho sus expectativas?');
+
+
+INSERT INTO AnswerSelection (description) VALUES
+('EXCELENTE'),
+('BUENO'),
+('MUY BUENO'),
+('DEFICIENTE');
