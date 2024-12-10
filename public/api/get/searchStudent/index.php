@@ -1,37 +1,39 @@
 <?php
 
-    header("Content-Type: application/json");
+header("Content-Type: application/json");
 
-    include_once "../../../../src/DbConnection/DbConnection.php";
-    include_once "../../../../src/Student/StudentHistory.php";
+include_once "../../../../src/DbConnection/DbConnection.php";
+include_once "../../../../src/Student/StudentHistory.php";
 
-    //Data Access Object
-    $dao = new StudentDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
+// Data Access Object
+$dao = new StudentDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-    if(isset($_GET["searchIndex"])){
-        $searchResults = $dao->searchStudents($_GET['searchIndex']);
-        if($searchResults != null){
-            $json = [
-                "message"=> "Peticion realizada con exito",
-                "status"=> true,
-                "data" => $searchResults     
-            ];
-        }else{
-            $json = [
-                "message"=> "No se encontraron coincidencias.",
-                "status"=> false,                
-            ];
-        }
-        
-    }else{
+// Verificar si se recibe el número de cuenta por POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['searchIndex'])) {
+    $searchIndex = trim($_POST['searchIndex']);
+
+    $searchResults = $dao->searchStudents($searchIndex);
+
+    if ($searchResults != null) {
         $json = [
-            "message"=> "No se recibió el parámetro correcto",
-            "status"=> false,                
+            "message" => "Petición realizada con éxito",
+            "status" => true,
+            "data" => $searchResults
+        ];
+    } else {
+        $json = [
+            "message" => "No se encontraron coincidencias.",
+            "status" => false
         ];
     }
+} else {
+    $json = [
+        "message" => "Parámetro de búsqueda no recibido o método no permitido.",
+        "status" => false
+    ];
+}
 
-    $dao->closeConnection();
-    
-    echo json_encode($json);
+$dao->closeConnection();
+echo json_encode($json);
 
 ?>

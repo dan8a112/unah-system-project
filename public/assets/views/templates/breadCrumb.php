@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="../../../css/templates/breadCrumb.css">
 <nav aria-label="breadcrumb" class="breadcrumb">
   <?php if (isset($links) && is_array($links)): ?>
     <?php foreach ($links as $index => $link): ?>

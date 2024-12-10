@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="../../../css/templates/professor.css">
     <link rel="stylesheet" href="../../../css/temas/cards.css">
     <link rel="stylesheet" href="../../../css/students/academic_history.css">
+    <link rel="stylesheet" href="../../../css/templates/breadCrumb.css">
 </head>
 
 <body>

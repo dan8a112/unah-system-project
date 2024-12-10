@@ -42,6 +42,14 @@ class Action{
 
     }
 
+    static getInitials(phrase) {
+        return phrase
+            .split(" ")            
+            .map(word => word[0])  
+            .join("")              
+            .toUpperCase();    
+    }
+
 
 }
 

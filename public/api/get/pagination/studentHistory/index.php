@@ -16,11 +16,9 @@ if (isset($_GET["id"]) && isset($_GET["offset"])) {
         $json = [
             "status" => true,
             "message" => "Historial académico obtenido.",
-            "studentInfo" => $result['data']['studentInfo'],  
-            "classes" => [
-                "amountClasses" => $result['data']['classes']['amountClasses'],  
-                "classList" => $result['data']['classes']['classList'],  
-            ]
+            "studentInfo" => $result['data']['studentInfo'],
+            "amountClasses" => $result['data']['classes']['amountClasses'],
+            "data" => $result['data']['classes']['classList']
         ];
     } else {
         $json = [

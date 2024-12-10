@@ -143,9 +143,23 @@
         public function getSectionBossDepartment(int $id){
 
             //Obtener detalle de la seccion
-            $query= 'SELECT a.id as sectionId, LPAD(CAST(a.section AS CHAR), 4, "0") as code, b.description as subjectName, a.section, c.description as days, b.uv, CONCAT(a.startHour, ":00") as startHour, 
-                    CONCAT(a.finishHour, ":00") as finishHour, d.id as classroomId, CONCAT(d.description, " ", e.description ) as classroom, CONCAT(f.names, " ", f.lastNames) as professorName, f.id as professorId,
-                    a.maximumCapacity
+            $query= 'SELECT a.id as sectionId, 
+                            LPAD(CAST(a.section AS CHAR), 4, "0") as code, 
+                            b.description as subjectName,
+                            b.id as subjectId,
+                            a.section, 
+                            c.description as days, 
+                            c.id as idDays,
+                            b.uv, 
+                            a.startHour, 
+                            a.finishHour, d.id as classroomId, 
+                            d.description as classroom, 
+                            d.building as classroomBuilding,
+                            CONCAT(f.names, " ", f.lastNames) as professorName, 
+                            f.id as professorId,
+                            a.maximumCapacity,
+                            e.id as idBuilding,
+                            e.description as building
                     FROM Section a
                     INNER JOIN Subject b ON (a.subject = b.id)
                     INNER JOIN Days c ON (a.days = c.id)
@@ -172,16 +186,28 @@
                         "places"=>$info['maximumCapacity'],
                         "classrom"=>[
                             "id"=>$info['classroomId'],
-                            "name"=> $info['classroom']
+                            "name"=> $info['classroom'],
+                            "idBuilding"=> $info['classroomBuilding']
+                        ],
+                        "building"=>[
+                            "id"=>$info['idBuilding'],
+                            "name"=> $info['building']
                         ],
                         "amountWaitingStudents"=>$waiting['amountWaitingStudents'],
                         "waitingStudentList"=> $waiting['waitingStudentList'],
                         'amountStudents'=> $students['amountStudents'],
                         "studentsList"=> $students['studentsList'],
-                        "days"=> $info['days'],
-                        "className"=> $info['subjectName'],
+                        "days" => [
+                            "id" => $info['idDays'],
+                            "name" => $info['days']
+                        ],
+                        "class"=> [
+                            "id" => $info['subjectId'],
+                            "name" =>$info['subjectName']
+                        ],
                         "uv"=> $info['uv'],
-                        "startHour"=> $info['startHour']
+                        "startHour"=> $info['startHour'],
+                        "finishHour"=> $info['finishHour'],
                     ]
                 ];
 
@@ -192,12 +218,13 @@
                 ];
             }
         }
+
         /**
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 9/12/24
          * 
-         * Funcion para obtener la informacion de una sección
+         * Funcion para crear una sección
          */
 
         public function setSection($class, $professor, $days, $startHour, $finishHour, $classroom, $places){
@@ -240,6 +267,166 @@
                 return [
                     "status"=> false,
                     "message"=> "Error al consultar el horario seleccionado."
+                ];
+            }
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 9/12/24
+         * 
+         * Funcion para modificar una sección
+         */
+
+         public function updateSection($id, $class, $professor, $days, $startHour, $finishHour, $classroom, $places){
+            //obtener el horario para formatearlo => '%Lu%Ju%'
+            $query= 'SELECT description FROM Days WHERE id=?;';
+            $result= $this->mysqli->execute_query($query, [$days]);
+
+            if($result){
+                $stringDays = $result->fetch_assoc();
+                $output = preg_replace('/([A-Z][a-z]*)/', '%$1', $stringDays['description']) . '%';
+                
+                //Llamar al procedimiento almacenado de las query
+                $query1 = 'CALL updateSection(?, ?, ?, ?, ?, ?, ?, ?, ?);';
+                $result1 = $this->mysqli->execute_query($query1, [$id, $class, $professor, $days, $startHour, $finishHour, $classroom, $places, $output]);
+                if($result1){
+                    $row = $result1->fetch_assoc();
+
+                    $resultJson = $row['resultJson'];
+
+                    $resultArray = json_decode($resultJson, true);
+
+                    if ($resultArray !== null) {
+                        return $resultArray;
+                    } else {
+                        return [
+                            "status" => false,
+                            "message" => "Error al decodificar el JSON."
+                        ];
+                    }
+                    
+
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Error al chacer el insert de la sección."
+                    ];
+                }
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar el horario seleccionado."
+                ];
+            }
+        }
+
+        public function canceledSection(int $id){
+            $query = 'Call canceledSection(?);';
+            $result = $this->mysqli->execute_query($query, [$id]);
+
+            if($result){
+                $row = $result->fetch_assoc();
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+                    return $resultArray;
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else{
+                return [
+                    'status'=> false,
+                    'message'=> "Error al hacer la consulta."
+                ];
+            }
+
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 10/12/24
+         * 
+         * Funcion para obtener detalle de una seccion para un docente
+         */
+        public function getSectionProfessor(int $id){
+
+            //Obtener detalle de la seccion
+            $query= 'SELECT a.id as sectionId,  
+                            LPAD(CAST(a.section AS CHAR), 4, "0") as code,  
+                            b.description as subjectName, 
+                            b.id as subjectId, 
+                            a.section,  
+                            c.description as days, 
+                            b.uv,  
+                            a.startHour,  
+                            a.finishHour, d.id as classroomId,  
+                            CONCAT(d.description, " ", e.description ) as classroom 
+                    FROM Section a 
+                    INNER JOIN Subject b ON (a.subject = b.id) 
+                    INNER JOIN Days c ON (a.days = c.id) 
+                    INNER JOIN Classroom d ON (a.classroom = d.id) 
+                    INNER JOIN Building e ON (d.building = e.id) 
+                    WHERE a.id = ?;';
+            $result = $this->mysqli->execute_query($query, [$id]);
+            
+            if($result){
+                $section = $result->fetch_assoc();
+                $students = $this ->getStudentsSection($id, 0);
+                
+                //obtener informacion del subproceso
+                $query1 = 'SELECT a.id as processId, CONCAT(d.description, " ", year(a.startDate)) as period, c.id as subprocessId, c.description, DATE(b.startDate) as startDate, DATE(b.finalDate) as finalDate
+                        FROM AcademicEvent a
+                        INNER JOIN AcademicEvent b ON (a.id = b.parentId)
+                        INNER JOIN AcademicProcess c ON (b.process = c.id)
+                        INNER JOIN AcademicProcess d ON (a.process = d.id)
+                        WHERE b.parentId = (SELECT actualAcademicPeriod())
+                        AND b.active=true;';
+                $result1 = $this->mysqli->execute_query($query1);
+                if($result1){
+                    $period = $result1->fetch_assoc();
+                    return [
+                        "status"=> true,
+                        "message"=> "Petición realizada con exito",
+                        "data"=> [
+                            "stateProcess"=> $period['subprocessId'],
+                            "processName"=> $period['description'],
+                            "sectionSection"=> [
+                                "id"=> $section['sectionId'],
+                                "name" =>$section['subjectName'],
+                                "denomination"=> $section['section'],
+                                "code"=> $section['code'],
+                                "valueUnits"=> $section['uv'],
+                                "start"=> $section['startHour'],
+                                "end"=> $section['finishHour'],
+                                "days" => $section['days'],
+                                "classroom"=> $section['classroom'],
+                            ],
+                            "students"=> $students
+                        ]
+                    ];
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Error al consultar la información sobre el periodo academico."
+                    ];
+                }
+                
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar la información de la sección."
                 ];
             }
         }
