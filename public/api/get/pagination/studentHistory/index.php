@@ -10,15 +10,24 @@ $dao = new StudentDAO(DbConnection::$server, DbConnection::$user, DbConnection::
 
 if (isset($_GET["id"]) && isset($_GET["offset"])) {
     $result = $dao->getStudentAcademicHistory((string)$_GET["id"], (int)$_GET["offset"]);
-    $json = [
-        "status" => true,
-        "message" => "Historial académico obtenido.",
-        "studentInfo" => $result['studentInfo'], 
-        "classes" => [
-            "amountClasses" => $result['amountClasses'], 
-            "classList" => $result['classList'], 
-        ]
-    ];
+
+    
+    if ($result['status'] === true) {
+        $json = [
+            "status" => true,
+            "message" => "Historial académico obtenido.",
+            "studentInfo" => $result['data']['studentInfo'],  
+            "classes" => [
+                "amountClasses" => $result['data']['classes']['amountClasses'],  
+                "classList" => $result['data']['classes']['classList'],  
+            ]
+        ];
+    } else {
+        $json = [
+            "status" => false,
+            "message" => $result['message'],  
+        ];
+    }
 } else {
     $json = [
         "message" => "No se recibió el parámetro correcto.",
@@ -29,5 +38,7 @@ if (isset($_GET["id"]) && isset($_GET["offset"])) {
 $dao->closeConnection();
 
 echo json_encode($json);
+
+ 
 
 ?>
