@@ -1,10 +1,12 @@
 <?php
 
-    //author: afcastillof@unah.hn
-    //version: 0.1.0
-    //date: 12/11/24
-
-    //servicio para crear csv con estudiantes aprobados
+    /**
+     * author: afcastillof@unah.hn
+     * version: 0.1.0
+     * date: 12/11/24
+     * 
+     * servicio para crear csv con estudiantes aprobados
+     */
 
 header("Content-Type: application/json");
 

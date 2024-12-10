@@ -1,4 +1,12 @@
 <?php
+
+    /**
+     * author: dochoao@unah.hn
+     * version: 0.1.0
+     * date: nov 2024
+     * 
+     * Servicio para cerrar una seccion 
+     */
     header("Content-Type: application/json");
 
     include_once "../../../../src/SessionValidation/SessionValidation.php";

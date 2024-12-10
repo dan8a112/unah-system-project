@@ -1,4 +1,11 @@
 <?php
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: dic 2024
+     * 
+     * Servicio login de SEDP
+     */
 
     header("Content-Type: application/json");
 

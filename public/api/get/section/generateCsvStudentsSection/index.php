@@ -1,9 +1,10 @@
 <?php
 
-    //author: dorian.contreras@unah.hn
-    //version: 0.1.0
-    //date: 10/12/24
-    //servicio para crear csv con estudiantes matriculados en una seccion
+    /** author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: 10/12/24
+     * servicio para crear csv con estudiantes matriculados en una seccion
+     */
 
     header("Content-Type: application/json");
 

@@ -1,5 +1,12 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: nov 2024
+     * 
+     * Servicio para obtener todos los tipos de profesores
+     */
     header("Content-Type: application/json");
 
     include_once "../../../../../src/DbConnection/DbConnection.php";

@@ -1,4 +1,11 @@
 <?php
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: nov 2024
+     * 
+     * Servicio login del jefe de departamento
+     */
 
     header("Content-Type: application/json");
 

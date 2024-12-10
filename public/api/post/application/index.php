@@ -1,4 +1,11 @@
 <?php
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: nov 2024
+     * 
+     * Servicio hacer insert de una inscripcion en el proceso de admision
+     */
 
     header("Content-Type: application/json");
 

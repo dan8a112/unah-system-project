@@ -323,6 +323,13 @@
             }
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 9/12/24
+         * 
+         * Funcion para cancelar seccion validando unicamente la cantidad de estudiantes
+         */
         public function canceledSection(int $id){
             $query = 'Call canceledSection(?);';
             $result = $this->mysqli->execute_query($query, [$id]);
@@ -372,7 +379,8 @@
                             b.uv,  
                             a.startHour,  
                             a.finishHour, d.id as classroomId,  
-                            CONCAT(d.description, " ", e.description ) as classroom 
+                            CONCAT(d.description, " ", e.description ) as classroom,
+                            a.presentationVideo 
                     FROM Section a 
                     INNER JOIN Subject b ON (a.subject = b.id) 
                     INNER JOIN Days c ON (a.days = c.id) 
@@ -386,6 +394,12 @@
             
             if($result){
                 $section = $result->fetch_assoc();
+
+                if($section['presentationVideo'] === NULL){
+                    $video = false;
+                }else{
+                    $video = true;
+                }
                 $students = $this ->getStudentsSection($id, 0);
                 
                 //obtener informacion del subproceso
@@ -399,12 +413,16 @@
                 $result1 = $this->mysqli->execute_query($query1);
                 if($result1){
                     $period = $result1->fetch_assoc();
-                    return [
+
+                    $response = [
                         "status"=> true,
                         "message"=> "Petición realizada con exito",
                         "data"=> [
                             "stateProcess"=> $period['subprocessId'],
                             "processName"=> $period['description'],
+                            "infoSection"=> [
+                            "start"=> $period['startDate'],
+                            "end"=> $period['finalDate'],
                             "infoSection"=> [
                                 "id"=> $section['sectionId'],
                                 "name" =>$section['subjectName'],
@@ -417,9 +435,26 @@
                                 "classroom"=> $section['classroom'],
                                 "period"=>$section['period']
                             ],
-                            "students"=> $students
+                            "students"=> $students,
+                            "video"=> $video
                         ]
                     ];
+
+                    if($period['subprocessId']==17){
+                        //Obtener la informacion de la tabla de observaciones
+                        $observations = [];
+                        $query2 = "SELECT * FROM Observation;";
+                        $result2 = $this->mysqli->execute_query($query2);
+                        if ($result2) {
+                            while ($row = $result2->fetch_assoc()) {
+                                $observations [] = $row;
+                            }
+                        }
+                        $response['observations']= $observations;
+                    }
+
+                    return $response;
+
                 }else{
                     return [
                         "status"=> false,

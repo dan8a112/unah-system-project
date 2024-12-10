@@ -1,4 +1,11 @@
 <?php
+/**
+ * author: dochoao@unah.hn
+ * version: 0.1.0
+ * date: nov 2024
+ * 
+ * Funcion validar las sesiones activas
+ */
 
     class SessionValidation{
 

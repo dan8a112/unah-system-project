@@ -280,17 +280,6 @@
             }
         }
 
-        /**
-         * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 9/12/24
-         * 
-         * Funcion para insertar una seccion
-         */
-        public function setSection(){
-
-        }
-
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

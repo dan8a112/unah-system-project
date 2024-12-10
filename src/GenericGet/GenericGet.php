@@ -11,6 +11,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 5/11/24
+         * 
+         * FUncion para obtener todas las carreras
          */
         public function getDegrees() : array {
 
@@ -34,6 +36,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 4/11/24
+         * 
+         * Funcion para obtener todos los tipos de profesores
          */
         public function getProfessorTypes() : array {
 
@@ -57,6 +61,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 4/11/24
+         * 
+         * Funcion para obtener todos los centros regionales
          */
         public function getCenters() : array {
 
@@ -80,6 +86,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 5/11/24
+         * 
+         * Funcion para obtener las carreras que estan en los distintos centrol regionales
          */
         public function getDegreesInCenter() : array {
 
@@ -106,6 +114,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 6/11/24
+         * 
+         * Funcion para obtener todos los departamentos
          */
         public function getDepartments() : array {
 
@@ -129,6 +139,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 11/11/24
+         * 
+         * Funcion para obtener todos los eventos academicos dependiendo del tipo de evento academico
          */
 
         public function getAllProcess(int $typeProcess) : array {
@@ -153,6 +165,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 11/11/24
+         * 
+         * Funcion para obtener solo un evento academico
          */
 
         public function getProcess(int $id) {
@@ -175,8 +189,8 @@
 
         /**
          * author: afcastillof@unah.hn
-         * version: 0.1.1
-         * date: 12/11/24
+         * version: 0.1.2
+         * date: 10/12/24
          */
         public function getCurrentProcess() {
             $query = "SELECT 
@@ -191,7 +205,8 @@
                                 ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
                                 active
                             FROM
-                                AcademicEvent
+                                AcademicEvent 
+                            WHERE process=1
                         ) AS main
                         WHERE 
                             main.active = 1
@@ -263,24 +278,25 @@
                         main.id,
                         YEAR(main.year) AS year,
                         main.process_order
-                      FROM (
-                          SELECT 
-                              id,
-                              process,
-                              startDate AS year,
-                              ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
-                              active
-                          FROM 
-                              AcademicEvent
-                      ) AS main
-                      INNER JOIN Application AS a
-                      ON main.id = a.AcademicEvent
-                      WHERE 
-                          main.active != 1
-                      GROUP BY 
-                          main.id, year, main.process_order
-                      ORDER BY 
-                          year DESC";
+                        FROM (
+                            SELECT 
+                                id,
+                                process,
+                                startDate AS year,
+                                ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
+                                active
+                            FROM 
+                                AcademicEvent 
+                            WHERE process = 1
+                        ) AS main
+                        INNER JOIN Application AS a
+                        ON main.id = a.AcademicEvent
+                        WHERE 
+                            main.active != 1
+                        GROUP BY 
+                            main.id, year, main.process_order
+                        ORDER BY 
+                            year DESC;";
         
             $result = $this->mysqli->execute_query($query);
             $organizedData = [];
@@ -337,7 +353,7 @@
          * version: 0.1.0
          * date: 09/12/24
          * 
-         * Funcion de para obtener las clases de un departamento, se envia el id del jefe de departamento o cualquier profesor que pertenezca a ese departamentp
+         * Funcion de para obtener las clases de un departamento, se envia el id del jefe de departamento o cualquier profesor que pertenezca a ese departament0
          */
         public function getSubjectsDepartment($id){
             $classes = [];
@@ -384,6 +400,68 @@
             }
 
             return $periods;
+        }
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 10/12/24
+         * 
+         * Funcion de para obtener todos los periodos academicos en orden de años.
+         */
+        public function getAllPeriodsInYears(int $idProfessor) {
+            $allProcess = [];
+            $query = "SELECT 
+                    main.id,
+                    YEAR(main.year) AS year,
+                    main.process_order,
+                    main.description
+                    FROM (
+                        SELECT 
+                            a.id,
+                            a.process,
+                            a.startDate AS year,
+                            ROW_NUMBER() OVER(PARTITION BY YEAR(a.startDate) ORDER BY a.startDate) AS process_order,
+                            a.active,
+                            b.description
+                        FROM 
+                            AcademicEvent a
+                            INNER JOIN AcademicProcess b ON (a.process = b.id)
+                        WHERE a.process IN (8,9,10)
+                    ) AS main
+                    INNER JOIN Section a  ON (main.id = a.academicEvent)
+                    INNER JOIN Professor b ON (a.professor = b.id)
+                    WHERE 
+                        main.active != 1 AND b.id = ?
+                    GROUP BY 
+                        main.id, year, main.process_order
+                    ORDER BY 
+                        year DESC;";
+        
+            $result = $this->mysqli->execute_query($query, [$idProfessor]);
+            $organizedData = [];
+        
+            foreach ($result as $row) {
+                $year = $row["year"];
+                $processOrder = $row["process_order"];
+                $processId = $row["id"];
+                
+                if (!isset($organizedData[$year])) {
+                    $organizedData[$year] = [
+                        "year" => $year,
+                        "processes" => []
+                    ];
+                }
+                
+                $organizedData[$year]["processes"][] = [
+                    "id" => $processId,
+                    "title" => sprintf("%s %s", $row['description'], $year)
+                ];
+            }
+        
+            $allProcess = array_values($organizedData);
+            
+            return $allProcess;
         }
 
         // Método para cerrar la conexión

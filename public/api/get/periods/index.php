@@ -1,5 +1,13 @@
 <?php
 
+    /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date:  9/12/24
+     * 
+     * Servicio para obtener los periodos 
+     */
+
     header("Content-Type: application/json");
 
     include_once "../../../../src/DbConnection/DbConnection.php";

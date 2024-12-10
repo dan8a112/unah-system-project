@@ -353,6 +353,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 23/11/24
+         * 
+         * Funcion para obtener el detalle de una proceso de admision activo
          */
         public function getInfoCurrentAdmission(){
 
@@ -532,6 +534,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.2.0
          * date: 24/11/24
+         * 
+         * Funcion para obtener el detalle de una proceso de admision historico
          */
         public function getInfoHistoricAdmission(int $id){
 
@@ -629,6 +633,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 12/11/24
+         * 
+         * FUncion para saber si esta activo el proceso de inscripcion de algun periodo de admision
          */
         public function isActiveInscriptionProcess() {
 
@@ -649,6 +655,8 @@
          * author: dorian.contreras@unah.hn
          * version: 0.1.0
          * date: 12/11/24
+         * 
+         * Funcion para leer el csv
         */
         public function insertResults($path){
             $expectedHeaders = ['dni', 'idTest', 'grade'];
