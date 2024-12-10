@@ -11,38 +11,8 @@ class Action {
         //Petición asíncrona que obtiene la información del home
         const response = await HttpRequest.get(`/api/get/professor/homeProfessor/?id=${this.userId}`);
 
-        //Response temporal
-        const response1 = {
-            "status": true,
-            "message": "Petición realizada con éxito.",
-            "data": {
-              "processInfo": {
-                "processId": 13,
-                "period": "III PAC 2024",
-                "subprocessId": 12,
-                "description": "Prematrícula",
-                "startDate": "2024-10-10",
-                "finalDate": "2024-10-20"
-              },
-              "classes": [
-                {
-                  "idSection": 2,
-                  "section": 1600,
-                  "description": "ALGORITMOS Y ESTRUCTURA DE DATOS",
-                  "idSubject": "IS310"
-                },
-                {
-                  "idSection": 5,
-                  "section": 700,
-                  "description": "BASE DE DATOS I",
-                  "idSubject": "IS501"
-                }
-              ]
-            }
-          }
-
         //destructuración de la respuesta
-        const {status, message, data} = response1;
+        const {status, message, data} = response;
 
         //Si la respuesta fue exitosa
         if (status===true) {
@@ -62,12 +32,12 @@ class Action {
                     <img src="../../img/icons/calendar-clock.svg" alt="" class="me-2">
                     <span class="fs-5" style="font-weight: 600;" id="processName">Proceso: ${description}</span>
                 </div>
-                <div>
-                    <div class="mb-2">
+                <div class="row">
+                    <div class="mb-2 col">
                         <span>Inicio</span>
                         <p class="fs-5" id="startDate">${startDate}</p>
                     </div>
-                    <div >
+                    <div class="col">
                         <span>Fin</span>
                         <p class="fs-5" id="finishDate">${finalDate}</p>
                     </div>
