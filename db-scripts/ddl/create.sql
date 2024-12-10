@@ -1217,6 +1217,87 @@ BEGIN
     END IF;
 END //
 
+/**
+ * author: wamorales@unah.hn
+ * version: 0.1.0
+ * date: 17/11/24
+ * Trigger que actualiza el indice academico global de un estudiante despues de la insercion de una calificacion
+ */
+CREATE TRIGGER update_academic_index
+AFTER INSERT ON StudentSection
+FOR EACH ROW
+BEGIN
+    DECLARE totalWeightedScore DECIMAL(10, 2);
+    DECLARE totalUV INT;
+
+    
+    SELECT SUM(ss.grade * sub.uv) INTO totalWeightedScore
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN Subject sub ON sec.subject = sub.id
+    WHERE ss.studentAccount = NEW.studentAccount;
+
+    SELECT SUM(sub.uv) INTO totalUV
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN Subject sub ON sec.subject = sub.id
+    WHERE ss.studentAccount = NEW.studentAccount;
+
+
+    IF totalUV > 0 THEN
+        UPDATE Student
+        SET globalAverage = totalWeightedScore / totalUV
+        WHERE account = NEW.studentAccount;
+    END IF;
+END;
+
+/**
+ * author: wamorales@unah.hn
+ * version: 0.1.0
+ * date: 17/11/24
+ * Trigger que actualiza el indice academico de periodo de un estudiante despues de la insercion de una calificacion
+ */
+
+
+CREATE TRIGGER update_last_period_academic_index
+AFTER INSERT ON StudentSection
+FOR EACH ROW
+BEGIN
+    DECLARE totalGrades DECIMAL(10, 2);
+    DECLARE totalSubjects INT;
+    DECLARE lastPeriod INT;
+
+
+    SELECT MAX(academicEvent)-1 INTO lastPeriod
+    FROM StudentSection INNER JOIN Section ON StudentSection.section=Section.id 
+    INNER JOIN AcademicEvent ON Section.AcademicEvent=AcademicEvent.id 
+    WHERE process=8 OR process=9 OR process=10 AND StudentSection.studentAccount=NEW.studentAccount;
+
+
+    SELECT SUM(ss.grade) INTO totalGrades
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN AcademicEvent ON AcademicEvent.id=sec.academicEvent
+    WHERE ss.studentAccount = NEW.studentAccount
+    AND sec.academicEvent = lastPeriod;
+
+
+    SELECT COUNT(*) INTO totalSubjects
+    FROM StudentSection ss
+    INNER JOIN Section sec ON ss.section = sec.id
+    INNER JOIN AcademicEvent ON AcademicEvent.id=sec.academicEvent
+    WHERE ss.studentAccount = NEW.studentAccount
+    AND sec.academicEvent = lastPeriod;
+
+
+    IF totalSubjects > 0 THEN
+        UPDATE Student
+        SET periodAverage = totalGrades / totalSubjects
+        WHERE account = NEW.studentAccount;
+    END IF;
+END;
+
+
 /*------------------------------------------------------------------------EVENTS--------------------------------------------------------------------------------*/
 -- Set the event scheduler ON
 SET GLOBAL event_scheduler = ON;
