@@ -1,14 +1,14 @@
 <?php
 
-        Class StudentDAO{
-            private $mysqli;
+Class StudentDAO {
+    private $mysqli;
 
-            public function __construct(string $server, string $user, string $pass, string $dbName) {
-                $this->mysqli = new mysqli($server, $user, $pass, $dbName);
-            }
+    public function __construct(string $server, string $user, string $pass, string $dbName) {
+        $this->mysqli = new mysqli($server, $user, $pass, $dbName);
+    }
 
             public function getStudentAcademicHistory(string $studentId, int $offset = 0, int $limit = 10) {
-                // Consulta principal para obtener información del estudiante
+
                 $queryStudentInfo = '
                     SELECT 
                         CONCAT(s.name, " ", s.lastName) AS studentName,
@@ -36,7 +36,7 @@
             
                 $studentInfo = $resultStudentInfo->fetch_assoc();
             
-                // Consulta para obtener el historial académico (clases) con paginación
+
                 $queryClasses = '
 
                 SELECT Section.id, 

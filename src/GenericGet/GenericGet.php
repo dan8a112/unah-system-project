@@ -359,6 +359,33 @@
             return $classes;
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 09/12/24
+         * 
+         * Funcion de para obtener todos los periodos academicos.
+         */
+        public function getPeriods(){
+            $periods = [];
+
+            $query = 'SELECT a.id, CONCAT(b.description, " ", year(startDate)) as name 
+                FROM AcademicEvent a
+                INNER JOIN AcademicProcess b ON (a.process = b.id)
+                WHERE b.id IN (8,9,10)
+                ORDER BY startDate DESC';
+
+            $result = $this->mysqli->execute_query($query);
+
+            if($result){
+                while($row = $result->fetch_assoc()){
+                    $periods[] = $row;
+                }
+            }
+
+            return $periods;
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

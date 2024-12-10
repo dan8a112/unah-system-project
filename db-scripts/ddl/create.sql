@@ -172,6 +172,7 @@ CREATE TABLE Student(
     dni VARCHAR(15) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
+    description VARCHAR(20),
     degreeProgram SMALLINT NOT NULL,
     regionalCenter TINYINT NOT NULL,
     globalAverage TINYINT,
@@ -256,6 +257,11 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_student_studentSection FOREIGN KEY(studentAccount) REFERENCES Student(account),
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
+
+CREATE TABLE ProfessorEvaluation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    question VARCHAR(70)
+);
 
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
 DELIMITER //

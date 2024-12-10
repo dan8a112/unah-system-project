@@ -143,9 +143,19 @@
         public function getSectionBossDepartment(int $id){
 
             //Obtener detalle de la seccion
-            $query= 'SELECT a.id as sectionId, LPAD(CAST(a.section AS CHAR), 4, "0") as code, b.description as subjectName, a.section, c.description as days, b.uv, CONCAT(a.startHour, ":00") as startHour, 
-                    CONCAT(a.finishHour, ":00") as finishHour, d.id as classroomId, CONCAT(d.description, " ", e.description ) as classroom, CONCAT(f.names, " ", f.lastNames) as professorName, f.id as professorId,
-                    a.maximumCapacity
+            $query= 'SELECT a.id as sectionId, 
+                            LPAD(CAST(a.section AS CHAR), 4, "0") as code, 
+                            b.description as subjectName, 
+                            a.section, 
+                            c.description as days, 
+                            c.id as idDays,
+                            b.uv, 
+                            a.startHour, 
+                            a.finishHour, d.id as classroomId, 
+                            CONCAT(d.description, " ", e.description ) as classroom, 
+                            CONCAT(f.names, " ", f.lastNames) as professorName, 
+                            f.id as professorId,
+                            a.maximumCapacity
                     FROM Section a
                     INNER JOIN Subject b ON (a.subject = b.id)
                     INNER JOIN Days c ON (a.days = c.id)
@@ -178,10 +188,14 @@
                         "waitingStudentList"=> $waiting['waitingStudentList'],
                         'amountStudents'=> $students['amountStudents'],
                         "studentsList"=> $students['studentsList'],
-                        "days"=> $info['days'],
+                        "days" => [
+                            "id" => $info['idDays'],
+                            "name" => $info['days']
+                        ],
                         "className"=> $info['subjectName'],
                         "uv"=> $info['uv'],
-                        "startHour"=> $info['startHour']
+                        "startHour"=> $info['startHour'],
+                        "finishHour"=> $info['finishHour'],
                     ]
                 ];
 
