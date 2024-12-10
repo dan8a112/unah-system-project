@@ -258,6 +258,11 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
 
+CREATE TABLE ProfessorEvaluation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    question VARCHAR(70)
+);
+
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
 DELIMITER //
 /**
