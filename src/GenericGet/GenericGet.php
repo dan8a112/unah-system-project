@@ -175,8 +175,8 @@
 
         /**
          * author: afcastillof@unah.hn
-         * version: 0.1.1
-         * date: 12/11/24
+         * version: 0.1.2
+         * date: 10/12/24
          */
         public function getCurrentProcess() {
             $query = "SELECT 
@@ -191,7 +191,8 @@
                                 ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
                                 active
                             FROM
-                                AcademicEvent
+                                AcademicEvent 
+                            WHERE process=1
                         ) AS main
                         WHERE 
                             main.active = 1
@@ -263,24 +264,25 @@
                         main.id,
                         YEAR(main.year) AS year,
                         main.process_order
-                      FROM (
-                          SELECT 
-                              id,
-                              process,
-                              startDate AS year,
-                              ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
-                              active
-                          FROM 
-                              AcademicEvent
-                      ) AS main
-                      INNER JOIN Application AS a
-                      ON main.id = a.AcademicEvent
-                      WHERE 
-                          main.active != 1
-                      GROUP BY 
-                          main.id, year, main.process_order
-                      ORDER BY 
-                          year DESC";
+                        FROM (
+                            SELECT 
+                                id,
+                                process,
+                                startDate AS year,
+                                ROW_NUMBER() OVER(PARTITION BY YEAR(startDate) ORDER BY startDate) AS process_order,
+                                active
+                            FROM 
+                                AcademicEvent 
+                            WHERE process = 1
+                        ) AS main
+                        INNER JOIN Application AS a
+                        ON main.id = a.AcademicEvent
+                        WHERE 
+                            main.active != 1
+                        GROUP BY 
+                            main.id, year, main.process_order
+                        ORDER BY 
+                            year DESC;";
         
             $result = $this->mysqli->execute_query($query);
             $organizedData = [];
