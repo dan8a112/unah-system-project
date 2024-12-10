@@ -135,17 +135,34 @@
 
                     //Traer las primeras 10 secciones
                     $sectionsInfo = $this->getSections($period['id'], 0, $id);
+                    
+                    //Ver si se esta en matricula, prematricula o planificacion academica para poder crear secciones
+                    $query2 = 'SELECT 1 as active 
+                        FROM AcademicEvent a
+                        INNER JOIN AcademicEvent b ON (b.parentId = a.id)
+                        WHERE a.id = (SELECT actualAcademicPeriod()) AND b.process IN (11, 12, 13) AND b.active = true;';
+                    $result2 = $this->mysqli->execute_query($query2);
 
-                    return[
-                        "status"=> true,
-                        "message"=> "Petición realizada con exito.",
-                        "data"=> [
-                            "period"=>$period,
-                            "department"=> $row['department'],
-                            "amountSections"=> $sectionsInfo['amountSections'],
-                            "sections"=> $sectionsInfo['sectionList']
-                        ]
+                    if($result2){
+                        $row= $result2 ->fetch_assoc();
+                        if($row['active'] === 1){
+                            $isActive = true;
+                        }else{
+                            $isActive = false;
+                        }
+                        return[
+                            "status"=> true,
+                            "message"=> "Petición realizada con exito.",
+                            "data"=> [
+                                "period"=>$period,
+                                "department"=> $row['department'],
+                                "amountSections"=> $sectionsInfo['amountSections'],
+                                "sections"=> $sectionsInfo['sectionList'],
+                                'isActive'=> $isActive
+                            ]
                         ];
+
+                    }
                 }else{
                     return [
                         "status"=> false,
