@@ -378,7 +378,8 @@
                             b.uv,  
                             a.startHour,  
                             a.finishHour, d.id as classroomId,  
-                            CONCAT(d.description, " ", e.description ) as classroom 
+                            CONCAT(d.description, " ", e.description ) as classroom,
+                            a.presentationVideo 
                     FROM Section a 
                     INNER JOIN Subject b ON (a.subject = b.id) 
                     INNER JOIN Days c ON (a.days = c.id) 
@@ -389,6 +390,12 @@
             
             if($result){
                 $section = $result->fetch_assoc();
+
+                if($section['presentationVideo'] === NULL){
+                    $video = false;
+                }else{
+                    $video = true;
+                }
                 $students = $this ->getStudentsSection($id, 0);
                 
                 //obtener informacion del subproceso
@@ -408,6 +415,8 @@
                         "data"=> [
                             "stateProcess"=> $period['subprocessId'],
                             "processName"=> $period['description'],
+                            "start"=> $period['startDate'],
+                            "end"=> $period['finalDate'],
                             "sectionSection"=> [
                                 "id"=> $section['sectionId'],
                                 "name" =>$section['subjectName'],
@@ -419,7 +428,8 @@
                                 "days" => $section['days'],
                                 "classroom"=> $section['classroom'],
                             ],
-                            "students"=> $students
+                            "students"=> $students,
+                            "video"=> $video
                         ]
                     ];
                 }else{
