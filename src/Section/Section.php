@@ -16,10 +16,10 @@
          * Funcion para obtener los primeros 10 estudiantes de una seccion
          */
         public function getStudentsSection(int $id, int $offset){
-            $query = 'SELECT b.account, CONCAT(b.name, " ", b.lastName) as name, a.grade as calification, c.observation
+            $query = 'SELECT b.account, b.name, a.grade as calification, c.observation
                         FROM StudentSection a
                         INNER JOIN Student b ON (a.studentAccount = b.account)
-                        INNER JOIN Observation c ON (c.id = a.observation)
+                        LEFT JOIN Observation c ON (c.id = a.observation)
                         WHERE a.section = ? AND a.waiting = false
                         ORDER BY b.account ASC
                         LIMIT 10 OFFSET ?;';
@@ -54,10 +54,10 @@
          * Funcion para obtener los primeros 10 estudiantes en lista de espera de una seccion
          */
         public function getWaitingStudents(int $id, int $offset){
-            $query = 'SELECT b.account, CONCAT(b.name, " ", b.lastName) as name, b.email
+            $query = 'SELECT b.account, b.name, b.email
                     FROM StudentSection a
                     INNER JOIN Student b ON (a.studentAccount = b.account)
-                    INNER JOIN Observation c ON (c.id = a.observation)
+                    LEFT JOIN Observation c ON (c.id = a.observation)
                     WHERE a.section = ? AND a.waiting = true
                     ORDER BY b.account ASC
                     LIMIT 10 OFFSET ?;';
@@ -386,8 +386,8 @@
                     INNER JOIN Days c ON (a.days = c.id) 
                     INNER JOIN Classroom d ON (a.classroom = d.id) 
                     INNER JOIN Building e ON (d.building = e.id) 
-                    INNER JOIN academicevent f ON (a.academicEvent = f.id) 
-                    INNER JOIN academicprocess g ON (f.process = g.id) 
+                    INNER JOIN AcademicEvent f ON (a.academicEvent = f.id) 
+                    INNER JOIN AcademicProcess g ON (f.process = g.id) 
 
                     WHERE a.id = ?;';
             $result = $this->mysqli->execute_query($query, [$id]);
@@ -557,7 +557,7 @@
                     $query1 = "SELECT b.account, b.name FROM StudentSection a
                         INNER JOIN Student b ON (a.studentAccount = b.account) 
                         WHERE section=? AND (grade IS NULL OR observation IS NULL);";
-                    $result1 = $this->mysqli->execute_query($query1, $idSection);
+                    $result1 = $this->mysqli->execute_query($query1, [$idSection]);
                     $missingData = [];
                     if ($result1) {
                         while ($row = $result1->fetch_assoc()){
