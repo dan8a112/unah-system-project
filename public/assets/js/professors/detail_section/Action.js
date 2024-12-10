@@ -230,6 +230,20 @@ class Action{
     }
     
 
+    /**
+     * Crea una tabla con los datos especificados.
+     * @param {string} title - Título de la tabla.
+     * @param {Array} headers - Encabezados de la tabla.
+     * @param {Array} rows - Filas de datos.
+     * @param {HTMLElement} container - Contenedor de la tabla.
+     * @param {string} tableId - ID único para la tabla.
+     */
+    static createTableWithData(title, headers, rows, container, tableId, limit, totalRecords, apiUrl, isFetchPagination) {
+        const section = createTable(title, headers, rows, tableId, true, limit, totalRecords, apiUrl, isFetchPagination);
+        section.style.marginTop = '0px'
+        container.appendChild(section);
+    }
+
 }
 
 export {Action}

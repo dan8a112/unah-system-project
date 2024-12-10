@@ -1,5 +1,6 @@
 import { Action } from "./Action.js";
 import { HttpRequest } from "../../modules/HttpRequest.js";
+import { Modal } from "../../modules/Modal.js";
 
 
 const currentPeriod = document.getElementById("currentPeriod");
@@ -12,6 +13,7 @@ const amountStudents = document.getElementById("amountStudents");
 const valueUnits = document.getElementById("valueUnits");
 const days = document.getElementById("days");
 const url = `../../../api/get/professor/section/?id=${sectionId}`;
+const container = document.getElementById("contentt");
 
 
 
@@ -89,9 +91,9 @@ async function loadData() {
      */
     document.getElementById('formCsv').addEventListener('submit', async (event) => {
       event.preventDefault(); 
-  
+   
       try {
-          const result = await HttpRequest.submitForm(event, `../../../api/update/readCalifations?idSection=${sectionId}/`);
+          const result = await HttpRequest.submitForm(event, `../../../api/update/readCalifications?idSection=${sectionId}`);
           console.log(result.message); 
           console.log(result); 
           container.innerHTML = "";
@@ -101,8 +103,8 @@ async function loadData() {
               container.style.color = 'red';
               container.appendChild(message);
           }
-          Action.createTableWithData("Registros invalidos", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable', 10, result.incorrectData.length, '', true)
-          Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
+          //Action.createTableWithData("Registros invalidos", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable', 10, result.incorrectData.length, '', true)
+          //Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
           Modal.closeModal();
           
       } catch (error) {
