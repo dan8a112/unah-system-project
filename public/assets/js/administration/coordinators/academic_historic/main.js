@@ -4,14 +4,15 @@ import { HttpRequest } from "../../../modules/HttpRequest.js";
 
 const selectPeriod = document.getElementById("period");
 const userId = new URLSearchParams(window.location.search).get("id");
-const url = `../../../../api/get/departmentBoss/ratingsInfo/?id=${userId}`;
+const url = `../../../../api/get/searchStudent`;
 const container = document.querySelector("#section-table");
 const alert = document.getElementById("no-search-message");
 const scriptTag = document.getElementById("app-script");
 const user = scriptTag?.getAttribute("data-user"); 
+const searchButton = document.getElementById("searchButton");
 
 
-const data = {
+const dataa = {
     "students" : { 
         "amountResult": 1,
         "studentList" : [
@@ -29,13 +30,13 @@ const data = {
 
 document.getElementById('search-form').addEventListener('submit', async (event) => {
 event.preventDefault();
+container.innerHTML = "";
 
     HttpRequest.submitForm(event, url)
     .then(result => {
         if (result.status) {
             alert.hidden = true;
-            Action.renderSections(data.students.studentList, data.students.amountResult, container);
-            Action.renderSelects(data.periods, selectPeriod);
+            Action.renderSections(result.data, result.data.lenght, container);
         } else {
             alert.innerText = 'No se encontraron resultados.'
         }
@@ -50,8 +51,8 @@ table.addEventListener('click', function(event) {
 if (event.target.matches('.btn')) {
     console.log(event.target.id);
     user == 1? 
-    window.location.href = `/assets/views/administration/coordinators/academic_historic.php?id=${userId}&section=${event.target.id}`:
-    window.location.href = `/assets/views/administration/bosses/academic_history.php?id=${userId}&section=${event.target.id}`;
+    window.location.href = `/assets/views/administration/bosses/academic_history.php?id=${userId}&student=${event.target.id}`:
+    window.location.href = `/assets/views/administration/coordinators/academic_historic.php?id=${userId}&student=${event.target.id}`;
     const buttonId = parseInt(event.target.dataset.professorId, 10);
     Action.openEditiForm(buttonId);
 }

@@ -64,7 +64,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
             <div class="mt-2 d-flex align-items-center justify-content-end">
                 <span class="me-3">Busca a un estudiante por su número de cuenta:</span>
                 <form id="search-form" class="input-group w-50">
-                    <input type="text" name="acount" class="form-control" id="search-input" placeholder="Buscar por nombre o número de cuenta">
+                    <input type="text" name="searchIndex" class="form-control" id="search-input" placeholder="Buscar por nombre o número de cuenta">
                     <button type="submit" class="btn btn-primary">Buscar</button>
                 </form>
             </div>
@@ -82,7 +82,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
 
     <script src="../../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../../js/administration/coordinators/academic_historic/main.js" type="module"></script>
+    <script src="../../../js/administration/coordinators/academic_historic/main.js" type="module" data-user="2"></script>
     <script src="../../../js/behaviorTemplates/professors/sidebar.js"></script>
 </body>
 
