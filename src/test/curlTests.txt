@@ -86,13 +86,19 @@ curl http://localhost:3000/api/get/section/sectionGrades/?id=1 | jq
 curl http://localhost:3000/api/get/departmentBoss/sectionsAdministration/?id=4 | jq
 
 ----------- Curl para obtener el detalle de una seccion (jefe de departamento)--------------------------------
-curl http://localhost:3000/api/get/departmentBoss/sectionWaitingStudents/?id=4 | jq
+curl http://localhost:3000/api/get/departmentBoss/sectionStudents/?id=4 | jq
 
 ---------- Curl para obtener las clases y dias para la creacion de una seccion ----------------------------
 curl http://localhost:3000/api/get/departmentBoss/subjectsAndDays/?id=4 | jq
 
 ---------- Curl para obtener los docentes y clases diponibles dependiendo el horario escogido
 curl "http://localhost:3000/api/get/departmentBoss/professorsAndClassrooms/?idDays=1&startHour=700&finishHour=800" | jq
+
+---------- Curl para el insert de una section ----------------------------------------
+curl -d "class=IS210" -d "professor=31" -d "days=2" -d "startHour=15" -d "finishHour=16" -d "classroom=1" -d "places=25" http://localhost:3000/api/post/section | jq
+
+---------- Curl para el update de una section ----------------------------------------
+curl -d "id=1" -d "class=IS210" -d "professor=31" -d "days=2" -d "startHour=15" -d "finishHour=16" -d "classroom=1" -d "places=25" http://localhost:3000/api/update/section | jq
 
 ---------------------------------------PAGINACION------------------------------------------------------
 
@@ -122,6 +128,3 @@ curl "http://localhost:3000/api/get/pagination/studentsSection/?id=7&offset=0" |
 
 ----------obtener estudiantes en lista de espera de una seccion--------------
 curl "http://localhost:3000/api/get/pagination/waitingStudents/?id=1&offset=0" | jq
-
-
-

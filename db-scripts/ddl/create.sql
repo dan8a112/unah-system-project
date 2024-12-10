@@ -172,6 +172,7 @@ CREATE TABLE Student(
     dni VARCHAR(15) NOT NULL,
     address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
+    description VARCHAR(20),
     degreeProgram SMALLINT NOT NULL,
     regionalCenter TINYINT NOT NULL,
     globalAverage TINYINT,
@@ -239,7 +240,7 @@ CREATE TABLE Section(
     CONSTRAINT fk_classroom_section FOREIGN KEY(classroom) REFERENCES Classroom(id),
     CONSTRAINT fk_section_academicEvent FOREIGN KEY(academicEvent) REFERENCES AcademicEvent(id),
     CONSTRAINT fk_section_days FOREIGN KEY(days) REFERENCES Days(id)
-    );
+);
 
 CREATE TABLE Observation(
     id TINYINT PRIMARY KEY,
@@ -256,6 +257,11 @@ CREATE TABLE StudentSection(
    CONSTRAINT fk_student_studentSection FOREIGN KEY(studentAccount) REFERENCES Student(account),
    CONSTRAINT fk_section_studentSection FOREIGN KEY(section) REFERENCES Section(id),
    CONSTRAINT fk_observation_studentSection FOREIGN KEY(observation) REFERENCES Observation(id));
+
+CREATE TABLE ProfessorEvaluation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    question VARCHAR(70)
+);
 
 /*--------------------------------------------------------------------FUNCTIONS---------------------------------------------------------------------------------*/
 DELIMITER //
@@ -860,6 +866,238 @@ BEGIN
     END IF;
 END//
 
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 9/12/24
+    Procedimiento para Insertar una seccion
+**/
+CREATE PROCEDURE insertSection(
+    IN p_subject VARCHAR(8), 
+    IN p_professor INT,
+    IN p_days INT, 
+    IN p_startHour INT, 
+    IN p_finishHour INT, 
+    IN p_classroom INT, 
+    IN p_maximumCapacity INT,
+    IN p_stringDays VARCHAR(25)
+)
+BEGIN
+    DECLARE v_amountDays INT;
+    DECLARE v_uv SMALLINT;
+    DECLARE denomination INT;
+    DECLARE v_academicEvent INT;
+
+    SET v_amountDays = (SELECT amountDays FROM Days WHERE id = p_days);
+    SET v_uv = (SELECT uv FROM Subject WHERE id = p_subject);
+    SET denomination= p_startHour*100;
+    SET v_academicEvent= (SELECT actualAcademicPeriod());
+
+    -- validar docente
+    IF EXISTS(SELECT 1 FROM Professor a
+            LEFT JOIN Section b ON (b.professor = a.id)
+            LEFT JOIN Employee d ON (a.id = d.id)
+            LEFT JOIN Days e ON (b.days = e.id)
+            WHERE e.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.active = true AND a.id=p_professor LIMIT 1) THEN
+
+        -- Enviar mensaje de que el docente ya tiene clase a esa hora
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El docente ya tiene clases en el horario escogido.'
+        ) AS resultJson;
+    -- Validar aula
+    ELSEIF EXISTS(SELECT 1 FROM Classroom a
+            LEFT JOIN Section b ON (b.classroom = a.id)
+            LEFT JOIN Days d ON (b.days = d.id)
+            WHERE d.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.id=p_days LIMIT 1) THEN
+        
+        -- Enviar mensaje de que el aula ya esta ocupada
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El aula ya esta ocupada en el horario elegido.'
+        ) AS resultJson;
+    -- Validar congruencia de uv con los dias y la hora
+    ELSEIF v_uv IS NULL OR v_amountDays IS NULL OR p_startHour IS NULL OR p_finishHour IS NULL THEN
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Valores nulos detectados en los datos proporcionados.','uv', uv, 'amountdays', amountDays
+        ) AS resultJson;
+    ELSEIF (v_uv != v_amountDays * (p_finishHour - p_startHour)) THEN
+
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El horario no concuerda con las unidades valorativas de la clase.'
+        ) AS resultJson;
+    ELSE
+        -- Verificar que la seccion (1000) no exista
+        WHILE EXISTS (SELECT section FROM Section WHERE subject = p_subject AND days = p_days AND startHour=p_startHour AND section=denomination) DO
+            SET denomination = denomination + 1;
+        END WHILE;
+
+        -- Hacer el INSERT
+        INSERT INTO Section (
+            subject, 
+            professor, 
+            academicEvent, 
+            section, 
+            days, 
+            startHour, 
+            finishHour, 
+            classroom, 
+            maximumCapacity
+        ) VALUES (
+            p_subject, 
+            p_professor, 
+            v_academicEvent, 
+            denomination, 
+            p_days, 
+            p_startHour, 
+            p_finishHour, 
+            p_classroom, 
+            p_maximumCapacity 
+        );
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Seccion insertada correctamente.'
+        ) AS resultJson;
+
+    END IF;
+END//
+
+/**
+    author: dorian.contreras@unah.hn
+    version: 0.1.0
+    date: 9/12/24
+    Procedimiento para hacer update de una seccion
+**/
+CREATE PROCEDURE updateSection(
+    IN p_id INT,
+    IN p_subject VARCHAR(8), 
+    IN p_professor INT,
+    IN p_days INT, 
+    IN p_startHour INT, 
+    IN p_finishHour INT, 
+    IN p_classroom INT, 
+    IN p_maximumCapacity INT,
+    IN p_stringDays VARCHAR(25)
+)
+BEGIN
+    DECLARE v_amountDays INT;
+    DECLARE v_uv SMALLINT;
+    DECLARE denomination INT;
+    DECLARE v_academicEvent INT;
+    DECLARE v_amountStudents INT;
+    DECLARE v_amountWaitingStudents INT;
+    DECLARE v_limit INT;
+
+    SET v_amountDays = (SELECT amountDays FROM Days WHERE id = p_days);
+    SET v_uv = (SELECT uv FROM Subject WHERE id = p_subject);
+    SET denomination= p_startHour*100;
+
+    -- validar que exista la seccion
+    IF NOT EXISTS (SELECT 1 FROM Section WHERE id = p_id) THEN
+        SELECT JSON_OBJECT(
+                'status', false,
+                'message', 'No existe la sesión.'
+            ) AS resultJson;
+    ELSEIF EXISTS(SELECT 1 FROM Professor a
+            LEFT JOIN Section b ON (b.professor = a.id)
+            LEFT JOIN Employee d ON (a.id = d.id)
+            LEFT JOIN Days e ON (b.days = e.id)
+            WHERE e.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.active = true AND a.id=p_professor LIMIT 1) THEN
+
+        -- Enviar mensaje de que el docente ya tiene clase a esa hora
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El docente ya tiene clases en el horario escogido.'
+        ) AS resultJson;
+    -- Validar aula
+    ELSEIF EXISTS(SELECT 1 FROM Classroom a
+            LEFT JOIN Section b ON (b.classroom = a.id)
+            LEFT JOIN Days d ON (b.days = d.id)
+            WHERE d.description LIKE p_stringDays AND b.startHour>=p_startHour AND b.finishHour<=p_finishHour AND b.academicEvent = (SELECT actualAcademicPeriod()) AND a.id=p_days LIMIT 1) THEN
+        
+        -- Enviar mensaje de que el aula ya esta ocupada
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El aula ya esta ocupada en el horario elegido.'
+        ) AS resultJson;
+    -- Validar congruencia de uv con los dias y la hora
+    ELSEIF v_uv IS NULL OR v_amountDays IS NULL OR p_startHour IS NULL OR p_finishHour IS NULL THEN
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'Valores nulos detectados en los datos proporcionados.','uv', uv, 'amountdays', amountDays
+        ) AS resultJson;
+    ELSEIF (v_uv != v_amountDays * (p_finishHour - p_startHour)) THEN
+
+        SELECT JSON_OBJECT(
+            'status', false,
+            'message', 'El horario no concuerda con las unidades valorativas de la clase.'
+        ) AS resultJson;
+    ELSE
+        -- Verificar que la seccion (1000) no exista
+        WHILE EXISTS (SELECT section FROM Section WHERE subject = p_subject AND days = p_days AND startHour=p_startHour AND section=denomination) DO
+            SET denomination = denomination + 1;
+        END WHILE;
+
+        -- Hacer el update de la seccion
+        UPDATE Section
+        SET 
+            subject = p_subject, 
+            professor = p_professor, 
+            academicEvent = v_academicEvent, 
+            section = denomination, 
+            days = p_days, 
+            startHour = p_startHour, 
+            finishHour = p_finishHour, 
+            classroom = p_classroom, 
+            maximumCapacity = p_maximumCapacity
+        WHERE id = p_id;
+
+        -- Validar los cupos de la seccion
+        SET v_amountStudents = (SELECT COUNT(*) as amount FROM StudentSection WHERE section = p_id AND waiting = false);
+        SET v_amountWaitingStudents = (SELECT COUNT(*) as amount FROM StudentSection WHERE section = p_id AND waiting = true);
+
+        IF(v_amountStudents>p_maximumCapacity)THEN
+            SET v_limit = v_amountStudents - p_maximumCapacity;
+            UPDATE StudentSection
+            SET waiting = true
+            WHERE section = p_id AND id IN (
+                SELECT id 
+                FROM (
+                    SELECT id 
+                    FROM StudentSection 
+                    WHERE waiting = false AND section = p_id
+                    ORDER BY RAND() 
+                    LIMIT v_limit
+                ) AS a
+            ); 
+        ELSEIF (v_amountStudents<p_maximumCapacity AND v_amountWaitingStudents>0) THEN
+            SET v_limit = p_maximumCapacity - v_amountStudents;
+            UPDATE StudentSection
+            SET waiting = false
+            WHERE section = p_id AND id IN (
+                SELECT id 
+                FROM (
+                    SELECT id 
+                    FROM StudentSection 
+                    WHERE waiting = true AND section = p_id
+                    ORDER BY RAND() 
+                    LIMIT v_limit
+                ) AS a
+            ); 
+        END IF;
+
+
+        SELECT JSON_OBJECT(
+            'status', true,
+            'message', 'Seccion actualizada correctamente.'
+        ) AS resultJson;
+
+    END IF;
+END//
+
 /*-------------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------------------*/
 /**
  * author: afcastillof@unah.hn
@@ -1334,42 +1572,51 @@ INSERT INTO AcademicProcess(description) VALUES
 ;
 
 INSERT INTO AcademicEvent (process, startDate, finalDate, active, parentId) VALUES
-(8, '2015-01-15 00:00:00', '2015-05-31 00:00:00', 0, NULL),
-(9, '2015-06-12 00:00:00', '2015-09-20 00:00:00', 0, NULL),
-(10, '2015-09-25 00:00:00', '2015-12-20 00:00:00', 0, NULL),
-(8, '2016-01-15 00:00:00', '2016-05-31 00:00:00', 0, NULL),
-(9, '2016-06-12 00:00:00', '2016-09-20 00:00:00', 0, NULL),
-(10, '2016-09-25 00:00:00', '2016-12-20 00:00:00', 0, NULL),
-(8, '2017-01-15 00:00:00', '2017-05-31 00:00:00', 0, NULL),
-(9, '2017-06-12 00:00:00', '2017-09-20 00:00:00', 0, NULL),
-(10, '2017-09-25 00:00:00', '2017-12-20 00:00:00', 0, NULL),
-(8, '2018-01-15 00:00:00', '2018-05-31 00:00:00', 0, NULL),
-(9, '2018-06-12 00:00:00', '2018-09-20 00:00:00', 0, NULL),
-(10, '2018-09-25 00:00:00', '2018-12-20 00:00:00', 0, NULL),
-(8, '2019-01-15 00:00:00', '2019-05-31 00:00:00', 0, NULL),
-(9, '2019-06-12 00:00:00', '2019-09-20 00:00:00', 0, NULL),
-(10, '2019-09-25 00:00:00', '2019-12-20 00:00:00', 0, NULL),
-(8, '2020-01-15 00:00:00', '2020-05-31 00:00:00', 0, NULL),
-(9, '2020-06-12 00:00:00', '2020-09-20 00:00:00', 0, NULL),
-(10, '2020-09-25 00:00:00', '2020-12-20 00:00:00', 0, NULL),
-(8, '2021-01-15 00:00:00', '2021-05-31 00:00:00', 0, NULL),
-(9, '2021-06-12 00:00:00', '2021-09-20 00:00:00', 0, NULL),
-(10, '2021-09-25 00:00:00', '2021-12-20 00:00:00', 0, NULL),
-(8, '2022-01-15 00:00:00', '2022-05-31 00:00:00', 0, NULL),
-(9, '2022-06-12 00:00:00', '2022-09-20 00:00:00', 0, NULL),
-(10, '2022-09-25 00:00:00', '2022-12-20 00:00:00', 0, NULL),
-(8, '2023-01-15 00:00:00', '2023-05-31 00:00:00', 0, NULL),
-(9, '2023-06-12 00:00:00', '2023-09-20 00:00:00', 0, NULL),
-(10, '2023-09-25 00:00:00', '2023-12-20 00:00:00', 0, NULL),
-(1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', 1, NULL),
-(3, '2024-11-23 00:00:00', '2024-11-25 00:00:00', 1, 28),
-(4, '2024-11-27 00:00:00', '2024-12-08 00:00:00', 0, 28),
-(5, '2024-12-08 00:00:00', '2024-12-09 00:00:00', 0, 28),
-(6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', 0, 28),
-(7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', 0, 28),
-(8, '2024-01-15 00:00:00', '2024-05-31 00:00:00', 0, NULL),
-(9, '2024-06-12 00:00:00', '2024-09-20 00:00:00', 0, NULL),
-(10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', 1, NULL);
+    (8, '2015-01-15 00:00:00', '2015-05-31 00:00:00', 0, NULL),
+    (9, '2015-06-12 00:00:00', '2015-09-20 00:00:00', 0, NULL),
+    (10, '2015-09-25 00:00:00', '2015-12-20 00:00:00', 0, NULL),
+    (8, '2016-01-15 00:00:00', '2016-05-31 00:00:00', 0, NULL),
+    (9, '2016-06-12 00:00:00', '2016-09-20 00:00:00', 0, NULL),
+    (10, '2016-09-25 00:00:00', '2016-12-20 00:00:00', 0, NULL),
+    (8, '2017-01-15 00:00:00', '2017-05-31 00:00:00', 0, NULL),
+    (9, '2017-06-12 00:00:00', '2017-09-20 00:00:00', 0, NULL),
+    (10, '2017-09-25 00:00:00', '2017-12-20 00:00:00', 0, NULL),
+    (8, '2018-01-15 00:00:00', '2018-05-31 00:00:00', 0, NULL),
+    (9, '2018-06-12 00:00:00', '2018-09-20 00:00:00', 0, NULL),
+    (10, '2018-09-25 00:00:00', '2018-12-20 00:00:00', 0, NULL),
+    (8, '2019-01-15 00:00:00', '2019-05-31 00:00:00', 0, NULL),
+    (9, '2019-06-12 00:00:00', '2019-09-20 00:00:00', 0, NULL),
+    (10, '2019-09-25 00:00:00', '2019-12-20 00:00:00', 0, NULL),
+    (8, '2020-01-15 00:00:00', '2020-05-31 00:00:00', 0, NULL),
+    (9, '2020-06-12 00:00:00', '2020-09-20 00:00:00', 0, NULL),
+    (10, '2020-09-25 00:00:00', '2020-12-20 00:00:00', 0, NULL),
+    (8, '2021-01-15 00:00:00', '2021-05-31 00:00:00', 0, NULL),
+    (9, '2021-06-12 00:00:00', '2021-09-20 00:00:00', 0, NULL),
+    (10, '2021-09-25 00:00:00', '2021-12-20 00:00:00', 0, NULL),
+    (8, '2022-01-15 00:00:00', '2022-05-31 00:00:00', 0, NULL),
+    (9, '2022-06-12 00:00:00', '2022-09-20 00:00:00', 0, NULL),
+    (10, '2022-09-25 00:00:00', '2022-12-20 00:00:00', 0, NULL),
+    (8, '2023-01-15 00:00:00', '2023-05-31 00:00:00', 0, NULL),
+    (9, '2023-06-12 00:00:00', '2023-09-20 00:00:00', 0, NULL),
+    (10, '2023-09-25 00:00:00', '2023-12-20 00:00:00', 0, NULL),
+    (1, '2024-11-23 00:00:00', '2024-12-20 00:00:00', 1, NULL),
+    (3, '2024-11-23 00:00:00', '2024-11-25 00:00:00', 1, 28),
+    (4, '2024-11-27 00:00:00', '2024-12-08 00:00:00', 0, 28),
+    (5, '2024-12-08 00:00:00', '2024-12-09 00:00:00', 0, 28),
+    (6, '2024-12-09 00:00:00', '2024-12-11 00:00:00', 0, 28),
+    (7, '2024-12-11 00:00:00', '2024-12-20 00:00:00', 0, 28),
+    (8, '2024-01-15 00:00:00', '2024-05-31 00:00:00', 0, NULL),
+    (9, '2024-06-12 00:00:00', '2024-09-20 00:00:00', 0, NULL),
+    (10, '2024-09-25 00:00:00', '2024-12-20 00:00:00', 1, NULL),
+    (11, '2024-09-25 00:00:00', '2024-09-30 00:00:00', 1, 36),
+    (12, '2024-09-30 00:00:00', '2024-10-05 00:00:00', 0, 36),
+    (12, '2024-10-05 00:00:00', '2024-10-10 00:00:00', 0, 36),
+    (13, '2024-10-10 00:00:00', '2024-10-15 00:00:00', 0, 36),
+    (14, '2024-10-15 00:00:00', '2024-12-10 00:00:00', 0, 36),
+    (15, '2024-10-15 00:00:00', '2024-10-27 00:00:00', 0, 36),
+    (16, '2024-11-27 00:00:00', '2024-12-03 00:00:00', 0, 36),
+    (17, '2024-12-13 00:00:00', '2024-12-20 00:00:00', 0, 36)
+;
 
 
 INSERT INTO Configuration (data) VALUES ('{"maxAttemtps":2}');

@@ -15,7 +15,7 @@
          */
         public function getSections(int $idProcess, int $offset, int $idBoss){
             $query = 'SELECT a.id as id, LPAD(CAST(a.section AS CHAR), 4, "0") as denomination, b.description as class, a.maximumCapacity as places, 
-                    a.startHour as hour
+                    CONCAT(a.startHour, ":00") as hour
                 FROM Section a
                 INNER JOIN Subject b ON (a.subject = b.id) 
                 INNER JOIN Professor c ON (c.department = b.department)
@@ -135,17 +135,34 @@
 
                     //Traer las primeras 10 secciones
                     $sectionsInfo = $this->getSections($period['id'], 0, $id);
+                    
+                    //Ver si se esta en matricula, prematricula o planificacion academica para poder crear secciones
+                    $query2 = 'SELECT 1 as active 
+                        FROM AcademicEvent a
+                        INNER JOIN AcademicEvent b ON (b.parentId = a.id)
+                        WHERE a.id = (SELECT actualAcademicPeriod()) AND b.process IN (11, 12, 13) AND b.active = true;';
+                    $result2 = $this->mysqli->execute_query($query2);
 
-                    return[
-                        "status"=> true,
-                        "message"=> "Petición realizada con exito.",
-                        "data"=> [
-                            "period"=>$period,
-                            "department"=> $row['department'],
-                            "amountSections"=> $sectionsInfo['amountSections'],
-                            "sections"=> $sectionsInfo['sectionList']
-                        ]
+                    if($result2){
+                        $row= $result2 ->fetch_assoc();
+                        if($row['active'] === 1){
+                            $isActive = true;
+                        }else{
+                            $isActive = false;
+                        }
+                        return[
+                            "status"=> true,
+                            "message"=> "Petición realizada con exito.",
+                            "data"=> [
+                                "period"=>$period,
+                                "department"=> $row['department'],
+                                "amountSections"=> $sectionsInfo['amountSections'],
+                                "sections"=> $sectionsInfo['sectionList'],
+                                'isActive'=> $isActive
+                            ]
                         ];
+
+                    }
                 }else{
                     return [
                         "status"=> false,
@@ -195,10 +212,9 @@
                     };
 
                     //Obtener aulas
-                    $query2 = 'SELECT DISTINCT a.id as classroomId, CONCAT(a.description, " ", d.description) as name
+                    $query2 = 'SELECT DISTINCT a.id as classroomId, a.description as name, a.building as idBuilding
                             FROM Classroom a
                             LEFT JOIN Section b ON (b.classroom = a.id)
-                            LEFT JOIN Building d ON (a.building = d.id)
                             WHERE a.id NOT IN (
                                 SELECT b.classroom
                                 FROM Section b
@@ -214,14 +230,32 @@
                             $classrooms [] = $row;
                         };
 
-                        return[
-                            "status"=> true,
-                            "message"=> 'Petición realizada correctamente.',
-                            "data"=>[
-                                'professors'=> $professors,
-                                'classrooms'=> $classrooms
-                            ]
-                        ];
+                        //obtener edificios
+                        $query3 = "SELECT id, description  as building FROM Building;";
+                        $result3 = $this->mysqli->execute_query($query3);
+
+                        if($result3){
+                            $buildings = [];
+                            while($row = $result3->fetch_assoc()){
+                                $buildings[] = $row;
+                            }
+
+                            return[
+                                "status"=> true,
+                                "message"=> 'Petición realizada correctamente.',
+                                "data"=>[
+                                    'professors'=> $professors,
+                                    'buildings'=> $buildings,
+                                    'classrooms'=> $classrooms
+                                ]
+                            ];
+
+                        }else{
+                            return [
+                                "status"=> false,
+                                "message"=> "Error al consultar los edificios."
+                            ];
+                        }
 
                     }else{
                         return [

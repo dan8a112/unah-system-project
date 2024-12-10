@@ -143,9 +143,19 @@
         public function getSectionBossDepartment(int $id){
 
             //Obtener detalle de la seccion
-            $query= 'SELECT a.id as sectionId, LPAD(CAST(a.section AS CHAR), 4, "0") as code, b.description as subjectName, a.section, c.description as days, b.uv, CONCAT(a.startHour, ":00") as startHour, 
-                    CONCAT(a.finishHour, ":00") as finishHour, d.id as classroomId, CONCAT(d.description, " ", e.description ) as classroom, CONCAT(f.names, " ", f.lastNames) as professorName, f.id as professorId,
-                    a.maximumCapacity
+            $query= 'SELECT a.id as sectionId, 
+                            LPAD(CAST(a.section AS CHAR), 4, "0") as code, 
+                            b.description as subjectName, 
+                            a.section, 
+                            c.description as days, 
+                            c.id as idDays,
+                            b.uv, 
+                            a.startHour, 
+                            a.finishHour, d.id as classroomId, 
+                            CONCAT(d.description, " ", e.description ) as classroom, 
+                            CONCAT(f.names, " ", f.lastNames) as professorName, 
+                            f.id as professorId,
+                            a.maximumCapacity
                     FROM Section a
                     INNER JOIN Subject b ON (a.subject = b.id)
                     INNER JOIN Days c ON (a.days = c.id)
@@ -178,10 +188,14 @@
                         "waitingStudentList"=> $waiting['waitingStudentList'],
                         'amountStudents'=> $students['amountStudents'],
                         "studentsList"=> $students['studentsList'],
-                        "days"=> $info['days'],
+                        "days" => [
+                            "id" => $info['idDays'],
+                            "name" => $info['days']
+                        ],
                         "className"=> $info['subjectName'],
                         "uv"=> $info['uv'],
-                        "startHour"=> $info['startHour']
+                        "startHour"=> $info['startHour'],
+                        "finishHour"=> $info['finishHour'],
                     ]
                 ];
 
@@ -192,7 +206,111 @@
                 ];
             }
         }
-        
+
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 9/12/24
+         * 
+         * Funcion para crear una sección
+         */
+
+        public function setSection($class, $professor, $days, $startHour, $finishHour, $classroom, $places){
+            //obtener el horario para formatearlo => '%Lu%Ju%'
+            $query= 'SELECT description FROM Days WHERE id=?;';
+            $result= $this->mysqli->execute_query($query, [$days]);
+
+            if($result){
+                $stringDays = $result->fetch_assoc();
+                $output = preg_replace('/([A-Z][a-z]*)/', '%$1', $stringDays['description']) . '%';
+                
+                //Llamar al procedimiento almacenado de las query
+                $query1 = 'CALL insertSection(?, ?, ?, ?, ?, ?, ?, ?);';
+                $result1 = $this->mysqli->execute_query($query1, [$class, $professor, $days, $startHour, $finishHour, $classroom, $places, $output]);
+                if($result1){
+                    $row = $result1->fetch_assoc();
+
+                    $resultJson = $row['resultJson'];
+
+                    $resultArray = json_decode($resultJson, true);
+
+                    if ($resultArray !== null) {
+                        return $resultArray;
+                    } else {
+                        return [
+                            "status" => false,
+                            "message" => "Error al decodificar el JSON."
+                        ];
+                    }
+                    
+
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Error al chacer el insert de la sección."
+                    ];
+                }
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar el horario seleccionado."
+                ];
+            }
+        }
+
+          /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 9/12/24
+         * 
+         * Funcion para modificar una sección
+         */
+
+         public function updateSection($id, $class, $professor, $days, $startHour, $finishHour, $classroom, $places){
+            //obtener el horario para formatearlo => '%Lu%Ju%'
+            $query= 'SELECT description FROM Days WHERE id=?;';
+            $result= $this->mysqli->execute_query($query, [$days]);
+
+            if($result){
+                $stringDays = $result->fetch_assoc();
+                $output = preg_replace('/([A-Z][a-z]*)/', '%$1', $stringDays['description']) . '%';
+                
+                //Llamar al procedimiento almacenado de las query
+                $query1 = 'CALL updateSection(?, ?, ?, ?, ?, ?, ?, ?, ?);';
+                $result1 = $this->mysqli->execute_query($query1, [$id, $class, $professor, $days, $startHour, $finishHour, $classroom, $places, $output]);
+                if($result1){
+                    $row = $result1->fetch_assoc();
+
+                    $resultJson = $row['resultJson'];
+
+                    $resultArray = json_decode($resultJson, true);
+
+                    if ($resultArray !== null) {
+                        return $resultArray;
+                    } else {
+                        return [
+                            "status" => false,
+                            "message" => "Error al decodificar el JSON."
+                        ];
+                    }
+                    
+
+                }else{
+                    return [
+                        "status"=> false,
+                        "message"=> "Error al chacer el insert de la sección."
+                    ];
+                }
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar el horario seleccionado."
+                ];
+            }
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();
