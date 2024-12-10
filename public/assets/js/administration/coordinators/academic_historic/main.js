@@ -7,9 +7,12 @@ const userId = new URLSearchParams(window.location.search).get("id");
 const url = `../../../../api/get/searchStudent`;
 const container = document.querySelector("#section-table");
 const alert = document.getElementById("no-search-message");
-const scriptTag = document.getElementById("app-script");
-const user = scriptTag?.getAttribute("data-user"); 
+const scriptTag = document.querySelector('script[type="module"][src$="main.js"]');
+
+// Asegurarse de que sea un número entero
+const user = parseInt(scriptTag?.getAttribute("data-user"), 10);
 const searchButton = document.getElementById("searchButton");
+console.log(user)
 
 
 const dataa = {
@@ -50,7 +53,7 @@ const table = document.getElementById('section-table');
 table.addEventListener('click', function(event) {
 if (event.target.matches('.btn')) {
     console.log(event.target.id);
-    user == 1? 
+    user === 1? 
     window.location.href = `/assets/views/administration/bosses/academic_history.php?id=${userId}&student=${event.target.id}`:
     window.location.href = `/assets/views/administration/coordinators/academic_historic.php?id=${userId}&student=${event.target.id}`;
     const buttonId = parseInt(event.target.dataset.professorId, 10);
