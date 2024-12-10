@@ -319,6 +319,35 @@
             }
         }
 
+        public function canceledSection(int $id){
+            $query = 'Call canceledSection(?);';
+            $result = $this->mysqli->execute_query($query, [$id]);
+
+            if($result){
+                $row = $result->fetch_assoc();
+
+                $resultJson = $row['resultJson'];
+
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null) {
+                    return $resultArray;
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Error al decodificar el JSON."
+                    ];
+                }
+
+            }else{
+                return [
+                    'status'=> false,
+                    'message'=> "Error al hacer la consulta."
+                ];
+            }
+
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

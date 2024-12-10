@@ -100,6 +100,10 @@ curl -d "class=IS210" -d "professor=31" -d "days=2" -d "startHour=15" -d "finish
 ---------- Curl para el update de una section ----------------------------------------
 curl -d "id=1" -d "class=IS210" -d "professor=31" -d "days=2" -d "startHour=15" -d "finishHour=16" -d "classroom=1" -d "places=25" http://localhost:3000/api/update/section | jq
 
+----------------------Curl para cancelar unsa seccion----------
+curl http://localhost:3000/api/update/canceledSection/?id=1 | jq
+
+
 ---------------------------------------PAGINACION------------------------------------------------------
 
 ----------------------obtener todas las incripciones---------------
