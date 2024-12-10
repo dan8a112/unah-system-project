@@ -409,7 +409,8 @@
                 $result1 = $this->mysqli->execute_query($query1);
                 if($result1){
                     $period = $result1->fetch_assoc();
-                    return [
+
+                    $response = [
                         "status"=> true,
                         "message"=> "Petición realizada con exito",
                         "data"=> [
@@ -432,6 +433,22 @@
                             "video"=> $video
                         ]
                     ];
+
+                    if($period['subprocessId']==17){
+                        //Obtener la informacion de la tabla de observaciones
+                        $observations = [];
+                        $query2 = "SELECT * FROM Observation;";
+                        $result2 = $this->mysqli->execute_query($query2);
+                        if ($result2) {
+                            while ($row = $result2->fetch_assoc()) {
+                                $observations [] = $row;
+                            }
+                        }
+                        $response['observations']= $observations;
+                    }
+
+                    return $response;
+
                 }else{
                     return [
                         "status"=> false,
