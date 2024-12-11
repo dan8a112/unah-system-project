@@ -1,25 +1,26 @@
 <?php
-  include_once("../../../../src/SessionValidation/SessionValidation.php");
-  
-  session_start();
+include_once("../../../../src/SessionValidation/SessionValidation.php");
 
-  $portal = "students";
+session_start();
 
-  if (!SessionValidation::isValid($_SESSION, $portal)){
+$portal = "students";
+
+if (!SessionValidation::isValid($_SESSION, $portal)) {
     header("Location: /assets/views/logins/login_students.php");
-  }else{
+} else {
 
     $userId = $_SESSION['portals'][$portal]['user'];
 
     //Si los parametros no coinciden con los de la sesion se corrigen
     if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/students/students_enroll.php?id=".$userId);
+        header("Location: /assets/views/students/students_enroll.php?id=" . $userId);
         exit;
     }
-  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,41 +78,47 @@
             </section>
 
             <section>
-            <div class="mb-4">
-                
-            <label class="form-label">Departamento</label>
-            <select class="form-select" name="department" id="departmentSelect">
-                <option selected value="">Seleccione una opción</option>
-                <option value="1">Departamento 1</option>
-                <option value="2">Departamento 2</option>
-            </select>
-            </div>
-            <div class="mb-4">
-            <label class="form-label">Clase</label>
-            <select class="form-select" name="class" id="classSelect" disabled>
-                <option selected value="">Seleccione una opción</option>
-                <option value="1">Departamento 1</option>
-                <option value="2">Departamento 2</option>
-            </select>
-            </div>
-            <form action="" class="mb-4">
-            <div class="mb-5">
-                <label class="form-label">Sección</label>
-                <select class="form-select" name="section" id="sectionSelect" disabled required>
-                <option selected value="">Seleccione una opción</option>
-                <option value="1">Departamento 1</option>
-                <option value="2">Departamento 2</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" disabled id="enrollButton">Matricular Clase</button>
-            </form>
+                <div class="mb-4">
 
+                    <label class="form-label">Departamento</label>
+                    <select class="form-select" name="department" id="departmentSelect">
+                        <option selected value="">Seleccione una opción</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Clase</label>
+                    <select class="form-select" name="class" id="classSelect" disabled>
+                        <option selected value="">Seleccione una opción</option>
+                    </select>
+                </div>
+                <form action="" class="mb-4">
+                    <div class="mb-5">
+                        <label class="form-label">Sección</label>
+                        <select class="form-select" name="section" id="sectionSelect" disabled required>
+                            <option selected value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" disabled id="enrollButton">Matricular Clase</button>
+                </form>
             </section>
-
-
-
         </section>
     </main>
+
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5" id="formModal"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/students/enroll/main.js" type="module"></script>
