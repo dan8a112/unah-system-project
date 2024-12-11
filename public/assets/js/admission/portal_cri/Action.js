@@ -1,13 +1,22 @@
 import {Modal} from "../../../js/modules/Modal.js" 
 import {HttpRequest} from "../../../js/modules/HttpRequest.js" 
-import {createPagination} from "../../../js/modules/table.js" 
+import {createTable} from "../../../js/modules/table.js" 
 
 class Action {
 
-    /**
-     * Estado de los id de inscripciones sin revisar. Necesario para hacer revision secuencial
-     */
+    //Estado de los id de inscripciones sin revisar. Necesario para hacer revision secuencial
     static unreviewedInscriptionsId = [];
+
+    //Estado que determina la inscripcion en revision actual
+    static currentReviewInscription = null;
+
+    //Estado que determina si se han revisado inscripciones
+    static hasReviewedInscription = false;
+
+    /**
+     * ID del revisor que tiene una sesion iniciada.
+     */
+    static userId = new URLSearchParams(window.location.search).get("id");
 
     /**
      * Renderiza toda la pagina a partir de la data retornada de una peticion con la informacion
@@ -18,10 +27,9 @@ class Action {
     static renderAllPage = async(first)=>{
 
         //Se obtiene el id del usuario en los parametros de la url
-        const userId = new URLSearchParams(window.location.search).get("id");
 
         //Se hace la peticion al backend
-        const response = await HttpRequest.get(`../../../../api/get/criUser/home/?id=${userId}`);
+        const response = await HttpRequest.get(`../../../../api/get/criUser/home/?id=${this.userId}`);
         
         if(response.status==true){
 
@@ -63,48 +71,76 @@ class Action {
      */
     static renderUnreviewed(data, first){
         
-        const {amountUnreviewed, unreviewedList} = data; 
+        const {amountUnreviewed, unreviewedList} = data;
+
+        //Guardamos los ids de las inscripciones revisadas
+        this.unreviewedInscriptionsId = unreviewedList.map(inscription=>inscription.id);
 
         document.querySelector("#amountUnreviewed").innerText = amountUnreviewed;
 
-        const tableBody = document.querySelector("tbody#unreviewedTbl");
-        tableBody.innerHTML = "";
+        const dataFormated = this.formatUnreviewedRows(unreviewedList);
 
-        unreviewedList.forEach(inscription => {
+        const headers = ['#', 'Nombre', 'Carrera Principal', 'Fecha de inscripcion', 'Acciones']
 
-            const row = document.createElement("tr");
+        const tableSection = document.querySelector("#unreviewedTbl");
 
-            //Se recorre el objeto y se crea una columna por cada valor
-            Object.keys(inscription).forEach(key => {
-                const td = document.createElement("td");
-                td.innerText = inscription[key];
-                row.appendChild(td);
-            });
+        const table = createTable(
+            "", 
+            headers, 
+            dataFormated,
+            "unreviewed-table-body",
+            false,
+            11,
+            amountUnreviewed,
+            null,
+            false,
+            true,
+            this.formatUnreviewedRows
+        );
 
-            //Almacenamos la data de inscripciones sin revisar en el estado, 
-            //solo si es la primera carga para mantener estado inicial
-            if (first===1) {
-                this.unreviewedInscriptionsId.push(inscription.id);                
-            }
+        tableSection.appendChild(table)
 
-            //Se crea columna de botón
-            const colButton = document.createElement("td");
-            
-            //Se crea el boton con la accion de abrir modal
-            const reviewButton = document.createElement("button");
-            reviewButton.classList.add("btn", "btn-outline-primary", "btn-sm");
-            reviewButton.innerText = "Revisar"
-            reviewButton.addEventListener("click", ()=>{this.openReviewModal(inscription.id)});
-
-            //Se agrega a la columna
-            colButton.appendChild(reviewButton);
-            row.appendChild(colButton);
-
-            //Se agrega la fila al cuerpo de la tabla
-            tableBody.appendChild(row)
-        })
-
+        //Se agrega acción a los botones de la tabla de revisar
+        const unreviewedBody = document.querySelector("#unreviewed-table-body");
+        unreviewedBody.addEventListener("click", (e)=>{Action.openReviewModal(null,e)})
     }
+
+    /**
+     * Función que recarga la pagina si la modal se ha cerrado por el usuario
+     * Para saber si se cerró por el usuario basta con verificar si el valor revisando actualmente 
+     * está en la lista de no revisados, lo que indica que la modal no se cerró porque se revisó una inscripción.
+     */
+    static reloadAfterDismiss(){
+        if (this.unreviewedInscriptionsId.includes(this.currentReviewInscription) && this.hasReviewedInscription) {
+            window.location.reload();
+        }
+    }
+
+    /**
+    * Funcion que se encarga de formatear cada fila de la tabla, este retorna un arreglo con los resultados.
+    * @param {Array<Object>} unreviewedList 
+    * @returns {Array<Array<any>>} retorna un array con los elementos de la fila formateados
+    */
+    static formatUnreviewedRows(unreviewedList){
+
+        const formatedTable = []
+
+        unreviewedList.forEach(inscription=>{
+            //Se obtienen todos los valores del objeto como array
+            const formatedRow = Object.values(inscription);
+
+            //Se crea el elemento button con el dataset del id de la seccion
+            const button = `<button data-inscription-id=${inscription.id} class="btn btn-outline-primary btn-sm actionsBtn">Revisar</button>`
+
+            //Se agrega el boton al array (fila de la tabla)
+            formatedRow.push(button);
+
+            formatedTable.push(formatedRow)
+        })
+        
+        return formatedTable;
+    }
+
 
     /**
      * Renderiza la tabla de inscripciones revisadas
@@ -116,64 +152,106 @@ class Action {
 
         document.querySelector("#amountReviewed").innerText = amountReviewed;
 
-        const tableBody = document.querySelector("tbody#reviewedTbl");
-        tableBody.innerHTML = ""; 
+        const dataFormated = this.formatReviewedRows(reviewedList);
 
-        reviewedList.forEach(inscription => {
+        const headers = ['#', 'Nombre', 'Carrera Principal', 'Fecha de inscripcion', 'Dictamen']
 
-            const row = document.createElement("tr");
+        const tableSection = document.querySelector("#reviewedTbl");
 
-            //Se recorre el objeto y se crea una columna por cada valor
-            Object.keys(inscription).forEach(key => {
-                const td = document.createElement("td");
+        const urlPagination = `/api/get/pagination/reviewedInscriptions/?idReviewer=${this.userId}&`
 
-                if(key=="dictum"){
-                    //Si esta aprobada se pinta en verde sino en rojo
-                    td.style.color = inscription[key] == 1 ? "#00C500" : "#C51A00";
-                    td.innerText = inscription[key] == 1 ? "Aprobada" : "Rechazada";
-                }else{
-                    td.innerText = inscription[key];
-                }
-                
-                row.appendChild(td);
+        const table = createTable(
+            "", 
+            headers, 
+            dataFormated,
+            "reviewed-table-body",
+            false,
+            10,
+            amountReviewed,
+            urlPagination,
+            false,
+            true,
+            this.formatReviewedRows
+        );
 
-            });
+        tableSection.appendChild(table)
+    }
+    
+    /**
+    * Funcion que se encarga de formatear cada fila de la tabla, este retorna un arreglo con los resultados.
+    * @param {Array<Object>} reviewedList 
+    * @returns {Array<Array<any>>} retorna un array con los elementos de la fila formateados
+    */
+    static formatReviewedRows(reviewedList){
 
-            //Se agrega la fila al cuerpo de la tabla
-            tableBody.appendChild(row)
+        const formatedTable = []
+
+        reviewedList.forEach(inscription=>{
+
+            //Se crea el elemento dictamen con el color dependiendo si es aprobado o no
+            const dictum = inscription.dictum == true ? `<span style="color: #00C500; font-weight: 500;">Aprobada</span>`: `<span style="color: #C51A00; font-weight: 500;">Rechazada</span>`;
+            
+            //Eliminamos el atributo dictum
+            delete inscription.dictum;
+
+            //Se obtienen todos los valores del objeto como array, excepto dictum
+            const formatedRow = Object.values(inscription);
+            
+            //Se agrega el dictamen formateado al array (fila de la tabla)
+            formatedRow.push(dictum);
+
+            formatedTable.push(formatedRow)
         })
 
-        const reviewedSection = document.querySelector("div#reviewedSection");
-
-        //Se obtiene el id del usuario en los parametros de la url
-        const userId = new URLSearchParams(window.location.search).get("id");
-        const urlPagination = `../../../../api/get/pagination/reviewedInscriptions/?idReviewer=${userId}`
-
-        const limit = 10;
-
-        createPagination(reviewedSection,tableBody,limit,amountReviewed,urlPagination,false);
-
+        return formatedTable;
     }
 
     /**
-     * Abre la modal de revision de inscripciones
-     * @param {*} inscriptionId id de la inscripcion a revisar
+     * Abre la modal de revision de una inscripcion
+     * @param {int} inscriptionId valor opcional, en caso que se llame la funcion desde otra funcion
+     * @param {Event} event evento click sobre el boton de una inscripcion
      */
-    static openReviewModal = async (inscriptionId)=>{
+    static openReviewModal = async (inscriptionId = null, event = null) => {
 
-        const response = await HttpRequest.get(`../../../../api/get/admission/inscription/?id=${inscriptionId}&idAdmissionProcess=0`)
+        // Inicializa el id a buscar con el inscriptionId proporcionado
+        let idToFetch = inscriptionId;
 
-        if (response.status) {
-            //Se establecen los datos de la inscripcion
-            this.setInscriptionData(response.data, inscriptionId);
-
-            //Se abre la modal con los datos de revision
-            const reviewModal = document.querySelector("div#reviewModal")
-            Modal.openModal(reviewModal)
-        }else{
-            console.error(response.message);
+        // Si se proporciona un evento, se obtiene el target y el dataset
+        if (event) {
+            const button = event.target;
+        
+            // Comprueba si el evento proviene de un boton con la clase esperada
+            if (button.matches('.actionsBtn')) {
+                // Se cambia el id con el dataset del boton
+                idToFetch = button.dataset.inscriptionId; 
+            }
         }
-    }
+
+        // Si tenemos un id para buscar, continuamos
+        if (idToFetch) {
+            try {
+                const response = await HttpRequest.get(`/api/get/admission/inscription/?id=${idToFetch}&idAdmissionProcess=0`);
+
+                if (response.status) {
+                    // Se establecen los datos de la inscripcion
+                    this.setInscriptionData(response.data, idToFetch);
+
+                    // Se abre la modal con los datos de revision
+                    const reviewModal = document.querySelector("div#reviewModal");
+                    Modal.openModal(reviewModal);
+                    
+                    //Se establece el id de la inscripcion en revision actual
+                    setTimeout(() => {
+                        this.currentReviewInscription = parseInt(idToFetch); 
+                    }, 200);
+                } else {
+                    console.error(response.message);
+                }
+            } catch (error) {
+                console.error("Error al realizar la peticion:", error);
+            }
+        }
+    };
 
     /**
      * Establece los datos de la inscripcion en la ventana modal
@@ -206,15 +284,22 @@ class Action {
         const denyInscriptionButton = document.querySelector("#denyInscriptionBtn");
         const approveInscriptionButton = document.querySelector("#approveInscriptionBtn");
 
-        denyInscriptionButton.addEventListener("click", 
-            ()=>{
-                this.finishReviewInscription(0, inscriptionId, applicant.name, applicant.email, denyInscriptionButton, approveInscriptionButton)
-            });
+        // Clonamos los elementos para limpiar eventos
+        const newDenyButton = denyInscriptionButton.cloneNode(true);
+        const newApproveButton = approveInscriptionButton.cloneNode(true);
 
-        approveInscriptionButton.addEventListener("click", 
-            ()=>{
-                this.finishReviewInscription(1, inscriptionId, applicant.name, applicant.email, denyInscriptionButton, approveInscriptionButton)
-            })
+        // Reemplazamos los botones por los elementos clonados(sin eventos)
+        denyInscriptionButton.parentNode.replaceChild(newDenyButton, denyInscriptionButton);
+        approveInscriptionButton.parentNode.replaceChild(newApproveButton, approveInscriptionButton);
+
+        // Agregar eventos nuevamente
+        newDenyButton.addEventListener("click", () => {
+            this.finishReviewInscription(0, inscriptionId, applicant.name, applicant.email, newDenyButton, newApproveButton);
+        });
+
+        newApproveButton.addEventListener("click", () => {
+            this.finishReviewInscription(1, inscriptionId, applicant.name, applicant.email, newDenyButton, newApproveButton);
+        });
     }
 
     /**
@@ -264,12 +349,9 @@ class Action {
         DenyBtn.setAttribute("disabled","true");
         approveBtn.setAttribute("disabled","true");
 
-        //Se obtiene el id del usuario revisor en los parametros de la url
-        const userId = new URLSearchParams(window.location.search).get("id");
-
         const body = {
             idApplication: inscriptionId,
-            idReviewer: userId,
+            idReviewer: this.userId,
             approved: dictum,
             name: name,
             mail: email
@@ -277,19 +359,19 @@ class Action {
         
         const response = await HttpRequest.post("../../../api/update/verifyApplication/", body);
         
-        
         if (response.status === true) {
-
-            Modal.closeModal();
 
             //se elimina la inscripcion revisada de la lista
             this.unreviewedInscriptionsId.shift();
+            this.hasReviewedInscription = true;
+
+            Modal.closeModal();
 
             if (this.unreviewedInscriptionsId.length > 0) {
                 this.openReviewModal(this.unreviewedInscriptionsId[0])
+            }else{
+                window.location.reload();
             }
-
-            this.renderAllPage(0);
 
             //Se reactivan ambos botones (Rechazar y Aprobar)
             DenyBtn.removeAttribute("disabled");

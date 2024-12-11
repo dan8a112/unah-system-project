@@ -250,6 +250,49 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 05/12/24
+         * 
+         * Login para DIPP
+         */
+        public function loginDIPP(string $user, string $password) : array{
+
+            $query = "SELECT a.personalEmail, a.password 
+                    FROM Employee a  
+                    INNER JOIN Administrative b
+                    ON a.id = b.id
+                    WHERE a.personalEmail = ? AND b.administrativeType = 3;";
+            
+            try{
+                $result = $this->mysqli->execute_query($query, [$user]);
+                
+                foreach($result as $row){
+                    if(password_verify($password, $row["password"])){
+                        return [
+                            "status"=> true,
+                            "message"=> 'Usuario autenticado',
+                            "data"=>[
+                                "id"=> $row['id'],
+                            ]
+                        ];
+                    }
+                }
+                return [
+                    "status"=> false,
+                    "message"=> 'El correo o la contraseña es incorrecto, vuelva a intentarlo.'
+                ];
+                
+            }catch (Exception $e){
+                return [
+                    "status"=> false,
+                    "message"=> 'Ocurrio un error: ' . $e
+                ];
+            }
+            
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();
