@@ -1,11 +1,29 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
 
+  $portal = "students";
+
+  if (!SessionValidation::isValid($_SESSION, $portal)){
+    header("Location: /assets/views/logins/login_students.php");
+  }else{
+
+    $userId = $_SESSION['portals'][$portal]['user'];
+
+    //Si los parametros no coinciden con los de la sesion se corrigen
+    if (!SessionValidation::validateParam("student", $userId)) {
+        header("Location: /assets/views/students/academic_historic.php?student=".$userId."&offset=10");
+        exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secciones</title>
+    <title>Historial academico</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/templates/professor.css">
     <link rel="stylesheet" href="../../css/temas/cards.css">
