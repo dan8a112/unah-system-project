@@ -4,7 +4,7 @@
  * version: 0.1.0
  * date: dic 2024
  * 
- * Servicio para obtener la carga académica de un coordinador en un periodo específico.
+ * Servicio para obtener la carga académica/secciones de un coordinador en un periodo específico.
  */
 
 header("Content-Type: application/json");
@@ -20,13 +20,12 @@ if (isset($_GET["coordinatorId"]) && isset($_GET["periodId"])) {
     $periodId = (int)$_GET["periodId"];
     $offset = isset($_GET["offset"]) ? (int)$_GET["offset"] : 0;
 
-    $result = $dao->getAcademicLoad($coordinatorId, $periodId, $offset);
+    $result = $dao->getAcademicLoadHistoric($coordinatorId, $periodId, $offset);
 
     if (!empty($result)) {
         $json = [
             "status" => true,
-            "message" => "Carga académica obtenida.",
-            "periods" => $result['periods'],
+            "message" => "Secciones obtenidas.",
             "currentPeriod" => $result['currentPeriod'],
             "sections" => [
                 "amountSections" => $result['sections']['amountSections'],

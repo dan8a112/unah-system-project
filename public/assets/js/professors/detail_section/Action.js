@@ -5,8 +5,7 @@ class Action{
 
     static renderStudents(data, urlPaginacion){
 
-        const { stateProces, infoSection } = data;
-        let stateProcess = 17;
+        const { stateProcess, infoSection } = data;
 
         const testData = [
             { id: 1, name: "Asistencia", points: 10 },
@@ -57,6 +56,14 @@ class Action{
      * Esta funcion se se encarga de abrir una modal para subir un archivo
      */
     static openUploadModal() {
+        const uploadCSVModal = document.querySelector("div#uploadModal");
+        Modal.openModal(uploadCSVModal);
+    }
+
+    /**
+     * Esta funcion se se encarga de abrir una modal para subir un archivo
+     */
+    static openUploadVideoModal() {
         const uploadCSVModal = document.querySelector("div#uploadVideoModal");
         Modal.openModal(uploadCSVModal);
     }
@@ -143,7 +150,7 @@ class Action{
                 title: "Subir calificaciones de la clase",
                 description:
                     "Llegó el momento de subir las calificaciones de los alumnos, puedes hacerlo desde este espacio.",
-                button: { id: "uploadRatingsBtn", text: "Subir Calificaciones", icon: "upload.svg", action: "openUploadModal" },
+                button: { id: "uploadRatingsBtn", text: "Subir Calificaciones", icon: "upload.svg", action: "openUploadVideoModal" },
             },
         };
     
@@ -191,7 +198,6 @@ class Action{
         let testString = ''; 
         tests.forEach((test) => {
             testString += `${test.id} (${test.name} se aprueba con ${test.points} puntos).\n`;
-            console.log(testString);
         });
 
         const instructions = [
