@@ -158,6 +158,7 @@ async function loadData() {
           Modal.closeModal();
           Popup.open(popup);
           exitMessage.innerHTML = `Tu video fue cargado exitosamente`;
+          buttonOk1.addEventListener('click', () => Popup.close(popup));
         }
 
     } catch (error) {

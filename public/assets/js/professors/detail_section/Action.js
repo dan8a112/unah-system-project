@@ -5,7 +5,7 @@ class Action{
 
     static renderStudents(data, urlPaginacion){
 
-        const { stateProcess, infoSection, video } = data;
+        const { stateProcess, infoSection, video, inActualPeriod } = data;
 
         const testData = [
             { id: 1, name: "Asistencia", points: 10 },
@@ -21,12 +21,14 @@ class Action{
                 this.provideUploadInfo(testData);
                 break;
             case stateProcess >= 12 && stateProcess <= 16:
-                if(video==false){
-                    this.renderUploadCSVSection(stateProcess, 1);
-                } else {
-                    this.renderUploadCSVSection(stateProcess);
-                }
-                break;
+                if(inActualPeriod){
+                    if(video==false){
+                        this.renderUploadCSVSection(stateProcess, 1);
+                    } else {
+                        this.renderUploadCSVSection(stateProcess);
+                    }
+                } break;
+                
         }
         
 
