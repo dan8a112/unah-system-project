@@ -3,7 +3,7 @@
      * @author dochoao@unah.hn
      * @version 0.1.0
      * @date 11-12-2024
-     * Servicio que trae los departamentos habilitados para matricula de estudiante
+     * Servicio que trae las clases dependiendo el departamento y la carrera del estudiante
      */
 
      header("Content-Type: application/json");
@@ -14,8 +14,8 @@
      //Data Access Object
      $dao = new EnrollDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-     if(isset($_GET["account"])){
-        $result = $dao->getDepartments((int) $_GET["account"]);
+     if(isset($_GET["account"]) && isset($_GET["departmentId"])){
+        $result = $dao->getClasses((int) $_GET["account"], (int) $_GET["departmentId"]);
         $json = [
             "status"=> true,
             "message"=> "Array obtenido.",
