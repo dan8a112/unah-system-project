@@ -1,6 +1,7 @@
 import { Action } from "./Action.js";
 import { HttpRequest } from "../../modules/HttpRequest.js";
 import { Modal } from "../../modules/Modal.js";
+import { Popup } from "../../modules/Popup.js";
 
 
 const currentPeriod = document.getElementById("currentPeriod");
@@ -15,7 +16,15 @@ const days = document.getElementById("days");
 const url = `../../../api/get/professor/section/?id=${sectionId}`;
 const container = document.getElementById("contentt");
 const headersincorrectTable = ["id", "Cuenta", "Nota", "idObs", "Mensaje"];
-const headerMissingData = ["Cuenta", "Nombre"]
+const headerMissingData = ["Cuenta", "Nombre"];
+
+//popup
+const message = document.getElementById('message');
+const popupError = document.getElementById('popupError');
+const popup = document.getElementById('popup');
+const buttonOk1 = document.getElementById('buttonOk1');
+const buttonOk2 = document.getElementById('buttonOk2');
+const exitMessage = document.getElementById('exitMessage');
 
 
 
@@ -127,26 +136,44 @@ async function loadData() {
      */
    document.getElementById('formVideo').addEventListener('submit', async (event) => {
     event.preventDefault(); 
- 
+
+    // Mostrar rueda de carga
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'flex';
+
     try {
-        const result = await HttpRequest.submitForm(event, `../../../api`);
+        const result = await HttpRequest.submitForm(event, `../../../api/update/uploadVideo/?idSection=${sectionId}`);
+        
         console.log(result.message); 
         console.log(result); 
         container.innerHTML = "";
+
         if(result.status == false) {
-            let message = document.createElement('p');
+            Modal.closeModal();
+            Popup.open(popupError);
             message.innerHTML = result.message;
-            container.style.color = 'red';
-            container.appendChild(message);
+            buttonOk2.style.background = '#EC0000';
+            buttonOk2.addEventListener('click', () => Popup.close(popupError));
+        } else{
+          Modal.closeModal();
+          Popup.open(popup);
+          exitMessage.innerHTML = `Tu video fue cargado exitosamente`;
         }
-        Action.createTableWithData("Registros invalidos", headersincorrectTable, result.incorrectData, container, 'incorrectDataTable', 10, result.incorrectData.length, '', true)
-        Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
-        Modal.closeModal();
-        
+
     } catch (error) {
-        console.error("Error al cargar el CSV:", error);
+        console.error("Error al cargar el video:", error);
+
+        // Mostrar mensaje de error
+        container.innerHTML = '<p style="color: red;">Error al cargar el video. Intente nuevamente.</p>';
+
+    } finally {
+        // Ocultar rueda de carga
+        loadingOverlay.style.display = 'none';
     }
 });
+
+
+
 
 
   /**
@@ -165,4 +192,41 @@ async function loadData() {
     link.download = "Listado_estudiantes.xlsx";
     link.click();
 });
+
+
+const validateVideo = (file) => {
+  const validVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+  const maxSizeInMB = 20;
+  const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+  if (file.size > maxSizeInBytes) {
+      throw new Error('El archivo debe pesar menos de 20 MB.');
+  }
+
+  if (!validVideoTypes.includes(file.type)) {
+      throw new Error('Por favor, selecciona un archivo de video válido (mp4, webm, ogg).');
+  }
+};
+
+const fileInput = document.querySelector('input[name="video"]');
+const formErrorMessage = document.createElement('p');
+formErrorMessage.style.color = 'red';
+formErrorMessage.style.display = 'none';
+fileInput.parentElement.appendChild(formErrorMessage);
+
+fileInput.addEventListener('change', async () => {
+  const file = fileInput.files[0];
+
+  if (file) {
+      try {
+          validateVideo(file);
+          formErrorMessage.style.display = 'none';
+      } catch (error) {
+          formErrorMessage.textContent = error.message || error;
+          formErrorMessage.style.display = 'block';
+          fileInput.value = ''; // Limpiar el input
+      }
+  }
+});
+
   

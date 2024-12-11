@@ -95,7 +95,7 @@
                 <form id="editProfileForm">
                     <div class="mb-3">
                         <label for="profileImage" class="form-label">Foto de Perfil</label>
-                        <input class="form-control" name="perfilPhoto" type="file" id="profileImage" accept="image/*">
+                        <input class="form-control" name="pathProfilePhoto" type="file" id="profileImage" accept="image/*">
                     </div>
                     <div class="mb-3">
                         <label for="profileDescription" class="form-label">Descripción</label>
