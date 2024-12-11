@@ -66,7 +66,8 @@
                             <label>Centro</label>
                         </div>
                     </div>
-                    <div>
+                    <div style="right: 30px; top: 215px; position: absolute;" class="btn" id="edit">
+                        <span class="fw-bolder" style="color:#A1A1A1;">Editar perfil</span>
                         <img src="../../img/icons/editprofile.svg" alt="">
                     </div>
                     
@@ -79,6 +80,32 @@
 
         </section>
     </main>
+
+    <!-- Modal HTML -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Acontinuacion podras editar la informacion de tu perfil</p>
+                <form id="editProfileForm">
+                    <div class="mb-3">
+                        <label for="profileImage" class="form-label">Foto de Perfil</label>
+                        <input class="form-control" name="perfilPhoto" type="file" id="profileImage" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileDescription" class="form-label">Descripción</label>
+                        <textarea name="description" class="form-control" id="profileDescription" rows="4" placeholder="Ingrese una descripción..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="background-color: #FFAA34;">Guardar cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
     <script src="../../js/bootstrap.bundle.min.js"></script>

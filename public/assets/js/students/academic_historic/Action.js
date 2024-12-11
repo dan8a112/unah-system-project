@@ -1,4 +1,5 @@
 import { createTable } from "../../modules/table.js";
+import { Modal } from "../../modules/Modal.js";
 
 class Action{
 
@@ -48,6 +49,14 @@ class Action{
             .map(word => word[0])  
             .join("")              
             .toUpperCase();    
+    }
+
+    /**
+     * Esta funcion se se encarga de abrir una modal para subir un archivo
+     */
+    static openUploadEditModal() {
+        const uploadCSVModal = document.querySelector("div#editProfileModal");
+        Modal.openModal(uploadCSVModal);
     }
 
 
