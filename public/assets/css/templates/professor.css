@@ -8,6 +8,7 @@ a{
     flex-direction: column;
     gap: 10px;
     width: 20vw;
+    height: 100vh;
     padding: 20px;
     background-color: #ffffff;
     border-right: 1px solid #D9D9D9;

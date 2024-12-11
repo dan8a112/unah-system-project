@@ -8,8 +8,16 @@ class Action {
 
     static renderPage = async () => {
 
+        const periodId = new URLSearchParams(window.location.search).get("idPeriod");
+
+        let urlAPI = `/api/get/professor/homeProfessor/?id=${this.userId}`
+        
+        if (periodId) {
+            urlAPI = `/api/get/professor/assignedSections/?idProfessor=24&idProcess=${periodId}`
+        }
+
         //Petición asíncrona que obtiene la información del home
-        const response = await HttpRequest.get(`/api/get/professor/homeProfessor/?id=${this.userId}`);
+        const response = await HttpRequest.get(`urlAPI`);
 
         //destructuración de la respuesta
         const {status, message, data} = response;
