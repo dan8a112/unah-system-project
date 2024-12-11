@@ -14,6 +14,8 @@ const valueUnits = document.getElementById("valueUnits");
 const days = document.getElementById("days");
 const url = `../../../api/get/professor/section/?id=${sectionId}`;
 const container = document.getElementById("contentt");
+const headersincorrectTable = ["id", "Cuenta", "Nota", "idObs", "Mensaje"];
+const headerMissingData = ["Cuenta", "Nombre"]
 
 
 
@@ -103,11 +105,25 @@ async function loadData() {
               container.style.color = 'red';
               container.appendChild(message);
           }
-          //Action.createTableWithData("Registros invalidos", headersLastInscriptionTable, result.incorrectData, container, 'MissingInscriptionTable', 10, result.incorrectData.length, '', true)
-          //Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
+          Action.createTableWithData("Registros invalidos", headersincorrectTable, result.incorrectData, container, 'incorrectDataTable', 10, result.incorrectData.length, '', true)
+          Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
           Modal.closeModal();
           
       } catch (error) {
           console.error("Error al cargar el CSV:", error);
       }
   });
+
+
+
+
+  const urlStudents = `../../../api/get/section/generateCsvStudentsSection/?id=${sectionId}`;
+  const downloadStudents = document.getElementById("downloadStudents");
+  downloadStudents.addEventListener("click", () => {
+    // Código para descargar la plantilla
+    const link = document.createElement("a");
+    link.href = urlStudents;
+    link.download = "Listado_estudiantes.xlsx";
+    link.click();
+});
+  
