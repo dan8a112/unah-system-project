@@ -7,11 +7,11 @@ const currentPeriod = document.getElementById("periodName");
 const careertName = document.getElementById("careertName")
 const professorTypeSelectEdit = document.getElementById("professorTypeSelectEdit");
 const userId = new URLSearchParams(window.location.search).get("id");
-const url = `../../../../api/get/departmentBoss/ratingsInfo/?id=${userId}`;
+const url = `../../../../api/get/pagination/careerCoordinator/index.php?coordinatorId=${userId}&periodId=35&offset=0`;
 const container = document.querySelector("#section-table");
 
 
-const data = {
+const dataa = {
     "periods" : [
         {
             "id": 3,
@@ -62,9 +62,9 @@ const data = {
 
 async function loadData() {
     // Realizar la solicitud GET usando HttpRequest
-    //const respose = await HttpRequest.get(url);
-    //const data = respose;
-    const paginationUrl = `../../../../api/get/pagination/sections/?idProcess=${data.currentPeriod.id}&idBoss=${userId}&`;
+    const respose = await HttpRequest.get(url);
+    const data = respose;
+    const paginationUrl = `../../../../api/get/pagination/careerCoordinator/index.php?coordinatorId=3&periodId=35&`;
     console.log(data)
   
     if (data) {

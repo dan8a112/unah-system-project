@@ -6,7 +6,7 @@
 import { loadSelectOptions, enableCareerSelects } from './Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';
 import { Popup } from '../../modules/Popup.js';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+
 
 
 const selectFirstCareer = document.getElementById('firstCareer');
@@ -56,25 +56,23 @@ const validateImageDimensions = (file) => {
 };
 
 // Función para validar PDFs (por ejemplo, número de páginas o dimensiones)
-const validatePdfDimensions = async (file) => {
-  const loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file));
-  
-  try {
-    const pdf = await loadingTask.promise;
-    const page = await pdf.getPage(1);
-    const viewport = page.getViewport({ scale: 1 });
-    
-    if (viewport.width > maxImageDimensions.width || viewport.height > maxImageDimensions.height) {
-      throw new Error(`El PDF excede las dimensiones máximas permitidas (${maxImageDimensions.width}x${maxImageDimensions.height}).`);
-    } else if (viewport.width < minImageDimensions.width || viewport.height < minImageDimensions.height) {
-      throw new Error(`El PDF no cumple con las dimensiones mínimas requeridas (${minImageDimensions.width}x${minImageDimensions.height}).`);
-    }
-    
-    console.log("PDF válido.");
-  } catch (error) {
-    console.error("Error al validar el PDF:", error.message);
+const maxFileSize = 5 * 1024 * 1024;  // Tamaño máximo en bytes (5 MB)
+
+const validatePdfDimensions = (file) => {
+  if (!file || file.type !== "application/pdf") {
+    console.error("El archivo no es un PDF válido.");
+    return false;
   }
+
+  if (file.size > maxFileSize) {
+    console.error(`El archivo PDF excede el tamaño máximo permitido de ${maxFileSize / (1024 * 1024)} MB.`);
+    return false;
+  }
+
+  console.log("Archivo PDF válido.");
+  return true;
 };
+
 
 // Validación al cargar un archivo
 fileInput.addEventListener('change', async () => {
