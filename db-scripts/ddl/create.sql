@@ -1525,7 +1525,8 @@ INSERT INTO RegionalCenter(description, location, acronym) VALUES
 
 INSERT INTO AdministrativeType(description) VALUES
     ('SEDP'),
-    ('Admisiones')
+    ('Admisiones'),
+    ('DIPP')
 ;
 
 INSERT INTO DegreeProgram (description) VALUES 
@@ -1801,14 +1802,18 @@ INSERT INTO Employee (dni, names, lastNames, telephoneNumber, personalEmail, pas
     ('0801-1995-26001', 'Carlos Enrique', 'Ramirez Cruz', '94445566', 'carlos.ramirez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Los Robles #456', '1995-08-20'),
     ('0801-1996-27001', 'Diana Carolina', 'Morales Rivera', '95556677', 'diana.morales@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Colonia La Esperanza #789', '1996-01-03'),
     ('0801-1997-28001', 'Manuel Alfonso', 'Gonzalez Rios', '96667788', 'manuel.gonzalez@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Avenida Independencia #123', '1997-02-17'),
-    ('0801-1998-29001', 'Elena Patricia', 'Vega Gutierrez', '97778899', 'elena.vega@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle El Sol #654', '1998-05-14');
+    ('0801-1998-29001', 'Elena Patricia', 'Vega Gutierrez', '97778899', 'elena.vega@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Calle El Sol #654', '1998-05-14'),
+    ('0801-1999-30001', 'Javier Esteban', 'Fuentes Martínez', '98880011', 'javier.fuentes@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Residencial Las Colinas #321', '1999-09-19'),
+    ('0801-2000-31001', 'Gabriela Alejandra', 'Navarro Castillo', '97776655', 'gabriela.navarro@unah.edu.hn', '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.', 'Urbanización El Retiro #987', '2000-03-28');
 
 
 INSERT INTO Administrative (id, administrativeType) VALUES
     (1,1),
     (2,2),
     (9,2),
-    (10,1)
+    (10,1),
+    (32,3),
+    (33,3)
 ;
 
 INSERT INTO Department (description) VALUES 
