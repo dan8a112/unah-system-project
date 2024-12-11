@@ -125,6 +125,7 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
             buttonOk2.addEventListener('click', () => Popup.close(popupError));
         }
         Modal.closeModal();
+        loadData();
         
     } catch (error) {
         console.error("Error al cargar el CSV:", error);
