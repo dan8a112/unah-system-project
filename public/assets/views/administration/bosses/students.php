@@ -6,7 +6,7 @@
   $portal = "bosses";
 
   if (!SessionValidation::isValid($_SESSION, $portal)){
-    header("Location: /assets/views/logins/login_professors.php");
+    header("Location: /assets/views/logins/login_bosses.php");
   }else{
 
     $userId = $_SESSION['portals'][$portal]['user'];

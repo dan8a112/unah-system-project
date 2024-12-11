@@ -52,7 +52,7 @@
         <?php 
             $path = "../../";
             $links = [
-                ['title' => 'Estudiantes', 'url' => '/assets/views/administration/coordinators/students.php'],
+                ['title' => 'Estudiantes', 'url' => '/assets/views/administration/bosses/students.php'],
                 ['title' => 'historial', 'url' => '/calificaciones']
               ];
 
