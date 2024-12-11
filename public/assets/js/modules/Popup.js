@@ -27,7 +27,6 @@ export class Popup {
     //Cierra el componente
     static close(popup) {
         popup.style.display = "none";
-        console.log('hola')
     }
 
     //Cierra el componente y redirige a la pantalla informativa

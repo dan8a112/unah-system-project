@@ -141,6 +141,63 @@ Class StudentDAO {
                 return $searchResults;
             }
 
+                /**
+     * author: dorian.contreras@unah.hn
+     * version: 0.1.0
+     * date: dic 2024
+     *
+     * Método para actualizar la información de perfil de un estudiante.
+     */
+    public function updateStudentProfile($studentId, $description, $profilePhoto) {
+        // Validar que el ID del estudiante sea válido
+        if (!is_numeric($studentId) || $studentId <= 0) {
+            return [
+                "status" => false,
+                "message" => "El ID del estudiante no es válido."
+            ];
+        }
+
+        // Si ambos campos están vacíos, devolver error
+        if (empty($description) && empty($profilePhoto)) {
+            return [
+                "status" => false,
+                "message" => "Debe proporcionar al menos un campo para actualizar."
+            ];
+        }
+
+        $query = "CALL updateStudentProfile(?, ?, ?);";
+
+        try {
+            $result = $this->mysqli->execute_query($query, [$studentId, $description, $profilePhoto]);
+
+            if ($row = $result->fetch_assoc()) {
+                $resultJson = $row['resultJson'];
+                $resultArray = json_decode($resultJson, true);
+
+                if ($resultArray !== null && $resultArray['status']) {
+                    return [
+                        "status" => true,
+                        "message" => $resultArray['message']
+                    ];
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => $resultArray['message'] ?? "Error desconocido al actualizar el perfil."
+                    ];
+                }
+            } else {
+                return [
+                    "status" => false,
+                    "message" => "Error al ejecutar el procedimiento almacenado."
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                "status" => false,
+                "message" => "Error al procesar la solicitud: " . $e->getMessage()
+            ];
+        }
+    }
 
             public function closeConnection() {
                 $this->mysqli->close();

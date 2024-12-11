@@ -1,5 +1,7 @@
 import { Action } from "./Action.js";
 import { HttpRequest } from "../../modules/HttpRequest.js";
+import { Modal } from "../../modules/Modal.js";
+import { Popup } from "../../modules/Popup.js";
 
 const studentName = document.getElementById("studentName");
 const studentCareer = document.getElementById("studentCareer");
@@ -8,6 +10,14 @@ const studentDescription = document.getElementById("studentDescription");
 const studentGlobalIndex = document.getElementById("studentGlobalIndex");
 const studentPeriodIndex = document.getElementById("studentPeriodIndex");
 const studentCenter = document.getElementById("studentCenter");
+
+//popup
+const message = document.getElementById('message');
+const popupError = document.getElementById('popupError');
+const buttonOk2 = document.getElementById('buttonOk2');
+
+//Descripcion de modal
+const description = document.getElementById("profileDescription")
 
 const userId = new URLSearchParams(window.location.search).get("id");
 const acountStudent = new URLSearchParams(window.location.search).get("student");
@@ -77,6 +87,8 @@ async function loadData() {
             studentGlobalIndex.innerText = checkNull(data.studentInfo.studentGlobalIndex);
             studentPeriodIndex.innerText = checkNull(data.studentInfo.studentPeriodIndex);
             studentCenter.innerText = checkNull(Action.getInitials(data.studentInfo.studentCenter));
+            description.value = data.studentInfo.studentDescription;
+
         } else {
             console.error("No se pudo cargar la información desde la API.");
         }
@@ -87,3 +99,34 @@ async function loadData() {
 
 // Llama a la función para cargar los datos al iniciar el módulo
 loadData();
+
+const edit = document.getElementById("edit");
+edit.addEventListener("click", ()=>Action.openUploadEditModal());
+
+
+   /**
+     * Se manda el formulario para actualizar los campos
+     * author: afcastillof@unah.hn
+     * version: 0.1.0
+     * date: 10/12/24
+     */
+   document.getElementById('editProfileForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); 
+ 
+    try {
+        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php`);
+        console.log(result.message); 
+        console.log(result); 
+        container.innerHTML = "";
+        if(result.status == false) {
+            Popup.open(popupError);
+            message.innerHTML = result.message;
+            buttonOk2.style.background = '#EC0000';
+            buttonOk2.addEventListener('click', () => Popup.close(popupError));
+        }
+        Modal.closeModal();
+        
+    } catch (error) {
+        console.error("Error al cargar el CSV:", error);
+    }
+});

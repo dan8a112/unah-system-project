@@ -170,7 +170,7 @@ CREATE TABLE Student(
     name VARCHAR(60) NOT NULL,
     dni VARCHAR(15) NOT NULL,
     email VARCHAR(60) NOT NULL,
-    description VARCHAR(20),
+    description VARCHAR(100),
     degreeProgram SMALLINT NOT NULL,
     regionalCenter TINYINT NOT NULL,
     globalAverage TINYINT,
@@ -527,7 +527,35 @@ BEGIN
     WHERE a.academicEvent=idCurrent AND a.approved=true
     ORDER BY a.id ASC
     LIMIT 5 OFFSET p_offset;
-END //
+END;
+
+/**
+    author: wamorales@unah.hn
+    version: 0.2.0
+    date: 28/11/24
+    Procedimiento almacenado para actualizar estudiantes
+**/
+CREATE PROCEDURE updateStudentProfile(
+    IN studentId VARCHAR(11),
+    IN description VARCHAR(20),
+    IN photo1 LONGBLOB
+)
+BEGIN
+    -- Actualizar solo los campos proporcionados (description y photo1)
+    UPDATE Student
+    SET 
+        description = IFNULL(NULLIF(description, ''), description),
+        photo1 = IFNULL(NULLIF(photo1, ''), photo1)
+    WHERE account = studentId;
+
+    -- Devolver respuesta en formato JSON
+    SELECT JSON_OBJECT(
+        'status', TRUE,
+        'message', 'Perfil actualizado exitosamente'
+    ) AS resultJson;
+END;
+
+
 
 /**
     author: dorian.contreras@unah.hn
@@ -2865,3 +2893,4 @@ INSERT INTO AnswerSelection (description) VALUES
 ('BUENO'),
 ('MUY BUENO'),
 ('DEFICIENTE');
+
