@@ -1032,7 +1032,7 @@
                 <h1 style="color: #007BFF;">¡Hola, $name!</h1>
                 <p>Por este medio la Direccion de Admisiones de la UNAH le informa que su inscripción fue invalidada por nuestro comité de revisión de inscripciones
                 por no cumplir con los requerimientos especificados al momento de hacer su inscripción. Esto debido a que subió un archivo incorrecto de su certificación
-                de estudios.</p>
+                de estudios o proporcionó datos incorrectos sobre su información personal.</p>
                 <p>Le recordamos que para futuras inscripciones valide que su archivo sea legible.</p>
                 <p>Este correo fue enviado el <strong>$date</strong> y contiene un enlace a <a href="$link">nuestro sitio web</a>.</p>
                 <footer>
