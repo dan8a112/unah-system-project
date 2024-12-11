@@ -234,6 +234,7 @@ CREATE TABLE Section(
     finishHour INT,
     classroom SMALLINT,
     maximumCapacity TINYINT,
+    enrolled TINYINT,
     canceled BOOLEAN DEFAULT false,
     CONSTRAINT fk_subject_section FOREIGN KEY(subject) REFERENCES Subject(id),
     CONSTRAINT fk_subject_professor FOREIGN KEY(professor) REFERENCES Professor(id),
