@@ -127,6 +127,9 @@ curl "http://localhost:3000/api/get/professor/timeLinePeriods/?idProfessor=3" | 
 -------------------Curl para subir video de docentes---------
 curl "http://localhost:3000/api/update/uploadVideo/?idSection=1189" | jq
 
+---------- Curl para obtener los docentes y la cantidad de secciones por periodo----------------------------------------
+curl "http://localhost:3000/api/get/departmentBoss/professorsAmoutSections/?idPeriod=0" | jq
+
 
 ---------------------------------------PAGINACION------------------------------------------------------
 
@@ -156,3 +159,6 @@ curl "http://localhost:3000/api/get/pagination/studentsSection/?id=7&offset=0" |
 
 ----------obtener estudiantes en lista de espera de una seccion--------------
 curl "http://localhost:3000/api/get/pagination/waitingStudents/?id=1&offset=0" | jq
+
+----------obtener profesores con cantidad de secciones en un periodo--------------
+curl "http://localhost:3000/api/get/pagination/professorsAmountSections/?idPeriod=36&offset=0" | jq
