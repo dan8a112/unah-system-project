@@ -6,6 +6,8 @@
 import { loadSelectOptions, enableCareerSelects } from './Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';
 import { Popup } from '../../modules/Popup.js';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+
 
 const selectFirstCareer = document.getElementById('firstCareer');
 const selectSecondCareer = document.getElementById('secondCareer');
@@ -20,8 +22,8 @@ const exitMessage = document.getElementById('exitMessage');
 // Elementos relacionados con la validación de archivo
 const fileInput = document.getElementById('formFile');
 const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
-const maxImageDimensions = { width: 1920, height: 1080 }; // Dimensiones máximas para imágenes
-const minImageDimensions = { width: 800, height: 600 }; // Dimensiones mínimas para imágenes
+const maxImageDimensions = { width: 4048, height: 4048 }; // Dimensiones máximas para imágenes
+const minImageDimensions = { width: 500, height: 500 }; // Dimensiones mínimas para imágenes
 const formErrorMessage = document.createElement('span');
 formErrorMessage.style.color = 'red';
 formErrorMessage.style.display = 'none';
@@ -55,19 +57,23 @@ const validateImageDimensions = (file) => {
 
 // Función para validar PDFs (por ejemplo, número de páginas o dimensiones)
 const validatePdfDimensions = async (file) => {
-  const pdfjsLib = await import('pdfjs-dist');
   const loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file));
-
-  return loadingTask.promise.then(pdf => {
-    return pdf.getPage(1).then(page => {
-      const viewport = page.getViewport({ scale: 1 });
-      if (viewport.width > maxImageDimensions.width || viewport.height > maxImageDimensions.height) {
-        throw new Error(`El PDF excede las dimensiones máximas permitidas (${maxImageDimensions.width}x${maxImageDimensions.height}).`);
-      } else if (viewport.width < minImageDimensions.width || viewport.height < minImageDimensions.height) {
-        throw new Error(`El PDF no cumple con las dimensiones mínimas requeridas (${minImageDimensions.width}x${minImageDimensions.height}).`);
-      }
-    });
-  });
+  
+  try {
+    const pdf = await loadingTask.promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 1 });
+    
+    if (viewport.width > maxImageDimensions.width || viewport.height > maxImageDimensions.height) {
+      throw new Error(`El PDF excede las dimensiones máximas permitidas (${maxImageDimensions.width}x${maxImageDimensions.height}).`);
+    } else if (viewport.width < minImageDimensions.width || viewport.height < minImageDimensions.height) {
+      throw new Error(`El PDF no cumple con las dimensiones mínimas requeridas (${minImageDimensions.width}x${minImageDimensions.height}).`);
+    }
+    
+    console.log("PDF válido.");
+  } catch (error) {
+    console.error("Error al validar el PDF:", error.message);
+  }
 };
 
 // Validación al cargar un archivo
