@@ -107,6 +107,7 @@ async function loadData() {
               message.innerHTML = result.message;
               container.style.color = 'red';
               container.appendChild(message);
+              Modal.closeModal();
           }
           Action.createTableWithData("Registros invalidos", headersincorrectTable, result.incorrectData, container, 'incorrectDataTable', 10, result.incorrectData.length, '', true)
           Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
@@ -124,11 +125,11 @@ async function loadData() {
      * version: 0.1.0
      * date: 10/12/24
      */
-   document.getElementById('fromVideo').addEventListener('submit', async (event) => {
+   document.getElementById('formVideo').addEventListener('submit', async (event) => {
     event.preventDefault(); 
  
     try {
-        const result = await HttpRequest.submitForm(event, `../../../api/update/readCalifications?idSection=${sectionId}`);
+        const result = await HttpRequest.submitForm(event, `../../../api`);
         console.log(result.message); 
         console.log(result); 
         container.innerHTML = "";

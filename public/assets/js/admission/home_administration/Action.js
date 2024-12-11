@@ -64,9 +64,11 @@ export const makeTimeLine = (processes) => {
 
       const content = document.createElement("div");
       content.classList.add("content");
+    
+      const professorId = new URLSearchParams(window.location.search).get("id");
 
       const link = document.createElement("a");
-      link.href = `../../../assets/views/admission/process_detail_historic.php?id=${process.id}`;
+      link.href = `/assets/views/professors/previous_periods_classes.php?id=${professorId}&periodId=${process.id}&periodName=${process.title}`;
       link.classList.add("more-link");
       link.textContent = "Ver más";
 
