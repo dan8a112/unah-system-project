@@ -69,7 +69,7 @@
                 <div class="backgroundCard"></div>
                 <p class="generalInfo">Informacion General</p>
                 <div class="profile">
-                    <img id="profileImg" class="profileImg" src="https://i.scdn.co/image/ab67616d0000b273ca964f2c3c069b3fb9ec11be" alt="">
+                    <img id="profileImg" class="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
                     <div class="profile-info">
                         <h3 id="studentName"></h3>
                         <div class="d-flex gap-2">

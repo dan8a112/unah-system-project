@@ -42,7 +42,10 @@ Class StudentDAO {
                 }
             
                 $studentInfo = $resultStudentInfo->fetch_assoc();
-            
+                $base64Photo = null;
+                if (!empty($studentInfo['imgStudent'])) {
+                    $base64Photo = "data:image/jpeg;base64," . base64_encode($studentInfo['imgStudent']);
+                }
 
                 $queryClasses = '
 
@@ -99,7 +102,7 @@ Class StudentDAO {
                             "studentGlobalIndex" => $studentInfo['studentGlobalIndex'],
                             "studentPeriodIndex" => $studentInfo['studentPeriodIndex'],
                             "studentCenter" => $studentInfo['studentCenter'],
-                            "imgStudent" => $studentInfo['imgStudent']
+                            "imgStudent" => $base64Photo
                         ],
                         "classes" => [
                             "amountClasses" => $amountClasses,
