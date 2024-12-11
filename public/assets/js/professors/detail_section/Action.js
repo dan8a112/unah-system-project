@@ -26,7 +26,7 @@ class Action{
         }
         
 
-        const headers = ["Cuenta", "Nombre del estudiante", "Carrera", "Fecha de matricula"];
+        const headers = ["Cuenta", "Nombre del estudiante", "Calificacion", "Observacion"];
 
         const student = infoSection.students.studentsList;
         const dataFormated = student.map(row=>this.formatRows(row));
@@ -75,16 +75,21 @@ class Action{
      * date: 09/12/24
      * @param {Object} rows 
      */
-    static formatRows(row){
-
-        const formatedData = Object.values(row);
-
-        const anchor = `<a style="text-decoration: none; color: inherit; cursor: pointer;">${row.account}<a>`
-        formatedData.shift()
-        formatedData[0] = anchor;
-
-        return formatedData;
+    static formatRows(rows) {
+    
+        const formattedData = Object.entries(rows).reduce((acc, [key, value]) => {
+            acc[key] = value ?? "-";  
+            return acc;
+        }, {});
+    
+        if (formattedData.account) {
+            formattedData.account = `<a style="text-decoration: none; color: inherit; cursor: pointer;">${formattedData.account}</a>`;
+        }
+    
+        return formattedData;
     }
+    
+    
 
     /**
      * Renderiza la tarjeta para subir o gestionar archivos.
