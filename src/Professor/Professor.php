@@ -451,6 +451,31 @@
             }
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/12/24
+         * 
+         * Subir video
+         */
+        public function uploadVideo($idSection, $video){
+
+            $query = "UPDATE Section SET presentationVideo = ? WHERE id = ?";
+            $result = $this->mysqli->execute_query($query, [$video, $idSection]);
+
+            if($result){
+                return [
+                    "status"=> true,
+                    "message"=> "Video subido exitosamente"
+                ];
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al subir video"
+                ];
+            }
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

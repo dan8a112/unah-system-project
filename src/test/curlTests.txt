@@ -121,6 +121,10 @@ curl "http://localhost:3000/api/get/professor/assignedSections/?idProfessor=24&i
 ----------------------Curl para obtener las clases que se le asignaron a un docente dependiendo del periodo academico---------
 curl "http://localhost:3000/api/get/professor/timeLinePeriods/?idProfessor=3" | jq
 
+-------------------Curl para subir video de docentes---------
+curl "http://localhost:3000/api/update/uploadVideo/?idSection=1189" | jq
+
+
 ---------------------------------------PAGINACION------------------------------------------------------
 
 ----------------------obtener todas las incripciones---------------
