@@ -10,7 +10,7 @@
 
   //Se evalua si el resultado es true o false
   if (!$result) {
-    header("Location: /index.html");
+    header("Location: /index.php");
   }
 
 ?>
