@@ -114,7 +114,7 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
     event.preventDefault(); 
  
     try {
-        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php`);
+        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php?studentId=${acountStudent}/`);
         console.log(result.message); 
         console.log(result); 
         container.innerHTML = "";

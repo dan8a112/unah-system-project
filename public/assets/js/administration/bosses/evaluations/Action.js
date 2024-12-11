@@ -62,29 +62,16 @@ class Action {
 
     }
 
-    static renderPeriodSelect() {
+    static renderPeriodSelect = async () => {
 
         //Se hace fetch a la API de traer selects de periodos
-        const data = {
-            "periods": [
-                {
-                    "id": 3,
-                    "name": "1 PAC, 2023"
-                },
-                {
-                    "id": 2,
-                    "name": "2 PAC, 2023"
-                },
-                {
-                    "id": 4,
-                    "name": "3 PAC, 2023"
-                }
-            ]
-        }
+        const response = await HttpRequest.get("/api/get/periods/");
+
+        const data = response.periods;
 
         const periodSelect = document.querySelector("select#periodSelect");
 
-        Selects.renderSelect(periodSelect,data.periods,"id","name",false, "Seleccione un periodo")
+        Selects.renderSelect(periodSelect,data,"id","name",false, "Seleccione un periodo")
 
     }
 
