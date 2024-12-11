@@ -4,7 +4,7 @@
   session_start();
 
   if (SessionValidation::isValid($_SESSION, "students")){
-    header("Location: /assets/views/admission/administrative_home.php");
+    header("Location: /assets/views/students/academic_historic.php");
   }
   
 ?>

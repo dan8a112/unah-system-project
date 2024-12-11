@@ -10,6 +10,7 @@ const studentDescription = document.getElementById("studentDescription");
 const studentGlobalIndex = document.getElementById("studentGlobalIndex");
 const studentPeriodIndex = document.getElementById("studentPeriodIndex");
 const studentCenter = document.getElementById("studentCenter");
+const profileImg = document.getElementById("profileImg")
 
 //popup
 const message = document.getElementById('message');
@@ -88,6 +89,7 @@ async function loadData() {
             studentPeriodIndex.innerText = checkNull(data.studentInfo.studentPeriodIndex);
             studentCenter.innerText = checkNull(Action.getInitials(data.studentInfo.studentCenter));
             description.value = data.studentInfo.studentDescription;
+            profileImg.src = data.studentInfo.imgStudent;
 
         } else {
             console.error("No se pudo cargar la información desde la API.");
@@ -114,11 +116,10 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
     event.preventDefault(); 
 
     try {
-        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php?studentId=${acountStudent}/`);
+        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php?studentId=${acountStudent}&offset=10/`);
         console.log(result.message); 
         console.log(result); 
 
-        container.innerHTML = "";
         if(result.status == false) {
             Popup.open(popupError);
             message.innerHTML = result.message;
@@ -126,6 +127,7 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
             buttonOk2.addEventListener('click', () => Popup.close(popupError));
         }
         Modal.closeModal();
+        loadData();
         
     } catch (error) {
         console.error("Error al cargar el CSV:", error);

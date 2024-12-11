@@ -6,3 +6,4 @@
         public static $dbName = "ProyectoIS";
     }
 ?>
+

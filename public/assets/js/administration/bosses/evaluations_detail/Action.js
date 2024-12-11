@@ -1,46 +1,33 @@
 import {createSectionCard} from '../../../modules/Cards.js'
-import { createTable } from "../../../modules/table.js";
+import {createTable} from "../../../modules/table.js";
 import {Modal} from "../../../modules/Modal.js"
+import {HttpRequest} from "../../../modules/HttpRequest.js"
 
 class Action{
 
-    static renderSections(){
+    static renderSections = async ()=>{
 
         const professorId = new URLSearchParams(window.location.search).get("professorId");
+        const periodId = new URLSearchParams(window.location.search).get("periodId");
 
-        //Se hace fetch usando el professorId
-        const data = {
-            professorName: "Juan Alberto Martinez",
-            sections: [
-                {
-                    id: 1,
-                    code: "1100",
-                    class: "Programacion II",
-                    classCode: "IS-210"
-                },
-                {
-                    id: 2,
-                    code: "1500",
-                    class: "Inteligencia Artificial",
-                    classCode: "IS-803"
-                },
-                {
-                    id: 3,
-                    code: "1600",
-                    class: "Algoritmos y estructuras de datos",
-                    classCode: "IS-803"
-                }
-            ]
+        const response = await HttpRequest.get(`/api/get/departmentBoss/sectionsbyTeacher/?professorId=${professorId}&periodId=${periodId}`)
+
+        if (response.status) {
+
+            const data = response.data;
+
+            const professorBreadcrumb = document.querySelector(".breadcrumb-item.active");
+            professorBreadcrumb.innerText = data.professorName;
+
+            const professorName = document.querySelector("#professorName");
+            professorName.innerText = `Docente: ${data.professorName}`;
+
+            const cardsFormated = data.sections.map((section, index) => createSectionCard(section, index)).join("");
+
+            const sectionsContainer = document.querySelector("#sectionsContainer");
+
+            sectionsContainer.innerHTML = cardsFormated;
         }
-
-        const professorName = document.querySelector("#professorName");
-        professorName.innerText = `Docente: ${data.professorName}`;
-
-        const cardsFormated = data.sections.map((section, index) => createSectionCard(section, index)).join("");
-
-        const sectionsContainer = document.querySelector("#sectionsContainer");
-
-        sectionsContainer.innerHTML = cardsFormated;
 
     }
 

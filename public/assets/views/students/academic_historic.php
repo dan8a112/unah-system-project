@@ -1,11 +1,29 @@
+<?php
+  include_once("../../../../src/SessionValidation/SessionValidation.php");
+  
+  session_start();
 
+  $portal = "students";
+
+  if (!SessionValidation::isValid($_SESSION, $portal)){
+    header("Location: /assets/views/logins/login_students.php");
+  }else{
+
+    $userId = $_SESSION['portals'][$portal]['user'];
+
+    //Si los parametros no coinciden con los de la sesion se corrigen
+    if (!SessionValidation::validateParam("student", $userId)) {
+        header("Location: /assets/views/students/academic_historic.php?student=".$userId."&offset=10");
+        exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secciones</title>
+    <title>Historial academico</title>
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/templates/professor.css">
     <link rel="stylesheet" href="../../css/temas/cards.css">
@@ -17,8 +35,8 @@
 <body>
 <?php
     $portal = "students";
-    $title = "Portal Coordinadores de carrera";
-    $description = "Coordinadores de carrera, administra los procesos estudiantiles.";
+    $title = "Portal Estudiantes";
+    $description = "Bienvenido al portal estudiantes de la unah";
     $path = "../";
     include_once($path . "templates/headerAdmission.php");
     ?>
@@ -43,7 +61,7 @@
                 <div class="backgroundCard"></div>
                 <p class="generalInfo">Informacion General</p>
                 <div class="profile">
-                    <img id="profileImg" class="profileImg" src="https://i.scdn.co/image/ab67616d0000b273ca964f2c3c069b3fb9ec11be" alt="">
+                    <img id="profileImg" class="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
                     <div class="profile-info">
                         <h3 id="studentName"></h3>
                         <div class="d-flex gap-2">
@@ -95,7 +113,7 @@
                 <form id="editProfileForm">
                     <div class="mb-3">
                         <label for="profileImage" class="form-label">Foto de Perfil</label>
-                        <input class="form-control" name="pathProfilePhoto" type="file" id="profileImage" accept="image/*">
+                        <input class="form-control" name="pathProfilePhoto" type="file" id="profileImage" accept=".jpeg, .jpg">
                     </div>
                     <div class="mb-3">
                         <label for="profileDescription" class="form-label">Descripción</label>

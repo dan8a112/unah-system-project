@@ -287,7 +287,7 @@
          *
          * Función para obtener las secciones asignadas a un docente dado su id.
          */
-        public function getProfessorSections(int $professorId) {
+        public function getProfessorSections(int $professorId, int $periodId) {
             // Consulta para obtener la información del profesor
             $queryProfessorInfo = "SELECT CONCAT(Employee.names, ' ', Employee.lastNames) AS professorName
                                     FROM Professor 
@@ -307,17 +307,12 @@
             $professorInfo = $resultProfessorInfo->fetch_assoc();
 
             // Consulta para obtener las secciones del profesor
-            $querySections = "
-                SELECT Section.id, 
-                Section.section code, 
-                Subject.description class, 
-                Subject.id classCode
-                FROM Section 
-                INNER JOIN Subject ON Subject.id=Section.subject
-                WHERE Section.professor=?;
-                ";
+            $querySections = 'SELECT a.id as id, CONCAT(LPAD(CAST(a.section AS CHAR), 4, "0"))as code, b.description as class, b.id as classCode 
+                            FROM Section a
+                            INNER JOIN Subject b ON (a.subject = b.id)
+                            WHERE a.professor = ? AND academicEvent = ?;';
 
-            $resultSections = $this->mysqli->execute_query($querySections, [$professorId]);
+            $resultSections = $this->mysqli->execute_query($querySections, [$professorId, $periodId]);
 
             $sectionsList = [];
             if ($resultSections) {

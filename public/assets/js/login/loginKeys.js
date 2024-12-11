@@ -25,6 +25,6 @@ export const LOGIN_KEYS = {
     },
     'STUDENTS':{
         apiUrl: "../../../api/post/login/loginStudent/",
-        redirectUrl: "/"
+        redirectUrl: "../students/academic_historic.php"
     }
 }
