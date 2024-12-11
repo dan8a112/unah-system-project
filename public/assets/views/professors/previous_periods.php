@@ -10,11 +10,10 @@
   }else{
 
     $userId = $_SESSION['portals'][$portal]['user'];
-    $userType = $_SESSION['portals'][$portal]['user'];
 
     //Si los parametros no coinciden con los de la sesion se corrigen
-    if (!SessionValidation::validateParam("id", $userId) || !SessionValidation::validateParam("type", $userType)) {
-        header("Location: /assets/views/professors/previous_periods.php?id=".$userId."&type=".$userType);
+    if (!SessionValidation::validateParam("id", $userId)) {
+        header("Location: /assets/views/professors/previous_periods.php?id=".$userId);
         exit;
     }
   }
