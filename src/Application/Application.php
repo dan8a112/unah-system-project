@@ -200,7 +200,7 @@
                         "name" => $row['name'],
                         "career" => $row['firstCareer'],
                         "inscriptionDate" => $row['applicationDate'],
-                        "dictamen"=> $row['approved']
+                        "dictum"=> $row['approved']
                     ];
                 } 
             } 

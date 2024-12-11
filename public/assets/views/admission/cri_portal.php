@@ -1,22 +1,23 @@
-<?php 
-  include_once("../../../../src/SessionValidation/SessionValidation.php");
-  
-  session_start();
+<?php
+include_once("../../../../src/SessionValidation/SessionValidation.php");
 
-  if (!SessionValidation::isValid($_SESSION, "cri")){
+session_start();
+
+if (!SessionValidation::isValid($_SESSION, "cri")) {
     header("Location: /assets/views/logins/login_cri.php");
-  }else{
+} else {
 
     $userId = $_SESSION['portals']['cri']['user'];
 
-    if (!isset($_GET['id']) || empty($_GET['id']) ||$_GET['id'] != $userId) {
+    if (!isset($_GET['id']) || empty($_GET['id']) || $_GET['id'] != $userId) {
         header("Location: /assets/views/admission/cri_portal.php?id=" . $userId);
         exit;
     }
-  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,13 +26,14 @@
     <link rel="stylesheet" href="../../css/admission/cri_portal.css">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
+
 <body style="background-color: #FBF9F4;">
-    <?php 
-        $title = "Portal CRI";
-        $description = "Comite de revision de Inscripciones de procesos de admision de la UNAH";
-        $portal = "cri";
-        $path = "../";
-        include_once($path . "templates/headerAdmission.php");
+    <?php
+    $title = "Portal CRI";
+    $description = "Comite de revision de Inscripciones de procesos de admision de la UNAH";
+    $portal = "cri";
+    $path = "../";
+    include_once($path . "templates/headerAdmission.php");
     ?>
 
     <div class="container mb-5">
@@ -39,7 +41,7 @@
         <section class="my-4">
             <div class="d-flex align-items-center">
                 <h1 class="me-3">Revision de inscripciones</h1>
-                <div class="status-card" style="background-color: #00C500;" id="periodName" ></div>
+                <div class="status-card" style="background-color: #00C500;" id="periodName"></div>
             </div>
             <p>A continuación encontrará información y estadísticas sobre este proceso de admisión.</p>
         </section>
@@ -70,54 +72,30 @@
             <p>En esta seccion se muestran las inscripciones que aun no has revisado, puedes empezar a revisar ahora y cumplir con la meta del día!</p>
         </section>
 
-        <section class="row">
-            <div class="card-container">
-                <div>
-                    <span class="fs-5 ms-3 me-2">Cantidad por revisar</span>
-                    <span class="status-card" style="background-color: #c3c3c3;" id="amountUnreviewed" >18</span>
-                </div>
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Carrera principal</th>
-                            <th scope="col">Fecha de inscripcion</th>
-                            <th scope="col">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="unreviewedTbl">
-                    </tbody>
-                </table>
+        <div class="mt-2 d-flex-col card-container">
+            <div class="ms-2">
+                <span class="fs-4 me-2">Inscripciones sin revisar</span>
+                <span class="status-card" style="background-color: #c3c3c3;" id="amountUnreviewed"></span>
             </div>
-        </section>
+            <hr>
+            <div id="unreviewedTbl">
+            </div>
+        </div>
 
         <section class="my-4">
             <h3 class="me-3">Inscripciones Revisadas</h3>
             <p>En esta seccion se muestran las inscripciones que ya revisaste, toma en cuenta que las revisiones con un dictamen de rechazo se eliminaran y solo aparecen de manera temporal.</p>
         </section>
 
-        <section class="row">
-            <div class="card-container" id="reviewedSection">
-                <div>
-                    <span class="fs-5 ms-3 me-2">Cantidad revisadas</span>
-                    <span class="status-card" style="background-color: #c3c3c3;" id="amountReviewed" >25</span>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Carrera principal</th>
-                            <th scope="col">Fecha de inscripcion</th>
-                            <th scope="col">Dictamen</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reviewedTbl">
-                    </tbody>
-                </table>
+        <div class="mt-2 d-flex-col card-container">
+            <div class="ms-2">
+                <span class="fs-4 me-2">Inscripciones revisadas</span>
+                <span class="status-card" style="background-color: #c3c3c3;" id="amountReviewed"></span>
             </div>
-        </section>
+            <hr>
+            <div id="reviewedTbl">
+            </div>
+        </div>
 
     </div>
 
@@ -129,7 +107,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-    
+
                     <div class="mx-3 row mb-4">
                         <section class="col">
                             <div class="mb-3">
@@ -193,9 +171,10 @@
             </div>
         </div>
     </div>
-    
+
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/logout/logout.js" type="module"></script>
     <script src="../../js/admission/portal_cri/main.js" type="module"></script>
 </body>
+
 </html>
