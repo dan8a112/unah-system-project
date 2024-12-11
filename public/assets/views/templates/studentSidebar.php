@@ -3,15 +3,15 @@
         <img src="/assets/img/icons/student.svg" alt="" class="icon">
         <span class="menu-item-text">Tu Historial</span>
     </a>
-    <a class="menu-item" href="/assets/views/administration/bosses/professor_evaluations.php">
+    <a class="menu-item" href="/assets/views/students/students_enroll.php">
         <img src="/assets/img/icons/Classes.svg" alt="" class="icon">
         <span class="menu-item-text">Matricula</span>
     </a>
-    <a class="menu-item" href="/assets/views/administration/bosses/period_grades.php">
+    <a class="menu-item" href="#">
         <img src="/assets/img/icons/evaluation-yellow.svg" alt="" class="icon">
         <span class="menu-item-text">Solicitudes</span>
     </a>
-    <a class="menu-item" href="/assets/views/administration/bosses/students.php">
+    <a class="menu-item" href="#">
         <img src="/assets/img/icons/percent.svg" alt="" class="icon">
         <span class="menu-item-text">Estudiantes</span>
     </a>

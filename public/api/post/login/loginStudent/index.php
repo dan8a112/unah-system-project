@@ -32,8 +32,8 @@
             ];
 
             session_start();
-            $_SESSION["portals"]["student"] = [
-                "user" => $result['account']
+            $_SESSION["portals"]["students"] = [
+                "user" => $result['data']['account']
             ];
 
         }else{
