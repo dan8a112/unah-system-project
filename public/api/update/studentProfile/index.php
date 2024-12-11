@@ -21,7 +21,7 @@ if (isset($_GET["studentId"])) {
     $pathProfilePhoto = $_FILES['pathProfilePhoto']['tmp_name'] ?? '';  // Obtener ruta temporal del archivo
 
     // Validar que se envíen al menos uno de los campos
-    if (empty($description) || empty($pathProfilePhoto) && !file_exists($pathProfilePhoto)) {
+    if (empty($description) && empty($pathProfilePhoto)) {
         echo json_encode([
             "status" => false,
             "message" => "Debe proporcionar al menos un campo para actualizar.",
@@ -31,7 +31,8 @@ if (isset($_GET["studentId"])) {
     }
 
     // Inicializar conexión y ejecutar el método
-    $fileData = file_get_contents($pathProfilePhoto);
+    if (!empty($pathProfilePhoto)) {
+    $fileData = file_get_contents($pathProfilePhoto);}
 
     $dao = new StudentDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
     $json = $dao->updateStudentProfile($studentId, $description, $fileData);
