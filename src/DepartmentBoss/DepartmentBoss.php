@@ -280,6 +280,63 @@
             }
         }
 
+    /**
+     * author: wamorales@unah.hn
+     * version: 0.1.0
+     * date: 10/12/24
+     *
+     * Función para obtener las secciones asignadas a un docente dado su id.
+     */
+    public function getProfessorSections(int $professorId) {
+        // Consulta para obtener la información del profesor
+        $queryProfessorInfo = "SELECT CONCAT(Employee.names, ' ', Employee.lastNames) AS professorName
+                                FROM Professor 
+                                INNER JOIN Employee ON Professor.id=Employee.id
+                                WHERE Professor.id=?;
+        ";
+        
+        $resultProfessorInfo = $this->mysqli->execute_query($queryProfessorInfo, [$professorId]);
+
+        if (!$resultProfessorInfo) {
+            return [
+                "status" => false,
+                "message" => "Error al obtener la información del profesor."
+            ];
+        }
+
+        $professorInfo = $resultProfessorInfo->fetch_assoc();
+
+        // Consulta para obtener las secciones del profesor
+        $querySections = "
+            SELECT Section.id, 
+            Section.section code, 
+            Subject.description class, 
+            Subject.id classCode
+            FROM Section 
+            INNER JOIN Subject ON Subject.id=Section.subject
+            WHERE Section.professor=?;
+            ";
+
+        $resultSections = $this->mysqli->execute_query($querySections, [$professorId]);
+
+        $sectionsList = [];
+        if ($resultSections) {
+            while ($row = $resultSections->fetch_assoc()) {
+                $sectionsList[] = $row;
+            }
+        }
+
+        // Retorno de los datos
+        return [
+            "status" => true,
+            "message" => "Petición realizada con éxito.",
+            "data" => [
+                "professorName" => $professorInfo['professorName'],
+                "sections" => $sectionsList
+            ]
+        ];
+    }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();

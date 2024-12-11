@@ -64,7 +64,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
                     <span id="careertName" class="fs-6" style="font-weight: 500;"></span>
                 </div>
             </div>
-            <div class="btn" style="background-color: #304987;">
+            <div class="btn" style="background-color: #304987;" id="downloadLoad">
                 <img src="/assets/img/icons/downloadWhite.svg" alt="" class="me-2">
                 <span style="color: #fff">Descargar carga</span>
             </div>
