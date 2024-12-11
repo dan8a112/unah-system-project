@@ -118,7 +118,6 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
         console.log(result.message); 
         console.log(result); 
 
-        container.innerHTML = "";
         if(result.status == false) {
             Popup.open(popupError);
             message.innerHTML = result.message;
