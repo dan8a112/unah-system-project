@@ -14,17 +14,18 @@ include_once "../../../../src/Student/StudentHistory.php";
 
 $dao = null;
 
-if (isset($_POST["studentId"])) {
-    $studentId = $_POST["studentId"];
+// Obtener el studentId desde los parámetros de la URL
+if (isset($_GET["studentId"])) {
+    $studentId = $_GET["studentId"];
     $description = $_POST["description"] ?? null;
-    $pathProfilePhoto= $_FILES['pathProfilePhoto']['tmp_name'] ?? '';  // Obtener ruta temporal del archivo
+    $pathProfilePhoto = $_FILES['pathProfilePhoto']['tmp_name'] ?? '';  // Obtener ruta temporal del archivo
 
     // Validar que se envíen al menos uno de los campos
     if (empty($description) || empty($pathProfilePhoto) && !file_exists($pathProfilePhoto)) {
         echo json_encode([
             "status" => false,
             "message" => "Debe proporcionar al menos un campo para actualizar.",
-            "route" =>$pathProfilePhoto
+            "route" => $pathProfilePhoto
         ]);
         exit;
     }
@@ -47,5 +48,4 @@ if ($dao) {
 }
 
 echo json_encode($json);
-
 ?>

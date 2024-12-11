@@ -170,7 +170,7 @@ CREATE TABLE Student(
     name VARCHAR(60) NOT NULL,
     dni VARCHAR(15) NOT NULL,
     email VARCHAR(60) NOT NULL,
-    description VARCHAR(100),
+    description VARCHAR(200),
     degreeProgram SMALLINT NOT NULL,
     regionalCenter TINYINT NOT NULL,
     globalAverage TINYINT,
@@ -537,7 +537,7 @@ END;
 **/
 CREATE PROCEDURE updateStudentProfile(
     IN studentId VARCHAR(11),
-    IN description VARCHAR(20),
+    IN description VARCHAR(200),
     IN photo1 LONGBLOB
 )
 BEGIN
