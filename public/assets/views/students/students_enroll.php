@@ -32,8 +32,8 @@
 <body>
     <?php
     $portal = "students";
-    $title = "Portal Coordinadores de carrera";
-    $description = "Coordinadores de carrera, administra los procesos estudiantiles.";
+    $title = "Portal Estudiantes";
+    $description = "Bienvenido al portal estudiantes de la unah.";
     $path = "../";
     include_once($path . "templates/headerAdmission.php");
     ?>
@@ -77,27 +77,34 @@
             </section>
 
             <section>
-                <div class="mb-4">
-                    <label class="form-label">Departamento</label>
-                    <select class="form-select" name="department" id="departmentSelect">
-                        <option selected>Seleccione una opcion</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label">Clase</label>
-                    <select class="form-select" name="class" id="classSelect">
-                        <option selected>Seleccione una opcion</option>
-                    </select>
-                </div>
-                <form action="" class="mb-4">
-                    <div class="mb-5">
-                        <label class="form-label">Sección</label>
-                        <select class="form-select" name="section" id="sectionSelect" required>
-                            <option selected>Seleccione una opcion</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary">Matricular Clase</button>
-                </form>
+            <div class="mb-4">
+                
+            <label class="form-label">Departamento</label>
+            <select class="form-select" name="department" id="departmentSelect">
+                <option selected value="">Seleccione una opción</option>
+                <option value="1">Departamento 1</option>
+                <option value="2">Departamento 2</option>
+            </select>
+            </div>
+            <div class="mb-4">
+            <label class="form-label">Clase</label>
+            <select class="form-select" name="class" id="classSelect" disabled>
+                <option selected value="">Seleccione una opción</option>
+                <option value="1">Departamento 1</option>
+                <option value="2">Departamento 2</option>
+            </select>
+            </div>
+            <form action="" class="mb-4">
+            <div class="mb-5">
+                <label class="form-label">Sección</label>
+                <select class="form-select" name="section" id="sectionSelect" disabled required>
+                <option selected value="">Seleccione una opción</option>
+                <option value="1">Departamento 1</option>
+                <option value="2">Departamento 2</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" disabled id="enrollButton">Matricular Clase</button>
+            </form>
 
             </section>
 

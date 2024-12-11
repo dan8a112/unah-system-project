@@ -10,6 +10,7 @@ const studentDescription = document.getElementById("studentDescription");
 const studentGlobalIndex = document.getElementById("studentGlobalIndex");
 const studentPeriodIndex = document.getElementById("studentPeriodIndex");
 const studentCenter = document.getElementById("studentCenter");
+const profileImg = document.getElementById("profileImg")
 
 //popup
 const message = document.getElementById('message');
@@ -88,6 +89,7 @@ async function loadData() {
             studentPeriodIndex.innerText = checkNull(data.studentInfo.studentPeriodIndex);
             studentCenter.innerText = checkNull(Action.getInitials(data.studentInfo.studentCenter));
             description.value = data.studentInfo.studentDescription;
+            profileImg.src = data.studentInfo.imgStudent;
 
         } else {
             console.error("No se pudo cargar la información desde la API.");
