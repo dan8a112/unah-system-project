@@ -280,62 +280,154 @@
             }
         }
 
-    /**
-     * author: wamorales@unah.hn
-     * version: 0.1.0
-     * date: 10/12/24
-     *
-     * Función para obtener las secciones asignadas a un docente dado su id.
-     */
-    public function getProfessorSections(int $professorId) {
-        // Consulta para obtener la información del profesor
-        $queryProfessorInfo = "SELECT CONCAT(Employee.names, ' ', Employee.lastNames) AS professorName
-                                FROM Professor 
-                                INNER JOIN Employee ON Professor.id=Employee.id
-                                WHERE Professor.id=?;
-        ";
-        
-        $resultProfessorInfo = $this->mysqli->execute_query($queryProfessorInfo, [$professorId]);
+        /**
+         * author: wamorales@unah.hn
+         * version: 0.1.0
+         * date: 10/12/24
+         *
+         * Función para obtener las secciones asignadas a un docente dado su id.
+         */
+        public function getProfessorSections(int $professorId) {
+            // Consulta para obtener la información del profesor
+            $queryProfessorInfo = "SELECT CONCAT(Employee.names, ' ', Employee.lastNames) AS professorName
+                                    FROM Professor 
+                                    INNER JOIN Employee ON Professor.id=Employee.id
+                                    WHERE Professor.id=?;
+            ";
+            
+            $resultProfessorInfo = $this->mysqli->execute_query($queryProfessorInfo, [$professorId]);
 
-        if (!$resultProfessorInfo) {
+            if (!$resultProfessorInfo) {
+                return [
+                    "status" => false,
+                    "message" => "Error al obtener la información del profesor."
+                ];
+            }
+
+            $professorInfo = $resultProfessorInfo->fetch_assoc();
+
+            // Consulta para obtener las secciones del profesor
+            $querySections = "
+                SELECT Section.id, 
+                Section.section code, 
+                Subject.description class, 
+                Subject.id classCode
+                FROM Section 
+                INNER JOIN Subject ON Subject.id=Section.subject
+                WHERE Section.professor=?;
+                ";
+
+            $resultSections = $this->mysqli->execute_query($querySections, [$professorId]);
+
+            $sectionsList = [];
+            if ($resultSections) {
+                while ($row = $resultSections->fetch_assoc()) {
+                    $sectionsList[] = $row;
+                }
+            }
+
+            // Retorno de los datos
             return [
-                "status" => false,
-                "message" => "Error al obtener la información del profesor."
+                "status" => true,
+                "message" => "Petición realizada con éxito.",
+                "data" => [
+                    "professorName" => $professorInfo['professorName'],
+                    "sections" => $sectionsList
+                ]
             ];
         }
 
-        $professorInfo = $resultProfessorInfo->fetch_assoc();
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/12/24
+         *
+         * Función para obtener la cantidad de secciones que tuvo un docente en un periodo academico
+         */
+        public function getProfessorsAmountSections($idPeriod, $offset){
+            $query2 = 'SELECT DISTINCT a.id, 
+                CONCAT(c.names, " ", c.lastNames) AS name, 
+                c.personalEmail,
+                COUNT(b.id) AS sectionCount
+            FROM Professor a
+            INNER JOIN Section b ON a.id = b.professor
+            INNER JOIN Employee c ON a.id = c.id
+            WHERE b.academicEvent = ?
+            GROUP BY a.id, c.names, c.lastNames, c.personalEmail
+            LIMIT 10 OFFSET ?;';
 
-        // Consulta para obtener las secciones del profesor
-        $querySections = "
-            SELECT Section.id, 
-            Section.section code, 
-            Subject.description class, 
-            Subject.id classCode
-            FROM Section 
-            INNER JOIN Subject ON Subject.id=Section.subject
-            WHERE Section.professor=?;
-            ";
+            $result2 = $this->mysqli->execute_query($query2, [$idPeriod, $offset]);
 
-        $resultSections = $this->mysqli->execute_query($querySections, [$professorId]);
+            $professors = [];
+            if($result2){
+                while($row = $result2->fetch_assoc()){
+                    $professors []= $row;
+                }
+            }  
+            
+            $amountProfessors = 0;
+            $query = 'SELECT COUNT(DISTINCT a.id) AS amount
+                FROM Professor a
+                INNER JOIN Section b ON a.id = b.professor
+                INNER JOIN Employee c ON a.id = c.id
+                WHERE b.academicEvent = ?;';
+            $result = $this->mysqli->execute_query($query, [$idPeriod]);
 
-        $sectionsList = [];
-        if ($resultSections) {
-            while ($row = $resultSections->fetch_assoc()) {
-                $sectionsList[] = $row;
-            }
+            if ($result) {
+                $amountProfessors = $result->fetch_assoc();
+            } 
+ 
+            return  [
+                "professors"=> $professors,
+                "amountProfessors"=> $amountProfessors['amount']
+            ];
+
         }
 
-        // Retorno de los datos
-        return [
-            "status" => true,
-            "message" => "Petición realizada con éxito.",
-            "data" => [
-                "professorName" => $professorInfo['professorName'],
-                "sections" => $sectionsList
-            ]
-        ];
-    }
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/12/24
+         *
+         * Función para obtener informacion de los docentes y cuantas clases impartieron en deterinado periodo
+         */
+        public function getProfessorsForEvaluations($id){
+            //obtener info del periodo
+            if($id===0){ //periodo actual
+                $query= 'SELECT a.id, CONCAT(b.description, " ", year(startDate)) as name 
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicProcess b ON (a.process = b.id)
+                    WHERE a.id = (SELECT actualAcademicPeriod());';
+                
+                $result = $this->mysqli->execute_query($query);
+            }else{ //cualquier otro periodo
+                $query= 'SELECT a.id, CONCAT(b.description, " ", year(startDate)) as name
+                    FROM AcademicEvent a
+                    INNER JOIN AcademicProcess b ON (a.process = b.id)
+                    WHERE a.id = ?;';
+                $result = $this->mysqli->execute_query($query, [$id]);
+            }
+            if($result){
+                $period = $result->fetch_assoc();
+                $professors = $this->getProfessorsAmountSections($period['id'], 0);
+                return [
+                    "status"=> true,
+                    "message"=> "Peticion realizada correctamente.",
+                    "data"=>[
+                        'amountProfessors'=> $professors['amountProfessors'],
+                        'period'=>$period,
+                        'professors'=> $professors['professors']
+                    ]
+                ];
+
+            }else{
+                return [
+                    "status"=> false,
+                    "message"=> "Error al consultar informacion del periodo."
+                ];
+            }
+
+        }
 
         // Método para cerrar la conexión
         public function closeConnection() {

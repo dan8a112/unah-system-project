@@ -302,9 +302,9 @@
          */
         public function loginStudent(string $user, string $password) : array{
 
-            $query = "SELECT account, mail, password 
+            $query = "SELECT account, email, password 
                     FROM Student
-                    WHERE personalEmail = ?;";
+                    WHERE email = ?;";
             
             try{
                 $result = $this->mysqli->execute_query($query, [$user]);
@@ -315,7 +315,7 @@
                             "status"=> true,
                             "message"=> 'Usuario autenticado',
                             "data"=>[
-                                "count"=> $row['account'],
+                                "account"=> $row['account']
                             ]
                         ];
                     }

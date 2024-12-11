@@ -22,5 +22,9 @@ export const LOGIN_KEYS = {
     'COORDINATORS':{
         apiUrl: "../../../api/post/login/loginCoordinator/",
         redirectUrl: "../administration/coordinators/academic_load.php"
+    },
+    'STUDENTS':{
+        apiUrl: "../../../api/post/login/loginStudent/",
+        redirectUrl: "/"
     }
 }
