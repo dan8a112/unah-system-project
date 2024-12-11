@@ -3,9 +3,9 @@
     /**
      * author: dorian.contreras@unah.hn
      * version: 0.1.0
-     * date: nov 2024
+     * date: 11/12/24
      * 
-     * Servicio actualizar un profesor
+     * Servicio subir un vidoe
      */
     header("Content-Type: application/json");
 

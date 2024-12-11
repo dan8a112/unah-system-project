@@ -31,6 +31,9 @@ curl -d "mail=ana.lopez@unah.edu.hn" -d "password=1234" http://localhost:3000/ap
 --------------Curl para probar login de DIPP-----------------------
 curl -d "mail=javier.fuentes@unah.edu.hn" -d "password=1234" http://localhost:3000/api/post/login/loginDIPP| jq
 
+--------------Curl para probar login de estudiantes-----------------------
+curl -d "mail=juan.lopez@unah.hn" -d "password=1234" http://localhost:3000/api/post/login/loginStudent| jq
+
 --------------Curl para probar el home de SEDP------------------------
 curl http://localhost:3000/api/get/infoHomeSEDP | jq
 

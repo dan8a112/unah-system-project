@@ -1,6 +1,7 @@
 import { Action } from "./Action.js";
 import { HttpRequest } from "../../modules/HttpRequest.js";
 import { Modal } from "../../modules/Modal.js";
+import { Popup } from "../../modules/Popup.js";
 
 const studentName = document.getElementById("studentName");
 const studentCareer = document.getElementById("studentCareer");
@@ -9,6 +10,11 @@ const studentDescription = document.getElementById("studentDescription");
 const studentGlobalIndex = document.getElementById("studentGlobalIndex");
 const studentPeriodIndex = document.getElementById("studentPeriodIndex");
 const studentCenter = document.getElementById("studentCenter");
+
+//popup
+const message = document.getElementById('message');
+const popupError = document.getElementById('popupError');
+const buttonOk2 = document.getElementById('buttonOk2');
 
 //Descripcion de modal
 const description = document.getElementById("profileDescription")
@@ -108,15 +114,15 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
     event.preventDefault(); 
  
     try {
-        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php`);
+        const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php?studentId=${acountStudent}/`);
         console.log(result.message); 
         console.log(result); 
         container.innerHTML = "";
         if(result.status == false) {
-            let message = document.createElement('p');
+            Popup.open(popupError);
             message.innerHTML = result.message;
-            container.style.color = 'red';
-            container.appendChild(message);
+            buttonOk2.style.background = '#EC0000';
+            buttonOk2.addEventListener('click', () => Popup.close(popupError));
         }
         Modal.closeModal();
         

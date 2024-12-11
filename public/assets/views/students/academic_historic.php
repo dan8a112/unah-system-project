@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../css/temas/cards.css">
     <link rel="stylesheet" href="../../css/students/academic_history.css">
     <link rel="stylesheet" href="../../css/templates/breadCrumb.css">
+    <link rel="stylesheet" href="../../css/temas/popup.css">
 </head>
 
 <body>
@@ -106,6 +107,13 @@
         </div>
     </div>
 </div>
+
+    <div class="popup" id="popupError" style="border: solid 1px #EC0000;">
+      <img src="../../img/icons/error.svg" alt="">
+      <h2>Error!</h2>
+      <p id="message"></p>
+      <button type="button" id="buttonOk2">OK</button>
+    </div>
 
 
     <script src="../../js/bootstrap.bundle.min.js"></script>

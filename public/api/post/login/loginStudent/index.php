@@ -5,7 +5,7 @@
      * version: 0.1.0
      * date: 10/12/24
      * 
-     * Servicio login de DIPP
+     * Servicio login de estudiantes
      */
     header("Content-Type: application/json");
 
@@ -23,7 +23,7 @@
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
 
-        $status = $dao->loginDIPP($mail, $password);
+        $status = $dao->loginStudent($mail, $password);
 
         if($status['status']){
             $json = [

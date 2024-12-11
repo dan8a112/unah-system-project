@@ -293,6 +293,47 @@
             
         }
 
+        /**
+         * author: dorian.contreras@unah.hn
+         * version: 0.1.0
+         * date: 11/12/24
+         * 
+         * Login para Students
+         */
+        public function loginStudent(string $user, string $password) : array{
+
+            $query = "SELECT account, mail, password 
+                    FROM Student
+                    WHERE personalEmail = ?;";
+            
+            try{
+                $result = $this->mysqli->execute_query($query, [$user]);
+                
+                foreach($result as $row){
+                    if(password_verify($password, $row["password"])){
+                        return [
+                            "status"=> true,
+                            "message"=> 'Usuario autenticado',
+                            "data"=>[
+                                "count"=> $row['account'],
+                            ]
+                        ];
+                    }
+                }
+                return [
+                    "status"=> false,
+                    "message"=> 'El correo o la contraseña es incorrecto, vuelva a intentarlo.'
+                ];
+                
+            }catch (Exception $e){
+                return [
+                    "status"=> false,
+                    "message"=> 'Ocurrio un error: ' . $e
+                ];
+            }
+            
+        }
+
         // Método para cerrar la conexión
         public function closeConnection() {
             $this->mysqli->close();
