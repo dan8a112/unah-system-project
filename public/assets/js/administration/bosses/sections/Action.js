@@ -44,7 +44,7 @@ class Action{
 
         const headers = ["#", "Codigo","Clase", "Cupos","Hora", "Acciones"];
 
-        const dataFormated = this.formatRows(rows)
+        const dataFormated = this.formatRows(rows, this.isActive)
 
         const container = document.querySelector("#section-table");
 
@@ -61,7 +61,7 @@ class Action{
             apiPagination,
             false,
             true,
-            this.formatRows
+            (rows)=>this.formatRows(rows,this.isActive)
         );
 
         section.style.marginTop = '0px';
@@ -75,7 +75,7 @@ class Action{
      * @param {Array<Object>} row 
      * @returns {Array<Array<any>>} retorna un array con los elementos de la fila formateados
      */
-    static formatRows(rows){
+    static formatRows(rows,isActive){
 
         const formatedTable = []
 
@@ -84,14 +84,14 @@ class Action{
             const formatedRow = Object.values(row);
 
             //Se crea el elemento button con el dataset del id de la seccion
-            const button = `<button data-id-section=${row.id} class="btn btn-outline-warning btn-sm actionsBtn" ${this.isActive==false && 'disabled'}>Acciones</button>`
+            const button = `<button data-id-section=${row.id} class="btn btn-outline-warning btn-sm actionsBtn" ${isActive==false && 'disabled'}>Acciones</button>`
 
             //Se agrega el boton al array (fila de la tabla)
             formatedRow.push(button);
 
             formatedTable.push(formatedRow)
         })
-        
+        console.log(formatedTable)
         return formatedTable;
     }
 
@@ -234,7 +234,7 @@ class Action{
 
                 const enrolledPaginationUrl =  ``
 
-                const enrolledHeadersTbl = ['Cuenta', 'Nombre', 'Fecha de matricula']
+                const enrolledHeadersTbl = ['Cuenta', 'Nombre', 'Correo Electronico']
 
                 this.generatePaginationTable(
                     enrolledSectionTbl, 
