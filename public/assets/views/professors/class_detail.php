@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="../../css/temas/cards.css">
     <link rel="stylesheet" href="../../css/admission/process_detail.css">
     <link rel="stylesheet" href="../../css/templates/breadCrumb.css">
+    <link rel="stylesheet" href="../../css/temas/popup.css">
 </head>
 
 <body style="background-color: #FBF9F4;">
@@ -160,7 +161,7 @@
                             <p class="fs-5">Subir Video de presentacion</p>
                             <p>A continuacion puedes subir un video de presentacion para tus estudiantes.</p>
                         </div>
-                        <input class="form-control mb-3" type="file" name="pathVideo" required>
+                        <input class="form-control mb-3" type="file" name="video" required>
                        
                     </div>
                 </div>
@@ -175,6 +176,42 @@
             </div>
         </div>
     </div>
+
+    <div class="popup" id="popupError" style="border: solid 1px #EC0000;">
+      <img src="../../img/icons/error.svg" alt="">
+      <h2>Error!</h2>
+      <p id="message"></p>
+      <button type="button" id="buttonOk2">OK</button>
+    </div>
+    <div class="popup" id="popup">
+      <img src="../../img/icons/check.svg" alt="">
+      <h2>Felicidades!</h2>
+      <p id="exitMessage"></p>
+      <button type="button" id="buttonOk1">OK</button>
+    </div>
+
+    <!-- Loader Overlay -->
+<!-- Loader Overlay -->
+<div id="loadingOverlay" style="
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.5); 
+    z-index: 9999; 
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column;">
+    
+    <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p style="margin-top: 1rem; color: white; font-size: 1.5rem;">Subiendo...</p>
+</div>
+
+
     
     <script src="../../js/bootstrap.bundle.min.js"></script>
     <script src="../../js/professors/detail_section/main.js" type="module"></script>

@@ -5,8 +5,7 @@ class Action{
 
     static renderStudents(data, urlPaginacion){
 
-        const { stateProces, infoSection } = data;
-        let stateProcess = 17;
+        const { stateProcess, infoSection } = data;
 
         const testData = [
             { id: 1, name: "Asistencia", points: 10 },

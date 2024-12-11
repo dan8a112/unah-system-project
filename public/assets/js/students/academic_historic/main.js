@@ -112,11 +112,12 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
      */
    document.getElementById('editProfileForm').addEventListener('submit', async (event) => {
     event.preventDefault(); 
- 
+
     try {
         const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php?studentId=${acountStudent}/`);
         console.log(result.message); 
         console.log(result); 
+
         container.innerHTML = "";
         if(result.status == false) {
             Popup.open(popupError);
@@ -130,3 +131,4 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
         console.error("Error al cargar el CSV:", error);
     }
 });
+
