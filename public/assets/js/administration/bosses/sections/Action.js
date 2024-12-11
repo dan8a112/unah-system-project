@@ -232,37 +232,45 @@ class Action{
                 const enrolledSectionTbl = document.querySelector("#enrolledStudentsTable");
                 enrolledSectionTbl.innerHTML = ""
 
-                const enrolledPaginationUrl =  ``
+                const enrolledPaginationUrl =  `/api/get/pagination/studentsSection/?id=${sectionId}&`
 
-                const enrolledHeadersTbl = ['Cuenta', 'Nombre', 'Correo Electronico']
+                const studentsList = this.formatStudentsRows(data.studentsList,['account','name']);
+
+                const enrolledHeadersTbl = ['Cuenta', 'Nombre']
 
                 this.generatePaginationTable(
                     enrolledSectionTbl, 
                     enrolledHeadersTbl,
-                    data.studentsList,
+                    studentsList,
                     'enrolled-body',
                     data.amountStudents,
                     enrolledPaginationUrl,
                     "",
-                    false);
+                    false,
+                    (rows)=>this.formatStudentsRows(rows,['account','name'])
+                );
 
                 //Se genera la tabla de estudiantes en espera
                 const waitingSectionTbl = document.querySelector("#studentsWaitingTable");
                 waitingSectionTbl.innerHTML = ""
 
-                const  waitingPaginationUrl =  ``
+                const  waitingPaginationUrl =  `/api/get/pagination/waitingStudents/?id=${sectionId}&`
 
-                const  waitingHeadersTbl = ['Cuenta', 'Nombre', 'Fecha de matricula']
+                const waitingStudentList = this.formatStudentsRows(data.waitingStudentList,['account','name'])
+
+                const  waitingHeadersTbl = ['Cuenta', 'Nombre']
 
                 this.generatePaginationTable(
                     waitingSectionTbl, 
                     waitingHeadersTbl,
-                    data.waitingStudentList,
+                    waitingStudentList,
                     'waiting-body',
                     data.amountWaitingStudents,
                     waitingPaginationUrl,
                     "",
-                    false);
+                    false,
+                    (rows)=>this.formatStudentsRows(rows,['account','name'])
+                );
 
                 //formato para nombre de la clase
                 const className = `Clase: ${data.class.name}`
@@ -272,6 +280,21 @@ class Action{
             }
         }
 
+    }
+
+    static formatStudentsRows(rows, keysInclude){
+
+        const rowsFormated = []
+
+        rows.forEach(student=>{
+            const studentFormated = [];
+            keysInclude.forEach(key=>{
+                studentFormated.push(student[key]);
+            });
+            rowsFormated.push(studentFormated)
+        })
+
+        return rowsFormated;
     }
 
     static submitEditSection = async (event) => {
@@ -307,7 +330,7 @@ class Action{
         }
     }
 
-    static generatePaginationTable(section, headers, rows, id, amountRows, url, title, border){
+    static generatePaginationTable(section, headers, rows, id, amountRows, url, title, border, callback){
 
         const table = createTable(
             title, 
@@ -320,7 +343,7 @@ class Action{
             url,
             false,
             true,
-            null
+            callback
         );
 
         section.style.marginTop = '0px';
