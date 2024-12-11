@@ -380,7 +380,7 @@
                             a.startHour,  
                             a.finishHour, d.id as classroomId,  
                             CONCAT(d.description, " ", e.description ) as classroom,
-                            a.presentationVideo 
+                            a.presentationVideo, a.academicEvent 
                     FROM Section a 
                     INNER JOIN Subject b ON (a.subject = b.id) 
                     INNER JOIN Days c ON (a.days = c.id) 
@@ -388,7 +388,6 @@
                     INNER JOIN Building e ON (d.building = e.id) 
                     INNER JOIN AcademicEvent f ON (a.academicEvent = f.id) 
                     INNER JOIN AcademicProcess g ON (f.process = g.id) 
-
                     WHERE a.id = ?;';
             $result = $this->mysqli->execute_query($query, [$id]);
             
@@ -414,6 +413,12 @@
                 if($result1){
                     $period = $result1->fetch_assoc();
 
+                    if($section['academicEvent']==$period['processId']){
+                        $inActualPeriod = true;
+                    }else{
+                        $inActualPeriod = false;
+                    }
+
                     $response = [
                         "status" => true,
                         "message" => "Petición realizada con éxito",
@@ -436,7 +441,8 @@
                                     "period" => $section['period']
                                 ],
                                 "students" => $students,
-                                "video" => $video
+                                "video" => $video,
+                                "inActualPeriod"=> $inActualPeriod
                             ]
                         ]
                     ];                    
