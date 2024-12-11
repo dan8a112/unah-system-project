@@ -21,8 +21,8 @@ class Action{
                 this.provideUploadInfo(testData);
                 break;
             case stateProcess >= 12 && stateProcess <= 16:
-                if(inActualPeriod){
-                    if(video==false){
+                if(infoSection.inActualPeriod==true){
+                    if(infoSection.video==true){
                         this.renderUploadCSVSection(stateProcess, 1);
                     } else {
                         this.renderUploadCSVSection(stateProcess);
