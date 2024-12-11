@@ -5,7 +5,8 @@ class Action{
 
     static renderStudents(data, urlPaginacion){
 
-        const { stateProcess, infoSection } = data;
+        const { stateProces, infoSection } = data;
+        let stateProcess = 17;
 
         const testData = [
             { id: 1, name: "Asistencia", points: 10 },
@@ -155,7 +156,7 @@ class Action{
                 title: "Subir calificaciones de la clase",
                 description:
                     "Llegó el momento de subir las calificaciones de los alumnos, puedes hacerlo desde este espacio.",
-                button: { id: "uploadRatingsBtn", text: "Subir Calificaciones", icon: "upload.svg", action: "openUploadVideoModal" },
+                button: { id: "uploadRatingsBtn", text: "Subir Calificaciones", icon: "upload.svg", action: "openUploadModal" },
             },
         };
     
@@ -164,7 +165,7 @@ class Action{
             return {
                 title: "Subir video de presentación",
                 description: "Puedes agregar un video descriptivo para esta clase para mostrarlo a tus alumnos.",
-                button: { id: "uploadVideoBtn", text: "Subir Video", icon: "upload.svg", action: "openUploadModal" },
+                button: { id: "uploadVideoBtn", text: "Subir Video", icon: "upload.svg", action: "openUploadVideoModal" },
             };
         }
     

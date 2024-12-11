@@ -1,23 +1,4 @@
-<?php
-  include_once("../../../../../src/SessionValidation/SessionValidation.php");
-  
-  session_start();
 
-  $portal = "students";
-
-  if (!SessionValidation::isValid($_SESSION, $portal)){
-    header("Location: /assets/views/logins/login_coordinators.php");
-  }else{
-
-    $userId = $_SESSION['portals'][$portal]['user'];
-
-    //Si los parametros no coinciden con los de la sesion se corrigen
-    if (!SessionValidation::validateParam("id", $userId)) {
-        header("Location: /assets/views/administration/coordinators/academic_historic.php?id=".$userId);
-        exit;
-    }
-  }
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,40 +6,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secciones</title>
-    <link rel="stylesheet" href="../../../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../../css/templates/professor.css">
-    <link rel="stylesheet" href="../../../css/temas/cards.css">
-    <link rel="stylesheet" href="../../../css/students/academic_history.css">
-    <link rel="stylesheet" href="../../../css/templates/breadCrumb.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/templates/professor.css">
+    <link rel="stylesheet" href="../../css/temas/cards.css">
+    <link rel="stylesheet" href="../../css/students/academic_history.css">
+    <link rel="stylesheet" href="../../css/templates/breadCrumb.css">
 </head>
 
 <body>
 <?php
-    $portal = "coordinators";
+    $portal = "students";
     $title = "Portal Coordinadores de carrera";
     $description = "Coordinadores de carrera, administra los procesos estudiantiles.";
-    $path = "../../";
+    $path = "../";
     include_once($path . "templates/headerAdmission.php");
     ?>
 
     <main class="row">
 
         <?php
-        $path = "../../";
-        $selected = 3;
-        include_once($path . "templates/professors/coordinatorsSidebar.php");
+        $path = "../";
+        $selected = 1;
+        include_once($path . "templates/studentSidebar.php");
         ?>
 
         <section class="col mx-4 big-container">
-        <?php 
-            $path = "../../";
-            $links = [
-                ['title' => 'Estudiantes', 'url' => '/assets/views/administration/coordinators/students.php'],
-                ['title' => 'historial', 'url' => '/calificaciones']
-              ];
-
-            include_once($path . "templates/breadCrumb.php");
-        ?>
             <div class="my-4">
                 <div class="d-flex align-items-center">
                     <h1 class="display3 me-3" id="processName">Historial Academico</h1>
@@ -94,6 +66,9 @@
                             <label>Centro</label>
                         </div>
                     </div>
+                    <div>
+                        <img src="../../img/icons/editprofile.svg" alt="">
+                    </div>
                     
                 </div>
             </div>
@@ -106,9 +81,9 @@
     </main>
 
 
-    <script src="../../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../../js/students/academic_historic/main.js" type="module"></script>
-    <script src="../../../js/behaviorTemplates/professors/sidebar.js"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/students/academic_historic/main.js" type="module"></script>
+    <script src="../../js/behaviorTemplates/professors/sidebar.js"></script>
 </body>
 
 </html>

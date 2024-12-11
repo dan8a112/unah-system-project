@@ -153,7 +153,7 @@
                 <h1 class="modal-title fs-5" id="formModal">Subir video</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="fromVideo">
+            <form id="formVideo">
                 <div class="modal-body">
                     <div class="container">
                         <div class="mb-3">
