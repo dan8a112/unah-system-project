@@ -16,7 +16,7 @@
         if(isset($_GET['id'])){
             $exporter = new CSVExporter(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-            $sql = 'SELECT b.account, CONCAT(b.name, " ", b.lastName) as name, b.email
+            $sql = 'SELECT b.account, b.name, b.email
                 FROM StudentSection a
                 INNER JOIN Student b ON (a.studentAccount = b.account)
                 WHERE a.section = ? AND a.waiting = false
