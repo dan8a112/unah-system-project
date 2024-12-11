@@ -32,7 +32,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
 <body>
     <?php
-    $portal = "bosses";
+    $portal = "coordinators";
     $title = "Portal Coordinadores de carrera";
     $description = "Coordinadores de carrera, administra los procesos estudiantiles.";
     $path = "../../";

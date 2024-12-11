@@ -12,7 +12,7 @@
          * version: 0.2.0
          * date: 5/11/24
          * 
-         * FUncion para obtener todas las carreras
+         * Funcion para obtener todas las carreras
          */
         public function getDegrees() : array {
 
