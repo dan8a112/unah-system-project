@@ -12,9 +12,9 @@ class CoordinatorDAO {
          * version: 0.2.0
          * date: 10/12/24
          * 
-         * Funcion que obtiene la carga academica respecto a un coordinador
+         * Funcion que obtiene la carga academica del ultimo periodo respecto a un coordinador
          */
-    public function getAcademicLoad(int $coordinatorId, int $periodId, int $offset = 0) {
+    public function getAcademicLoad(int $coordinatorId, int $offset = 0) {
         // Obtener la lista de periodos
         $queryPeriods = "SELECT AcademicEvent.id id, CONCAT(AcademicProcess.description, ' ' ,YEAR(AcademicEvent.startDate)) 
                 name
@@ -29,14 +29,15 @@ class CoordinatorDAO {
             $periods[] = $row;
         }
 
-        // Obtener el periodo actual
+        // Obtener el periodo actual (ultimo sin parametro)----descartar el academicEventID
         $queryCurrentPeriod = "SELECT AcademicEvent.id id,
-                 CONCAT(AcademicProcess.description, ' ' ,YEAR(AcademicEvent.startDate))  name
-                FROM AcademicEvent
-                INNER JOIN AcademicProcess ON AcademicEvent.process=AcademicProcess.id
-                WHERE AcademicEvent.id=?;";
+                                CONCAT(AcademicProcess.description, ' ' ,YEAR(AcademicEvent.startDate))  name
+                                FROM AcademicEvent
+                                INNER JOIN AcademicProcess ON AcademicEvent.process=AcademicProcess.id
+                                WHERE AcademicEvent.id=(SELECT MAX(AcademicEvent.id) FROM AcademicEvent 
+                                WHERE process=8 OR process=9 OR process=10);";
 
-        $currentPeriodResult = $this->mysqli->execute_query($queryCurrentPeriod, [$periodId]);
+        $currentPeriodResult = $this->mysqli->execute_query($queryCurrentPeriod);
         $currentPeriod = $currentPeriodResult->fetch_assoc();
 
         // Obtener las secciones del periodo actual
@@ -52,10 +53,11 @@ class CoordinatorDAO {
                 INNER JOIN Building ON Classroom.building=Building.id
                 INNER JOIN AcademicEvent ON Section.academicEvent=AcademicEvent.id
                 INNER JOIN Department ON Professor.department=Department.id
-                WHERE Department.id=(SELECT department FROM Professor WHERE id=?) and AcademicEvent.id=?
+                WHERE Department.id=(SELECT department FROM Professor WHERE id=?) and AcademicEvent.id=(SELECT MAX(AcademicEvent.id) FROM AcademicEvent 
+                                WHERE process=8 OR process=9 OR process=10)
                 LIMIT 10 OFFSET ?;";
 
-        $sectionListResult = $this->mysqli->execute_query($querySections, [$coordinatorId, $periodId, $offset]);
+        $sectionListResult = $this->mysqli->execute_query($querySections, [$coordinatorId, $offset]);
         $sectionList = [];
         while ($row = $sectionListResult->fetch_assoc()) {
             $sectionList[] = $row;
@@ -68,9 +70,10 @@ class CoordinatorDAO {
         INNER JOIN Department ON Department.id = Subject.department
         INNER JOIN AcademicEvent ON Section.academicEvent = AcademicEvent.id
         WHERE Department.id = (SELECT department FROM Professor WHERE id = ?)
-        AND AcademicEvent.id = ?;";
+        AND AcademicEvent.id = (SELECT MAX(AcademicEvent.id) FROM AcademicEvent 
+                                WHERE process=8 OR process=9 OR process=10);";
 
-        $amountSectionsResult = $this->mysqli->execute_query($queryAmountSections, [$coordinatorId, $periodId]);
+        $amountSectionsResult = $this->mysqli->execute_query($queryAmountSections, [$coordinatorId]);
         $amountSections = $amountSectionsResult->fetch_assoc()['amount'];
 
         // Obtener la carrera del coordinador

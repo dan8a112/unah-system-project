@@ -15,12 +15,12 @@ include_once "../../../../../src/CareerCoordinator/CareerCoordinator.php";
 // Data Access Object
 $dao = new CoordinatorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-if (isset($_GET["coordinatorId"]) && isset($_GET["periodId"])) {
+if (isset($_GET["coordinatorId"])) {
     $coordinatorId = (int)$_GET["coordinatorId"];
-    $periodId = (int)$_GET["periodId"];
+
     $offset = isset($_GET["offset"]) ? (int)$_GET["offset"] : 0;
 
-    $result = $dao->getAcademicLoad($coordinatorId, $periodId, $offset);
+    $result = $dao->getAcademicLoad($coordinatorId, $offset);
 
     if (!empty($result)) {
         $json = [
