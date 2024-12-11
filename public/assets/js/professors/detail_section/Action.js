@@ -5,8 +5,7 @@ class Action{
 
     static renderStudents(data, urlPaginacion){
 
-        const { stateProces, infoSection } = data;
-        let stateProcess = 17;
+        const { stateProcess, infoSection, video } = data;
 
         const testData = [
             { id: 1, name: "Asistencia", points: 10 },
@@ -22,7 +21,11 @@ class Action{
                 this.provideUploadInfo(testData);
                 break;
             case stateProcess >= 12 && stateProcess <= 16:
-                this.renderUploadCSVSection(stateProcess);
+                if(video==false){
+                    this.renderUploadCSVSection(stateProcess, 1);
+                } else {
+                    this.renderUploadCSVSection(stateProcess);
+                }
                 break;
         }
         
@@ -99,10 +102,10 @@ class Action{
      * date: 09/12/24
      * @param {number} processState - Estado actual del proceso de admisión.
      */
-    static renderUploadCSVSection(processState) {
+    static renderUploadCSVSection(processState, stateVideo) {
         const uploadCsvSection = document.querySelector("section#upload_csv");
-        const cardContent = this.getCardContent(processState);
-        const card = this.createCard(cardContent);
+        const cardContent = this.getCardContent(processState, stateVideo);
+        const card = this.createCard(cardContent, stateVideo);
 
         uploadCsvSection.appendChild(card);
     }
@@ -120,7 +123,7 @@ class Action{
 
     }
 
-    static createCard(content) {
+    static createCard(content, stateVideo) {
         const card = document.createElement("div");
         card.classList.add("card-container", "d-flex", "justify-content-between");
 
@@ -140,6 +143,15 @@ class Action{
             <span style="color: ${content.button.spanColor}">${content.button.text}</span>
         `;
         button.addEventListener("click", () => this[content.button.action]?.());
+        if(stateVideo==1){
+            button.disabled = true;
+            button.style.backgroundColor = '#878787';
+            card.innerHTML = `
+            <div>
+                <p class="font-medium">${content.title}</p>
+                <p style="color: '#3472f8'";>${content.description}</p>
+            </div>`;
+        }
         card.appendChild(button);
         return card;
     }
@@ -150,7 +162,7 @@ class Action{
      * @param {number} processState - Estado actual del proceso.
      * @returns {Object} Contenido dinámico de la tarjeta.
      */
-    static getCardContent(processState) {
+    static getCardContent(processState, stateVideo) {
         const contentMap = {
             17: {
                 title: "Subir calificaciones de la clase",
@@ -164,7 +176,9 @@ class Action{
         if (processState >= 12 && processState <= 16) {
             return {
                 title: "Subir video de presentación",
-                description: "Puedes agregar un video descriptivo para esta clase para mostrarlo a tus alumnos.",
+                description: stateVideo == 1
+                    ? "Ya has subido el video de presentacion de esta clase"
+                    : "Puedes agregar un video descriptivo para esta clase para mostrarlo a tus alumnos.",
                 button: { id: "uploadVideoBtn", text: "Subir Video", icon: "upload.svg", action: "openUploadVideoModal" },
             };
         }

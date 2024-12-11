@@ -15,10 +15,11 @@ include_once "../../../../../src/DepartmentBoss/DepartmentBoss.php";
 // Data Access Object
 $dao = new DepartmentBossDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
 
-if (isset($_GET["professorId"])) {
+if (isset($_GET["professorId"]) && isset($_GET["periodId"])) {
     $professorId = (int)$_GET["professorId"];
+    $periodId = (int)$_GET["periodId"];
 
-    $result = $dao->getProfessorSections($professorId);
+    $result = $dao->getProfessorSections($professorId, $periodId);
 
     if ($result["status"]) {
         $json = [

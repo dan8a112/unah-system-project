@@ -31,10 +31,10 @@
                 "status"=> 1,                
             ];
 
-            /*session_start();
-            $_SESSION["portals"]["apa"] = [
+            session_start();
+            $_SESSION["portals"]["dipp"] = [
                 "user" => 1
-            ];*/
+            ];
 
         }else{
             $json = [

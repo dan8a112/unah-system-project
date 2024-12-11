@@ -23,18 +23,18 @@
         $mail= $_POST["mail"];
         $password= $_POST['password'] ?? '';
 
-        $status = $dao->loginStudent($mail, $password);
+        $result = $dao->loginStudent($mail, $password);
 
-        if($status['status']){
+        if($result['status']){
             $json = [
                 "message"=> "Credenciales correctas",
-                "status"=> 1,                
+                "status"=> 1         
             ];
 
-            /*session_start();
-            $_SESSION["portals"]["apa"] = [
-                "user" => 1
-            ];*/
+            session_start();
+            $_SESSION["portals"]["students"] = [
+                "user" => $result['data']['account']
+            ];
 
         }else{
             $json = [
