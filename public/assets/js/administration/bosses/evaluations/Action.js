@@ -8,57 +8,46 @@ class Action {
      * Se encarga de renderizar la tabla con los docentes del periodo seleccionado.
      * @param {*} periodId
      */
-    static renderProfessorEvaluations(periodId) {
+    static renderProfessorEvaluations = async (periodId) => {
 
         //Se hace fetch con el periodID
-        const data = {
-            amountProfessors: 12,
-            period: {
-                id: 3,
-                name: "II PAC 2024"
-            },
-            professors: [
-                {
-                    id: 1,
-                    name: "Juan Alberto Martinez",
-                    email: "juan.alberto@unah.hn",
-                    amountSections: 2
-                },
-                {
-                    id: 2,
-                    name: "Maria Alejandra Galvez",
-                    email: "maria.alejandrag@unah.hn",
-                    amountSections: 2
-                }
-            ]
+        const response = await HttpRequest.get(`/api/get/departmentBoss/professorsAmountSections/?idPeriod=${periodId}`);
+
+        if (response.status) {
+            const data = response.data;
+            const periodSelect = document.querySelector("select#periodSelect");
+            periodSelect.value = data.period.id;
+
+            const headers = ["#", "Docente", "Correo", "Secciones", "Acciones"];
+
+            const dataFormated = data.professors.map(row => this.formatRows(row, "professor-id", "Ver Secciones"));
+
+            const urlPagination = `/api/get/pagination/professorsAmountSections/?idPeriod=${data.period.id}&`
+
+            const container = document.querySelector("#section-table");
+            container.innerHTML = "";
+
+            const section = createTable(
+                "",
+                headers,
+                dataFormated,
+                "table-body",
+                false,
+                10,
+                data.amountProfessors,
+                urlPagination,
+                false,
+                true,
+                (rows) => rows.map(row => this.formatRows(row, "professor-id", "Ver Secciones"))
+            );
+
+            section.style.marginTop = '0px';
+            container.appendChild(section);
+
+            //Accion al presionar un boton de la tabla (Acciones)
+            const tableBody = document.querySelector("tbody#table-body");
+            tableBody.addEventListener("click", (e)=>{Action.openEvaluationsSections(e)});
         }
-
-        const periodSelect = document.querySelector("select#periodSelect");
-        periodSelect.value = data.period.id;
-
-        const headers = ["#", "Docente", "Correo", "Secciones", "Acciones"];
-
-        const dataFormated = data.professors.map(row => this.formatRows(row, "professor-id", "Ver Secciones"));
-
-        const container = document.querySelector("#section-table");
-        container.innerHTML = "";
-
-        const section = createTable(
-            "",
-            headers,
-            dataFormated,
-            "table-body",
-            false,
-            10,
-            dataFormated.length,
-            "",
-            false,
-            true,
-            (rows) => { rows.map(row => this.formatRows(row, "evaluation-id", "Detalle")) }
-        );
-
-        section.style.marginTop = '0px';
-        container.appendChild(section);
 
     }
 
@@ -105,9 +94,10 @@ class Action {
         //Si es un boton de la tabla se abre la modal
         if (button.matches('.actionsBtn')) {
 
-            const professorId = button.dataset.professorId
+            const professorId = button.dataset.professorId;
+            const periodId = document.querySelector("#periodSelect").value;
 
-            window.location.href = `/assets/views/administration/bosses/evaluations_detail.php?professorId=${professorId}`;
+            window.location.href = `/assets/views/administration/bosses/evaluations_detail.php?professorId=${professorId}&periodId=${periodId}`;
         }
 
     }
