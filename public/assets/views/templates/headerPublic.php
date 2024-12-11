@@ -12,7 +12,7 @@
                 <a class="nav-link active" aria-current="page" href="/assets/views/admission/inscription_view.php" id="admissions">Admisiones</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Estudiantes</a>
+                <a class="nav-link" href="/assets/views/logins/login_students.php">Estudiantes</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
