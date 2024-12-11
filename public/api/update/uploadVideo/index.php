@@ -23,7 +23,7 @@
             $videoContent = file_get_contents($video);
 
             $dao = new ProfessorDAO(DbConnection::$server, DbConnection::$user, DbConnection::$pass, DbConnection::$dbName);
-            $json = $dao->uploadVideo($idSection, $dni, $videoContent);
+            $json = $dao->uploadVideo($idSection, $videoContent);
     
 
         } else {

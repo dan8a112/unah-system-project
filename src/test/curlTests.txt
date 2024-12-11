@@ -128,7 +128,7 @@ curl "http://localhost:3000/api/get/professor/timeLinePeriods/?idProfessor=3" | 
 curl "http://localhost:3000/api/update/uploadVideo/?idSection=1189" | jq
 
 ---------- Curl para obtener los docentes y la cantidad de secciones por periodo----------------------------------------
-curl "http://localhost:3000/api/get/departmentBoss/professorsAmoutSections/?idPeriod=0" | jq
+curl "http://localhost:3000/api/get/departmentBoss/professorsAmountSections/?idPeriod=0" | jq
 
 
 ---------------------------------------PAGINACION------------------------------------------------------
