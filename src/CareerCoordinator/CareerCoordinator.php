@@ -12,7 +12,7 @@ class CoordinatorDAO {
          * version: 0.2.0
          * date: 10/12/24
          * 
-         * Funcion que obtiene la carga academica del ultimo periodo respecto a un coordinador
+         * Funcion que obtiene la carga academica del ultimo periodo para a un coordinador
          */
     public function getAcademicLoad(int $coordinatorId, int $offset = 0) {
         // Obtener la lista de periodos
