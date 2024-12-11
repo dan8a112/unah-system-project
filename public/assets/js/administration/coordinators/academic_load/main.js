@@ -7,8 +7,20 @@ const currentPeriod = document.getElementById("periodName");
 const careertName = document.getElementById("careertName")
 const professorTypeSelectEdit = document.getElementById("professorTypeSelectEdit");
 const userId = new URLSearchParams(window.location.search).get("id");
-const url = `../../../../api/get/pagination/careerCoordinator/index.php?coordinatorId=${userId}&periodId=35&offset=0`;
+const url = `../../../../api/get/pagination/currentAcademicLoad/index.php?coordinatorId=${userId}&&offset=0`;
 const container = document.querySelector("#section-table");
+
+ // Estado para currentPeriodd
+ let state = {
+    currentPeriodd: 0,
+  };
+  
+  // Función para actualizar el estado
+  function setState(key, value) {
+    state[key] = value;
+    console.log(`Estado actualizado: ${key} = ${value}`);
+  }
+
 
 
 const dataa = {
@@ -64,13 +76,14 @@ async function loadData() {
     // Realizar la solicitud GET usando HttpRequest
     const respose = await HttpRequest.get(url);
     const data = respose;
-    const paginationUrl = `../../../../api/get/pagination/careerCoordinator/index.php?coordinatorId=3&periodId=35&`;
+    const paginationUrl = `../../../../api/get/pagination/currentAcademicLoad/index.php?coordinatorId=${userId}&&`;
     console.log(data)
   
     if (data) {
       Action.renderSections(data.sections.sectionList, data.sections.amountSections, paginationUrl, container);
       Action.renderSelects(data.periods, selectPeriod);
-      currentPeriod.innerText = `${data.currentPeriod.description}`;
+      currentPeriod.innerText = `${data.currentPeriod.name}`;
+      setState("currentPeriodd", data.currentPeriod.id);
       careertName.innerText = `${data.career}`
     } else {
       console.error("No se pudo cargar la información desde la API.");
@@ -149,17 +162,17 @@ const response = {
 }
 selectPeriod.addEventListener('change', async (event) => {
     try {
-        const url2 = `http://localhost:3000/api/get/pagination/sections/?idProcess=${event.target.value}&offset=0&idBoss=${userId}`;
+        const url2 = `/api/get/pagination/historicAcademicLoad/index.php?coordinatorId=${userId}&&periodId=${event.target.value}&&offset=0`;
         const selectedOption = event.target.options[event.target.selectedIndex];
         const selectedText = selectedOption.innerText;
-        //const response = await HttpRequest.get(url2); 
+        const response = await HttpRequest.get(url2); 
         const data = response.data;
-        const paginationUrl = `../../../../api/get/pagination/sections/?idProcess=${event.target.value}&idBoss=${userId}&`;
-
+        const paginationUrl = `../../../../api/get/pagination/historicAcademicLoad/index.php?coordinatorId=${userId}&&periodId=${event.target.value}&&`;
+        setState("currentPeriodd", response.currentPeriod.id);
 
         if (data) {
             container.innerHTML = "";
-            Action.renderSections(data, response.amountSections, paginationUrl, container);
+            Action.renderSections(data, response.sections.amountSections, paginationUrl, container);
             currentPeriod.innerText = `${selectedText}`;
         } else {
             console.error("No se pudo cargar la información desde la API.");
@@ -167,4 +180,13 @@ selectPeriod.addEventListener('change', async (event) => {
     } catch (error) {
         console.error("Error en la solicitud:", error);
     }
+});
+
+  const downloadStudents = document.getElementById("downloadLoad");
+  downloadStudents.addEventListener("click", () => {
+    const urlload = `../../../../api/get/coordinator/generateCsvAcademicLoad/?idCoordinator=${userId}&idPeriod=${state.currentPeriodd}`;
+    // Código para descargar la plantilla
+    const link = document.createElement("a");
+    link.href = urlload;
+    link.click();
 });

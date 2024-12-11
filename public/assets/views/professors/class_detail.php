@@ -153,7 +153,7 @@
                 <h1 class="modal-title fs-5" id="formModal">Subir video</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formCsv">
+            <form id="fromVideo">
                 <div class="modal-body">
                     <div class="container">
                         <div class="mb-3">
@@ -166,7 +166,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary me-4" data-bs-dismiss="modal">Close</button>
-                    <button class="button-upload btn me-3" id="uploadCsv" style="height: 40px;" type="submit">
+                    <button class="button-upload btn me-3" id="uploadVideo" style="height: 40px;" type="submit">
                             <img src="../../img/icons/upload.svg" alt="" class="me-2">
                             <span>Subir</span>
                     </button>
