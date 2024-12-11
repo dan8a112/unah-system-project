@@ -121,7 +121,7 @@
             $result= $this->mysqli->execute_query($query, [$id]);
 
             if($result){
-                $row = $result->fetch_assoc();
+                $department = $result->fetch_assoc();
 
                 //obtener info del periodo actual
                 $query1= 'SELECT a.id, CONCAT(b.description, " ", year(startDate)) as description 
@@ -155,7 +155,7 @@
                             "message"=> "Petición realizada con exito.",
                             "data"=> [
                                 "period"=>$period,
-                                "department"=> $row['department'],
+                                "department"=> $department['department'],
                                 "amountSections"=> $sectionsInfo['amountSections'],
                                 "sections"=> $sectionsInfo['sectionList'],
                                 'isActive'=> $isActive

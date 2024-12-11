@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/templates/professor.css">
     <link rel="stylesheet" href="../../css/temas/cards.css">
+    <link rel="stylesheet" href="../../css/templates/breadCrumb.css">
 </head>
 
 <body style="background-color: #FBF9F4;">
@@ -41,11 +42,22 @@
 
         <?php
             $path = "../";
-            $selected = 1;
+            $selected = 2;
             include_once($path . "templates/professors/professorSidebar.php");
         ?>
 
         <section class="col ms-4">
+
+            <?php
+            $path = "../";
+            $links = [
+                ['title' => 'Periodos Anteriores', 'url' => '/assets/views/professors/previous_periods.php'],
+                ['title' => 'Periodo', 'url' => '#']
+            ];
+
+            include_once($path . "templates/breadCrumb.php");
+            ?>
+
             <div class="my-4">
                 <div class="d-flex align-items-center">
                     <h1 class="display3 me-3">Tus clases</h1>
@@ -65,7 +77,7 @@
     </main>
     
     <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/professors/home-professors/main.js" type="module"></script>
+    <script src="../../js/professors/previous_periods_classes/main.js" type="module"></script>
     <script src="../../js/behaviorTemplates/professors/sidebar.js"></script>
 </body>
 

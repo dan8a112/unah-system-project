@@ -8,8 +8,14 @@ class Action {
 
     static renderPage = async () => {
 
-        //Petición asíncrona que obtiene la información del home
-        const response = await HttpRequest.get(`/api/get/professor/homeProfessor/?id=${this.userId}`);
+        const urlAPI = `/api/get/professor/homeProfessor/?id=${this.userId}`;
+
+        const response = await HttpRequest.get(urlAPI);
+        
+        this.renderHomeProfessors(response);
+    }
+
+    static renderHomeProfessors = (response) => {
 
         //destructuración de la respuesta
         const {status, message, data} = response;
@@ -43,28 +49,30 @@ class Action {
                     </div>
                 </div>
                 </div>`
-    
+
                 //Si classes existe significa que se le han asignado clases al maestro
                 if (data.classes) {
-                    
-                    //Se crea el HTML de las cards 
-                    const sectionFormated = data.classes.map(
-                        (section,index) => createSectionCard(section,index)
-                    ).join("");
-    
-                    const sectionsContainer = document.querySelector("section#sectionsContainer");
-    
-                    //Se insertan las cards en el contenedor
-                    sectionsContainer.innerHTML = sectionFormated;
+                    this.renderClasses(data.classes)
                 }
             }else{
                 //Se muestra una alerta de la respuesta del servidor
                 const alertSection = document.querySelector("#alertSection");
-    
+
                 alertSection.innerHTML = `<div class="alert alert-warning" role="alert" >${message}</div>`
             }
         }
-        
+    }
+
+    static renderClasses(classes) {
+        //Se crea el HTML de las cards 
+        const sectionFormated = classes.map(
+            (section, index) => createSectionCard(section, index)
+        ).join("");
+
+        const sectionsContainer = document.querySelector("section#sectionsContainer");
+
+        //Se insertan las cards en el contenedor
+        sectionsContainer.innerHTML = sectionFormated;
     }
 
 

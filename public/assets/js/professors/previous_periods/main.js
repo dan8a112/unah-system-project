@@ -1,9 +1,10 @@
 import { makeTimeLine, separateData } from '../../admission/home_administration/Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';
 
-const url = '../../../api/get/homeAPA/';
+const sectionId = new URLSearchParams(window.location.search).get("id");
+const url = `../../../api/get/professor/timeLinePeriods/?idProfessor=${sectionId}`;
 
-const data = { 
+const dataa = { 
     "previousProcesses": [
             {
                 "year": 2023,
@@ -35,8 +36,8 @@ const data = {
 
 async function loadData() {
   // Realizar la solicitud GET usando HttpRequest
-  //const respose = await HttpRequest.get(url);
-  //const data = respose.data;
+  const respose = await HttpRequest.get(url);
+  const data = respose.data;
   console.log(data)
 
   if (data) {

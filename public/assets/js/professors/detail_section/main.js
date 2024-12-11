@@ -88,7 +88,10 @@ async function loadData() {
     });
 
     /**
-     * Se manda el video para posteriormente guandarlo en la base de datos
+     * Se mandan las calicicaciones para registrarlas en la base de datos
+     * author: afcastillof@unah.hn
+     * version: 0.1.0
+     * date: 10/12/24
      * 
      */
     document.getElementById('formCsv').addEventListener('submit', async (event) => {
@@ -104,6 +107,7 @@ async function loadData() {
               message.innerHTML = result.message;
               container.style.color = 'red';
               container.appendChild(message);
+              Modal.closeModal();
           }
           Action.createTableWithData("Registros invalidos", headersincorrectTable, result.incorrectData, container, 'incorrectDataTable', 10, result.incorrectData.length, '', true)
           Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
@@ -115,8 +119,43 @@ async function loadData() {
   });
 
 
+   /**
+     * Se manda el video para posteriormente almacenarlo en la base de datos
+     * author: afcastillof@unah.hn
+     * version: 0.1.0
+     * date: 10/12/24
+     */
+   document.getElementById('formVideo').addEventListener('submit', async (event) => {
+    event.preventDefault(); 
+ 
+    try {
+        const result = await HttpRequest.submitForm(event, `../../../api`);
+        console.log(result.message); 
+        console.log(result); 
+        container.innerHTML = "";
+        if(result.status == false) {
+            let message = document.createElement('p');
+            message.innerHTML = result.message;
+            container.style.color = 'red';
+            container.appendChild(message);
+        }
+        Action.createTableWithData("Registros invalidos", headersincorrectTable, result.incorrectData, container, 'incorrectDataTable', 10, result.incorrectData.length, '', true)
+        Action.createTableWithData("Registros que no estaban en el csv", headerMissingData,result.missingData, container, 'MissingInscriptionTable', 10, result.missingData.length, '', true)
+        Modal.closeModal();
+        
+    } catch (error) {
+        console.error("Error al cargar el CSV:", error);
+    }
+});
 
 
+  /**
+   * Se consume el servicio para descargar el archivo csv con la informacion de los estudiantes 
+   * matriculados en la seccion
+   * author: afcastillof@unah.hn
+   * version: 0.1.0
+   * date: 10/12/24
+   */
   const urlStudents = `../../../api/get/section/generateCsvStudentsSection/?id=${sectionId}`;
   const downloadStudents = document.getElementById("downloadStudents");
   downloadStudents.addEventListener("click", () => {

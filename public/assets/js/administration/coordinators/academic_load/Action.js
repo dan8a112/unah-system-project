@@ -6,7 +6,7 @@ class Action{
 
     static renderSections(data, amountSections, paginationUrl, container){
 
-        const headers = ["Codigo", "Clase", "Seccion", "Docente", "id Docente", "Matricula", "Cupos", "Edificio", "Aula"];
+        const headers = ["Codigo", "Clase", "Seccion", "Docente", "Matricula", "Cupos", "Edificio", "Aula"];
 
         const dataFormated = this.formatRows(data);
 
@@ -34,13 +34,13 @@ class Action{
      * 
      * @param {Object} rows 
      */
-    static formatRows(rows){
-        return rows.map((row)=>{
-            const formatedData = Object.values(row);
-            return formatedData;
-        })
-
+    static formatRows(rows) {
+        return rows.map((row) => {
+            const formattedData = Object.values(row).map(value => value ?? 0);
+            return formattedData;
+        });
     }
+    
 
     static renderSelects(data, select) {
         Selects.renderSelect(select,data,'id','name');

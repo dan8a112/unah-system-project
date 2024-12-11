@@ -169,7 +169,6 @@ CREATE TABLE Student(
     account VARCHAR(11) PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
     dni VARCHAR(15) NOT NULL,
-    address VARCHAR(70) NOT NULL,
     email VARCHAR(60) NOT NULL,
     description VARCHAR(100),
     degreeProgram SMALLINT NOT NULL,
@@ -2786,14 +2785,14 @@ END;
 
 CALL InsertSectionsIteratively;
 
-INSERT INTO Student (account, name, dni, address, email, degreeProgram, regionalCenter, globalAverage, periodAverage, photo1, photo2, photo3, password)
+INSERT INTO Student (account, name, dni, email, degreeProgram, regionalCenter, globalAverage, periodAverage, photo1, photo2, photo3, password)
 VALUES
-('20181000001', 'JUAN CARLOS LOPEZ GARCÍA', '0801-1999-00001', 'CALLE 11, ZONA 11', 'juan.lopez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20201000001', 'MARÍA FERNANDA PÉREZ MORALES', '0801-2001-10001', 'CALLE 21, ZONA 21', 'maria.perez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20211000001', 'PEDRO ALBERTO RIVERA HERRERA', '0801-2002-10001', 'CALLE 31, ZONA 31', 'pedro.rivera@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20221000001', 'ANA PAOLA SÁNCHEZ RAMÍREZ', '0801-2003-10001', 'CALLE 41, ZONA 41', 'ana.sanchez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20231000001', 'PEDRO ALBERTO GÓMEZ FERNÁNDEZ', '0801-2004-10001', 'CALLE 51, ZONA 51', 'pedro.gomez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
-('20241000001', 'LAURA BEATRIZ FLORES CASTRO', '0801-2003-10001', 'CALLE 61, ZONA 61', 'laura.flores@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.');
+('20181000001', 'JUAN CARLOS LOPEZ GARCÍA', '0801-1999-00001', 'juan.lopez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20201000001', 'MARÍA FERNANDA PÉREZ MORALES', '0801-2001-10001', 'maria.perez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20211000001', 'PEDRO ALBERTO RIVERA HERRERA', '0801-2002-10001', 'pedro.rivera@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20221000001', 'ANA PAOLA SÁNCHEZ RAMÍREZ', '0801-2003-10001', 'ana.sanchez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20231000001', 'PEDRO ALBERTO GÓMEZ FERNÁNDEZ', '0801-2004-10001', 'pedro.gomez@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.'),
+('20241000001', 'LAURA BEATRIZ FLORES CASTRO', '0801-2003-10001', 'laura.flores@unah.hn', 19, 19, NULL, NULL, NULL, NULL, NULL, '$2y$10$wxuif9leohc8Glm86O4YKO7x0.sEA714DTg43iLx5luEeWkRzqfL.');
 
 INSERT INTO Observation(id, observation) VALUES
 (1, 'APB'),
@@ -2865,7 +2864,6 @@ VALUES
     ('20181000001', 854, 82, 1, 0),
     ('20241000001', 1222, NULL, NULL,0),
     ('20241000001', 1223, NULL, NULL,0),
-    ('20241000001', 1189, NULL, NULL,0),
     ('20241000001', 1232, NULL, NULL,0);
 
 

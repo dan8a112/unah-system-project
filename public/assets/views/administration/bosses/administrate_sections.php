@@ -246,7 +246,7 @@ if (!SessionValidation::isValid($_SESSION, $portal)) {
 
                         <div class="mt-2 d-flex-col card-container col">
                             <div class="ms-2">
-                                <span class="fs-5 me-2">Estudiantes matriculados</span>
+                                <span class="fs-5 me-2">Estudiantes En lista de espera</span>
                             </div>
                             <hr>
                             <section id="studentsWaitingTable" class="col"></section>

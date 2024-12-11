@@ -44,7 +44,7 @@ class Action{
 
         const headers = ["#", "Codigo","Clase", "Cupos","Hora", "Acciones"];
 
-        const dataFormated = this.formatRows(rows)
+        const dataFormated = this.formatRows(rows, this.isActive)
 
         const container = document.querySelector("#section-table");
 
@@ -61,7 +61,7 @@ class Action{
             apiPagination,
             false,
             true,
-            this.formatRows
+            (rows)=>this.formatRows(rows,this.isActive)
         );
 
         section.style.marginTop = '0px';
@@ -75,7 +75,7 @@ class Action{
      * @param {Array<Object>} row 
      * @returns {Array<Array<any>>} retorna un array con los elementos de la fila formateados
      */
-    static formatRows(rows){
+    static formatRows(rows,isActive){
 
         const formatedTable = []
 
@@ -84,14 +84,14 @@ class Action{
             const formatedRow = Object.values(row);
 
             //Se crea el elemento button con el dataset del id de la seccion
-            const button = `<button data-id-section=${row.id} class="btn btn-outline-warning btn-sm actionsBtn" ${this.isActive==false && 'disabled'}>Acciones</button>`
+            const button = `<button data-id-section=${row.id} class="btn btn-outline-warning btn-sm actionsBtn" ${isActive==false && 'disabled'}>Acciones</button>`
 
             //Se agrega el boton al array (fila de la tabla)
             formatedRow.push(button);
 
             formatedTable.push(formatedRow)
         })
-        
+        console.log(formatedTable)
         return formatedTable;
     }
 
@@ -232,37 +232,45 @@ class Action{
                 const enrolledSectionTbl = document.querySelector("#enrolledStudentsTable");
                 enrolledSectionTbl.innerHTML = ""
 
-                const enrolledPaginationUrl =  ``
+                const enrolledPaginationUrl =  `/api/get/pagination/studentsSection/?id=${sectionId}&`
 
-                const enrolledHeadersTbl = ['Cuenta', 'Nombre', 'Fecha de matricula']
+                const studentsList = this.formatStudentsRows(data.studentsList,['account','name']);
+
+                const enrolledHeadersTbl = ['Cuenta', 'Nombre']
 
                 this.generatePaginationTable(
                     enrolledSectionTbl, 
                     enrolledHeadersTbl,
-                    data.studentsList,
+                    studentsList,
                     'enrolled-body',
                     data.amountStudents,
                     enrolledPaginationUrl,
                     "",
-                    false);
+                    false,
+                    (rows)=>this.formatStudentsRows(rows,['account','name'])
+                );
 
                 //Se genera la tabla de estudiantes en espera
                 const waitingSectionTbl = document.querySelector("#studentsWaitingTable");
                 waitingSectionTbl.innerHTML = ""
 
-                const  waitingPaginationUrl =  ``
+                const  waitingPaginationUrl =  `/api/get/pagination/waitingStudents/?id=${sectionId}&`
 
-                const  waitingHeadersTbl = ['Cuenta', 'Nombre', 'Fecha de matricula']
+                const waitingStudentList = this.formatStudentsRows(data.waitingStudentList,['account','name'])
+
+                const  waitingHeadersTbl = ['Cuenta', 'Nombre']
 
                 this.generatePaginationTable(
                     waitingSectionTbl, 
                     waitingHeadersTbl,
-                    data.waitingStudentList,
+                    waitingStudentList,
                     'waiting-body',
                     data.amountWaitingStudents,
                     waitingPaginationUrl,
                     "",
-                    false);
+                    false,
+                    (rows)=>this.formatStudentsRows(rows,['account','name'])
+                );
 
                 //formato para nombre de la clase
                 const className = `Clase: ${data.class.name}`
@@ -272,6 +280,21 @@ class Action{
             }
         }
 
+    }
+
+    static formatStudentsRows(rows, keysInclude){
+
+        const rowsFormated = []
+
+        rows.forEach(student=>{
+            const studentFormated = [];
+            keysInclude.forEach(key=>{
+                studentFormated.push(student[key]);
+            });
+            rowsFormated.push(studentFormated)
+        })
+
+        return rowsFormated;
     }
 
     static submitEditSection = async (event) => {
@@ -307,7 +330,7 @@ class Action{
         }
     }
 
-    static generatePaginationTable(section, headers, rows, id, amountRows, url, title, border){
+    static generatePaginationTable(section, headers, rows, id, amountRows, url, title, border, callback){
 
         const table = createTable(
             title, 
@@ -320,7 +343,7 @@ class Action{
             url,
             false,
             true,
-            null
+            callback
         );
 
         section.style.marginTop = '0px';

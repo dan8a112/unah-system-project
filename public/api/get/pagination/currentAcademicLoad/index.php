@@ -32,7 +32,8 @@ if (isset($_GET["coordinatorId"])) {
                 "amountSections" => $result['sections']['amountSections'],
                 "sectionList" => $result['sections']['sectionList']
             ],
-            "career" => $result['career']
+            "career" => $result['career'],
+            "data" => $result['sections']['sectionList']
         ];
     } else {
         $json = [
