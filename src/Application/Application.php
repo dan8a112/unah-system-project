@@ -179,13 +179,13 @@
 
         /**
          * author: dorian.contreras@unah.hn
-         * version: 0.1.0
-         * date: 29/11/24
+         * version: 0.1.1
+         * date: 10/12/24
          * 
          * Funcion para paginar las inscripciones ya revisadas
          */
         public function getReviewedInscriptions(int $idReviewer, int $offset){
-            $query = 'SELECT b.id, b.name, b.firstCareer, b.applicationDate FROM Application a
+            $query = 'SELECT b.id, b.name, b.firstCareer, b.applicationDate, b.approved FROM Application a
                 INNER JOIN TempTableApplication b ON(a.id = b.id)
                 WHERE a.idReviewer=? AND b.approved IS NOT NULL
                 ORDER BY b.id DESC 
@@ -199,7 +199,8 @@
                         "id" => $row['id'],
                         "name" => $row['name'],
                         "career" => $row['firstCareer'],
-                        "inscriptionDate" => $row['applicationDate']
+                        "inscriptionDate" => $row['applicationDate'],
+                        "dictamen"=> $row['approved']
                     ];
                 } 
             } 
