@@ -1,0 +1,8 @@
+-- ACTIVAR CREACION DE EXPEDIENTE
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=32;
+
+UPDATE AcademicEvent
+SET active=TRUE
+WHERE id=33;

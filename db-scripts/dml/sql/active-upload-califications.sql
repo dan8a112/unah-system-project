@@ -1,0 +1,35 @@
+-- ACTIVAR INICIO DE CLASES
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=39;
+
+UPDATE AcademicEvent
+SET active=TRUE
+WHERE id=40;
+
+-- ACTIVAR ADICIONES Y CANCELACIONES 
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=40;
+
+UPDATE AcademicEvent
+SET active=TRUE
+WHERE id=41;
+
+-- ACTIVAR CANCELACION EXCEPCIONAL
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=41;
+
+UPDATE AcademicEvent
+SET active=TRUE
+WHERE id=42;
+
+-- ACTIVAR INGRESO DE NOTAS
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=42;
+
+UPDATE AcademicEvent
+SET active=TRUE
+WHERE id=43;

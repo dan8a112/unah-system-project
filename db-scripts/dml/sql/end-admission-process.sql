@@ -1,0 +1,8 @@
+-- TERMINAR PROCESO DE ADMISION
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=28;
+
+UPDATE AcademicEvent
+SET active=FALSE
+WHERE id=33;
