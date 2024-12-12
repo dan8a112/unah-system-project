@@ -117,8 +117,6 @@ edit.addEventListener("click", ()=>Action.openUploadEditModal());
 
     try {
         const result = await HttpRequest.submitForm(event, `../../../api/update/studentProfile/index.php?studentId=${acountStudent}&offset=10/`);
-        console.log(result.message); 
-        console.log(result); 
 
         if(result.status == false) {
             Popup.open(popupError);

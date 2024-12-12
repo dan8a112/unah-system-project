@@ -11,8 +11,6 @@ const scriptTag = document.querySelector('script[type="module"][src$="main.js"]'
 
 // Asegurarse de que sea un número entero
 const user = parseInt(scriptTag?.getAttribute("data-user"), 10);
-const searchButton = document.getElementById("searchButton");
-console.log(user)
 
 
 const dataa = {
@@ -52,7 +50,6 @@ const table = document.getElementById('section-table');
 // Agrega un event listener al contenedor
 table.addEventListener('click', function(event) {
 if (event.target.matches('.btn')) {
-    console.log(event.target.id);
     user === 1? 
     window.location.href = `/assets/views/administration/bosses/academic_history.php?id=${userId}&student=${event.target.id}`:
     window.location.href = `/assets/views/administration/coordinators/academic_historic.php?id=${userId}&student=${event.target.id}`;

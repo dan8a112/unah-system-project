@@ -2,6 +2,14 @@ import { Action } from "./Action.js";
 import { HttpRequest } from "../../modules/HttpRequest.js";
 import { Modal } from "../../modules/Modal.js";
 
+
+/**
+ * @description Carga y muestra los datos para la vista proceso de admisiones activo
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.7
+ * @date: 24/11/24
+ */
+
 // Se obtiene la información que carga la página del detalle de proceso de admisión actual
 Action.fetchActiveData();
 
@@ -16,7 +24,6 @@ const headerMissingData = ["#", "DNI", "Examen"];
 sendEmailsButton.addEventListener("click", async () => {
     try {
         const response = await HttpRequest.get(url);
-        console.log("Correos enviados:", response);
         Modal.closeModal();
         const sendButton = document.getElementById('sendMail');
         sendButton.disabled = true;
@@ -31,8 +38,6 @@ document.getElementById('formCsv').addEventListener('submit', async (event) => {
 
     try {
         const result = await HttpRequest.submitForm(event, '../../../api/update/readCsv/');
-        console.log(result.message); 
-        console.log(result); 
         container.innerHTML = "";
         if(result.status == false) {
             let message = document.createElement('p');

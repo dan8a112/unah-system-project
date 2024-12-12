@@ -1,7 +1,8 @@
 /**
- * author: afcastillof@unah.hn
- * version: 0.1.5
- * date: 9/11/24
+ * @description Carga y muestra los datos para la vista inscriptions
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.5
+ * @date: 9/11/24
  */
 import { loadSelectOptions, enableCareerSelects } from './Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';

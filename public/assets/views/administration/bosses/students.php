@@ -24,6 +24,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="afcastillof@unah.hn">
+    <meta name="date" content="11/12/2024">
+    <meta name="version" content="0.1.1">
     <title>Secciones</title>
     <link rel="stylesheet" href="../../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../css/temas/cards.css">

@@ -189,7 +189,6 @@ class Action {
         let testString = ''; 
         tests.forEach((test) => {
             testString += `${test.id} (${test.name} se aprueba con ${test.points} puntos).\n`;
-            console.log(testString);
         });
 
         const instructions = [

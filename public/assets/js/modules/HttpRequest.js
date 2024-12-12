@@ -96,7 +96,6 @@ export class HttpRequest {
       
       // Se procesa la respuesta como JSON
       const data = await response.json();
-      console.log("Respuesta del backend:", data);
       return data;
     } catch (error) {
       console.error('Error al realizar la solicitud POST:', error);

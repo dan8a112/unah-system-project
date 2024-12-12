@@ -1,6 +1,13 @@
 import { Action } from "./Action.js";
 import { Modal } from "../../modules/Modal.js";
 
+/**
+ * @description Carga y muestra los datos para la vista de procesos de admision historicos
+ * @author dochoao@unah.hn
+ * @version 0.1.0
+ * @date 11/11/24
+ */
+
 //Se crea objeto de parametros
 const params = new URLSearchParams(window.location.search);
 

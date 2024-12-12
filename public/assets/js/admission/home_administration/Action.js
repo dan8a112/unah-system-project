@@ -1,8 +1,8 @@
 /**
  * Este metodo hace una tarjeta en la pantalla referente al proceso de admision actual.
- * author: afcastillof@unah.hn
- * version: 0.1.1
- * date: 12/11/24
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.1
+ * @date: 12/11/24
  * 
  **/
 export const makeCurrentProcesCard = (id, name) => {
@@ -37,9 +37,9 @@ export const makeCurrentProcesCard = (id, name) => {
 
 /**
  * Esta funcion se encarga de crear una linea de tiempo en funcion de la informacion pasada por parametro
- * author: afcastillof@unah.hn
- * version: 0.1.0
- * date: 11/11/24
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.0
+ * @date: 11/11/24
  **/
 export const makeTimeLine = (processes) => {
   const timeline = document.getElementById('timeline');
@@ -64,11 +64,9 @@ export const makeTimeLine = (processes) => {
 
       const content = document.createElement("div");
       content.classList.add("content");
-    
-      const professorId = new URLSearchParams(window.location.search).get("id");
 
       const link = document.createElement("a");
-      link.href = `/assets/views/professors/previous_periods_classes.php?id=${professorId}&periodId=${process.id}&periodName=${process.title}`;
+      link.href = `../../../assets/views/admission/process_detail_historic.php?id=${process.id}`;
       link.classList.add("more-link");
       link.textContent = "Ver más";
 
@@ -96,9 +94,9 @@ export const makeTimeLine = (processes) => {
 
 /**
  * Esta funcion se encarga de recibir un objeto y crear otro con dos arreglos para dibujar el grafico
- * author: afcastillof@unah.hn
- * version: 0.1.0
- * date: 12/11/24
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.0
+ * @date: 12/11/24
  **/
 export const separateData = (arr) => {
   const result = {

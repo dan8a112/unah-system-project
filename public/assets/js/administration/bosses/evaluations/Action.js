@@ -6,7 +6,10 @@ class Action {
 
     /**
      * Se encarga de renderizar la tabla con los docentes del periodo seleccionado.
-     * @param {*} periodId
+     * @author: dochoa@unah.hn
+     * @version: 0.1.5
+     * date: 7/12/24
+     * @param {int} periodId
      */
     static renderProfessorEvaluations = async (periodId) => {
 
@@ -67,6 +70,9 @@ class Action {
 
     /**
      * Funcion que se encarga de formatear cada fila de la tabla, este retorna un arreglo con los resultados.
+     * @author: dochoa@unah.hn
+     * @version: 0.1.5
+     * date: 7/12/24
      * @param {Object} row 
      * @param {String} dataset 
      * @param {String} textButton 

@@ -18,7 +18,6 @@ const container = document.querySelector("#section-table");
   // Función para actualizar el estado
   function setState(key, value) {
     state[key] = value;
-    console.log(`Estado actualizado: ${key} = ${value}`);
   }
 
 
@@ -77,7 +76,6 @@ async function loadData() {
     const respose = await HttpRequest.get(url);
     const data = respose;
     const paginationUrl = `../../../../api/get/pagination/currentAcademicLoad/index.php?coordinatorId=${userId}&&`;
-    console.log(data)
   
     if (data) {
       Action.renderSections(data.sections.sectionList, data.sections.amountSections, paginationUrl, container);
@@ -98,7 +96,6 @@ const table = document.getElementById('section-table');
 // Agrega un event listener al contenedor
 table.addEventListener('click', function(event) {
 if (event.target.matches('.btn')) {
-    console.log(event.target.id);
     window.location.href = `/assets/views/administration/bosses/section_grades.php?id=${userId}&section=${event.target.id}`;
     const buttonId = parseInt(event.target.dataset.professorId, 10);
     Action.openEditiForm(buttonId);

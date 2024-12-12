@@ -1,176 +1,86 @@
-import {createSectionCard} from '../../../modules/Cards.js'
-import {createTable} from "../../../modules/table.js";
-import {Modal} from "../../../modules/Modal.js"
-import {HttpRequest} from "../../../modules/HttpRequest.js"
+import { createTable } from "../../../modules/table.js";
+import { Modal } from "../../../modules/Modal.js";
+import { Selects } from "../../../modules/Selects.js";
 
-class Action{
+/**
+ * Clase que gestiona las acciones relacionadas con secciones.
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.0
+ * @date: 9/12/24
+ */
+class Action {
 
-    static renderSections = async ()=>{
-
-        const professorId = new URLSearchParams(window.location.search).get("professorId");
-        const periodId = new URLSearchParams(window.location.search).get("periodId");
-
-        const response = await HttpRequest.get(`/api/get/departmentBoss/sectionsbyTeacher/?professorId=${professorId}&periodId=${periodId}`)
-
-        if (response.status) {
-
-            const data = response.data;
-
-            const professorBreadcrumb = document.querySelector(".breadcrumb-item.active");
-            professorBreadcrumb.innerText = data.professorName;
-
-            const professorName = document.querySelector("#professorName");
-            professorName.innerText = `Docente: ${data.professorName}`;
-
-            const cardsFormated = data.sections.map((section, index) => createSectionCard(section, index)).join("");
-
-            const sectionsContainer = document.querySelector("#sectionsContainer");
-
-            sectionsContainer.innerHTML = cardsFormated;
-        }
-
-    }
-
-
-    static renderEvaluationList(event){
-
-        //Si hay una seleccionada se deselecciona
-        const selectedCard = document.querySelector("#sectionsContainer .selected-card");
-        selectedCard && selectedCard.classList.remove("selected-card");
-
-        //Obtiene el padre mas cercano que tenga la clase class-card
-        const card = event.target.closest('.class-card');
-
-        if (card) {
-
-            card.classList.add("selected-card")
-
-            const sectionId = card.dataset.sectionId;
-
-            //Con el ID se llama a la API
-            const data = {
-                class: "Ingeniería de Software",
-                period: "2 PAC 2024",
-                code: "1100",
-                classCode: "IS-804",
-                professorName: "Juan Alberto Martinez",
-                email: "juan.martinez@unah.edu.hn",
-                amountEvaluations: 25,
-                evaluations: [
-                    {
-                        id: 1,
-                        date: '12/12/2024'
-                    },
-                    {
-                        id: 2,
-                        date: '14/12/2024'
-                    },
-                    {
-                        id: 3,
-                        date: '15/12/2024'
-                    }
-                ]
-            }
-
-            //HTML con información de la sección selecionada y tabla de evaluaciones
-            const content = `
-                <div class="d-flex align-items-center">
-                    <h1 class="display-6 me-3">${data.class}</h1>
-                    <div class="status-card" style="background-color: #00C500;">${data.period}</div>
-                </div>
-                <p class="fs-5">${data.code} | ${data.classCode}</p>
-                <div class="mb-4">
-                    <span class="fs-4">Docente: ${data.professorName}</span><br>
-                    <span>${data.email}</span>
-                </div>
-                <section id="evaluation-table"></section>
-                `
-
-            const evaluationsContainer = document.querySelector("#evaluationsContainer");
-            evaluationsContainer.innerHTML = "";
-
-            evaluationsContainer.innerHTML = content;
-
-            const dataFormated = data.evaluations.map(row => this.formatRows(row, "evaluation-id", "Detalle"));
-
-            const headers = ["#", "Fecha de evaluacion", "Evaluacion"]
-
-            const container = document.querySelector("section#evaluation-table");
-
-            const section = createTable(
-                "Evaluaciones de la clase",
-                headers,
-                dataFormated,
-                "evaluation-table-body",
-                true,
-                10,
-                dataFormated.length,
-                "",
-                false,
-                true,
-                (rows) => { rows.map(row => this.formatRows(row, "evaluation-id", "Detalle")) }
-            );
-
-            section.style.marginTop = '0px';
-            container.appendChild(section);
-
-            //Accion al presionar un boton de la tabla (Acciones)
-            const tableBody = document.querySelector("tbody#evaluation-table-body");
-            tableBody.addEventListener("click", (e)=>{this.openEvaluationsDetail(e)});
-
-        }
-
-    }
-
-    static openEvaluationsDetail(event){
-                //Obtiene el target (se espera un boton)
-        const button = event.target;
-
-        //Si es un boton de la tabla se abre la modal
-        if (button.matches('.actionsBtn')) {
-
-            const evaluationId = button.dataset.evaluationId;
-
-            const data = {
-                score: 100,
-                responsability: "Bueno",
-            }
-
-            const content = `
-            <div>
-                <p>Puntuacion: ${data.score}%</p>
-                <p>Responsabilidad: ${data.responsability}</p>
-            </div>
-            `
-
-            const modal = document.querySelector("#evaluationModal");
-            Modal.openModal(modal,content, "Evaluacion")
-
-        }
-    }
-
-    
     /**
-     * Funcion que se encarga de formatear cada fila de la tabla, este retorna un arreglo con los resultados.
-     * @param {Object} row 
-     * @param {String} dataset 
-     * @param {String} textButton 
-     * @returns {Array} retorna un array con los elementos de la fila formateados
+     * Renderiza una tabla con las secciones.
+     * @param {Object[]} data - Datos de las secciones.
+     * @param {number} amountSections - Cantidad total de secciones.
+     * @param {string} paginationUrl - URL para la paginación.
+     * @param {HTMLElement} container - Contenedor donde se insertará la tabla.
      */
-    static formatRows(row, dataset, textButton) {
+    static renderSections(data, amountSections, paginationUrl, container) {
+        const headers = ["id", "Sección", "Clase", "Cupos", "Hora", "Acciones"];
+        const dataFormatted = this.formatRows(data);
 
-        //Se obtienen todos los valores del objeto como array
-        const formatedData = Object.values(row);
+        const section = createTable(
+            "",
+            headers,
+            dataFormatted,
+            "table-body",
+            false,
+            10,
+            amountSections,
+            paginationUrl,
+            false,
+            true,
+            this.formatRows
+        );
 
-        //Se crea el elemento button con el dataset del id de la seccion
-        const button = `<button data-${dataset}=${row.id} class="btn btn-outline-primary btn-sm actionsBtn">${textButton}</button>`
-
-        //Se agrega el boton al array (fila de la tabla)
-        formatedData.push(button);
-
-        return formatedData;
+        section.style.marginTop = '0px';
+        container.appendChild(section);
     }
 
+    /**
+     * Formatea las filas para la tabla.
+     * @param {Object[]} rows - Filas de datos.
+     * @returns {string[][]} - Filas formateadas.
+     */
+    static formatRows(rows) {
+        return rows.map(row => {
+            const formattedData = Object.values(row);
+            const actionButton = `<a id="${row.id}" class="btn btn-outline-success btn-sm actionsBtn">Ver</a>`;
+            formattedData.push(actionButton);
+            return formattedData;
+        });
+    }
+
+    /**
+     * Renderiza un select con los datos proporcionados.
+     * @param {Object[]} data - Datos para el select.
+     * @param {HTMLSelectElement} select - Elemento select donde se renderizarán los datos.
+     */
+    static renderSelects(data, select) {
+        Selects.renderSelect(select, data, 'id', 'name');
+    }
+
+    /**
+     * Maneja la apertura de la modal de acciones para una sección.
+     * @param {Event} event - Evento de clic.
+     */
+    static openSectionActions(event) {
+        const button = event.target;
+        if (button.matches('.actionsBtn')) {
+            const actionsModal = document.querySelector("#actionsModal");
+            Modal.openModal(actionsModal, "", "Ingeniería de Software");
+        }
+    }
+
+    /**
+     * Abre la modal para crear una nueva sección.
+     */
+    static openCreateSection() {
+        const modal = document.querySelector("#addSectionModal");
+        Modal.openModal(modal, "", "Crea una Sección");
+    }
 }
 
-export {Action}
+export { Action };

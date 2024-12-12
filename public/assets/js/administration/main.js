@@ -25,7 +25,6 @@ const table = document.getElementById('table');
 table.addEventListener('click', function(event) {
 
   if (event.target.matches('.editBtn')) {
-    console.log(event.target.dataset.professorId)
     const buttonId = parseInt(event.target.dataset.professorId, 10);
     Action.openEditiForm(buttonId);
   }

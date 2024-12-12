@@ -40,7 +40,6 @@ class Forms{
     static clearFields(form){
 
         const fields = form.querySelectorAll("input, select");
-        console.log(fields)
 
         fields.forEach(field => {
             field.value = "";

@@ -2,6 +2,12 @@ import {Modal} from "../../../js/modules/Modal.js"
 import {HttpRequest} from "../../../js/modules/HttpRequest.js" 
 import {createTable} from "../../../js/modules/table.js" 
 
+/**
+ * Clase principal para gestionar acciones relacionadas con el portal CRI
+ * @author: dochoa@unah.hn
+ * @version: 0.1.0
+ * date: 7/12/24
+ */
 class Action {
 
     //Estado de los id de inscripciones sin revisar. Necesario para hacer revision secuencial

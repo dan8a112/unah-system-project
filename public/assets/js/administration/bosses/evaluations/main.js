@@ -1,5 +1,9 @@
 import { Action } from "./Action.js";
-
+/**
+ * @author: dochoa@unah.hn
+* @version: 0.1.5
+* date: 7/12/24
+ */
 //Se renderizan las opciones del select de periodo
 Action.renderPeriodSelect();
 

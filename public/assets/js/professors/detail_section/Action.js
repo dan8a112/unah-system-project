@@ -117,7 +117,6 @@ class Action{
         const button = event.target;
 
         if (button.matches('.actionsBtn')) {
-            console.log(button);
             const actionsModal = document.querySelector("#actionsModal");
             //Se modifican los valores de la modal del resultado de la peticion
             Modal.openModal(actionsModal,"", "Ingenieria de software")

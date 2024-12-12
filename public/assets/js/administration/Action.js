@@ -17,7 +17,6 @@ class Action{
         .then(response => response.json())
         .then(data => {
             if (data.status) {
-                console.log(data.data)
                 this.generateProfessorsWithTable(data.data);    
             }
         });
@@ -169,12 +168,9 @@ class Action{
      */
     static submitFormProfessor = async (form, event)=>{
 
-        console.log(form)
-
         event.preventDefault();
         
         const response = await HttpRequest.submitForm(event, "../../../api/post/professor/");
-        console.log(response);
 
         Modal.closeModal();
 

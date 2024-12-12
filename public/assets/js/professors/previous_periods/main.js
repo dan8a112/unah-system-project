@@ -1,44 +1,18 @@
-import { makeTimeLine, separateData } from '../../admission/home_administration/Action.js';
+import { makeTimeLine } from './Action.js';
 import { HttpRequest } from '../../modules/HttpRequest.js';
 
 const sectionId = new URLSearchParams(window.location.search).get("id");
 const url = `../../../api/get/professor/timeLinePeriods/?idProfessor=${sectionId}`;
-
-const dataa = { 
-    "previousProcesses": [
-            {
-                "year": 2023,
-                "processes": [
-                    {
-                        "id": 3,
-                        "title": "1 Proceso 2023"
-                    },
-                    {
-                        "id": 4,
-                        "title": "2 Proceso 2023"
-                    }
-                ]
-            },
-            {
-                "year": 2022,
-                "processes": [
-                    {
-                        "id": 1,
-                        "title": "1 Proceso 2022"
-                    },
-                    {
-                        "id": 2,
-                        "title": "2 Proceso 2022"
-                    }
-                ]
-            }
-        ]}
-
+/**
+ * Funcion para cargar informacion al cargar la pagina
+ * @author: afcastillof@unah.hn
+ * @version: 0.1.1
+ * date:8/12/24
+ */
 async function loadData() {
   // Realizar la solicitud GET usando HttpRequest
   const respose = await HttpRequest.get(url);
   const data = respose.data;
-  console.log(data)
 
   if (data) {
     // Generar la línea de tiempo

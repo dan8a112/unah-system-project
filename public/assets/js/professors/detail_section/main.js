@@ -90,7 +90,6 @@ async function loadData() {
 
     table.addEventListener('click', function(event) {
     if (event.target.matches('.editBtn')) {
-        console.log(event.target.dataset.professorId)
         const buttonId = parseInt(event.target.dataset.professorId, 10);
         Action.openEditiForm(buttonId);
     }
@@ -108,8 +107,6 @@ async function loadData() {
    
       try {
           const result = await HttpRequest.submitForm(event, `../../../api/update/readCalifications?idSection=${sectionId}`);
-          console.log(result.message); 
-          console.log(result); 
           container.innerHTML = "";
           if(result.status == false) {
               let message = document.createElement('p');
@@ -144,8 +141,6 @@ async function loadData() {
     try {
         const result = await HttpRequest.submitForm(event, `../../../api/update/uploadVideo/?idSection=${sectionId}`);
         
-        console.log(result.message); 
-        console.log(result); 
         container.innerHTML = "";
 
         if(result.status == false) {

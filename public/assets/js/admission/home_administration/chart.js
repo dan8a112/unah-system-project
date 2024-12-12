@@ -3,9 +3,9 @@
  * @param canvasId este es el id de la etiqueta canvas que tenemos en nuestro html
  * @param data este es un arreglo numerico de la informacion que estara en el eje y
  * @param labels este es un arreglo de etiquetas que estaran en el eje x
-* author: afcastillof@unah.hn
-* version: 0.1.1
-* date: 11/11/24
+* @author: afcastillof@unah.hn
+* @version: 0.1.1
+* @date: 11/11/24
  * 
  */
 class BarChart {

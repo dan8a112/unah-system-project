@@ -2,14 +2,24 @@ import { createTable } from "../../../modules/table.js";
 import { Modal } from "../../../modules/Modal.js";
 import { Selects } from "../../../modules/Selects.js";
 
-class Action{
+/**
+ * Clase que gestiona las acciones relacionadas con la administración de secciones.
+ * @author: afcastillof@unah.hn 
+ * @version: 0.1.0
+ * date: 6/12/24
+ */
+class Action {
 
-    static renderSections(data, amountSections, paginationUrl, container){
-
+    /**
+     * Renderiza la tabla de secciones.
+     * @param {Array} data - Lista de secciones.
+     * @param {number} amountSections - Número total de secciones.
+     * @param {string} paginationUrl - URL para la paginación.
+     * @param {HTMLElement} container - Contenedor donde se agrega la tabla.
+     */
+    static renderSections(data, amountSections, paginationUrl, container) {
         const headers = ["id", "Seccion", "Clase", "Cupos", "Hora", "Acciones"];
-
         const dataFormated = this.formatRows(data);
-
 
         const section = createTable(
             "", 
@@ -27,49 +37,51 @@ class Action{
 
         section.style.marginTop = '0px';
         container.appendChild(section);
-
     }
 
     /**
-     * 
-     * @param {Object} rows 
+     * Da formato a las filas de la tabla de secciones.
+     * @param {Array} rows - Lista de objetos de secciones.
+     * @returns {Array} Filas formateadas.
      */
-    static formatRows(rows){
-        return rows.map((row)=>{
+    static formatRows(rows) {
+        return rows.map((row) => {
             const formatedData = Object.values(row);
-            const button = `<a id=${row.id} class="btn btn-outline-success btn-sm actionsBtn">Ver</a>`
+            const button = `<a id=${row.id} class="btn btn-outline-success btn-sm actionsBtn">Ver</a>`;
             formatedData.push(button);
-
             return formatedData;
-        })
-
+        });
     }
 
+    /**
+     * Renderiza un elemento select con los datos proporcionados.
+     * @param {Array} data - Lista de elementos para el select.
+     * @param {HTMLElement} select - Elemento select a llenar.
+     */
     static renderSelects(data, select) {
-        Selects.renderSelect(select,data,'id','name');
+        Selects.renderSelect(select, data, 'id', 'name');
     }
 
-    static openSectionActions(event){
-
+    /**
+     * Abre la modal de acciones para una sección específica.
+     * @param {Event} event - Evento de clic del botón de acción.
+     */
+    static openSectionActions(event) {
         const button = event.target;
 
         if (button.matches('.actionsBtn')) {
-            console.log(button);
             const actionsModal = document.querySelector("#actionsModal");
-            //Se modifican los valores de la modal del resultado de la peticion
-            Modal.openModal(actionsModal,"", "Ingenieria de software")
+            Modal.openModal(actionsModal, "", "Ingenieria de software");
         }
-
     }
 
-    static openCreateSection(){
-
+    /**
+     * Abre la modal para crear una nueva sección.
+     */
+    static openCreateSection() {
         const modal = document.querySelector("#addSectionModal");
-
-        Modal.openModal(modal,"", "Crea una Sección");
-
+        Modal.openModal(modal, "", "Crea una Sección");
     }
-
 }
 
-export {Action}
+export { Action };

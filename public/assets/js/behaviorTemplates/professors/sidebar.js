@@ -1,3 +1,10 @@
+/**
+ * @description Comportamiento de sidebar para seleccionar un item en especifico
+ * @author dochoao@unah.hn
+ * @version 0.1.0
+ * @date 26/11/24
+ */
+
 //Se selecciona el item que se debe seleccionar
 const selectedIndex = sideBar.dataset.selectedIndex;
 
