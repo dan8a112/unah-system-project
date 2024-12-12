@@ -1,4 +1,4 @@
-----------------------INSERTS DE APLICANTES---------------------------------
+-- INSERTS DE APLICANTES
 INSERT INTO Applicant (id, names, lastNames, schoolCertificate, telephoneNumber, personalEmail) VALUES
     ('0801-2004-12344', 'Andrea Valeria', 'Hernández López', 'certificate1.pdf', '98765432', 'andrea.hernandez@gmail.com'),
     ('0801-2004-54323', 'Carlos Eduardo', 'Martínez Rivera', 'certificate2.pdf', '87654321', 'carlos.martinez@hotmail.com'),
@@ -116,10 +116,50 @@ INSERT INTO Results(application, admissionTest) VALUES
     (53,1),
     (54,1),
     (55,1),
-    (56,2)
+    (56,1),
+    (57,1),
+    (58,1),
+    (59,1),
+    (60,1),
+    (61,1),
+    (62,1),
+    (63,1),
+    (64,1),
+    (65,1),
+    (66,1),
+    (67,1),
+    (68,1),
+    (69,1),
+    (70,1),
+    (71,1),
+    (72,1),
+    (73,1),
+    (74,1),
+    (75,1),
+    (76,1),
+    (77,1),
+    (78,1),
+    (79,1),
+    (80,1),
+    (81,1),
+    (82,1),
+    (83,1),
+    (84,1),
+    (85,1),
+    (86,1),
+    (87,1),
+    (88,1),
+    (89,1),
+    (90,1),
+    (91,1),
+    (92,1),
+    (93,1),
+    (94,1),
+    (95,1),
+    (96,1)
 ;
 
-----------------------ACTIVAR REVISION DE INSCRIPCIONES---------------------
+-- ACTIVAR REVISION DE INSCRIPCIONES
 UPDATE AcademicEvent
 SET active=FALSE
 WHERE id=29;
@@ -130,39 +170,3 @@ WHERE id=30;
 
 -- Distribuir inscripciones
 CALL reviewersEvent;
-
-INSERT INTO Student (account, name, dni, email, degreeProgram, regionalCenter, globalAverage, periodAverage, password) VALUES
-('20180012345', 'Carlos Martínez', '0801199901234', 'carlos.martinez@unah.hn', 1, 2, 85, 90, '$2y$10$eWks93kOyb7/aNq4CfbkVeGFysoRYp6vK3VY8k.Z7HHZBdWmKc5NO'),
-('20170054321', 'María Lopez', '0801198805678', 'maria.lopez@unah.hn', 2, 3, 87, 89, '$2y$10$Kfsj93Js93kAJ49x76nCZuFso4TYp8hVrHsiQ1K9qTkE9SpPKeVqA'),
-('20190067890', 'Ana Hernández', '0801200101111', 'ana.hernandez@unah.hn', 3, 1, 90, 92, '$2y$10$sjkf837Jfh38kLaNp2VHFZrtjoYTpe8VKxhUZ7HHZBdFmqPPe92BD'),
-('20180023456', 'Luis Gomez', '0801200202222', 'luis.gomez@unah.hn', 1, 4, 88, 91, '$2y$10$lr8w6w9iow8371F93sokYpe7p8xhV4L2NZyK3TL7kRZdPtPz9k3LD'),
-('20190034567', 'Sofía Ramírez', '0801199703333', 'sofia.ramirez@unah.hn', 2, 5, 89, 87, '$2y$10$okdm38skd47F02lscGZFYpe2jshVZXF4PYTJ5MzkRRDdFlMlKc5LZ'),
-('20200012345', 'Pedro Castillo', '0801200304444', 'pedro.castillo@unah.hn', 3, 6, 86, 88, '$2y$10$lsk392k93AkdF99oC8FyXpe9smFXF2L4ZYZJ6LR7LHZdPtNPeZ3LV'),
-('20210054321', 'Juan Vásquez', '0801200405555', 'juan.vasquez@unah.hn', 1, 7, 87, 85, '$2y$10$slm28Z93kFs93Alz9CFLYpe6joYXF5L2NYXL7QML4MZdPLWPeX5LZ'),
-('20220067890', 'Estela Mejía', '0801200506666', 'estela.mejia@unah.hn', 2, 8, 89, 90, '$2y$10$eZp31kFs93jA09oCFLZFYpe2joYXN8L6LYXLQNR7LLZdPqRMLV5LP'),
-('20230012345', 'Rosa Flores', '0801200607777', 'rosa.flores@unah.hn', 3, 9, 88, 89, '$2y$10$oNl37l9k3Fo93kPlFCFLYpe2joYXH3L6LYQNR7RR6ZdPtPNMLZ3LV'),
-('20240054321', 'Fernando López', '0801200708888', 'fernando.lopez@unah.hn', 1, 10, 85, 87, '$2y$10$plm94Z93sAl91o9CFLFYpe6moYXJ4L3LYXR4QNL4LZdPzPWPe93LZ');
-
-
-INSERT INTO StudentSection (studentAccount, section, waiting) VALUES
-('20180012345', 1189, FALSE),
-('20170054321', 1189, TRUE),
-('20190067890', 1189, FALSE),
-('20180023456', 1189, TRUE),
-('20190034567', 1189, FALSE),
-('20200012345', 1189, TRUE),
-('20210054321', 1189, FALSE),
-('20220067890', 1189, TRUE),
-('20230012345', 1189, FALSE),
-('20240054321', 1189, TRUE),
-('20180012345', 1189, FALSE),
-('20170054321', 1189, FALSE),
-('20190067890', 1189, FALSE),
-('20180023456', 1189, FALSE),
-('20190034567', 1189, FALSE),
-('20200012345', 1189, FALSE),
-('20210054321', 1189, FALSE),
-('20220067890', 1189, FALSE),
-('20230012345', 1189, FALSE),
-('20240054321', 1189, FALSE)
-;

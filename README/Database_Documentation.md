@@ -167,55 +167,6 @@ Los triggers en este sistema son fundamentales para automatizar tareas y garanti
   - **Descripción:** Recalcula el promedio académico global del estudiante tras la actualización de una calificación.
   - **Beneficio:** Asegura que los indicadores académicos sean coherentes y actualizados según las modificaciones.
 
-#### Triggers principales:
-- **`after_update_result`**:
-  - Descripción: Actualiza los campos `approvedFirstChoice` y `approvedSecondChoice` en la tabla `Application` después de modificar resultados en `Results`.
-  - Beneficio: Asegura que las decisiones de aprobación reflejen los resultados más recientes.
-
-- **`insert_last_period_academic_index`**:
-  - Descripción: Calcula y actualiza el promedio académico del último período del estudiante después de registrar una nueva inscripción.
-  - Ejemplo:
-    ```sql
-    INSERT INTO StudentSection (studentAccount, section, grade) VALUES ('123456', 1, 90);
-    -- Trigger ejecutado para recalcular el promedio del período.
-    ```
-
-- **`update_academic_index`**:
-  - Descripción: Recalcula el promedio académico global del estudiante tras la actualización de una calificación.
-
-5. **Eventos:**
-   - **`statusVerification`**:
-     - Activa y desactiva eventos académicos según la fecha actual.
-     - Ejemplo:
-       ```sql
-       -- Este evento se ejecuta diariamente:
-       UPDATE AcademicEvent SET active = TRUE WHERE startDate <= CURDATE() AND CURDATE() <= finalDate;
-       ```
-   - **`reviewersEvent`**:
-     - Llama al procedimiento `reviewersEvent` diariamente para ajustar metas y distribuciones.
-
-6. **Datos de prueba:**
-
-Los datos de prueba proporcionados en el archivo permiten verificar el correcto funcionamiento del sistema al simular escenarios reales. Por ejemplo:
-
-- **Tablas iniciales:**
-  - Las inserciones en tablas como `RegionalCenter`, `AdministrativeType` y `DegreeProgram` aseguran que el sistema tiene un entorno de datos base para realizar operaciones.
-
-- **Solicitantes y aplicaciones:**
-  - Registros en las tablas `Applicant` y `Application` permiten evaluar procesos clave como:
-    - Registro de nuevos solicitantes.
-    - Vinculación de aplicaciones a programas académicos.
-    - Validación de límites de intentos.
-
-- **Pruebas de procedimientos y triggers:**
-  - Los datos de prueba se utilizan para validar procedimientos almacenados como `insertApplicant` y `reviewersEvent`, comprobando que realicen cálculos correctos y asignaciones adecuadas.
-  - Los triggers, como `after_update_result`, se prueban asegurando que actualicen automáticamente campos relevantes al modificar datos en tablas relacionadas.
-
-Estos datos sirven para realizar pruebas unitarias y de integración, garantizando que las funcionalidades principales se comporten como se espera bajo diferentes condiciones.
-   Incluye datos iniciales para entidades como `RegionalCenter`, `AdministrativeType`, `DegreeProgram`, y otros.
-
----
-
 ## **3. Archivo `active-revision-process.sql`**
 
 Este archivo contiene scripts SQL orientados a gestionar el proceso activo de revisión en un sistema académico.
@@ -242,9 +193,6 @@ Este archivo contiene scripts SQL orientados a gestionar el proceso activo de re
 
 3. **Ejecución de Procedimientos:**
    - Llama al procedimiento `reviewersEvent` para definir metas de revisión.
-
-### **Detalles del Procedimiento `reviewersEvent`**
-Este procedimiento distribuye de manera equitativa las solicitudes pendientes entre los revisores activos y organiza las metas diarias con base en la capacidad disponible.
 
 #### Funcionamiento:
 1. **Cálculo de variables clave:**
@@ -274,34 +222,6 @@ Este llamado ajusta automáticamente las metas de los revisores y prepara el sis
 - Gestionar procesos académicos activos y simular datos reales para pruebas.
 
 Este archivo contiene scripts SQL orientados a gestionar el proceso activo de revisión en un sistema académico.
-
-### **Contenido principal:**
-1. **Inserción de Datos:**
-   - Solicitudes de admisión para diferentes solicitantes (`Applicant`) y sus aplicaciones (`Application`).
-   - Ejemplo:
-     ```sql
-     INSERT INTO Applicant (id, names, lastNames, schoolCertificate, telephoneNumber, personalEmail) VALUES
-     ('0801-2004-12344', 'Andrea Valeria', 'Hernández López', 'certificate1.pdf', '98765432', 'andrea.hernandez@gmail.com');
-     ```
-
-2. **Actualización de Estado:**
-   - Cambia el estado de eventos académicos.
-     ```sql
-     UPDATE AcademicEvent
-     SET active=FALSE
-     WHERE id=6;
-     UPDATE AcademicEvent
-     SET active=TRUE
-     WHERE id=7;
-     ```
-
-3. **Ejecución de Procedimientos:**
-   - Llama al procedimiento `reviewersEvent` para definir metas de revisión.
-
-### **Propósito:**
-- Gestionar procesos académicos activos y simular datos reales para pruebas.
-
----
 
 ## **Instrucciones Generales para Ejecutar los Archivos**
 
