@@ -526,7 +526,7 @@ BEGIN
     INNER JOIN DegreeProgram d ON(a.secondDegreeProgramChoice = d.id)
     WHERE a.academicEvent=idCurrent AND a.approved=true
     ORDER BY a.id ASC
-    LIMIT 5 OFFSET p_offset;
+    LIMIT 500 OFFSET p_offset;
 END;
 
 /**

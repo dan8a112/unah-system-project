@@ -219,8 +219,8 @@
                                     }else{
                                         $today1AM->modify('+1 hour');
                                     }
-                                    $amount = $amount - 5;
-                                    $offset = $offset + 5;
+                                    $amount = $amount - 500;
+                                    $offset = $offset + 500;
                                 }
                             }
 
